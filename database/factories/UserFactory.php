@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\Gender;
+use App\Models\Medal;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -29,6 +31,10 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'gender' => $this->faker->randomElement(array_column(Gender::cases(), 'value')),
+            'score' => $this->faker->numberBetween(0, 1000),  
+            'location' => $this->faker->city,
+            'birthdate' => $this->faker->date,
         ];
     }
 

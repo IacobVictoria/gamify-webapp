@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\Gender;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -20,6 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'gender',
+        'score',
+        'location',
+        'birthdate',
     ];
 
     /**
@@ -42,6 +47,34 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'birthdate' => 'date',
+            'gender' => Gender::class,
         ];
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(ClientOrder::class, 'user_id');
+    }
+
+    public function medals()
+    {
+        return $this->belongsToMany(Medal::class)
+            ->using(UserMedal::class);
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id');
+    }
+
+    public function permissiions()
+    {
+        return $this->roles->map->permissions->flatten()->pluck('name')->unique();
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return $this->roles()->where('name', $role)->exists();
     }
 }

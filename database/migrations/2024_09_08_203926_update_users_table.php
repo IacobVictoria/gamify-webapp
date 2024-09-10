@@ -1,0 +1,33 @@
+<?php
+
+use App\Enums\Gender;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            // Add new columns
+            $table->enum('gender', array_column(Gender::cases(), 'value'))->nullable()->after('password');
+            $table->integer('score')->default(0);
+            $table->string('location')->nullable()->after('score');
+            $table->date('birthdate')->nullable()->after('location');           
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(['gender', 'medal_id', 'score', 'location', 'birthdate']);
+        });
+    }
+};
