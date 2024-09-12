@@ -24,7 +24,7 @@
             </div>
 
             <div class="hidden lg:flex lg:flex-1 lg:justify-end gap-x-4">
-                <inertia-link href="#"
+                <inertia-link :href="route('login')"
                     class="text-[#075985] font-semibold py-2 px-4 rounded-lg shadow-md bg-transparent hover:bg-[#075985] hover:text-white transition-colors duration-300 px-4 py-2 rounded-md cursor: pointer">
                     Log in
                 </inertia-link>
