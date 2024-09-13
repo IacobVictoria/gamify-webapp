@@ -28,7 +28,7 @@
                     class="text-[#075985] font-semibold py-2 px-4 rounded-lg shadow-md bg-transparent hover:bg-[#075985] hover:text-white transition-colors duration-300 px-4 py-2 rounded-md cursor: pointer">
                     Log in
                 </inertia-link>
-                <inertia-link href="#"
+                <inertia-link :href="route('register')"
                     class="bg-[#075985] text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-white hover:text-[#075985] transition-colors cursor: pointer">
                     Sign up
                 </inertia-link>

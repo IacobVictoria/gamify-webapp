@@ -64,7 +64,7 @@
                 </div>
                 <!-- qr section -->
                 <div class="bg-[#334155] mb-32 h-full ">
-                    <div class="bg-gradient-to-r from-customGreen to-darkerGreen pb-20 sm:pb-24 xl:pb-0">
+                    <div class="bg-gradient-to-r from-lightBlue to-darkBlue pb-20 sm:pb-24 xl:pb-0">
                         <div
                             class="mx-auto flex max-w-7xl flex-col items-center gap-x-8 gap-y-10 px-6 sm:gap-y-8 lg:px-8 xl:flex-row xl:items-stretch">
                             <div class="-mt-8 w-full max-w-2xl xl:-mb-8 xl:w-96 xl:flex-none">

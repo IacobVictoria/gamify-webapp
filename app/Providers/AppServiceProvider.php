@@ -2,6 +2,11 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\GameController;
+use App\Interfaces\UserAchievementInterface;
+use App\Models\User;
+use App\Observers\UserObserver;
+use App\Services\UserAchievementService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +16,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->when(GameController::class)
+        ->needs(UserAchievementInterface::class)
+        ->give(UserAchievementService::class);
     }
 
     /**
@@ -19,6 +26,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        User::observe(UserObserver::class);
     }
 }

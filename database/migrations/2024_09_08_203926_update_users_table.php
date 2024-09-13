@@ -1,12 +1,12 @@
 <?php
 
+use App\Enums\CityRomania;
 use App\Enums\Gender;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,8 +16,8 @@ return new class extends Migration
             // Add new columns
             $table->enum('gender', array_column(Gender::cases(), 'value'))->nullable()->after('password');
             $table->integer('score')->default(0);
-            $table->string('location')->nullable()->after('score');
-            $table->date('birthdate')->nullable()->after('location');           
+            $table->enum('location', array_column(CityRomania::cases(), 'value'))->nullable()->after('score');
+            $table->date('birthdate')->nullable()->after('location');
         });
     }
 
