@@ -4,27 +4,47 @@
             <main class="mt-32 mb-20">
                 <div class="bg-white">
                     <div class="mx-auto max-w-7xl overflow-hidden sm:px-6 lg:px-8">
-                        <h2 class="sr-only">Products</h2>
 
-                        <div class="grid grid-cols-2 border border-gray-200 sm:mx-0 md:grid-cols-3 lg:grid-cols-4">
-                            <div v-for="product in products" :key="product.id"
+                        <!-- Search Bar -->
+                        <div class="relative mb-8">
+                            <label for="search" class="sr-only">Search</label>
+                            <div class="relative w-full max-w-lg mx-auto">
+                                <input v-model="searchQuery" id="search" name="search"
+                                    class="block w-full rounded-md border border-gray-300 pl-10 pr-4 py-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    placeholder="Search for products..." type="search" />
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <!-- Search Icon -->
+                                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M10 19l6-6m0 0l-6-6m6 6H3" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Products Grid -->
+                        <div
+                            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 border-t border-l border-gray-200">
+                            
+                            <div v-for="product in filteredProducts" :key="product.id"
                                 class="group relative border-b border-r border-gray-200 p-4 sm:p-6">
                                 <div
-                                    class="aspect-h-1 aspect-w-1 overflow-hidden rounded-lg bg-gray-200 group-hover:opacity-75">
+                                    class="aspect-w-3 aspect-h-2 overflow-hidden rounded-lg bg-gray-200 group-hover:opacity-75">
                                     <img src="/images/pic1.jpg" alt="imageAlt"
                                         class="h-full w-full object-cover object-center" />
                                 </div>
                                 <div class="pb-4 pt-10 text-center">
                                     <h3 class="text-sm font-medium text-gray-900">
-                                        {{ product.name }}
+                                        <!-- Link to product page -->
+                                        <inertia-link :href="`/products/${product.id}`">
+                                            {{ product.name }}
+                                        </inertia-link>
                                     </h3>
-                                    <div class="mt-3 flex flex-col items-center">
-                                        <p class="mt-1 text-sm text-gray-500">0 reviews</p>
-                                    </div>
-                                    <p class="mt-4 text-base font-medium text-gray-900">0$ price </p>
+                                    <p class="mt-4 text-base font-medium text-gray-900">{{ product.price }}</p>
                                 </div>
-                                <p class="mt-4 text-base font-medium text-gray-900">{{ product.score }} </p>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -43,6 +63,21 @@ export default {
     },
     props: {
         products: Array
+    },
+    data() {
+        return {
+            searchQuery: '',
+        }
+    },
+    computed: {
+        filteredProducts() {
+            if (this.searchQuery) {
+                return this.products.filter(product =>
+                    product.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+                );
+            }
+            return this.products;
+        }
     }
 }
 </script>

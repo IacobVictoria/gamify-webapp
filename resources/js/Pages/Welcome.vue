@@ -70,8 +70,7 @@
                             <div class="-mt-8 w-full max-w-2xl xl:-mb-8 xl:w-96 xl:flex-none">
                                 <div class="relative aspect-[2/1] h-full md:-mx-8 xl:mx-0 xl:aspect-auto">
                                     <img class="absolute inset-0 h-full w-full rounded-2xl bg-gray-800 object-cover shadow-2xl"
-                                        src="/images/qr.jpg"
-                                        alt="" />
+                                        src="/images/qr.jpg" alt="" />
                                 </div>
                             </div>
                             <div class="w-full max-w-2xl xl:max-w-none xl:flex-auto xl:px-16 xl:py-24">
@@ -84,7 +83,8 @@
                                     </svg>
                                     <blockquote
                                         class="text-xl font-semibold leading-8 text-white sm:text-2xl sm:leading-9">
-                                        <p>"Unlock the Future with QR Codes. Experience the Unimaginable – Join the Journey Today!" </p>
+                                        <p>"Unlock the Future with QR Codes. Experience the Unimaginable – Join the
+                                            Journey Today!" </p>
                                     </blockquote>
                                     <figcaption class="mt-8 text-base">
                                         <div class="font-semibold text-white">Judith Black</div>
@@ -95,7 +95,7 @@
                         </div>
                     </div>
                 </div>
-                 <!-- Achievements -->
+                <!-- Achievements -->
                 <div class="flex flex-col items-center">
                     <div class="text-sm font-medium text-gray-900">Achievements</div>
                     <div class="mt-6 w-6/12" aria-hidden="true">
@@ -132,6 +132,27 @@
                             <img class="col-span-2 col-start-2 max-h-12 w-full object-contain sm:col-start-auto lg:col-span-1"
                                 src="https://tailwindui.com/img/logos/158x48/statamic-logo-gray-900.svg" alt="Statamic"
                                 width="158" height="48" />
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white">
+                    <div class="relative bg-gray-900">
+                        <!-- Decorative image and overlay -->
+                        <div aria-hidden="true" class="absolute inset-0 overflow-hidden">
+                            <img src="https://tailwindui.com/img/ecommerce-images/home-page-01-hero-full-width.jpg"
+                                alt="" class="h-full w-full object-cover object-center" />
+                        </div>
+                        <div aria-hidden="true" class="absolute inset-0 bg-gray-900 opacity-50" />
+
+                        <div
+                            class="relative mx-auto flex max-w-3xl flex-col items-center px-6 py-32 text-center sm:py-64 lg:px-0">
+                            <h1 class="text-4xl font-bold tracking-tight text-white lg:text-6xl">New arrivals are here
+                            </h1>
+                            <p class="mt-4 text-xl text-white">The new arrivals have, well, newly arrived. Check out the
+                                latest options from our summer small-batch release while they're still in stock.</p>
+                            <a :href="route('products.index')"
+                                class="mt-8 inline-block rounded-md border border-transparent bg-white px-8 py-3 text-base font-medium text-gray-900 hover:bg-gray-100">Shop
+                                New Arrivals</a>
                         </div>
                     </div>
                 </div>
@@ -203,6 +224,6 @@ const faqs = [
         answer:
             "I don't know, but the flag is a big plus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
     },
-   
+
 ]
 </script>

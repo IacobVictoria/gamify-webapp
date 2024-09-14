@@ -25,20 +25,20 @@
                     <h3 class="text-lg font-semibold mb-4">Contact</h3>
                     <div class="flex flex-col space-y-6">
                         <div class="flex items-start space-x-4 border-b border-gray-300 pb-4">
-                            <img src="images/location.png" alt="Location Icon" class="h-8 w-8" />
+                            <img src="/images/location.png" alt="Location Icon" class="h-8 w-8" />
                             <div>
                                 <h4 class="text-xl font-semibold mb-1 text-blue-700">Main Street Store</h4>
                                 <p class="text-gray-500">123 Main Street, Hometown, ST 12345</p>
                             </div>
                         </div>
                         <div class="flex items-start space-x-4 border-b border-gray-300 pb-4">
-                            <img src="images/phone.png" alt="Phone Icon" class="h-8 w-8" />
+                            <img src="/images/phone.png" alt="Phone Icon" class="h-8 w-8" />
                             <div>
                                 <p class="text-gray-500">+1 (234) 567-8901</p>
                             </div>
                         </div>
                         <div class="flex items-start space-x-4">
-                            <img src="images/message.png" alt="Email Icon" class="h-8 w-8" />
+                            <img src="/images/message.png" alt="Email Icon" class="h-8 w-8" />
                             <div>
                                 <p class="text-gray-500">info@example.com</p>
                             </div>
@@ -66,7 +66,7 @@
 
                 <div class="p-6">
                     <h3 class="text-lg font-semibold mb-4">Best Sellers</h3>
-                    <img src="images/best.jpg" alt="Best Seller" class="w-full h-32 object-cover mb-4" />
+                    <img src="/images/best.jpg" alt="Best Seller" class="w-full h-32 object-cover mb-4" />
                     <div class="text-base font-medium text-gray-900">White Chocolate Cake</div>
                     <div class="text-sm text-gray-600">Covered with sprinkles and love!</div>
                 </div>
@@ -74,10 +74,10 @@
                 <div class="p-6">
                     <h3 class="text-lg font-semibold mb-4">Instagram</h3>
                     <div class="grid grid-cols-2 gap-2 mb-4">
-                        <img src="images/pic1.jpg" alt="Instagram 1" class="w-full h-32 object-cover" />
-                        <img src="images/pic2.jpg" alt="Instagram 2" class="w-full h-32 object-cover" />
-                        <img src="images/pic3.jpg" alt="Instagram 3" class="w-full h-32 object-cover" />
-                        <img src="images/pic4.jpg" alt="Instagram 4" class="w-full h-32 object-cover" />
+                        <img src="/images/pic1.jpg" alt="Instagram 1" class="w-full h-32 object-cover" />
+                        <img src="/images/pic2.jpg" alt="Instagram 2" class="w-full h-32 object-cover" />
+                        <img src="/images/pic3.jpg" alt="Instagram 3" class="w-full h-32 object-cover" />
+                        <img src="/images/pic4.jpg" alt="Instagram 4" class="w-full h-32 object-cover" />
                     </div>
                 </div>
             </div>
