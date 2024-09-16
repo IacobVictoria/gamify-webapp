@@ -1,5 +1,5 @@
 <template>
-    <header class="fixed inset-x-0 top-0 z-50 bg-white transition-shadow duration-300 "
+    <header class="fixed inset-x-0 top-0 z-50 bg-white transition-shadow duration-300"
         :class="{ 'shadow-lg': hasShadow }">
         <!-- small display -->
         <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
@@ -19,24 +19,48 @@
             <!-- large display -->
             <div class="hidden lg:flex lg:gap-x-12">
                 <a v-for="item in navigation" :key="item.name" :href="item.href"
-                    class="text-sm font-semibold leading-6 text-gray-900 heading-underline transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-400 cursor: pointer">{{
-                        item.name }}</a>
+                    class="text-sm font-semibold leading-6 text-gray-900 heading-underline transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-400 cursor: pointer">
+                    {{ item.name }}
+                </a>
             </div>
 
             <div class="hidden lg:flex lg:flex-1 lg:justify-end gap-x-4">
-                <inertia-link :href="route('login')"
-                    class="text-[#075985] font-semibold py-2 px-4 rounded-lg shadow-md bg-transparent hover:bg-[#075985] hover:text-white transition-colors duration-300 px-4 py-2 rounded-md cursor: pointer">
-                    Log in
-                </inertia-link>
-                <inertia-link :href="route('register')"
-                    class="bg-[#075985] text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-white hover:text-[#075985] transition-colors cursor: pointer">
-                    Sign up
-                </inertia-link>
+                <!-- Dacă utilizatorul este autentificat, afișează dropdown-ul cu avatar și nume -->
+                <div v-if="isLoggedIn()" class="relative">
+                    <button @click="dropdownOpen = !dropdownOpen" class="flex items-center space-x-2">
+                        <img v-if="user.gender === 'Male'" src="/images/male.png" alt="User Avatar"
+                            class="w-14 h-14 rounded-full" />
+                        <img v-else src="/images/female.png" alt="User Avatar" class="w-14 h-14 rounded-full" />
+                        <span class="font-semibold">{{ user.name }}</span>
+                    </button>
+                    <!-- Dropdown -->
+                    <div v-if="dropdownOpen"
+                        class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
+                        <inertia-link :href="route('dashboard')"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            Dashboard
+                        </inertia-link>
+                        <inertia-link :href="route('logout')" method="post"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            Log out
+                        </inertia-link>
+                    </div>
+                </div>
+
+                <!-- Dacă utilizatorul nu este autentificat, afișează butoanele Log in / Sign up -->
+                <template v-else>
+                    <inertia-link :href="route('login')"
+                        class="text-[#075985] font-semibold py-2 px-4 rounded-lg shadow-md bg-transparent hover:bg-[#075985] hover:text-white transition-colors duration-300 px-4 py-2 rounded-md cursor: pointer">
+                        Log in
+                    </inertia-link>
+                    <inertia-link :href="route('register')"
+                        class="bg-[#075985] text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-white hover:text-[#075985] transition-colors cursor: pointer">
+                        Sign up
+                    </inertia-link>
+                </template>
             </div>
-
-
-
         </nav>
+
         <!-- dialog panel with buttons for small screen -->
         <Dialog class="lg:hidden" @close="mobileMenuOpen = false" :open="mobileMenuOpen">
             <div class="fixed inset-0 z-10" />
@@ -56,17 +80,19 @@
                     <div class="-my-6 divide-y divide-gray-500/10">
                         <div class="space-y-2 py-6">
                             <inertia-link v-for="item in navigation" :key="item.name" :href="item.href"
-                                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 cursor: pointer">{{
-                                    item.name }}</inertia-link>
+                                class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 cursor: pointer">
+                                {{ item.name }}
+                            </inertia-link>
                         </div>
                         <div class="py-6">
                             <inertia-link href="#"
-                                class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 cursor: pointer">Log
-                                in</inertia-link>
+                                class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 cursor: pointer">
+                                Log in
+                            </inertia-link>
                             <inertia-link href="#"
-                                class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 cursor: pointer">Sign
-                                up</inertia-link>
-
+                                class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 cursor: pointer">
+                                Sign up
+                            </inertia-link>
                         </div>
                     </div>
                 </div>
@@ -92,29 +118,34 @@
 </style>
 
 <script>
-
 export default {
     name: 'Header',
-
-    components: {
-    },
 
     data() {
         return {
             hasShadow: false,
+            dropdownOpen: false,
         }
+    },
+
+    computed: {
+        user() {
+            return this.$page.props.user;
+        }
+    },
+
+    methods: {
+        handleScroll() {
+            this.hasShadow = window.scrollY > 0;
+        },
     },
 
     mounted() {
         window.addEventListener('scroll', this.handleScroll);
     },
+
     beforeDestroy() {
         window.removeEventListener('scroll', this.handleScroll);
-    },
-    methods: {
-        handleScroll() {
-            this.hasShadow = window.scrollY > 0;
-        },
     },
 }
 </script>
@@ -127,8 +158,8 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
 const navigation = [
     { name: 'Products', href: route('products.index') },
     { name: 'Suppliers', href: '#' },
-    { name: 'Scan QR', href: '#' }, // o sa apara pagina produsului 
-    { name: 'Company', href: '#' },
+    { name: 'Scan QR', href: '#' },
+    { name: 'Company', href: route('home') },
 ]
 
 const mobileMenuOpen = ref(false)

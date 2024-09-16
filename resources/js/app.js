@@ -26,6 +26,9 @@ createInertiaApp({
                             (role) => role.name === verifiableRole
                         );
                     },
+                    isLoggedIn() {
+                        return !!this.$page.props.user;
+                    },
                 },
             })
             .use(ZiggyVue)

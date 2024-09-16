@@ -3,6 +3,7 @@
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -16,8 +17,15 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+Route::group(['prefix' => 'products'], function () {
+    Route::get('/', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/{productsId}', [ProductController::class, 'show'])->name('products.show');
+    Route::get('/{productId}/reviews/create', [ReviewController::class, 'create'])->name('products.reviews.create');
+    Route::post('/{productId}/reviews', [ReviewController::class, 'store'])->name('products.reviews.store');
+    Route::get('/{productId}/reviews/{reviewId}/edit', [ReviewController::class, 'edit'])->name('products.reviews.edit');
+    Route::put('/{productId}/reviews/{reviewId}', [ReviewController::class, 'update'])->name('products.reviews.update');
+    Route::delete('/{productId}/reviews/{reviewId}', [ReviewController::class, 'destroy'])->name('products.reviews.destroy');
+});
 
 Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () {
     Route::get('/', function () {

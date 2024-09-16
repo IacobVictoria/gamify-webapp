@@ -4,10 +4,10 @@
             <div class="bg-white">
                 <div class="mx-auto max-w-7xl overflow-hidden sm:px-6 lg:px-8">
                     <div class="mb-4">
-                        <inertia-link :href="route('products.index')" 
+                        <inertia-link :href="route('products.index')"
                             class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Go Back
-                    </inertia-link>
+                        </inertia-link>
                     </div>
                     <!-- Product -->
                     <div class="lg:grid lg:grid-cols-7 lg:grid-rows-1 lg:gap-x-8 lg:gap-y-10 xl:gap-x-16">
@@ -28,10 +28,10 @@
                                         product.name }}</h1>
 
                                     <h2 id="information-heading" class="sr-only">Product information</h2>
-                                    
+
                                 </div>
 
-                                <div>
+                                <!-- <div>
                                     <h3 class="sr-only">Reviews</h3>
                                     <div class="flex items-center">
                                         <StarIcon v-for="rating in [0, 1, 2, 3, 4]" :key="rating"
@@ -39,7 +39,7 @@
                                             aria-hidden="true" />
                                     </div>
                                     <p class="sr-only">{{ reviews.average }} out of 5 stars</p>
-                                </div>
+                                </div> -->
                             </div>
 
                             <p class="mt-6 text-gray-500">{{ product.description }}</p>
@@ -130,33 +130,70 @@
                                         </Tab>
                                     </TabList> -->
                                 </div>
+
+                                <div v-if="isLoggedIn()" class="mt-10">
+                                    <button @click="toggleReviewForm"
+                                        class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        {{ showReviewForm ? 'Cancel' : 'Add Review' }}
+                                    </button>
+
+
+                                    <!-- Form for Adding New Review -->
+                                    <div v-if="showReviewForm" class="mt-6">
+                                        <ReviewForm :productId="product.id" :review="null" :editMode="false"
+                                            @update:showReviewForm="showReviewForm = $event" />
+                                    </div>
+                                </div>
+
                                 <TabPanels as="template">
                                     <TabPanel class="-mb-10">
                                         <h3 class="sr-only">Customer Reviews</h3>
-
-                                        <div v-for="(review, reviewIdx) in reviews.featured" :key="review.id"
+                                        <div v-for="(review, reviewIdx) in reviews" :key="review.id"
                                             class="flex space-x-4 text-sm text-gray-500">
-                                            <div class="flex-none py-10">
-                                                <img :src="review.avatarSrc" alt=""
-                                                    class="h-10 w-10 rounded-full bg-gray-100" />
-                                            </div>
                                             <div :class="[reviewIdx === 0 ? '' : 'border-t border-gray-200', 'py-10']">
-                                                <h3 class="font-medium text-gray-900">{{ review.author }}</h3>
-                                                <p>
-                                                    <time :datetime="review.datetime">{{ review.date }}</time>
-                                                </p>
+                                                <div class="flex items-center space-x-2 ">
+                                                    <img v-if="review.user.gender === 'Male'" src="/images/male.png"
+                                                        alt="User Avatar" class="w-14 h-14 rounded-full" />
+                                                    <img v-else src="/images/female.png" alt="User Avatar"
+                                                        class="w-14 h-14 rounded-full" />
+                                                    <span class="font-medium text-gray-900">{{ review.user.name
+                                                        }}</span>
+                                                </div>
+
+                                                <p> {{ review.created_at }}</p>
 
                                                 <div class="mt-4 flex items-center">
                                                     <StarIcon v-for="rating in [0, 1, 2, 3, 4]" :key="rating"
                                                         :class="[review.rating > rating ? 'text-yellow-400' : 'text-gray-300', 'h-5 w-5 flex-shrink-0']"
                                                         aria-hidden="true" />
                                                 </div>
-                                                <p class="sr-only">{{ review.rating }} out of 5 stars</p>
+                                                <p>{{ review.rating }} out of 5 stars</p>
 
                                                 <div class="prose prose-sm mt-4 max-w-none text-gray-500"
-                                                    v-html="review.content" />
+                                                    v-html="review.description"></div>
+
+                                                <div v-if="isLoggedIn() && review.user.id === $page.props.user.id"
+                                                    class="mt-4">
+
+                                                    <button @click="editReview()"
+                                                        class="text-indigo-600 hover:text-indigo-900">
+                                                        {{ editReviewForm ? 'Cancel' : 'Edit' }}
+                                                    </button>
+                                                    <button @click="deleteReview(review.id, product.id)"
+                                                        class="text-red-600 hover:text-red-900 ml-2">
+                                                        Delete
+                                                    </button>
+                                                    <div v-if="editReviewForm" class="mt-6">
+                                                        <ReviewForm :productId="product.id" :review="review"
+                                                            :editMode="editMode"
+                                                            @update:editReviewForm="editReviewForm = $event" />
+                                                    </div>
+
+                                                </div>
                                             </div>
                                         </div>
+
+
                                     </TabPanel>
 
                                     <TabPanel class="text-sm text-gray-500">
@@ -189,94 +226,72 @@
 
 <script>
 import Layout from '@/Layouts/Layout.vue';
+import { StarIcon } from '@heroicons/vue/20/solid';
+import { TabGroup, TabPanel, TabPanels } from '@headlessui/vue';
+import ReviewForm from '../Reviews/ReviewForm.vue';
 
 export default {
-    name: 'Products.Show',
-
     components: {
         Layout,
+        StarIcon,
+        TabGroup,
+        TabPanel,
+        TabPanels,
+        ReviewForm
     },
-
-    props:{
-        product: Object
+    props: {
+        product: Object,
+        reviews: Array
     },
-
-    
-}
-</script>
-<script setup>
-import { StarIcon } from '@heroicons/vue/20/solid'
-import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/vue'
-
-const reviews = {
-  average: 4,
-  featured: [
-    {
-      id: 1,
-      rating: 5,
-      content: `
-        <p>This icon pack is just what I need for my latest project. There's an icon for just about anything I could ever need. Love the playful look!</p>
-      `,
-      date: 'July 16, 2021',
-      datetime: '2021-07-16',
-      author: 'Emily Selman',
-      avatarSrc:
-        'https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80',
+    data() {
+        return {
+            showReviewForm: false,
+            editMode: false,
+            editReviewForm: false,
+            faqs: [
+                {
+                    question: 'What format are these icons?',
+                    answer: 'The icons are in SVG (Scalable Vector Graphic) format. They can be imported into your design tool of choice and used directly in code.'
+                },
+                {
+                    question: 'Can I use the icons at different sizes?',
+                    answer: "Yes. The icons are drawn on a 24 x 24 pixel grid, but the icons can be scaled to different sizes as needed. We don't recommend going smaller than 20 x 20 or larger than 64 x 64 to retain legibility and visual balance."
+                }
+            ],
+            license: {
+                href: '#',
+                summary: 'For personal and professional use. You cannot resell or redistribute these icons in their original or modified state.',
+                content: `
+                    <h4>Overview</h4>
+                    <p>For personal and professional use. You cannot resell or redistribute these icons in their original or modified state.</p>
+                    <ul role="list">
+                        <li>You're allowed to use the icons in unlimited projects.</li>
+                        <li>Attribution is not required to use the icons.</li>
+                    </ul>
+                    <h4>What you can do with it</h4>
+                    <ul role="list">
+                        <li>Use them freely in your personal and professional work.</li>
+                        <li>Make them your own. Change the colors to suit your project or brand.</li>
+                    </ul>
+                    <h4>What you can't do with it</h4>
+                    <ul role="list">
+                        <li>Don't be greedy. Selling or distributing these icons in their original or modified state is prohibited.</li>
+                        <li>Don't be evil. These icons cannot be used on websites or applications that promote illegal or immoral beliefs or activities.</li>
+                    </ul>`
+            }
+        };
     },
-    {
-      id: 2,
-      rating: 5,
-      content: `
-        <p>Blown away by how polished this icon pack is. Everything looks so consistent and each SVG is optimized out of the box so I can use it directly with confidence. It would take me several hours to create a single icon this good, so it's a steal at this price.</p>
-      `,
-      date: 'July 12, 2021',
-      datetime: '2021-07-12',
-      author: 'Hector Gibbons',
-      avatarSrc:
-        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80',
-    },
-    // More reviews...
-  ],
-}
-const faqs = [
-  {
-    question: 'What format are these icons?',
-    answer:
-      'The icons are in SVG (Scalable Vector Graphic) format. They can be imported into your design tool of choice and used directly in code.',
-  },
-  {
-    question: 'Can I use the icons at different sizes?',
-    answer:
-      "Yes. The icons are drawn on a 24 x 24 pixel grid, but the icons can be scaled to different sizes as needed. We don't recommend going smaller than 20 x 20 or larger than 64 x 64 to retain legibility and visual balance.",
-  },
-  // More FAQs...
-]
-const license = {
-  href: '#',
-  summary:
-    'For personal and professional use. You cannot resell or redistribute these icons in their original or modified state.',
-  content: `
-    <h4>Overview</h4>
-    
-    <p>For personal and professional use. You cannot resell or redistribute these icons in their original or modified state.</p>
-    
-    <ul role="list">
-    <li>You\'re allowed to use the icons in unlimited projects.</li>
-    <li>Attribution is not required to use the icons.</li>
-    </ul>
-    
-    <h4>What you can do with it</h4>
-    
-    <ul role="list">
-    <li>Use them freely in your personal and professional work.</li>
-    <li>Make them your own. Change the colors to suit your project or brand.</li>
-    </ul>
-    
-    <h4>What you can\'t do with it</h4>
-    
-    <ul role="list">
-    <li>Don\'t be greedy. Selling or distributing these icons in their original or modified state is prohibited.</li>
-    <li>Don\'t be evil. These icons cannot be used on websites or applications that promote illegal or immoral beliefs or activities.</li>
-    </ul>`
-}
+    methods: {
+        toggleReviewForm() {
+            this.showReviewForm = !this.showReviewForm;
+        },
+        editReview() {
+            this.editMode = true;
+            this.editReviewForm = !this.editReviewForm;
+        },
+        deleteReview(reviewId, productId) {
+            this.$inertia.delete(this.route('products.reviews.destroy', { productId, reviewId }));
+        },
+    }
+};
 </script>

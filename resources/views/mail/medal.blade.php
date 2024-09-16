@@ -24,7 +24,6 @@ You've achieved a new milestone! 🎉
 - **Full Name**: {{ $name }}
 - **Email**: {{ $email }}
 - **Birthdate**: {{ $birthdate }}
-- **Your Message**: {{ $message_content }}
 
 <x-mail::button :url="''">
 View Your Achievements

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReviewRequest;
 use App\Models\Product;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -11,11 +13,15 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::all();
+        $searchQuery = $request->input('search', '');
+
+        $products = Product::where('name', 'like', "%{$searchQuery}%")->get();
+
         return Inertia::render('Products/Index', [
-            'products' => $products
+            'products' => $products,
+            'searchQueryProp' => $searchQuery,
         ]);
     }
 
@@ -41,11 +47,19 @@ class ProductController extends Controller
     public function show(string $id)
     {
         $product = Product::find($id);
+        $reviews = Review::with([
+            'user' => function ($query) {
+                $query->select('id', 'name', 'gender');
+            }
+        ])
+            ->where('product_id', $id)
+            ->get();
+
         return Inertia::render('Products/Show', [
-            'product' => $product
+            'product' => $product,
+            'reviews' => $reviews
         ]);
     }
-
     /**
      * Show the form for editing the specified resource.
      */

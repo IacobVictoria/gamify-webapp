@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Enums\MedalTier;
 use App\Interfaces\UserAchievementInterface;
+use App\Jobs\SendMedalEmailJob;
 use App\Mail\MedalEmail;
+use App\Models\Medal;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -13,27 +15,22 @@ use Illuminate\Support\Facades\Mail;
 class UserAchievementService implements UserAchievementInterface
 {
 
-    public function checkAndSendMedalEmail(User $user, int $newScore, int $oldScore)
+    public function checkAndSendMedalEmail($user, int $newScore, int $oldScore)
     {
+        // dd();
         $newMedal = $this->getMedalByScore($newScore);
         $oldMedal = $this->getMedalByScore($oldScore);
-       // dd( $newMedal, $oldMedal);
-        if ($newMedal !== $oldMedal ) {
-        
-
-            // Create a new message instance for the email
-            $message = new Message([
-                'name' => $user->name,
-                'email' => $user->email,
-                'birthdate' => $user->birthdate,
-                'medal' => $newMedal,
-                'message' => 'Congratulations on your achievement!',
-            ]);
-
-            // Send the email
-            Mail::to($user->email)->send(new MedalEmail($message));
-      
+       
+        if ($newMedal !== $oldMedal) {
+            $medal = Medal::firstOrCreate(['tier' => $newMedal]);
+            
+            $user->medals()->attach($medal->id);
+            
+            // Trimite email-ul
+            SendMedalEmailJob::dispatch($user, $newMedal);
+          
         }
+
     }
     private function getMedalByScore(int $score): ?string
     {

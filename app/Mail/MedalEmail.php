@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Models\Message;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -18,9 +19,10 @@ class MedalEmail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(protected Message $message)
+    public function __construct( public User $user, public string $medal)
     {
         //
+        dd();
     }
 
     /**
@@ -42,11 +44,10 @@ class MedalEmail extends Mailable
         return new Content(
             markdown: 'mail.medal',
             with: [
-                'name' => $this->message->name,
-                'email' => $this->message->email,
-                'birthdate' => $this->message->birthdate,
-                'medal' => $this->message->medal,
-                'message_content' => $this->message->message,
+                'name' => $this->user->name,
+                'email' => $this->user->email,
+                'birthdate' => $this->user->birthdate,
+                'medal' => $this->medal,
             ]
         );
     }

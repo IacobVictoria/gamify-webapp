@@ -61,8 +61,7 @@ class User extends Authenticatable
 
     public function medals()
     {
-        return $this->belongsToMany(Medal::class)
-            ->using(UserMedal::class);
+        return $this->belongsToMany(Medal::class, 'user_medals', 'user_id', 'medal_id');
     }
 
     public function roles()

@@ -21,7 +21,7 @@ class Medal extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class)
-            ->using(UserMedal::class);
+        return $this->belongsToMany(User::class,'user_medals');
+           
     }
 }

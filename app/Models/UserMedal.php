@@ -13,4 +13,6 @@ class UserMedal extends Pivot
     protected $fillable = ['user_id', 'medal_id'];
 
     protected $table = 'user_medals';
+    protected $primaryKey = 'id';
+    
 }
