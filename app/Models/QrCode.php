@@ -5,11 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Medal extends Model
+class QrCode extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id', 'tier'];
+    protected $fillable = [
+        'id',
+        'code',
+        'product_id',
+        'image_url'
+    ];
+
+    protected $table = 'qr_codes';
 
     protected $primaryKey = 'id';
 
@@ -17,12 +24,10 @@ class Medal extends Model
 
     public $incrementing = false;
 
-    protected $table = 'medals';
-    public $timestamps = true;
-
-    public function users()
+    public function product()
     {
-        return $this->belongsToMany(User::class,'user_medals');
-           
+        return $this->belongsTo(Product::class);
     }
+
+
 }

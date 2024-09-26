@@ -14,5 +14,6 @@ class UserMedal extends Pivot
 
     protected $table = 'user_medals';
     protected $primaryKey = 'id';
+    public $timestamps = true;
     
 }

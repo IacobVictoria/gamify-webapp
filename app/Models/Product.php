@@ -33,4 +33,14 @@ class Product extends Model
             ->using(OrderProduct::class);
     }
 
+    public function qrCodes()
+    {
+        return $this->hasMany(QrCode::class);
+    }
+
+    public function qrCodesScan()
+    {
+        return $this->has(QrCodeScan::class);
+    }
+
 }

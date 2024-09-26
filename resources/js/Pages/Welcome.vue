@@ -92,8 +92,13 @@
                                     </figcaption>
                                 </figure>
                             </div>
+
                         </div>
                     </div>
+
+                </div>
+                <div class="mt-4 xl:mt-0">
+                    <QrScannerProduct :type="'post'"></QrScannerProduct>
                 </div>
                 <!-- Achievements -->
                 <div class="flex flex-col items-center">
@@ -188,12 +193,14 @@
 
 <script>
 import Layout from '../Layouts/Layout.vue'
+import QrScannerProduct from './QrCodes/QrScannerProduct.vue';
 
 export default {
     name: 'Landing',
 
     components: {
         Layout,
+        QrScannerProduct
     },
 }
 

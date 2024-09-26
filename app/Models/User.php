@@ -61,7 +61,8 @@ class User extends Authenticatable
 
     public function medals()
     {
-        return $this->belongsToMany(Medal::class, 'user_medals', 'user_id', 'medal_id');
+        return $this->belongsToMany(Medal::class, 'user_medals', 'user_id', 'medal_id')
+                ->withPivot('created_at');
     }
 
     public function roles()
@@ -77,5 +78,11 @@ class User extends Authenticatable
     public function hasRole(string $role): bool
     {
         return $this->roles()->where('name', $role)->exists();
+    }
+
+    // Un utilizator poate avea mai multe scanări de coduri QR.
+    public function qrCodeScans()
+    {
+        return $this->hasMany(QrCodeScan::class);
     }
 }

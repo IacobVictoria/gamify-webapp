@@ -24,7 +24,7 @@ class UserAchievementService implements UserAchievementInterface
         if ($newMedal !== $oldMedal) {
             $medal = Medal::firstOrCreate(['tier' => $newMedal]);
             
-            $user->medals()->attach($medal->id);
+            $user->medals()->attach($medal->id,['created_at' => now()]);
             
             // Trimite email-ul
             SendMedalEmailJob::dispatch($user, $newMedal);

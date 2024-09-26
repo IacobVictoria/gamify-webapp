@@ -2,26 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ReviewRequest;
-use App\Models\Product;
-use App\Models\Review;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
-class ProductController extends Controller
+class AchievementController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $searchQuery = $request->input('search', '');
+        $user = Auth::user();
+        
+        if (!$user) { //unauthentificated user
+            return;
+        }
 
-        $products = Product::where('name', 'like', "%{$searchQuery}%")->get();
-
-        return Inertia::render('Products/Index', [
-            'products' => $products,
-            'searchQueryProp' => $searchQuery,
+        $medals = $user->medals()->withPivot('created_at')->get();
+        
+        return Inertia::render('Achievements/Index',[
+            'medals' => $medals
         ]);
     }
 
@@ -46,19 +47,7 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        $product = Product::find($id);
-        $reviews = Review::with([
-            'user' => function ($query) {
-                $query->select('id', 'name', 'gender');
-            }
-        ])
-            ->where('product_id', $id)
-            ->get();
-
-        return Inertia::render('Products/Show', [
-            'product' => $product,
-            'reviews' => $reviews
-        ]);
+        //
     }
 
     /**

@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\QrCodeController;
+use App\Http\Controllers\QrScannerController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -27,11 +30,17 @@ Route::group(['prefix' => 'products'], function () {
     Route::delete('/{productId}/reviews/{reviewId}', [ReviewController::class, 'destroy'])->name('products.reviews.destroy');
 });
 
+Route::get('/qr-scanner', [QrScannerController::class, 'index'])->name('qrscanner.index');
+Route::post('/qr-scanner/scan', [QrScannerController::class, 'scan'])->name('qrscanner.scan');
+Route::patch('/qr-scanner', [QrScannerController::class, 'updateScore'])->name('qrscanner.updateScore');
+
 Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () {
     Route::get('/', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
     Route::patch('/update-score', [GameController::class, 'updateScore'])->name('updateScore');
+    Route::post('/generate-codes', [QrCodeController::class, 'store'])->name('generateCodes');
+    Route::get('/qrCodes/{productId}', [QrCodeController::class, 'show'])->name('codes.show');
 });
 
 Route::middleware('auth')->group(function () {
@@ -40,7 +49,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-
-
+Route::middleware(['auth', 'verified'])->prefix('achievements')->group(function () {
+    Route::get('/', [AchievementController::class, 'index'])->name('achievements.index');
+});
 
 require __DIR__ . '/auth.php';
