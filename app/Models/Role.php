@@ -12,7 +12,14 @@ class Role extends Model
 
     protected $table = 'roles';
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name','id'];
+    
+    protected $primaryKey = 'id';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
 
     public function permissions()
     {

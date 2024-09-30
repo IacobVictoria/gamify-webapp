@@ -15,7 +15,7 @@ const formProd = useForm({
 const productId = ref('');
 
 const updateScore = () => {
-  form.patch(route('updateScore'), {
+  form.patch(route('admin.updateScore'), {
     onFinish: () => form.reset('score'),
     onError: () => {
       console.error('Failed to update score');
@@ -24,7 +24,7 @@ const updateScore = () => {
 };
 
 const generateQrCodes = () => {
-  formProd.post(route('generateCodes'), {
+  formProd.post(route('admin.generateCodes'), {
     onFinish: () => formProd.reset('idProd', 'nrQrCodes'),
     onError: () => {
       console.error('Failed to update score');
@@ -33,7 +33,7 @@ const generateQrCodes = () => {
 };
 
 const generateQrCodesUrl = computed(() => {
-  return route('codes.show', { productId: productId.value });
+  return route('admin.codes.show', { productId: productId.value });
 });
 
 </script>

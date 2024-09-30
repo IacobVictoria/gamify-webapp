@@ -17,17 +17,22 @@ class GameController extends Controller
         $this->achievementInterface = $achievementInterface;
     }
 
+    public function index()
+    {
+        return Inertia::render('Admin/QrCodes');
+    }
+
     public function updateScore(Request $request)
     {
         $user = Auth::user();
-        
+
         if (!$user) { //unauthentificated user
             return;
         }
         $oldScore = $user->score;
         $newScore = $user->score + $request->input('score');
         $this->achievementInterface->checkAndSendMedalEmail($user, $newScore, $oldScore);
-       // dd();
+        // dd();
         // dd($newScore, $oldScore);
         $user->update(['score' => $newScore]);
 

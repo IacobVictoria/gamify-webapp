@@ -34,15 +34,6 @@ Route::get('/qr-scanner', [QrScannerController::class, 'index'])->name('qrscanne
 Route::post('/qr-scanner/scan', [QrScannerController::class, 'scan'])->name('qrscanner.scan');
 Route::patch('/qr-scanner', [QrScannerController::class, 'updateScore'])->name('qrscanner.updateScore');
 
-Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-    Route::patch('/update-score', [GameController::class, 'updateScore'])->name('updateScore');
-    Route::post('/generate-codes', [QrCodeController::class, 'store'])->name('generateCodes');
-    Route::get('/qrCodes/{productId}', [QrCodeController::class, 'show'])->name('codes.show');
-});
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

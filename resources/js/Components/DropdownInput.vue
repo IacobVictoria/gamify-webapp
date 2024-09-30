@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <div class="w-full relative">
         <label v-if="label" class="block text-sm font-medium text-gray-700 mb-1">{{ label }}</label>
         <Menu as="div" class="relative inline-block text-left w-full">
@@ -57,7 +57,7 @@ const emit = defineEmits(['update:modelValue'])
 
 const selectedLabel = computed(() => {
     const selectedOption = props.options.find(option => option.value === props.modelValue)
-    return selectedOption ? selectedOption.label : 'Choose an option'
+    return selectedOption ? selectedOption.label : 'Alege o opțiune'
 })
 
 const selectOption = (option) => {
@@ -68,4 +68,56 @@ const selectOption = (option) => {
 
 <style scoped>
 /* Add any custom styles here if necessary */
-</style>
+</style> -->
+
+<template>
+    <div class="w-full relative">
+        <label v-if="label" class="block text-sm font-medium text-gray-700 mb-1">{{ label }}</label>
+        <div class="relative">
+            <select 
+                v-model="selectedValue" 
+                @change="selectOption" 
+                class="block w-full rounded-md border border-gray-300 text-gray-900 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <option value="" disabled>Alege o opțiune</option>
+                <option v-for="option in options" :key="option.value" :value="option.value">
+                    {{ option.label }}
+                </option>
+            </select>
+        </div>
+        <span v-if="error" class="text-red-500 text-sm mt-1">{{ error }}</span>
+    </div>
+</template>
+
+<script setup>
+import { ref, computed, watch } from 'vue';
+
+const props = defineProps({
+    modelValue: [String, Number, Boolean, Object],
+    options: {
+        type: Array,
+        required: true,
+        default: () => [],
+    },
+    label: {
+        type: String,
+        default: '',
+    },
+    error: {
+        type: String,
+        default: '',
+    },
+});
+
+const emit = defineEmits(['update:modelValue']);
+const selectedValue = ref(props.modelValue);
+
+// Emitere a valorii selectate la schimbare
+const selectOption = () => {
+    emit('update:modelValue', selectedValue.value);
+};
+watch(() => props.modelValue, (newVal) => {
+    selectedValue.value = newVal;
+});
+</script>
+
+

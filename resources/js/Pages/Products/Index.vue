@@ -73,7 +73,7 @@ export default {
     },
     methods: {
         fetchProducts() {
-            console.log(this.searchQuery);
+           // console.log(this.searchQuery);
             this.$inertia.get(route('products.index', { search: this.searchQuery },
                 {
                     preserveState: true, // Menține starea actuală a paginii

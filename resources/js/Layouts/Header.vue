@@ -36,10 +36,18 @@
                     <!-- Dropdown -->
                     <div v-if="dropdownOpen"
                         class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
-                        <inertia-link :href="route('dashboard')"
+                        <template v-if="authUserHasRole('Admin')">
+                            <inertia-link :href="route('admin.dashboard')"
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            Dashboard
-                        </inertia-link>
+                                Admin Dashboard
+                            </inertia-link>
+                        </template>
+                        <template v-if="authUserHasRole('User')">
+                            <inertia-link :href="route('user.dashboard')"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                User Dashboard
+                            </inertia-link>
+                        </template>
                         <inertia-link :href="route('logout')" method="post"
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             Log out
