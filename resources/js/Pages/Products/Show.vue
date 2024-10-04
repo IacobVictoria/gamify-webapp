@@ -43,11 +43,24 @@
                             </div>
 
                             <p class="mt-6 text-gray-500">{{ product.description }}</p>
+                            <p class="mt-6 text-gray-500">{{ product.price }}</p>
+                            <div class="mt-6">
+                                <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
+                                <select id="quantity" v-model="quantity"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    <option value="" disabled>Select quantity</option>
+                                    <option v-for="num in 10" :key="num" :value="num">{{ num }}</option>
+                                </select>
+                            </div>
+
 
                             <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
-                                <button type="button"
-                                    class="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">Pay
-                                    {{ product.price }}</button>
+                                <template v-if="isLoggedIn()">
+                                    <button @click="addToCart(product)" v-if="authUserHasRole('User')"
+                                        class="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
+                                        Add to cart for {{ product.price }}
+                                    </button>
+                                </template>
                                 <button type="button"
                                     class="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-50 px-8 py-3 text-base font-medium text-indigo-700 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">Preview</button>
                             </div>
@@ -248,6 +261,7 @@ export default {
             showReviewForm: false,
             editMode: false,
             editReviewForm: false,
+            quantity: 1,
             faqs: [
                 {
                     question: 'What format are these icons?',
@@ -291,6 +305,12 @@ export default {
         },
         deleteReview(reviewId, productId) {
             this.$inertia.delete(this.route('products.reviews.destroy', { productId, reviewId }));
+        },
+        addToCart(product) {
+            this.$inertia.post(route('user.shopping-cart.add'), {
+                product: product,
+                quantity: this.quantity
+            });
         },
     }
 };

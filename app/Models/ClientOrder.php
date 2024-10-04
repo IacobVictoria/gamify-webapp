@@ -14,6 +14,16 @@ class ClientOrder extends Model
         'user_id',
         'total_price',
         'status',
+        'email',
+        'first_name',
+        'last_name',
+        'address',
+        'apartment',
+        'state',
+        'city',
+        'country',
+        'zip_code',
+        'phone',
     ];
     protected $table = 'client_orders';
 
@@ -30,8 +40,12 @@ class ClientOrder extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class)
-            ->using(OrderProduct::class);
+        return $this->belongsToMany(Product::class, 'order_products', 'order_id', 'product_id')
+            ->using(OrderProduct::class)
+            ->withPivot('quantity', 'price');
+        ;
     }
+
+
 
 }

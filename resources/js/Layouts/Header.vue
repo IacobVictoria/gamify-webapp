@@ -48,6 +48,10 @@
                                 User Dashboard
                             </inertia-link>
                         </template>
+                        <inertia-link :href="route('user.shopping-cart.index')" method="get"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            Shopping Cart
+                        </inertia-link>
                         <inertia-link :href="route('logout')" method="post"
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             Log out

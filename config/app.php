@@ -128,5 +128,8 @@ return [
     // 'aliases' => [
     //     'QrCodeGenerator' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
     // ],
+  
+
+   
 
 ];

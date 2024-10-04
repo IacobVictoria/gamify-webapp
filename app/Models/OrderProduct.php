@@ -9,8 +9,9 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class OrderProduct extends Pivot
 {
     use HasFactory;
- 
+
     protected $fillable = [
+        'id',
         'order_id',
         'product_id',
         'quantity',
@@ -20,7 +21,7 @@ class OrderProduct extends Pivot
     protected $table = 'order_products';
 
     protected $primaryKey = 'id';
-    protected $keyType = 'string'; 
+    protected $keyType = 'string';
     public $incrementing = false;
 
     public function order()

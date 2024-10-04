@@ -34,6 +34,13 @@ class AuthenticatedSessionController extends Controller
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
+            // take the cart from cookie
+            $cookieCart = json_decode($request->cookie('cart_' . auth()->id(), '[]'), true);
+            // Combinăm coșul din cookie cu cel din sesiune
+            $currentCart = session()->get('cart', []);
+            session(['cart' => array_merge($currentCart, $cookieCart)]);
+            //
+
             if (auth()->user()->hasRole('admin')) {
                 return redirect()->intended(route('admin.dashboard', absolute: false));
             }
@@ -60,6 +67,11 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        // keep the cart available after log out
+        $cart = session()->get('cart', []);
+        // Salvează coșul în cookie asociat cu utilizatorul curent
+        return redirect('/')
+            ->withCookie(cookie('cart_' . auth()->id(), json_encode($cart), 60 * 24 * 30)) // 30 zile
+            ->with('success', 'Logged out successfully and cart saved.');
     }
 }
