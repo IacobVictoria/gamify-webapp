@@ -40,8 +40,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'verified'])->prefix('achievements')->group(function () {
-    Route::get('/', [AchievementController::class, 'index'])->name('achievements.index');
-});
 
 require __DIR__ . '/auth.php';

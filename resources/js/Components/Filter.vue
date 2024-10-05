@@ -34,6 +34,15 @@
                 class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
         </template>
 
+        <template v-if="filter.type === 'sorting'">
+            <select :value="value" @change="updateValue($event.target.value)" :id="filter.id" :name="filter.id"
+                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                <option value="">{{ filter.placeholder }}</option>
+                <option value="asc">Ascendent</option>
+                <option value="desc">Descendent</option>
+            </select>
+        </template>
+
     </div>
 </template>
 
@@ -49,11 +58,12 @@ export default {
             default: ''
         }
     },
+
     emits: ['update:value'],
     methods: {
         updateValue(newValue) {
             this.$emit('update:value', newValue);
-        }
+        },
     }
 }
 </script>

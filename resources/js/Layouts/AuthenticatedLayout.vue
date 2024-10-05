@@ -39,9 +39,13 @@ const showingNavigationDropdown = ref(false);
                                         :active="route().current('user.dashboard')">
                                         Dashboard
                                     </NavLink>
-                                    <NavLink :href="route('achievements.index')"
-                                        :active="route().current('achievements.index')">
+                                    <NavLink :href="route('user.achievements.index')"
+                                        :active="route().current('user.achievements.index')">
                                         Achievements
+                                    </NavLink>
+                                    <NavLink :href="route('user.order_history.index')"
+                                        :active="route().current('user.order_history.index')">
+                                        Orders History
                                     </NavLink>
                                 </template>
                                 <template v-if="authUserHasRole('Admin')">
