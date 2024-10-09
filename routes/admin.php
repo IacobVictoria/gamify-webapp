@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\AdminAccountController;
+use App\Http\Controllers\AdminClientOrderController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AdminSupplierController;
+use App\Http\Controllers\AdminSupplierOrderController;
+use App\Http\Controllers\AdminSupplierProductController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\QrCodeController;
 use Illuminate\Support\Facades\Route;
@@ -51,4 +54,16 @@ Route::prefix('suppliers')->group(function () {
     Route::get('/update-supplier/{supplierId}', [AdminSupplierController::class, 'edit'])->name('suppliers.edit');
     Route::put('/update-supplier/{supplierId}', [AdminSupplierController::class, 'update'])->name('suppliers.update');
 
+});
+
+Route::prefix('clients_orders')->group(function () {
+    Route::get('/', [AdminClientOrderController::class, 'index'])->name('clients_orders.index');
+});
+
+Route::prefix('suppliers_orders')->group(function () {
+    Route::get('/', [AdminSupplierOrderController::class, 'index'])->name('suppliers_orders.index');
+});
+
+Route::prefix('suppliers_products')->group(function () {
+    Route::get('/', [AdminSupplierProductController::class, 'index'])->name('suppliers_products.index');
 });

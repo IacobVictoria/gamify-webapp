@@ -4,26 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Auth;
 
-class AchievementController extends Controller
+class AdminSupplierOrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $user = Auth::user();
-        
-        if (!$user) { //unauthentificated user
-            return;
-        }
-
-        $medals = $user->medals()->withPivot('created_at')->get();
-        
-        return Inertia::render('User/Achievements',[
-            'medals' => $medals
-        ]);
+        return Inertia::render('Admin/Supplier_Orders/List');
     }
 
     /**

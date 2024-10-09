@@ -164,8 +164,8 @@
                 </div>
               </fieldset>
    -->
-                        
-                            
+
+
                         </div>
                     </div>
 
@@ -208,7 +208,7 @@
                                             <div>
                                                 <label for="quantity-{{ item.product.id }}"
                                                     class="block text-sm font-medium text-gray-700">Cantitate:</label>
-                                               <p>{{ item.quantity }}</p>
+                                                <p>{{ item.quantity }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -250,7 +250,7 @@
 <script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { useForm } from '@inertiajs/vue3';
-import { TrashIcon } from '@heroicons/vue/24/outline'; 
+import { TrashIcon } from '@heroicons/vue/24/outline';
 
 
 
@@ -287,13 +287,8 @@ export default {
 
     methods: {
         calculateSubtotal() {
-
             if (this.cartItems.length === 0) {
                 return 0;
-            }
-
-            if (this.cartItems.length === 1) {
-                return parseFloat(Number(this.cartItems[0].product.price).toFixed(2)) || 0;
             }
 
             const total = this.cartItems.reduce((total, item) => {
@@ -313,12 +308,10 @@ export default {
         },
 
         submit() {
-            console.log(this.form);
-            this.form.post(route('user.checkout.order.store'),{
+            this.form.post(route('user.checkout.order.store'), {
                 onError: (errors) => {
                     console.log('NOT submitted successfully:');
                     this.errors = errors;
-                    console.log(this.errors);
                 },
                 onSuccess: () => {
                     console.log('Form submitted successfully:');

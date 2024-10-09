@@ -65,11 +65,15 @@ const showingNavigationDropdown = ref(false);
                                         :active="route().current('admin.suppliers.index')">
                                         Suppliers
                                     </NavLink>
-                                    <NavLink >
-                                        Orders
+                                    <NavLink :href="route('admin.clients_orders.index')"
+                                        :active="route().current('admin.clients_orders.index')">
+                                        Client Orders
                                     </NavLink>
-                                    <NavLink :href="route('admin.qrcodes')"
-                                        :active="route().current('admin.qrcodes')">
+                                    <NavLink :href="route('admin.suppliers_orders.index')"
+                                    :active="route().current('admin.suppliers_orders.index')">
+                                        Supplier Orders
+                                    </NavLink>
+                                    <NavLink :href="route('admin.qrcodes')" :active="route().current('admin.qrcodes')">
                                         QrCodes
                                     </NavLink>
                                 </template>

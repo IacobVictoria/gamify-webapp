@@ -67,9 +67,12 @@ export default {
         evolutionChart() {
             const ctx = document.getElementById('scoreChart').getContext('2d');
 
+            
             const labels = this.scoreEvolution.map(data => data.date);
+            console.log('date',labels);
             const scores = this.scoreEvolution.map(data => data.score);
-
+            console.log('score',scores);
+            console.log(Math.max(...scores));
             new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -86,8 +89,7 @@ export default {
                     scales: {
                         y: {
                     beginAtZero: true,
-                    max: 10 // Limitează axa Y la 10
-                }
+                    max: Math.max(...scores)*1.2                }   
                     }
                 }
             });

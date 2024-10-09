@@ -38,24 +38,60 @@
                                             <span v-if="column.isTemplate">{{ column.template(item) }}</span>
                                             <span v-else>{{ item[column.name] }}</span>
                                         </td>
-                                        <td class="text-center px-6 py-4">
-                                            <button @click="toggleDetails(index)">
+                                        <td class="flex flex-col items-center text-center px-6 py-4">
+                                            <button @click="toggleDetails(index)"
+                                                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
                                                 {{ showDetails[index] ? 'Ascunde' : 'Afișează' }} detalii
                                             </button>
+
+                                            <div v-if="authUserHasRole('Admin')" class="mt-2">
+                                                <template v-if="invoice === 'clients'">
+                                                    <button @click="showInvoiceClient(item.id, item.id_person)"
+                                                        class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">
+                                                        Factura Client
+                                                    </button>
+                                                </template>
+                                                <template v-else-if="invoice === 'suppliers'">
+                                                    <button @click="showInvoiceSupplier(item.id, item.id_supplier)"
+                                                        class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
+                                                        Factura Furnizor
+                                                    </button>
+                                                </template>
+
+                                            </div>
                                         </td>
+
                                     </tr>
                                     <!-- Detalii -->
                                     <tr v-if="showDetails[index]" class="details-row">
-                                        <td colspan="100%" class="px-6 py-4 bg-gray-50">
-                                            <div>
-                                                <strong>{{ descriptionDetails }}</strong>
-                                                <ul>
+                                        <td colspan="100%" class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                                            <div class="p-4 bg-white rounded-lg shadow-sm">
+                                                <strong class="text-lg font-semibold text-gray-800">{{
+                                                    descriptionDetails }}</strong>
+
+                                                <div class="grid grid-cols-2 gap-4 mt-4">
+                                                    <div v-for="information in extraLabel" :key="information.name"
+                                                        class="flex flex-col justify-between">
+                                                        <span class="text-gray-600 font-medium">{{ information.label
+                                                            }}:</span>
+                                                        <span class="text-gray-800 font-semibold">{{
+                                                            item.extra[information.name] }}</span>
+                                                    </div>
+                                                </div>
+
+                                                <ul class="mt-4 space-y-2">
                                                     <li v-for="(detail, productIndex) in item.details"
-                                                        :key="productIndex">
-                                                        <template v-for="label in detailsLabel" :key="label.name">
-                                                            <strong>{{ label.label }}:</strong> {{ detail[label.name]
-                                                            }}<br />
-                                                        </template>
+                                                        :key="productIndex" class="border-b border-gray-300 pb-2">
+                                                        <div class="flex flex-col space-y-1">
+                                                            <template v-for="label in detailsLabel" :key="label.name">
+                                                                <div class="flex justify-between">
+                                                                    <strong class="text-gray-600">{{ label.label
+                                                                        }}:</strong>
+                                                                    <span class="text-gray-800">{{ detail[label.name]
+                                                                        }}</span>
+                                                                </div>
+                                                            </template>
+                                                        </div>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -98,13 +134,15 @@ export default {
         getRoute: String,
         descriptionDetails: String,
         detailsLabel: Array,
+        extraLabel: Array,
+        invoice: String
     },
     data() {
         return {
             filterValues: Object.fromEntries(
                 this.filters.map(filter => [filter.model, this.prevFilters[filter.model] || ''])
             ),
-            showDetails: [],  
+            showDetails: [],
         };
     },
 
@@ -133,6 +171,16 @@ export default {
         toggleDetails(index) {
             this.showDetails[index] = !this.showDetails[index];
         },
+
+        showInvoiceClient(orderId, personId) {
+            const invoiceUrl = `/clients_invoices/invoices_${personId}/invoice_${orderId}.pdf`;
+            window.open(invoiceUrl, '_blank');
+        },
+        showInvoiceSupplier(orderId, supplierId) {
+            const invoiceUrl = `/suppliers_invoices/invoices_${supplierId}/${orderId}.pdf`;
+            window.open(invoiceUrl, '_blank');
+        }
+
     }
 };
 </script>

@@ -11,6 +11,8 @@
             <h1 class="text-lg font-semibold">{{ medal.tier }}</h1>
             <p class="text-gray-600">Awarded on: {{ new Date(medal.pivot.created_at).toLocaleDateString() }}</p>
         </div>
+
+        
         <div class="mt-4 xl:mt-0">
            <QrScannerProduct :type="'patch'"></QrScannerProduct>
         </div>

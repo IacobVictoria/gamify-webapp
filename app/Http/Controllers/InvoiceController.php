@@ -28,8 +28,9 @@ class InvoiceController extends Controller
 
         $pdfPath = "{$path}/invoice_{$order->id}.pdf";
         $pdf->save($pdfPath);
-
-        return $pdf->download("invoice_{$order->id}.pdf");
+        return response()->download($pdfPath, "invoice_{$order->id}.pdf", [
+            'Content-Type' => 'application/pdf',
+        ]);
     }
 
 }
