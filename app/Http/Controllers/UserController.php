@@ -9,13 +9,14 @@ class UserController extends BaseRoleController
 {
     protected $dashboardService;
 
-    function __construct(DashboardService $service){
+    function __construct(DashboardService $service)
+    {
         parent::__construct('User');
         $this->dashboardService = $service;
     }
 
     protected function getDashboardData()
-{
+    {
         return $this->dashboardService->getUserDashboardData();
-}
+    }
 }

@@ -24,11 +24,11 @@ class AdminAccountController extends Controller
         if (isset($filters['searchName'])) {
             $usersQuery->where('name', 'like', '%' . $filters['searchName'] . '%');
         }
-
+       
         if (isset($filters['searchEmail'])) {
             $usersQuery->where('email', 'like', '%' . $filters['searchEmail'] . '%');
         }
-
+        
         if (isset($filters['searchRole'])) {
             $usersQuery->whereHas('roles', function ($roleQuery) use ($filters) {
                 $roleQuery->where('name', 'like', '%' . $filters['searchRole'] . '%');
@@ -95,27 +95,27 @@ class AdminAccountController extends Controller
     {
         $account = User::with('roles')->findOrFail($accountId);
         $roles = Role::all();
-    
-        $userRoles = $account->roles->pluck('id')->toArray(); 
-    
+
+        $userRoles = $account->roles->pluck('id')->toArray();
+
         $userDetails = [
             'id' => $account->id,
             'name' => $account->name,
             'email' => $account->email,
-            'role_id' => $userRoles[0], 
+            'role_id' => $userRoles[0],
         ];
-    
+
         return Inertia::render('Admin/Accounts/Edit', [
-            'user' => $userDetails, 
+            'user' => $userDetails,
             'roles' => $roles,
-            'userRole' => $userRoles[0], 
+            'userRole' => $userRoles[0],
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request  $request, string $accountId)
+    public function update(Request $request, string $accountId)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -124,7 +124,7 @@ class AdminAccountController extends Controller
                 'string',
                 'email',
                 'max:255',
-                Rule::unique('users')->ignore($accountId), 
+                Rule::unique('users')->ignore($accountId),
             ],
         ]);
 
@@ -134,7 +134,7 @@ class AdminAccountController extends Controller
         $user->password = $validated['password'];
         $user->save();
 
-        $user->roles()->sync($validated['role_id']); 
+        $user->roles()->sync($validated['role_id']);
 
         return redirect()->route('admin.accounts.index')->with('success', 'User updated successfully!');
     }
@@ -150,5 +150,5 @@ class AdminAccountController extends Controller
         return redirect()->route('admin.accounts.index')
             ->with('success', 'Account deleted successfully!');
     }
-    
+
 }

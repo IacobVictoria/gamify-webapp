@@ -33,26 +33,26 @@ import { Head } from '@inertiajs/vue3';
                 <div class="w-4/12 bg-white p-4 rounded-lg">
                   <h1 class="title block ml-0 !text-left">{{ productsNumber }}</h1>
                   <p class="text-gray-500">Products</p>
-                  <inertia-link class="text-blue-500 text-xs">
+                  <a class="text-blue-500 text-xs">
                     View products
-                  </inertia-link>
+                  </a>
                   <!-- :href="route('admin.products.index')" -->
                 </div>
                 <div class="w-4/12 bg-white p-4 rounded-lg">
                   <h1 class="title block ml-0 !text-left">{{ permissionsNumber }}</h1>
                   <p class="text-gray-500">Permissions</p>
-                  <inertia-link class="text-blue-500 text-xs">
+                  <a class="text-blue-500 text-xs">
                     View permissions
-                  </inertia-link>
+                  </a>
                   <!-- :href="route('super_admin.permissions.index') -->
                 </div>
 
                 <div class="w-4/12 bg-white p-4 rounded-lg">
                   <h1 class="title block ml-0 !text-left">{{ rolesNumber }}</h1>
                   <p class="text-gray-500">Roles</p>
-                  <inertia-link class="text-blue-500 text-xs">
+                  <a class="text-blue-500 text-xs">
                     View roles
-                  </inertia-link>
+                  </a>
                   <!-- :href="route('super_admin.roles.index')" -->
                 </div>
 
@@ -75,14 +75,14 @@ import { Head } from '@inertiajs/vue3';
                     </tr>
                   </thead>
                   <tbody class="text-gray-600 text-sm font-light">
-                    <inertia-link v-for="account in accounts" v-bind:key="account.id"
+                    <a v-for="account in accounts" v-bind:key="account.id"
                       class="flex border-t border-gray-200 hover:bg-gray-100">
                       <td
                         class="py-3 font-medium px-6 text-left whitespace-nowrap overflow-hidden text-ellipsis overflow-hidden ">
                         {{ account.email }}
                       </td>
                       <!-- :href="route('super_admin.accounts.edit', account.id)" -->
-                    </inertia-link>
+                    </a>
                   </tbody>
                 </table>
               </div>
@@ -94,13 +94,13 @@ import { Head } from '@inertiajs/vue3';
                     </tr>
                   </thead>
                   <tbody class="text-gray-600 text-sm font-light">
-                    <inertia-link v-for="product in products" v-bind:key="product.id"
+                    <a v-for="product in products" v-bind:key="product.id"
                       class="flex border-t border-gray-200 hover:bg-gray-100">
                       <td class="py-3 font-medium px-6 text-left whitespace-nowrap">
                         {{ product.name }}
                       </td>
                       <!-- :href="route('super_admin.permissions.edit', permission.id)" -->
-                    </inertia-link>
+                    </a>
                   </tbody>
                 </table>
               </div>
@@ -112,13 +112,13 @@ import { Head } from '@inertiajs/vue3';
                     </tr>
                   </thead>
                   <tbody class="text-gray-600 text-sm font-light">
-                    <inertia-link v-for="permission in permissions" v-bind:key="permission.id"
+                    <a v-for="permission in permissions" v-bind:key="permission.id"
                       class="flex border-t border-gray-200 hover:bg-gray-100">
                       <td class="py-3 font-medium px-6 text-left whitespace-nowrap">
                         {{ permission.permission }}
                       </td>
                       <!-- :href="route('super_admin.permissions.edit', permission.id)" -->
-                    </inertia-link>
+                    </a>
                   </tbody>
                 </table>
               </div>
@@ -131,13 +131,13 @@ import { Head } from '@inertiajs/vue3';
                     </tr>
                   </thead>
                   <tbody class="text-gray-600 text-sm font-light">
-                    <inertia-link v-for="role in roles" v-bind:key="role.id"
+                    <a v-for="role in roles" v-bind:key="role.id"
                       class="flex border-t border-gray-200 hover:bg-gray-100">
                       <td class="py-3 font-medium px-6 text-left whitespace-nowrap">
                         {{ role.name }}
                       </td>
                       <!-- :href="route('super_admin.roles.edit', role.id)" -->
-                    </inertia-link>
+                    </a>
                   </tbody>
                 </table>
               </div>

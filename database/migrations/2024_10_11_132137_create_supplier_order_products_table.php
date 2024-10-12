@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('supplier_order_products', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('order_id')->constrained('supplier_orders')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignUuid('product_id')->constrained('products')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignUuid('product_id')->constrained('supplier_products')->cascadeOnDelete()->cascadeOnUpdate();
             $table->integer('quantity');
             $table->decimal('price', 10, 2);
             $table->timestamps();
+
         });
     }
 

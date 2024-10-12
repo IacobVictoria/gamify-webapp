@@ -1,14 +1,17 @@
 <?php
 
 use App\Http\Controllers\AdminAccountController;
+use App\Http\Controllers\AdminCheckoutController;
 use App\Http\Controllers\AdminClientOrderController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminProductController;
+use App\Http\Controllers\AdminShoppingCartController;
 use App\Http\Controllers\AdminSupplierController;
 use App\Http\Controllers\AdminSupplierOrderController;
 use App\Http\Controllers\AdminSupplierProductController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\QrCodeController;
+use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('dashboard')->group(function () {
@@ -66,4 +69,25 @@ Route::prefix('suppliers_orders')->group(function () {
 
 Route::prefix('suppliers_products')->group(function () {
     Route::get('/', [AdminSupplierProductController::class, 'index'])->name('suppliers_products.index');
+    Route::get('/{supplierId}', [AdminSupplierProductController::class, 'show'])->name('suppliers_products.show');
+
+});
+
+Route::prefix('purchase_suppliers')->group(function () {
+    Route::get('/', [SupplierController::class, 'index'])->name('purchase_suppliers.index');
+});
+
+Route::prefix('shopping-cart')->group(function () {
+    Route::get('/', [AdminShoppingCartController::class, 'index'])->name('shopping-cart.index');
+    Route::post('/add', [AdminShoppingCartController::class, 'store'])->name('shopping-cart.store');
+    Route::post('/{productId}', [AdminShoppingCartController::class, 'update'])
+        ->name('shopping-cart.update');
+    Route::delete('/{productId}', [AdminShoppingCartController::class, 'destroy'])->name('shopping-cart.destroy');
+});
+
+Route::prefix('checkout')->group(function () {
+    Route::get('/', [AdminCheckoutController::class, 'index'])
+        ->name('checkout.index');
+    Route::post('/', [AdminCheckoutController::class, 'store'])
+        ->name('checkout.store');
 });

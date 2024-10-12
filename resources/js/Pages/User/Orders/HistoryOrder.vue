@@ -27,7 +27,7 @@ export default {
     },
     props: {
         orders: {
-            type: Array,
+            type: Object,
             required: true,
         },
         prevFilters: {

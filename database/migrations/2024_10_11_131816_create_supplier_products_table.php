@@ -16,6 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('category');
             $table->text('description')->nullable();
+            $table->foreignUuid('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
+            $table->integer('score');
+            $table->decimal('price', 10, 2);
+            $table->integer('stock');
             $table->timestamps();
         });
     }

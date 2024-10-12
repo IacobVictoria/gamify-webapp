@@ -43,6 +43,15 @@
                                             class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                     </div>
                                 </div>
+                                <div class="sm:col-span-2">
+                                    <label for="company-name" class="block text-sm font-medium text-gray-700">Company
+                                    </label>
+                                    <div class="mt-1">
+                                        <input type="text" id="company-name" name="company-name"
+                                            autocomplete="family-name" v-model="form.companyName"
+                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                                    </div>
+                                </div>
 
                                 <div class="sm:col-span-2">
                                     <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
@@ -185,9 +194,11 @@
                                         <div class="flex">
                                             <div class="min-w-0 flex-1">
                                                 <h4 class="text-sm">
-                                                    <a :href="route('products.show', item.product.id)"
-                                                        class="font-medium text-gray-700 hover:text-gray-800">{{
-                                                            item.product.name }}</a>
+                                                    <div class="font-medium text-gray-700 hover:text-gray-800">{{
+                                                        item.product.name }}</div>
+                                                    <div class="font-medium text-gray-700 hover:text-gray-800">Supplier:
+                                                        {{
+                                                            item.product.supplier.name }}</div>
                                                 </h4>
                                                 <p class="mt-1 text-sm text-gray-500">{{ item.product.category }}</p>
                                             </div>
@@ -272,6 +283,7 @@ export default {
                 email: '',
                 firstName: '',
                 lastName: '',
+                companyName: '',
                 code: '',
                 adress: '',
                 apartament: '',
@@ -298,7 +310,30 @@ export default {
             return parseFloat(total.toFixed(2));
 
         },
+        groupBySupplier() {
+            // Reducem array-ul de produse în funcție de furnizor
+            const groupedBySupplier = this.cartItems.reduce((grouped, item) => {
+                const supplierId = item.product.supplier.id;
 
+                // Dacă furnizorul nu există în grupare, îl creăm
+                if (!grouped[supplierId]) {
+                    grouped[supplierId] = {
+                        supplier: item.product.supplier,
+                        products: []
+                    };
+                }
+
+                // Adăugăm produsul la furnizorul respectiv
+                grouped[supplierId].products.push({
+                    product: item.product,
+                    quantity: item.quantity
+                });
+
+                return grouped;
+            }, {});
+
+            return groupedBySupplier;
+        },
 
         calculateTotal() {
             const subtotal = this.calculateSubtotal();
@@ -307,17 +342,31 @@ export default {
             return (subtotal + shipping + tax).toFixed(2);
         },
 
-        submit() {
-            this.form.post(route('user.checkout.order.store'), {
-                onError: (errors) => {
-                    console.log('NOT submitted successfully:');
-                    this.errors = errors;
-                },
-                onSuccess: () => {
-                    console.log('Form submitted successfully:');
-                    this.form.reset();
-                },
-            });
+        async submit() {
+            const groupedItems = this.groupBySupplier();
+
+            for (const supplierOrder of Object.values(groupedItems)) {
+                const supplier = supplierOrder.supplier;
+                const products = supplierOrder.products;
+
+                try {
+                    await this.form.post(route('admin.checkout.store', {
+                        supplierId: supplier.id,
+                        products: products
+                    }), {
+                        onError: (errors) => {
+                            console.log('NOT submitted successfully for supplier:', supplier.name);
+                            this.errors = errors;
+                        },
+                        onSuccess: () => {
+                            this.$inertia.get(route('admin.shopping-cart.index'));
+                            this.form.reset();
+                        },
+                    });
+                } catch (error) {
+                    console.error(`Error submitting order for supplier: ${supplier.name}`, error);
+                }
+            }
         }
 
     }

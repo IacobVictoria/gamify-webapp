@@ -45,8 +45,7 @@
                                     <td v-for="column in columns" :key="column.name"
                                         class="px-6 py-4 lg:whitespace-normal whitespace-nowrap text-sm text-gray-900"
                                         :class="column.valueAlign">
-                                        <span v-if="column.isTemplate">{{ column.template(item) }}</span>
-                                        <span v-else>{{ item[column.name] }}</span>
+                                        <span >{{ item[column.name] }}</span>
                                     </td>
                                     <template v-if="editRoute && deleteRoute">
                                         <td class="px-6 py-4 whitespace-nowrap text-center text-md font-medium">
@@ -116,6 +115,7 @@ import Filter from './Filter.vue';
 import Pagination from './Pagination.vue';
 import debounce from "lodash/fp/debounce";
 import { ref } from 'vue';
+import { CheckIcon } from '@heroicons/vue/24/outline';
 
 
 export default {
@@ -123,7 +123,8 @@ export default {
 
     components: {
         Pagination,
-        Filter, Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot
+        Filter, Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot,
+        CheckIcon
 
     },
     setup(props) {

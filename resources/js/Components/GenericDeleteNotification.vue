@@ -44,6 +44,7 @@
 
 <script>
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue';
+import { CheckIcon } from '@heroicons/vue/24/outline';
 
 export default {
     components: {
@@ -51,7 +52,8 @@ export default {
         TransitionRoot,
         DialogPanel,
         DialogTitle,
-        TransitionChild
+        TransitionChild,
+        CheckIcon
 
     },
     props: {
@@ -75,17 +77,34 @@ export default {
             type: [String, Number],
             required: true,
         },
+        items: {
+            type: Array,
+            required: true,
+        },
     },
     methods: {
-        confirmDelete() {
-            this.$inertia.delete(route(this.deleteRoute,this.objectId));
+        async confirmDelete() {
+            if (Array.isArray(this.items) && this.items.length > 0) {
+                
+                for (const item of this.items) {
+                    try {
+                        // await each delete request
+                        await this.$inertia.delete(route(this.deleteRoute, item.product.id));
+                    } catch (error) {
+                        console.error(`Error deleting item with ID ${item.product.id}:`, error);
+                    }
+                }
+            } else if (this.objectId) {
+                this.$inertia.delete(route(this.deleteRoute, this.objectId));
+            }
 
-            // Închide dialogul 
+            // Close the dialog
             this.handleClose();
         },
         handleClose() {
             this.$emit('update:open', false);
         },
     },
+
 };
 </script>

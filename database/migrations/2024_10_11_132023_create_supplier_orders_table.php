@@ -18,7 +18,19 @@ return new class extends Migration
             $table->dateTime('order_date');
             $table->enum('status', array_column(OrderStatus::cases(), 'value'));
             $table->decimal('total_price');
+            $table->string('email');
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('company_name');
+            $table->string('address');
+            $table->string('apartment')->nullable();
+            $table->string('state');
+            $table->string('city');
+            $table->string('country');
+            $table->string('zip_code');
+            $table->string('phone');
             $table->timestamps();
+
         });
     }
 

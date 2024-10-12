@@ -110,6 +110,10 @@ const showingNavigationDropdown = ref(false);
                                             as="button">
                                             Home
                                         </DropdownLink>
+                                        <DropdownLink v-if="authUserHasRole('Admin')" :href="route('admin.shopping-cart.index')" method="get"
+                                            as="button">
+                                            Shopping Cart
+                                        </DropdownLink>
 
                                     </template>
                                 </Dropdown>

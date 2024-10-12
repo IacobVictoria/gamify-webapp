@@ -3,27 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Supplier;
-use App\Models\SupplierProduct;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class AdminSupplierProductController extends Controller
+class SupplierController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
+        $suppliers = Supplier::all();
 
-        $searchQuery = $request->input('search', '');
-
-        $products = SupplierProduct::where('name', 'like', "%{$searchQuery}%")->with('supplier')->get();
-
-        return Inertia::render('Admin/Supplier_Products/List', [
-            'products' => $products,
-            'searchQueryProp' => $searchQuery
+        return Inertia::render('Admin/Supplier_Products/Index', [
+            'suppliers' => $suppliers
         ]);
     }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -43,16 +39,9 @@ class AdminSupplierProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $supplierId)
+    public function show(string $id)
     {
-        $products = SupplierProduct::where('supplier_id', $supplierId)->get();
-
-        $supplier = Supplier::findOrFail($supplierId);
-
-        return Inertia::render('Admin/Supplier_Products/Show', [
-            'products' => $products,
-            'supplier' => $supplier
-        ]);
+        //
     }
 
     /**

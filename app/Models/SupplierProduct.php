@@ -14,6 +14,10 @@ class SupplierProduct extends Model
         'name',
         'category',
         'description',
+        'supplier_id',
+        'price',
+        'stock',
+        'score'
     ];
 
     protected $table = 'supplier_products';
@@ -25,9 +29,14 @@ class SupplierProduct extends Model
     public $incrementing = false;
 
 
-    public function supplierOrders()
+    public function orders()
     {
-        return $this->belongsToMany(SupplierOrder::class)->using(SupplierOrderProduct::class);
+        return $this->belongsToMany(SupplierOrder::class, 'supplier_order_products');
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
     }
 
 }

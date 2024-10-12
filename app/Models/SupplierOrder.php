@@ -15,6 +15,17 @@ class SupplierOrder extends Model
         'order_date',
         'status',
         'total_price',
+        'email',
+        'company_name',
+        'first_name',
+        'last_name',
+        'address',
+        'apartment',
+        'state',
+        'city',
+        'country',
+        'zip_code',
+        'phone',
     ];
 
     protected $table = 'supplier_orders';
@@ -32,7 +43,10 @@ class SupplierOrder extends Model
 
     public function products()
     {
-        return $this->belongsToMany(SupplierProduct::class)->using(SupplierOrderProduct::class);
+        return $this->belongsToMany(SupplierProduct::class, 'supplier_order_products', 'order_id', 'product_id')
+        ->using(SupplierOrderProduct::class)
+        ->withPivot('quantity', 'price');
+    ;
     }
 
 }

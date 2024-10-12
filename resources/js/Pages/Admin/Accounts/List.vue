@@ -17,6 +17,7 @@
 <script>
 import GenericList from '@/Components/GenericList.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { CheckIcon } from '@heroicons/vue/24/outline';
 import { Head } from '@inertiajs/vue3';
 export default {
     name: 'Admin/Accounts/List',
@@ -24,12 +25,13 @@ export default {
     components: {
         AuthenticatedLayout,
         GenericList,
-        Head
+        Head,
+      
     },
 
     props: {
         accounts: {
-            type: Array,
+            type: Object,
             required: true
         },
 

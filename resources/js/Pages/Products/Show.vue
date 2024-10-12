@@ -296,16 +296,20 @@ export default {
         };
     },
     methods: {
+
         toggleReviewForm() {
             this.showReviewForm = !this.showReviewForm;
         },
+
         editReview() {
             this.editMode = true;
             this.editReviewForm = !this.editReviewForm;
         },
+
         deleteReview(reviewId, productId) {
             this.$inertia.delete(this.route('products.reviews.destroy', { productId, reviewId }));
         },
+
         addToCart(product) {
             this.$inertia.post(route('user.shopping-cart.add'), {
                 product: product,

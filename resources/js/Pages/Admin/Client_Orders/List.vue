@@ -21,7 +21,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 export default {
     props: {
         orders: {
-            type: Array,
+            type: Object,
             required: true
         },
 

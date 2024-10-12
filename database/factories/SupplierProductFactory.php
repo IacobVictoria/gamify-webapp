@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Supplier;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,6 +22,10 @@ class SupplierProductFactory extends Factory
             'name' => $this->faker->word(),
             'category' => $this->faker->word(),
             'description' => $this->faker->sentence(),
+            'supplier_id' => Supplier::inRandomOrder()->first()->id,
+            'stock' => $this->faker->numberBetween(1, 100),
+            'price' => $this->faker->randomFloat(2, 1, 1000),
+            'score' => $this->faker->numberBetween(1, 100),
         ];
     }
 }

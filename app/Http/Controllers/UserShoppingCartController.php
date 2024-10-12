@@ -112,9 +112,16 @@ class UserShoppingCartController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $productId)
     {
-        //
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$productId])) {
+            $cart[$productId]['quantity'] = $request->input('quantity');
+            session(['cart' => $cart]);
+        }
+
+        return back();
     }
 
     /**

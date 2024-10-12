@@ -29,7 +29,7 @@
                       <label for="quantity-{{ item.product.id }}"
                         class="block text-sm font-medium text-gray-700">Cantitate:</label>
                       <select id="quantity-{{ item.product.id }}" class="text-right text-sm font-medium text-gray-900"
-                        v-model="item.quantity">
+                        v-model="item.quantity" @change="updateQuantity(item.product.id, item.quantity)">
                         <option v-for="i in 10" :key="i" :value="i">{{ i }}</option>
                       </select>
                     </div>
@@ -44,10 +44,10 @@
                 </div>
 
                 <p class="mt-4 flex space-x-2 text-sm text-gray-700">
-                  <CheckIcon v-if="item.product.stock > 0" class="h-5 w-5 flex-shrink-0 text-green-500"
-                    aria-hidden="true" />
+                  <CheckIcon v-if="inStock[item.product.id] = item.product.stock >= item.quantity"
+                    class="h-5 w-5 flex-shrink-0 text-green-500" aria-hidden="true" />
                   <ClockIcon v-else class="h-5 w-5 flex-shrink-0 text-gray-300" aria-hidden="true" />
-                  <span>{{ item.product.stock > 0 ? 'In stock' : 'Out of stock' }}</span>
+                  <span>{{ inStock[item.product.id] ? 'In stock' : 'Out of stock' }}</span>
                 </p>
               </div>
             </li>
@@ -81,8 +81,10 @@
             </div>
           </div>
           <div class="mt-10">
-            <inertia-link :href="route('user.checkout.index')"
-              class="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">Checkout</inertia-link>
+            <button @click.prevent="handleCheckout"
+              class="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
+              Checkout
+            </button>
           </div>
 
           <div class="mt-6 text-center text-sm text-gray-500">
@@ -100,6 +102,11 @@
       <GenericDeleteNotification :open="isDeleteDialogOpen" @update:open="isDeleteDialogOpen = $event"
         title="Delete Item" message="Are you sure you want to delete this item from your cart?"
         :deleteRoute="'user.shopping-cart.destroy'" :objectId="itemToDelete" />
+
+      <GenericDeleteNotification :open="isDeleteCheckoutDialogOpen" @update:open="isDeleteCheckoutDialogOpen = $event"
+        title="Out of Stock Items"
+        message="There are items out of stock in your cart! Do you want to remove all out-of-stock items?"
+        :items="outOfStockItems" :deleteRoute="'user.shopping-cart.destroy'" />
     </div>
   </div>
 </template>
@@ -108,6 +115,7 @@
 import DropdownInput from '@/Components/DropdownInput.vue';
 import FormInput from '@/Components/FormInput.vue';
 import GenericDeleteNotification from '@/Components/GenericDeleteNotification.vue';
+import { CheckIcon, ClockIcon } from '@heroicons/vue/24/outline';
 
 
 
@@ -115,7 +123,10 @@ export default {
   name: 'User/ShoppingCart',
   components: {
     GenericDeleteNotification,
-    DropdownInput
+    DropdownInput,
+    CheckIcon,
+    ClockIcon
+
   },
   props: {
     cartItems: {
@@ -126,10 +137,14 @@ export default {
   data() {
     return {
       isDeleteDialogOpen: false,
-      itemToDelete: null,
+      itemToDelete: String | Number,
       numbers: [
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-      ]
+      ],
+      inStock: {},
+      isDeleteCheckoutDialogOpen: false,
+      itemCheckoutToDelete: String | Number,
+      outOfStockItems: [],
     };
   },
   methods: {
@@ -143,10 +158,6 @@ export default {
 
       if (this.cartItems.length === 0) {
         return 0;
-      }
-
-      if (this.cartItems.length === 1) {
-        return parseFloat(Number(this.cartItems[0].product.price).toFixed(2)) || 0;
       }
 
       const total = this.cartItems.reduce((total, item) => {
@@ -164,6 +175,33 @@ export default {
       const tax = 8.32;
       return (subtotal + shipping + tax);
     },
+
+    updateQuantity(productId, newQuantity) {
+      this.$inertia.post(route('user.shopping-cart.update', productId), {
+        quantity: newQuantity
+      })
+    },
+
+    checkAvailability() {
+      this.outOfStockItems = this.cartItems.filter(item => item.product.stock < item.quantity);
+      return this.outOfStockItems.length === 0;  // Return true if all items are in stock
+    },
+
+    handleCheckout(event) {
+      const allItemsInStock = this.checkAvailability();
+
+      // not all items are in stock
+      if (!allItemsInStock) {
+        this.isDeleteCheckoutDialogOpen = true;
+
+        if (event) {
+          event.preventDefault();  // Stop the page from reloading
+        }
+      } else {
+        // all items are in stock
+        this.$inertia.visit(route('user.checkout.index'));
+      }
+    }
   },
 };
 </script>

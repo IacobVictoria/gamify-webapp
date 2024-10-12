@@ -40,7 +40,7 @@ class AdminClientOrderController extends Controller
                     'total_products' => $count,
                     'total_price' => $total
                 ],
-                'details' => $order->products->map(function ($product) use ($count, $total) {
+                'details' => $order->products->map(function ($product)  {
                     return [
                         'name' => $product->name,
                         'price' => $product->pivot->price,

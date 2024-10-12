@@ -35,8 +35,7 @@
                                         <td v-for="column in columns" :key="column.name"
                                             class="px-6 py-4 lg:whitespace-normal whitespace-nowrap text-sm text-gray-900"
                                             :class="column.valueAlign">
-                                            <span v-if="column.isTemplate">{{ column.template(item) }}</span>
-                                            <span v-else>{{ item[column.name] }}</span>
+                                            <span >{{ item[column.name] }}</span>
                                         </td>
                                         <td class="flex flex-col items-center text-center px-6 py-4">
                                             <button @click="toggleDetails(index)"
@@ -104,7 +103,7 @@
                 </div>
             </div>
         </div>
-
+        
         <Pagination class="flex justify-center" :links="items.links" />
     </div>
 </template>
@@ -176,6 +175,7 @@ export default {
             const invoiceUrl = `/clients_invoices/invoices_${personId}/invoice_${orderId}.pdf`;
             window.open(invoiceUrl, '_blank');
         },
+
         showInvoiceSupplier(orderId, supplierId) {
             const invoiceUrl = `/suppliers_invoices/invoices_${supplierId}/${orderId}.pdf`;
             window.open(invoiceUrl, '_blank');
