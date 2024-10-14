@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import { CheckCircleIcon, XCircleIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 import Footer from './Footer.vue';
 import Header from './Header.vue';
 
@@ -63,7 +64,10 @@ export default {
 
     components: {
         Header,
-        Footer
+        Footer,
+        CheckCircleIcon,
+        XCircleIcon,
+        XMarkIcon
     },
 
     data() {

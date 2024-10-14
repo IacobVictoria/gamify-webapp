@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\QrScannerController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ReviewLikeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -28,6 +29,8 @@ Route::group(['prefix' => 'products'], function () {
     Route::get('/{productId}/reviews/{reviewId}/edit', [ReviewController::class, 'edit'])->name('products.reviews.edit');
     Route::put('/{productId}/reviews/{reviewId}', [ReviewController::class, 'update'])->name('products.reviews.update');
     Route::delete('/{productId}/reviews/{reviewId}', [ReviewController::class, 'destroy'])->name('products.reviews.destroy');
+    Route::post('/reviews/{reviewId}/like', [ReviewLikeController::class, 'like'])->name('reviews.like');
+    Route::post('/reviews/{reviewId}/unlike', [ReviewLikeController::class, 'unlike'])->name('reviews.unlike');
 });
 
 Route::get('/qr-scanner', [QrScannerController::class, 'index'])->name('qrscanner.index');

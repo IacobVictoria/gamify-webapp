@@ -18,7 +18,7 @@ class ReviewController extends Controller
     {
         $product = Product::findOrFail($productId);
         $reviews = Review::where('product_id', $productId)->get();
-
+        dd($reviews);
         return Inertia::render('Products/Reviews', [
             'product' => $product,
             'reviews' => $reviews
@@ -51,12 +51,13 @@ class ReviewController extends Controller
         $review->id = Uuid::uuid();
         $review->product_id = $productId;
         $review->user_id = auth()->id();
+        $review->title = $validated['title'];
         $review->rating = $validated['rating'];
         $review->description = $validated['description'];
         $review->save();
 
         return redirect()->back()
-        ->with('success', 'Review updated successfully!');
+            ->with('success', 'Review updated successfully!');
     }
 
     /**
@@ -87,6 +88,7 @@ class ReviewController extends Controller
     {
         $review = Review::findOrFail($reviewId);
         $validated = $request->validated();
+        $review->title = $validated['title'];
         $review->description = $validated['description'];
         $review->rating = $validated['rating'];
         $review->save();

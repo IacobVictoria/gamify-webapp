@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\CityRomania;
 use App\Enums\Gender;
+use Faker\Provider\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -62,7 +63,7 @@ class User extends Authenticatable
     public function medals()
     {
         return $this->belongsToMany(Medal::class, 'user_medals', 'user_id', 'medal_id')
-                ->withPivot('created_at');
+            ->withPivot('created_at');
     }
 
     public function roles()
@@ -85,4 +86,34 @@ class User extends Authenticatable
     {
         return $this->hasMany(QrCodeScan::class);
     }
+
+    public function reviewLikes()
+    {
+        return $this->hasMany(ReviewLike::class);
+    }
+
+    public function hasLiked(Review $review)
+    {
+        return $this->reviewLikes()->where('review_id', $review->id)->exists();
+    }
+
+    public function like(Review $review)
+    {
+        if (!$this->hasLiked($review)) {
+
+            $this->reviewLikes()->create([
+                'id' => Uuid::uuid(),
+                'review_id' => $review->id
+            ]);
+        }
+    }
+
+    public function unlike(Review $review)
+    {
+        if ($this->hasLiked($review)) {
+
+            $this->reviewLikes()->where('review_id', $review->id)->delete();
+        }
+    }
+
 }

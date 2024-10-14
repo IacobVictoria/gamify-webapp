@@ -30,16 +30,6 @@
                                     <h2 id="information-heading" class="sr-only">Product information</h2>
 
                                 </div>
-
-                                <!-- <div>
-                                    <h3 class="sr-only">Reviews</h3>
-                                    <div class="flex items-center">
-                                        <StarIcon v-for="rating in [0, 1, 2, 3, 4]" :key="rating"
-                                            :class="[reviews.average > rating ? 'text-yellow-400' : 'text-gray-300', 'h-5 w-5 flex-shrink-0']"
-                                            aria-hidden="true" />
-                                    </div>
-                                    <p class="sr-only">{{ reviews.average }} out of 5 stars</p>
-                                </div> -->
                             </div>
 
                             <p class="mt-6 text-gray-500">{{ product.description }}</p>
@@ -124,113 +114,31 @@
                             </div>
                         </div>
 
-                        <div class="mx-auto mt-16 w-full max-w-2xl lg:col-span-4 lg:mt-0 lg:max-w-none">
-                            <TabGroup as="div">
-                                <div class="border-b border-gray-200">
-                                    <!-- <TabList class="-mb-px flex space-x-8">
-                                        <Tab as="template" v-slot="{ selected }">
-                                            <button
-                                                :class="[selected ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-700 hover:border-gray-300 hover:text-gray-800', 'whitespace-nowrap border-b-2 py-6 text-sm font-medium']">Customer
-                                                Reviews</button>
-                                        </Tab>
-                                        <Tab as="template" v-slot="{ selected }">
-                                            <button
-                                                :class="[selected ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-700 hover:border-gray-300 hover:text-gray-800', 'whitespace-nowrap border-b-2 py-6 text-sm font-medium']">FAQ</button>
-                                        </Tab>
-                                        <Tab as="template" v-slot="{ selected }">
-                                            <button
-                                                :class="[selected ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-700 hover:border-gray-300 hover:text-gray-800', 'whitespace-nowrap border-b-2 py-6 text-sm font-medium']">License</button>
-                                        </Tab>
-                                    </TabList> -->
-                                </div>
-
-                                <div v-if="isLoggedIn()" class="mt-10">
-                                    <button @click="toggleReviewForm"
-                                        class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                        {{ showReviewForm ? 'Cancel' : 'Add Review' }}
-                                    </button>
-
-
-                                    <!-- Form for Adding New Review -->
-                                    <div v-if="showReviewForm" class="mt-6">
-                                        <ReviewForm :productId="product.id" :review="null" :editMode="false"
-                                            @update:showReviewForm="showReviewForm = $event" />
-                                    </div>
-                                </div>
-
-                                <TabPanels as="template">
-                                    <TabPanel class="-mb-10">
-                                        <h3 class="sr-only">Customer Reviews</h3>
-                                        <div v-for="(review, reviewIdx) in reviews" :key="review.id"
-                                            class="flex space-x-4 text-sm text-gray-500">
-                                            <div :class="[reviewIdx === 0 ? '' : 'border-t border-gray-200', 'py-10']">
-                                                <div class="flex items-center space-x-2 ">
-                                                    <img v-if="review.user.gender === 'Male'" src="/images/male.png"
-                                                        alt="User Avatar" class="w-14 h-14 rounded-full" />
-                                                    <img v-else src="/images/female.png" alt="User Avatar"
-                                                        class="w-14 h-14 rounded-full" />
-                                                    <span class="font-medium text-gray-900">{{ review.user.name
-                                                        }}</span>
-                                                </div>
-
-                                                <p> {{ review.created_at }}</p>
-
-                                                <div class="mt-4 flex items-center">
-                                                    <StarIcon v-for="rating in [0, 1, 2, 3, 4]" :key="rating"
-                                                        :class="[review.rating > rating ? 'text-yellow-400' : 'text-gray-300', 'h-5 w-5 flex-shrink-0']"
-                                                        aria-hidden="true" />
-                                                </div>
-                                                <p>{{ review.rating }} out of 5 stars</p>
-
-                                                <div class="prose prose-sm mt-4 max-w-none text-gray-500"
-                                                    v-html="review.description"></div>
-
-                                                <div v-if="isLoggedIn() && review.user.id === $page.props.user.id"
-                                                    class="mt-4">
-
-                                                    <button @click="editReview()"
-                                                        class="text-indigo-600 hover:text-indigo-900">
-                                                        {{ editReviewForm ? 'Cancel' : 'Edit' }}
-                                                    </button>
-                                                    <button @click="deleteReview(review.id, product.id)"
-                                                        class="text-red-600 hover:text-red-900 ml-2">
-                                                        Delete
-                                                    </button>
-                                                    <div v-if="editReviewForm" class="mt-6">
-                                                        <ReviewForm :productId="product.id" :review="review"
-                                                            :editMode="editMode"
-                                                            @update:editReviewForm="editReviewForm = $event" />
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                    </TabPanel>
-
-                                    <TabPanel class="text-sm text-gray-500">
-                                        <h3 class="sr-only">Frequently Asked Questions</h3>
-
-                                        <dl>
-                                            <template v-for="faq in faqs" :key="faq.question">
-                                                <dt class="mt-10 font-medium text-gray-900">{{ faq.question }}</dt>
-                                                <dd class="prose prose-sm mt-2 max-w-none text-gray-500">
-                                                    <p>{{ faq.answer }}</p>
-                                                </dd>
-                                            </template>
-                                        </dl>
-                                    </TabPanel>
-
-                                    <TabPanel class="pt-10">
-                                        <h3 class="sr-only">License</h3>
-
-                                        <div class="prose prose-sm max-w-none text-gray-500" v-html="license.content" />
-                                    </TabPanel>
-                                </TabPanels>
-                            </TabGroup>
-                        </div>
+                       
                     </div>
+                    <ProductsReviewList :reviews="reviews" :productId="product.id"></ProductsReviewList>
+                    <TabGroup as="div">
+                        <TabPanels as="template">
+                            <TabPanel class="text-sm text-gray-500  mt-32">
+                                <h3>------------------------------------------------------</h3>
+                                <h3>Frequently Asked Questions</h3>
+                                <dl>
+                                    <template v-for="faq in faqs" :key="faq.question">
+                                        <dt class="mt-10 font-medium text-gray-900">{{ faq.question }}</dt>
+                                        <dd class="prose prose-sm mt-2 max-w-none text-gray-500">
+                                            <p>{{ faq.answer }}</p>
+                                        </dd>
+                                    </template>
+                                </dl>
+                            </TabPanel>
+
+                            <TabPanel class="pt-10">
+                                <h3 class="sr-only">License</h3>
+
+                                <div class="prose prose-sm max-w-none text-gray-500" v-html="license.content" />
+                            </TabPanel>
+                        </TabPanels>
+                    </TabGroup>
                 </div>
             </div>
         </main>
@@ -239,18 +147,21 @@
 
 <script>
 import Layout from '@/Layouts/Layout.vue';
-import { StarIcon } from '@heroicons/vue/20/solid';
 import { TabGroup, TabPanel, TabPanels } from '@headlessui/vue';
 import ReviewForm from '../Reviews/ReviewForm.vue';
+import StarRating from 'vue-star-rating';
+import ProductsReviewList from '../Reviews/ProductsReviewList.vue';
+
 
 export default {
     components: {
         Layout,
-        StarIcon,
         TabGroup,
         TabPanel,
         TabPanels,
-        ReviewForm
+        ReviewForm,
+        StarRating,
+        ProductsReviewList,
     },
     props: {
         product: Object,
@@ -296,20 +207,6 @@ export default {
         };
     },
     methods: {
-
-        toggleReviewForm() {
-            this.showReviewForm = !this.showReviewForm;
-        },
-
-        editReview() {
-            this.editMode = true;
-            this.editReviewForm = !this.editReviewForm;
-        },
-
-        deleteReview(reviewId, productId) {
-            this.$inertia.delete(this.route('products.reviews.destroy', { productId, reviewId }));
-        },
-
         addToCart(product) {
             this.$inertia.post(route('user.shopping-cart.add'), {
                 product: product,

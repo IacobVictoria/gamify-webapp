@@ -46,14 +46,22 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
+        $user = Auth()->user();
+
         $product = Product::find($id);
-        $reviews = Review::with([
-            'user' => function ($query) {
-                $query->select('id', 'name', 'gender');
-            }
-        ])
-            ->where('product_id', $id)
-            ->get();
+        $reviews = $product->reviews()->with('user:id,name,gender')->get();
+        $reviews = $reviews->map(function ($review) use ($user) {
+            return [
+                'id' => $review->id,
+                'title' => $review->title,
+                'description' => $review->description,
+                'rating' => $review->rating,
+                'likes' => $review->likes,
+                'updated_at' => $review->updated_at->format('Y-m-d'),
+                'user' => $review->user,
+                'isLiked' => $user->hasLiked($review)
+            ];
+        });
 
         return Inertia::render('Products/Show', [
             'product' => $product,

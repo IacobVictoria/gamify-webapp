@@ -12,7 +12,7 @@
             <Logo class="mx-auto w-56 h-24" />
             </Link> -->
             <h2 class="mt-2 text-2xl font-bold leading-9 tracking-tight text-gray-900 heading-underline-text">
-                {{ pageType === 'Login' ? 'Sign in to your account' : 'Create a new account' }}
+                {{ pageType === 'Login' ? 'Log in to your account' : 'Create a new account' }}
             </h2>
         </div>
         <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">

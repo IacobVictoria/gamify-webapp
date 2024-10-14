@@ -78,14 +78,19 @@ export default {
             required: true,
         },
         items: {
-            type: Array,
+            type: [Array, null],
+            required: true,
+        },
+
+        extraId: {
+            type: [String, Number],
             required: true,
         },
     },
     methods: {
         async confirmDelete() {
             if (Array.isArray(this.items) && this.items.length > 0) {
-                
+
                 for (const item of this.items) {
                     try {
                         // await each delete request
@@ -94,8 +99,16 @@ export default {
                         console.error(`Error deleting item with ID ${item.product.id}:`, error);
                     }
                 }
-            } else if (this.objectId) {
-                this.$inertia.delete(route(this.deleteRoute, this.objectId));
+            } else if (this.objectId && this.extraId == null) {
+                await this.$inertia.delete(route(this.deleteRoute, this.objectId));
+            }
+            else if (this.objectId && this.extraId) {
+                try {
+                    await this.$inertia.delete(route(this.deleteRoute, { productId: this.extraId, reviewId: this.objectId }));
+                } catch (error) {
+                    console.error(`Error deleting review with ID ${this.objectId}:  ${this.extraId} ... ${this.deleteRoute}`, error);
+                }
+
             }
 
             // Close the dialog

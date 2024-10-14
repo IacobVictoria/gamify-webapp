@@ -15,8 +15,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignUuid('product_id')->constrained('products')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('title');
             $table->text('description');
-            $table->decimal('rating');
+            $table->decimal('rating', 3, 2);
+            $table->integer('likes')->default(0);
             $table->timestamps();
         });
     }

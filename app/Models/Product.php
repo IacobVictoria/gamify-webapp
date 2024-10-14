@@ -28,10 +28,10 @@ class Product extends Model
     public $incrementing = false;
 
     public function orders()
-{
-    return $this->belongsToMany(ClientOrder::class, 'order_products', 'product_id', 'order_id')
-        ->using(OrderProduct::class);
-}
+    {
+        return $this->belongsToMany(ClientOrder::class, 'order_products', 'product_id', 'order_id')
+            ->using(OrderProduct::class);
+    }
 
     public function qrCodes()
     {
@@ -43,4 +43,8 @@ class Product extends Model
         return $this->has(QrCodeScan::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }

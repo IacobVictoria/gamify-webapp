@@ -1,20 +1,33 @@
 <template>
     <form @submit.prevent="submitReview">
         <div class="mb-4">
+            <label for="rating" class="block text-sm font-medium text-gray-700">Rating</label>
+            <star-rating :star-size="30" v-model:rating="form.rating" :increment="0.5" :show-rating="false"
+                :read-only="false" class="mt-1 block" />
+            <span v-if="form.errors.rating" class="text-red-600">{{ form.errors.rating }}</span>
+        </div>
+
+        <div class="mb-4">
+            <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+
+            <input id="title" v-model="form.title" type="text"
+                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out" />
+
+            <span v-if="form.errors.title" class="text-red-600 text-sm mt-1">{{ form.errors.title }}</span>
+
+            <div class="mt-2 text-gray-600">Recommended Title:</div>
+
+            <button type="button" @click="updateTitle()"
+                class="mt-2 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150 ease-in-out">
+                {{ recommendedTitle }}
+            </button>
+        </div>
+
+        <div class="mb-4">
             <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
             <textarea id="description" v-model="form.description"
                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
             <span v-if="form.errors.description" class="text-red-600">{{ form.errors.description }}</span>
-        </div>
-
-        <div class="mb-4">
-            <label for="rating" class="block text-sm font-medium text-gray-700">Rating</label>
-            <select id="rating" v-model="form.rating"
-                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                <option value="" disabled>Select rating</option>
-                <option v-for="star in [1, 2, 3, 4, 5]" :key="star" :value="star">{{ star }} Star</option>
-            </select>
-            <span v-if="form.errors.rating" class="text-red-600">{{ form.errors.rating }}</span>
         </div>
 
         <div>
@@ -28,32 +41,71 @@
 </template>
 <script>
 import { useForm } from '@inertiajs/vue3';
+import StarRating from 'vue-star-rating'
 
 export default {
+    components: {
+        StarRating
+    },
     props: {
-        productId: Number,
+        productId: String,
         review: Object,
         editMode: Boolean,
     },
     data() {
         return {
             form: useForm({
+                title: this.review ? this.review.title : '',
                 description: this.review ? this.review.description : '',
-                rating: this.review ? this.review.rating : ''
+                rating: this.review ? parseFloat(this.review.rating) : 0
             }),
 
         };
     },
     watch: {
         review(newReview) {
+            this.form.title = newReview?.title || '';
             this.form.description = newReview?.description || '';
-            this.form.rating = newReview?.rating || '';
+            this.form.rating = parseFloat(newReview?.rating) || 0;
+        }
+    },
+    computed: {
+        recommendedTitle() {
+            return this.getRatingTitle(this.form.rating);
         }
     },
 
     emits: ['update:showReviewForm', 'update:editReviewForm'],
 
     methods: {
+        getRatingTitle(rating) {
+            switch (rating) {
+                case 0:
+                    return 'Dezamăgitor';
+                case 0.5:
+                    return 'Foarte slab';
+                case 1:
+                    return 'Rău';
+                case 1.5:
+                    return 'Acceptabil';
+                case 2:
+                    return 'Bun';
+                case 2.5:
+                    return 'Foarte bun';
+                case 3:
+                    return 'Excelent';
+                case 3.5:
+                    return 'Impecabil';
+                case 4:
+                    return 'Extraordinar';
+                case 4.5:
+                    return 'Perfect';
+                case 5:
+                    return 'Excelent';
+                default:
+                    return 'N/A';
+            }
+        },
         submitReview() {
             if (this.editMode) {
                 this.form.put(this.route('products.reviews.update', { productId: this.productId, reviewId: this.review.id }), {
@@ -62,7 +114,7 @@ export default {
                     onSuccess: () => {
                         this.form.reset();
                         this.updateEditReviewForm(false);
-                        
+
                     }
                 });
             } else {
@@ -72,7 +124,7 @@ export default {
                     onSuccess: () => {
                         this.form.reset();
                         this.updateShowReviewForm(false);
-                       
+
 
                     }
                 });
@@ -84,6 +136,10 @@ export default {
 
         updateEditReviewForm(newValue) {
             this.$emit('update:editReviewForm', newValue);
+        },
+
+        updateTitle() {
+            this.form.title = this.recommendedTitle;
         }
     },
 
