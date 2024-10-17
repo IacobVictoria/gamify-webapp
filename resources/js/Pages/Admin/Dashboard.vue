@@ -15,8 +15,7 @@ import { Head } from '@inertiajs/vue3';
     <div class="py-8">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-          <div
-            class="max-w-7xl mx-auto mb-10 w-full bg-[#334155] text-white p-10  text-left">
+          <div class="max-w-7xl mx-auto mb-10 w-full bg-[#334155] text-white p-10  text-left">
             <span class="text-xl block text-left ml-0">Hello, {{ $page.props.user.name }} 👋</span>
           </div>
           <div class="flex flex-col gap-5 w-full max-w-7xl mx-auto">
@@ -53,9 +52,18 @@ import { Head } from '@inertiajs/vue3';
                   <a class="text-blue-500 text-xs">
                     View roles
                   </a>
-                  <!-- :href="route('super_admin.roles.index')" -->
+
                 </div>
 
+
+                <div class="w-4/12 bg-white p-4 rounded-lg">
+                  <h1 class="title block ml-0 !text-left">{{ badgesNumber }}</h1>
+                  <p class="text-gray-500">Badges</p>
+                  <a class="text-blue-500 text-xs">
+                    View badges
+                  </a>
+                  <!-- :href="route('super_admin.roles.index')" -->
+                </div>
                 <!-- <div class="w-3/12 bg-white p-4 rounded-lg">
                                     <h1 class="title block ml-0 !text-left">{{ joins }}</h1>
                                     <p class="text-gray-500">Cereri de inscriere</p>
@@ -142,6 +150,25 @@ import { Head } from '@inertiajs/vue3';
                 </table>
               </div>
 
+              <div class="w-full bg-white px-3 rounded-lg">
+                <table class="min-w-max w-full table-auto">
+                  <thead>
+                    <tr class=" text-gray-600 uppercase text-sm leading-normal">
+                      <th class="py-3 px-6 text-left">Badges</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-gray-600 text-sm font-light">
+                    <a v-for="badge in badges" v-bind:key="badge.id"
+                      class="flex border-t border-gray-200 hover:bg-gray-100">
+                      <td class="py-3 font-medium px-6 text-left whitespace-nowrap">
+                        {{ badge.name }}
+                      </td>
+                      <!-- :href="route('super_admin.roles.edit', role.id)" -->
+                    </a>
+                  </tbody>
+                </table>
+              </div>
+
             </div>
           </div>
         </div>
@@ -163,7 +190,9 @@ export default {
     accountsNumber: Number,
     rolesNumber: Number,
     permissionsNumber: Number,
-    productsNumber: Number
+    productsNumber: Number,
+    badgesNumber: Number,
+    badges: Array
 
 
   }

@@ -45,7 +45,7 @@
                                     <td v-for="column in columns" :key="column.name"
                                         class="px-6 py-4 lg:whitespace-normal whitespace-nowrap text-sm text-gray-900"
                                         :class="column.valueAlign">
-                                        <span >{{ item[column.name] }}</span>
+                                        <span>{{ item[column.name] }}</span>
                                     </td>
                                     <template v-if="editRoute && deleteRoute">
                                         <td class="px-6 py-4 whitespace-nowrap text-center text-md font-medium">

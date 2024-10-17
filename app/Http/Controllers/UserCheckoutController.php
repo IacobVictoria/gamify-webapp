@@ -6,6 +6,7 @@ use App\Http\Requests\CheckoutRequest;
 use App\Models\ClientOrder;
 use App\Models\OrderProduct;
 use App\Models\Product;
+use App\Services\BadgeService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
@@ -15,9 +16,13 @@ use Illuminate\Support\Facades\Storage;
 
 class UserCheckoutController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $badgeService;
+
+    public function __construct(BadgeService $badgeService)
+    {
+        $this->badgeService = $badgeService;
+    }
+
     public function index()
     {
         $cartItems = session()->get('cart', []);
@@ -80,12 +85,14 @@ class UserCheckoutController extends Controller
                 'id' => Uuid::uuid(),
                 'order_id' => $order->id,
                 'product_id' => $product->id,
-                'quantity' => $item['quantity'], // Cantitatea din coș
-                'price' => $product->price, // Prețul produsului la momentul actual
+                'quantity' => $item['quantity'], // cantitatea din coș
+                'price' => $product->price, // prețul produsului la momentul actual
             ]);
             $product->stock = $product->stock - $item['quantity'];
             $product->save();
         }
+
+        $this->badgeService->shoopingBadges($user);
 
         return redirect()->route('user.checkout.invoice', $order->id);
 
@@ -104,7 +111,7 @@ class UserCheckoutController extends Controller
 
 
     //ORDER INVOICE PDF
-    
+
 
     /**
      * Display the specified resource.

@@ -1,10 +1,11 @@
 <template>
     <div v-if="isLoggedIn()" class="mt-10">
-        <button @click="toggleReviewForm"
-            class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            {{ showReviewForm ? 'Cancel' : 'Add Review' }}
-        </button>
-
+        <div v-if="authUserHasRole('User')">
+            <button @click="toggleReviewForm"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                {{ showReviewForm ? 'Cancel' : 'Add Review' }}
+            </button>
+        </div>
 
         <!-- Form for Adding New Review -->
         <div v-if="showReviewForm" class="mt-6 mb-24">
@@ -28,14 +29,24 @@
             <div :class="[reviewIdx === 0 ? '' : 'border-t border-gray-200', 'py-10']">
 
                 <div class="flex items-start gap-32 border p-6 rounded-lg shadow-md bg-white">
-                    <div class="flex flex-col items-center">
+                    <inertia-link class="flex flex-col items-center"
+                        :href="route('user.profile.show', { userId: review.user.id })">
                         <img v-if="review.user.gender === 'Male'" src="/images/male.png" alt="User Avatar"
                             class="w-14 h-14 rounded-full border-2 border-indigo-500 shadow-sm" />
                         <img v-else src="/images/female.png" alt="User Avatar"
                             class="w-14 h-14 rounded-full border-2 border-indigo-500 shadow-sm" />
-                        <span class="font-medium text-gray-900 mt-2">{{ review.user.name }}</span>
+                        <template v-if="review.isVerified">
+                            <div class="flex items-center">
+                                <i class="fa fa-check fa-3x" style="color:aquamarine" aria-hidden="true"></i>
+                                <div>Verified </div>
+                            </div>
+                        </template>
+                        <template v-else>
+                            Not verified
+                        </template>
+                        <span class="font-medium text-gray-900 mt-2 ">{{ review.user.name }}</span>
                         <p class="text-sm text-gray-600">{{ review.updated_at }}</p>
-                    </div>
+                    </inertia-link>
                     <div class="flex-1 items-center">
                         <div class="flex flex-col items-center">
                             <star-rating :star-size="40" :rating="review.rating" :read-only="true" :increment="0.5"
@@ -57,14 +68,31 @@
                                 :style="{ color: review.isLiked ? '#74C0FC' : 'gray' }" aria-hidden="true"></i>
                             <div>{{ review.likes }}</div>
                         </div>
+                        <div class="flex gap-32 ">
+                            <div class="flex cursor-pointer">
+                                <ViewCommentSVG></ViewCommentSVG>
+                                <button @click="toggleComment(reviewIdx)">
+                                    {{ reviewStates[reviewIdx].isAddCommentOpen ? 'Anuleaza' : 'Adauga un comentariu' }}
+                                </button>
+                            </div>
+                            <div class="flex cursor-pointer">
+                                <AddCommentSVG></AddCommentSVG>
+                                <button @click="toggleSectionComments(reviewIdx)">
+                                    {{ reviewStates[reviewIdx].isCommentSectionOpen ? 'Anuleaza' : `Vezi comentarii
+                                    ${review.commentsCount
+                                        }` }}
+
+                                </button>
+                            </div>
+                        </div>
 
                         <div v-if="isLoggedIn() && review.user.id === $page.props.user.id"
                             class="flex justify-end mt-4 space-x-2">
-                            <button @click="editReview()"
+                            <button @click="editReview(reviewIdx)"
                                 class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 shadow-md transition duration-200">
-                                {{ editReviewForm ? 'Cancel' : 'Edit' }}
+                                {{ reviewStates[reviewIdx].editReviewForm ? 'Cancel' : 'Edit' }}
                             </button>
-                            <button @click="deleteReview()"
+                            <button @click="deleteReview(reviewIdx)"
                                 class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 shadow-md transition duration-200">
                                 Delete
                             </button>
@@ -72,14 +100,21 @@
                     </div>
                 </div>
             </div>
-            <GenericDeleteNotification :open="isDeleteDialogOpen" @update:open="isDeleteDialogOpen = $event"
-                title="Remove Review!" message="Are you sure you want to delete this review?" :objectId="review.id"
-                :extraId="productId" :deleteRoute="'products.reviews.destroy'" :items="null">
+            <GenericDeleteNotification :open="reviewStates[reviewIdx].isDeleteDialogOpen"
+                @update:open="reviewStates[reviewIdx].isDeleteDialogOpen = $event" title="Remove Review!"
+                message="Are you sure you want to delete this review?" :objectId="review.id" :extraId="productId"
+                :deleteRoute="'products.reviews.destroy'" :items="null">
             </GenericDeleteNotification>
 
-            <div v-if="editReviewForm" class="mt-6">
+            <div v-if="reviewStates[reviewIdx].editReviewForm" class="mt-6">
                 <ReviewForm :productId="productId" :review="review" :editMode="editMode"
-                    @update:editReviewForm="editReviewForm = $event" />
+                    @update:editReviewForm="reviewStates[reviewIdx].editReviewForm = $event" />
+            </div>
+            <div v-if="reviewStates[reviewIdx].isAddCommentOpen" class="mt-6">
+                <CommentForm :reviewId="review.id" :edit-form="false"></CommentForm>
+            </div>
+            <div v-if="reviewStates[reviewIdx].isCommentSectionOpen" class="mt-6">
+                <CommentSection :comments="review.comments"></CommentSection>
             </div>
         </div>
     </div>
@@ -90,12 +125,21 @@ import ReviewForm from './ReviewForm.vue';
 import StarRating from 'vue-star-rating';
 import 'font-awesome/css/font-awesome.css';
 import GenericDeleteNotification from '@/Components/GenericDeleteNotification.vue';
+import CommentForm from './CommentForm.vue';
+import ViewCommentSVG from '@/Components/ViewCommentSVG.vue';
+import AddCommentSVG from '@/Components/AddCommentSVG.vue';
+import CommentSection from './CommentSection.vue';
+
 
 export default {
     components: {
         ReviewForm,
         StarRating,
-        GenericDeleteNotification
+        GenericDeleteNotification,
+        ViewCommentSVG,
+        CommentForm,
+        AddCommentSVG,
+        CommentSection
     },
 
     props: {
@@ -113,37 +157,61 @@ export default {
     data() {
         return {
             showReviewForm: false,
-            editMode: false,
-            editReviewForm: false,
             isLiked: false,
-            isDeleteDialogOpen: false
+            editMode: false,
+            reviewStates: []
         }
     },
-    computed: {
-        contor() {
-
+    watch: {
+        reviews: {
+            handler() {
+                this.initializeReviewStates();
+            },
+            immediate: true
         }
     },
     methods: {
+        initializeReviewStates() {
+            //  starea pentru fiecare recenzie în parte
+            this.reviewStates = this.reviews.map(review => ({
+                editReviewForm: false,
+                isDeleteDialogOpen: false,
+                isAddCommentOpen: false,
+                isCommentSectionOpen: false
+            }));
+        },
         toggleReviewForm() {
             this.showReviewForm = !this.showReviewForm;
         },
 
-        editReview() {
+        editReview(index) {
             this.editMode = true;
-            this.editReviewForm = !this.editReviewForm;
+            this.reviewStates[index].editReviewForm = !this.reviewStates[index].editReviewForm;
+            this.reviewStates[index].isCommentSectionOpen = false;
+            this.reviewStates[index].isAddCommentOpen = false;
         },
 
-        deleteReview() {
-            this.isDeleteDialogOpen = true;
+        deleteReview(index) {
+            this.reviewStates[index].isDeleteDialogOpen = true;
+        },
+
+        toggleComment(index) {
+            this.reviewStates[index].isAddCommentOpen = !this.reviewStates[index].isAddCommentOpen;
+            this.reviewStates[index].editReviewForm = false;
+            this.reviewStates[index].isCommentSectionOpen = false;
+        },
+
+        toggleSectionComments(index) {
+            this.reviewStates[index].isCommentSectionOpen = !this.reviewStates[index].isCommentSectionOpen;
+            this.reviewStates[index].editReviewForm = false;
+            this.reviewStates[index].isAddCommentOpen = false;
 
         },
 
         async likeReview(review) {
             await this.$inertia.post(route('reviews.like', review.id), {}, {
                 onSuccess: (page) => {
-                    review.likes = page.props.reviews.find(r => r.id === review.id).likes;
-                    review.isLiked = true;
+
                 }
             });
         },
@@ -151,16 +219,10 @@ export default {
         async dislikeReview(review) {
             await this.$inertia.post(route('reviews.unlike', review.id), {}, {
                 onSuccess: (page) => {
-                    review.likes = page.props.reviews.find(r => r.id === review.id).likes;
-                    review.isLiked = false;
+
                 }
             });
         }
     }
 }
 </script>
-<style>
-.liked {
-    color: gray;
-}
-</style>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminAccountController;
+use App\Http\Controllers\AdminBadgeController;
 use App\Http\Controllers\AdminCheckoutController;
 use App\Http\Controllers\AdminClientOrderController;
 use App\Http\Controllers\AdminController;
@@ -46,6 +47,16 @@ Route::prefix('products')->group(function () {
     Route::get('/update-product/{productId}', [AdminProductController::class, 'edit'])->name('products.edit');
     Route::put('/update-product/{productId}', [AdminProductController::class, 'update'])->name('products.update');
 
+});
+
+Route::prefix('badges')->group(function () {
+    Route::get('/', [AdminBadgeController::class, 'index'])
+        ->name('badges.index');
+    Route::get('/create-badge', [AdminBadgeController::class, 'create'])->name('badges.create');
+    Route::post('/create-badge', [AdminBadgeController::class, 'store'])->name('badges.store');
+    Route::get('/update-badge/{badgeId}', [AdminBadgeController::class, 'edit'])->name('badges.edit');
+    Route::put('/update-badge/{badgeId}', [AdminBadgeController::class, 'update'])->name('badges.update');
+    Route::delete('/delete/{badgeId}', [AdminBadgeController::class, 'destroy'])->name('badges.destroy');
 });
 
 Route::prefix('suppliers')->group(function () {

@@ -87,33 +87,29 @@ class User extends Authenticatable
         return $this->hasMany(QrCodeScan::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function reviewLikes()
     {
         return $this->hasMany(ReviewLike::class);
     }
 
-    public function hasLiked(Review $review)
+    public function reviewComments()
     {
-        return $this->reviewLikes()->where('review_id', $review->id)->exists();
+        return $this->hasMany(ReviewComment::class);
     }
 
-    public function like(Review $review)
+    public function badges()
     {
-        if (!$this->hasLiked($review)) {
-
-            $this->reviewLikes()->create([
-                'id' => Uuid::uuid(),
-                'review_id' => $review->id
-            ]);
-        }
+        return $this->belongsToMany(Badge::class, 'user_badges')->withPivot('id', 'awarded_at');
     }
 
-    public function unlike(Review $review)
+    public function commentLikes()
     {
-        if ($this->hasLiked($review)) {
-
-            $this->reviewLikes()->where('review_id', $review->id)->delete();
-        }
+        return $this->hasMany(ReviewCommentLike::class);
     }
 
 }

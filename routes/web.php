@@ -6,6 +6,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\QrScannerController;
+use App\Http\Controllers\ReviewCommentController;
+use App\Http\Controllers\ReviewCommentLikeController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReviewLikeController;
 use Illuminate\Foundation\Application;
@@ -29,9 +31,8 @@ Route::group(['prefix' => 'products'], function () {
     Route::get('/{productId}/reviews/{reviewId}/edit', [ReviewController::class, 'edit'])->name('products.reviews.edit');
     Route::put('/{productId}/reviews/{reviewId}', [ReviewController::class, 'update'])->name('products.reviews.update');
     Route::delete('/{productId}/reviews/{reviewId}', [ReviewController::class, 'destroy'])->name('products.reviews.destroy');
-    Route::post('/reviews/{reviewId}/like', [ReviewLikeController::class, 'like'])->name('reviews.like');
-    Route::post('/reviews/{reviewId}/unlike', [ReviewLikeController::class, 'unlike'])->name('reviews.unlike');
 });
+
 
 Route::get('/qr-scanner', [QrScannerController::class, 'index'])->name('qrscanner.index');
 Route::post('/qr-scanner/scan', [QrScannerController::class, 'scan'])->name('qrscanner.scan');
@@ -43,5 +44,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::prefix('reviews')->group(function () {
+    Route::post('/{reviewId}/like', [ReviewLikeController::class, 'like'])->name('reviews.like');
+    Route::post('/{reviewId}/unlike', [ReviewLikeController::class, 'unlike'])->name('reviews.unlike');
+    Route::post('/{reviewId}/comment', [ReviewCommentController::class, 'store'])->name('review_comments.store');
+    Route::put('/comment/{commentId}', [ReviewCommentController::class, 'update'])->name('review_comments.update');
+    Route::delete('/comment/{commentId}', [ReviewCommentController::class, 'destroy'])->name('review_comments.destroy');
+    Route::post('/comment/{commentId}/like', [ReviewCommentLikeController::class, 'like'])->name('review_comment.like');
+    Route::post('/comment/{commentId}/unlike', [ReviewCommentLikeController::class, 'unlike'])->name('review_comment.unlike');
+});
 
 require __DIR__ . '/auth.php';

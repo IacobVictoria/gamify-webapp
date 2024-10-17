@@ -70,11 +70,14 @@ const showingNavigationDropdown = ref(false);
                                         Client Orders
                                     </NavLink>
                                     <NavLink :href="route('admin.suppliers_orders.index')"
-                                    :active="route().current('admin.suppliers_orders.index')">
+                                        :active="route().current('admin.suppliers_orders.index')">
                                         Supplier Orders
                                     </NavLink>
                                     <NavLink :href="route('admin.qrcodes')" :active="route().current('admin.qrcodes')">
                                         QrCodes
+                                    </NavLink>
+                                    <NavLink :href="route('admin.badges.index')" :active="route().current('admin.badges.index')">
+                                        Badges
                                     </NavLink>
                                 </template>
 
@@ -106,12 +109,11 @@ const showingNavigationDropdown = ref(false);
                                         <DropdownLink :href="route('logout')" method="post" as="button">
                                             Log Out
                                         </DropdownLink>
-                                        <DropdownLink v-if="authUserHasRole('User')" :href="route('home')" method="get"
-                                            as="button">
+                                        <DropdownLink :href="route('home')" method="get" as="button">
                                             Home
                                         </DropdownLink>
-                                        <DropdownLink v-if="authUserHasRole('Admin')" :href="route('admin.shopping-cart.index')" method="get"
-                                            as="button">
+                                        <DropdownLink v-if="authUserHasRole('Admin')"
+                                            :href="route('admin.shopping-cart.index')" method="get" as="button">
                                             Shopping Cart
                                         </DropdownLink>
 

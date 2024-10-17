@@ -2,50 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Review;
+use App\Models\ReviewComment;
 use App\Services\BadgeService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 
-class ReviewLikeController extends Controller
+class ReviewCommentLikeController extends Controller
 {
-    protected $badgeService;
     protected $userService;
+    protected $badgeService;
 
-    public function __construct(BadgeService $badgeService, UserService $userService)
+    public function __construct(UserService $userService, BadgeService $badgeService)
     {
-        $this->badgeService = $badgeService;
         $this->userService = $userService;
+        $this->badgeService = $badgeService;
+    }
+
+
+    public function like(string $commentId): void
+    {
+        $user = Auth()->user();
+
+        $comment = ReviewComment::find($commentId);
+        $this->userService->likeComment($user, $comment);
+
+        $comment->likes = $comment->commentLikes()->count();
+        $comment->save();
+
+        $this->badgeService->awardTrustedCommenterBadge($user);
+    }
+
+
+    public function unlike(string $commentId): void
+    {
+        $user = Auth()->user();
+        $comment = ReviewComment::find($commentId);
+
+        $this->userService->unlikeComment($user, $comment);
+        $comment->likes = $comment->commentLikes()->count();
+        $comment->save();
     }
 
     public function index()
     {
-
+        //
     }
 
-    public function like(string $reviewId)
-    {
-        $user = Auth()->user();
-
-        $review = Review::find($reviewId);
-        $this->userService->likeReview($user, $review);
-
-        // sa fac un update pe noul nr de like uri 
-        $review->likes = $review->reviewLikes()->count();
-        $review->save();
-
-        $this->badgeService->reviewerBadges($user);
-    }
-
-    public function unlike(string $reviewId)
-    {
-        $user = Auth()->user();
-        $review = Review::find($reviewId);
-
-        $this->userService->unlikeReview($user, $review);
-        $review->likes = $review->reviewLikes()->count();
-        $review->save();
-    }
     /**
      * Show the form for creating a new resource.
      */

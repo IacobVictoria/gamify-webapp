@@ -5,15 +5,20 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ReviewRequest;
 use App\Models\Product;
 use App\Models\Review;
+use App\Services\BadgeService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Faker\Provider\Uuid;
 
 class ReviewController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $badgeService;
+
+    public function __construct(BadgeService $badgeService)
+    {
+        $this->badgeService = $badgeService;
+    }
+
     public function index(string $productId)
     {
         $product = Product::findOrFail($productId);
@@ -55,6 +60,9 @@ class ReviewController extends Controller
         $review->rating = $validated['rating'];
         $review->description = $validated['description'];
         $review->save();
+        $user = Auth()->user();
+
+        $this->badgeService->reviewerBadges($user);
 
         return redirect()->back()
             ->with('success', 'Review updated successfully!');
@@ -92,6 +100,10 @@ class ReviewController extends Controller
         $review->description = $validated['description'];
         $review->rating = $validated['rating'];
         $review->save();
+
+        $user = Auth()->user();
+
+        $this->badgeService->reviewerBadges($user);
 
         return redirect()->back()
             ->with('success', 'Review updated successfully!');

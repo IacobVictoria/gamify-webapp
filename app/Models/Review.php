@@ -60,4 +60,8 @@ class Review extends Model
         return $this->hasMany(ReviewLike::class);
     }
 
+    public function reviewComments()
+    {
+        return $this->hasMany(ReviewComment::class);
+    }
 }

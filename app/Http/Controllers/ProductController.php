@@ -5,14 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ReviewRequest;
 use App\Models\Product;
 use App\Models\Review;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function index(Request $request)
     {
         $searchQuery = $request->input('search', '');
@@ -49,8 +54,26 @@ class ProductController extends Controller
         $user = Auth()->user();
 
         $product = Product::find($id);
-        $reviews = $product->reviews()->with('user:id,name,gender')->get();
-        $reviews = $reviews->map(function ($review) use ($user) {
+        $reviews = $product->reviews()->with('user:id,name,gender')->orderBy('updated_at', 'desc')->get();
+
+        $reviews = $reviews->map(function ($review) use ($user, $id) {
+            $userReview = $review->user;
+            $isVerfied = $this->userService->isVerified($userReview, $id);
+            $comments = $review->reviewComments()->with('user:id,name,gender')->orderBy('updated_at', 'desc')->get()->map(function ($comment) use ($user) {
+                return [
+                    'id' => $comment->id,
+                    'description' => $comment->description,
+                    'likes' => $comment->likes,
+                    'isLiked' => $this->userService->hasLikedComment($user, $comment),
+                    'updated_at' => $comment->updated_at->format('Y-m-d'), // formatul Y-m-d pentru updated_at
+                    'user' => [
+                        'id' => $comment->user->id,
+                        'name' => $comment->user->name,
+                        'gender' => $comment->user->gender,
+                        'role' => $comment->user->roles->first(),
+                    ]
+                ];
+            });
             return [
                 'id' => $review->id,
                 'title' => $review->title,
@@ -59,7 +82,10 @@ class ProductController extends Controller
                 'likes' => $review->likes,
                 'updated_at' => $review->updated_at->format('Y-m-d'),
                 'user' => $review->user,
-                'isLiked' => $user->hasLiked($review)
+                'isLiked' => $this->userService->hasLikedReview($user, $review),
+                'isVerified' => $isVerfied,
+                'comments' => $comments,
+                'commentsCount' => $comments->count()
             ];
         });
 

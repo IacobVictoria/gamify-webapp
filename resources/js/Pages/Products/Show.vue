@@ -116,7 +116,7 @@
 
                        
                     </div>
-                    <ProductsReviewList :reviews="reviews" :productId="product.id"></ProductsReviewList>
+                    <ProductsReviewList :reviews="reviews" :productId="product.id" ></ProductsReviewList>
                     <TabGroup as="div">
                         <TabPanels as="template">
                             <TabPanel class="text-sm text-gray-500  mt-32">

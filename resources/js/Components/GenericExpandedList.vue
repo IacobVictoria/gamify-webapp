@@ -35,81 +35,96 @@
                                         <td v-for="column in columns" :key="column.name"
                                             class="px-6 py-4 lg:whitespace-normal whitespace-nowrap text-sm text-gray-900"
                                             :class="column.valueAlign">
-                                            <span >{{ item[column.name] }}</span>
+                                            <span>{{ item[column.name] }}</span>
                                         </td>
                                         <td class="flex flex-col items-center text-center px-6 py-4">
-                                            <button @click="toggleDetails(index)"
-                                                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
-                                                {{ showDetails[index] ? 'Ascunde' : 'Afișează' }} detalii
-                                            </button>
-
-                                            <div v-if="authUserHasRole('Admin')" class="mt-2">
-                                                <template v-if="invoice === 'clients'">
-                                                    <button @click="showInvoiceClient(item.id, item.id_person)"
-                                                        class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">
-                                                        Factura Client
-                                                    </button>
-                                                </template>
-                                                <template v-else-if="invoice === 'suppliers'">
-                                                    <button @click="showInvoiceSupplier(item.id, item.id_supplier)"
-                                                        class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
-                                                        Factura Furnizor
-                                                    </button>
-                                                </template>
-
-                                            </div>
+                                            <div>
+                                                <template v-if="updateRoute && deleteRoute">
+                                        <td class="px-6 py-4 whitespace-nowrap text-center text-md font-medium">
+                                            <inertia-link :href="route(updateRoute, item.id)"
+                                                class="text-indigo-600 hover:text-indigo-900">Edit</inertia-link>
+                                            <button @click="openDialog(item)"
+                                                class="ml-4 text-red-600 hover:text-red-400">Delete</button>
                                         </td>
-
-                                    </tr>
-                                    <!-- Detalii -->
-                                    <tr v-if="showDetails[index]" class="details-row">
-                                        <td colspan="100%" class="px-6 py-4 bg-gray-50 border-b border-gray-200">
-                                            <div class="p-4 bg-white rounded-lg shadow-sm">
-                                                <strong class="text-lg font-semibold text-gray-800">{{
-                                                    descriptionDetails }}</strong>
-
-                                                <div class="grid grid-cols-2 gap-4 mt-4">
-                                                    <div v-for="information in extraLabel" :key="information.name"
-                                                        class="flex flex-col justify-between">
-                                                        <span class="text-gray-600 font-medium">{{ information.label
-                                                            }}:</span>
-                                                        <span class="text-gray-800 font-semibold">{{
-                                                            item.extra[information.name] }}</span>
-                                                    </div>
-                                                </div>
-
-                                                <ul class="mt-4 space-y-2">
-                                                    <li v-for="(detail, productIndex) in item.details"
-                                                        :key="productIndex" class="border-b border-gray-300 pb-2">
-                                                        <div class="flex flex-col space-y-1">
-                                                            <template v-for="label in detailsLabel" :key="label.name">
-                                                                <div class="flex justify-between">
-                                                                    <strong class="text-gray-600">{{ label.label
-                                                                        }}:</strong>
-                                                                    <span class="text-gray-800">{{ detail[label.name]
-                                                                        }}</span>
-                                                                </div>
-                                                            </template>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
                                 </template>
-                            </tbody>
-                        </table>
+                                <button @click="toggleDetails(index)"
+                                    class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
+                                    {{ showDetails[index] ? 'Ascunde' : 'Afișează' }} detalii
+                                </button>
                     </div>
-                </div>
-            </div>
-        </div>
-        
-        <Pagination class="flex justify-center" :links="items.links" />
-    </div>
+
+                    <div v-if="authUserHasRole('Admin')" class="mt-2">
+                        <template v-if="invoice === 'clients'">
+                            <button @click="showInvoiceClient(item.id, item.id_person)"
+                                class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">
+                                Factura Client
+                            </button>
+                        </template>
+                        <template v-else-if="invoice === 'suppliers'">
+                            <button @click="showInvoiceSupplier(item.id, item.id_supplier)"
+                                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
+                                Factura Furnizor
+                            </button>
+                        </template>
+
+                    </div>
+                    </td>
+                    </tr>
+                    <!-- Detalii -->
+                    <tr v-if="showDetails[index]" class="details-row">
+                        <td colspan="100%" class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                            <div class="p-4 bg-white rounded-lg shadow-sm">
+                                <strong class="text-lg font-semibold text-gray-800">{{
+                                    descriptionDetails }}</strong>
+
+                                <div class="grid grid-cols-2 gap-4 mt-4">
+                                    <div v-for="information in extraLabel" :key="information.name"
+                                        class="flex flex-col justify-between">
+                                        <span class="text-gray-600 font-medium">{{ information.label
+                                            }}:</span>
+                                        <span class="text-gray-800 font-semibold">{{
+                                            item.extra[information.name] }}</span>
+                                    </div>
+                                </div>
+
+                                <ul class="mt-4 space-y-2">
+                                    <li v-for="(detail, productIndex) in item.details" :key="productIndex"
+                                        class="border-b border-gray-300 pb-2">
+                                        <div class="flex flex-col space-y-1">
+                                            <template v-for="label in detailsLabel" :key="label.name">
+                                                <div class="flex justify-between">
+                                                    <strong class="text-gray-600">{{ label.label
+                                                        }}:</strong>
+                                                    <span class="text-gray-800">{{ detail[label.name]
+                                                        }}</span>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+</template>
+</tbody>
+</table>
+
+<GenericDeleteNotification :open="isDeleteDialogOpen" @update:open="isDeleteDialogOpen = $event" title="Delete Item"
+    message="Are you sure you want to delete this badge from your the list?" :deleteRoute="'admin.badges.destroy'"
+    :objectId="itemToDelete" />
+
+</div>
+</div>
+</div>
+</div>
+
+<Pagination class="flex justify-center" :links="items.links" />
+</div>
 </template>
 
 <script>
 import Filter from './Filter.vue';
+import GenericDeleteNotification from './GenericDeleteNotification.vue';
 import Pagination from './Pagination.vue';
 import debounce from "lodash/fp/debounce";
 import { ref, watch } from 'vue';
@@ -120,6 +135,7 @@ export default {
     components: {
         Pagination,
         Filter,
+        GenericDeleteNotification
     },
 
     props: {
@@ -134,7 +150,9 @@ export default {
         descriptionDetails: String,
         detailsLabel: Array,
         extraLabel: Array,
-        invoice: String
+        invoice: String,
+        updateRoute: String,
+        deleteRoute: String,
     },
     data() {
         return {
@@ -142,6 +160,8 @@ export default {
                 this.filters.map(filter => [filter.model, this.prevFilters[filter.model] || ''])
             ),
             showDetails: [],
+            isDeleteDialogOpen: false,
+            itemToDelete: null,
         };
     },
 
@@ -179,6 +199,11 @@ export default {
         showInvoiceSupplier(orderId, supplierId) {
             const invoiceUrl = `/suppliers_invoices/invoices_${supplierId}/${orderId}.pdf`;
             window.open(invoiceUrl, '_blank');
+        },
+
+        openDialog(item) {
+            this.isDeleteDialogOpen = !this.isDeleteDialogOpen;
+            this.itemToDelete = item.id;
         }
 
     }
