@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QrCodeController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\ReviewCommentController;
 use App\Http\Controllers\ReviewCommentLikeController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReviewLikeController;
+use App\Http\Controllers\ReviewMediaController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -29,7 +31,7 @@ Route::group(['prefix' => 'products'], function () {
     Route::get('/{productId}/reviews/create', [ReviewController::class, 'create'])->name('products.reviews.create');
     Route::post('/{productId}/reviews', [ReviewController::class, 'store'])->name('products.reviews.store');
     Route::get('/{productId}/reviews/{reviewId}/edit', [ReviewController::class, 'edit'])->name('products.reviews.edit');
-    Route::put('/{productId}/reviews/{reviewId}', [ReviewController::class, 'update'])->name('products.reviews.update');
+    Route::post('/{productId}/reviews/{reviewId}', [ReviewController::class, 'update'])->name('products.reviews.update');
     Route::delete('/{productId}/reviews/{reviewId}', [ReviewController::class, 'destroy'])->name('products.reviews.destroy');
 });
 
@@ -52,6 +54,8 @@ Route::prefix('reviews')->group(function () {
     Route::delete('/comment/{commentId}', [ReviewCommentController::class, 'destroy'])->name('review_comments.destroy');
     Route::post('/comment/{commentId}/like', [ReviewCommentLikeController::class, 'like'])->name('review_comment.like');
     Route::post('/comment/{commentId}/unlike', [ReviewCommentLikeController::class, 'unlike'])->name('review_comment.unlike');
+    Route::post('/{reviewId}/create-media', [ReviewMediaController::class, 'store'])->name('review_media.store');
+    Route::delete('/review_media/{reviewMediaId}', [ReviewMediaController::class, 'destroy'])->name('review_media.destroy');
 });
 
 require __DIR__ . '/auth.php';

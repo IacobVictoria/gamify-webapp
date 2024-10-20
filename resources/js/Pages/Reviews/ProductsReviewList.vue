@@ -9,8 +9,7 @@
 
         <!-- Form for Adding New Review -->
         <div v-if="showReviewForm" class="mt-6 mb-24">
-            <ReviewForm :productId="productId" :review="null" :editMode="false"
-                @update:showReviewForm="showReviewForm = $event" />
+            <ReviewForm :productId="productId" @update:showReviewForm="showReviewForm = $event" />
         </div>
     </div>
     <div v-else class="mt-10 bg-gray-100 p-6 rounded-lg shadow-lg text-center">
@@ -37,7 +36,7 @@
                             class="w-14 h-14 rounded-full border-2 border-indigo-500 shadow-sm" />
                         <template v-if="review.isVerified">
                             <div class="flex items-center">
-                                <i class="fa fa-check fa-3x" style="color:aquamarine" aria-hidden="true"></i>
+                                <VerifiedSVG></VerifiedSVG>
                                 <div>Verified </div>
                             </div>
                         </template>
@@ -61,6 +60,18 @@
                         <div class="flex gap-2 mt-2">
                             <label for="description" class=" text-2xl font-semibold text-gray-800">Description:</label>
                             <div class=" text-xl text-gray-800">{{ review.description }}</div>
+                        </div>
+                        <div v-if="review.reviewMedia.length">
+                            <h3>Media:</h3>
+                            <ul>
+                                <li v-for="media in review.reviewMedia" :key="media.id">
+                                    <img v-if="media.type === 'image'" :src="media.url" alt="Media"
+                                        class="w-16 h-auto" />
+                                    <video v-if="media.type === 'video'" controls>
+                                        <source :src="media.url" type="video/mp4" />
+                                    </video>
+                                </li>
+                            </ul>
                         </div>
                         <div class="flex items-center gap-2">
                             <i class="fa fa-thumbs-up fa-3x"
@@ -107,7 +118,7 @@
             </GenericDeleteNotification>
 
             <div v-if="reviewStates[reviewIdx].editReviewForm" class="mt-6">
-                <ReviewForm :productId="productId" :review="review" :editMode="editMode"
+                <ReviewFormUpdate :productId="productId" :review="review" :editMode="editMode"
                     @update:editReviewForm="reviewStates[reviewIdx].editReviewForm = $event" />
             </div>
             <div v-if="reviewStates[reviewIdx].isAddCommentOpen" class="mt-6">
@@ -129,6 +140,9 @@ import CommentForm from './CommentForm.vue';
 import ViewCommentSVG from '@/Components/ViewCommentSVG.vue';
 import AddCommentSVG from '@/Components/AddCommentSVG.vue';
 import CommentSection from './CommentSection.vue';
+import SortingComponent from '@/Components/SortingComponent.vue';
+import ReviewFormUpdate from './ReviewFormUpdate.vue';
+import VerifiedSVG from '@/Components/VerifiedSVG.vue';
 
 
 export default {
@@ -139,7 +153,10 @@ export default {
         ViewCommentSVG,
         CommentForm,
         AddCommentSVG,
-        CommentSection
+        CommentSection,
+        SortingComponent,
+        ReviewFormUpdate,
+        VerifiedSVG
     },
 
     props: {
@@ -159,9 +176,11 @@ export default {
             showReviewForm: false,
             isLiked: false,
             editMode: false,
-            reviewStates: []
+            reviewStates: [],
+
         }
     },
+
     watch: {
         reviews: {
             handler() {
@@ -172,16 +191,19 @@ export default {
     },
     methods: {
         initializeReviewStates() {
-            //  starea pentru fiecare recenzie în parte
-            this.reviewStates = this.reviews.map(review => ({
+
+            this.reviewStates = this.reviews.map(() => ({
                 editReviewForm: false,
                 isDeleteDialogOpen: false,
                 isAddCommentOpen: false,
                 isCommentSectionOpen: false
             }));
+
         },
         toggleReviewForm() {
+         
             this.showReviewForm = !this.showReviewForm;
+            console.log(this.showReviewForm);
         },
 
         editReview(index) {

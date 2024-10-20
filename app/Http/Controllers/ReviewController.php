@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ReviewRequest;
 use App\Models\Product;
 use App\Models\Review;
+use App\Models\ReviewMedia;
 use App\Services\BadgeService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Faker\Provider\Uuid;
 
@@ -51,6 +53,7 @@ class ReviewController extends Controller
      */
     public function store(ReviewRequest $request, string $productId)
     {
+
         $validated = $request->validated();
         $review = new Review();
         $review->id = Uuid::uuid();
@@ -60,6 +63,30 @@ class ReviewController extends Controller
         $review->rating = $validated['rating'];
         $review->description = $validated['description'];
         $review->save();
+
+
+        if ($request->hasFile('media')) {
+
+            $file = $request->file('media');
+
+            $fileType = in_array($file->extension(), ['jpg', 'jpeg', 'png']) ? 'image' : (in_array($file->extension(), ['mp4', 'mov', 'avi', 'mkv', 'wmv']) ? 'video' : 'unknown');
+            $filePath = $file->store('public/media', 's3');
+
+            Storage::disk('s3')->setVisibility($filePath, 'public');
+
+            $fileUrl = Storage::disk('s3')->url($filePath);
+
+            ReviewMedia::create([
+                'id' => Uuid::uuid(),
+                'review_id' => $review->id,
+                'filename' => basename($filePath),
+                'url' => $fileUrl,
+                'type' => $fileType
+            ]);
+
+
+        }
+
         $user = Auth()->user();
 
         $this->badgeService->reviewerBadges($user);
@@ -92,15 +119,37 @@ class ReviewController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ReviewRequest $request, string $productId, string $reviewId)
+    public function update(Request $request, string $productId, string $reviewId)
     {
         $review = Review::findOrFail($reviewId);
-        $validated = $request->validated();
+        $validated = $request->all();
+
         $review->title = $validated['title'];
         $review->description = $validated['description'];
         $review->rating = $validated['rating'];
         $review->save();
 
+        if ($request->hasFile('media')) {
+
+            $file = $request->file('media');
+
+            $fileType = in_array($file->extension(), ['jpg', 'jpeg', 'png']) ? 'image' : (in_array($file->extension(), ['mp4', 'mov', 'avi', 'mkv', 'wmv']) ? 'video' : 'unknown');
+            $filePath = $file->store('public/media', 's3');
+
+            Storage::disk('s3')->setVisibility($filePath, 'public');
+
+            $fileUrl = Storage::disk('s3')->url($filePath);
+
+            ReviewMedia::create([
+                'id' => Uuid::uuid(),
+                'review_id' => $review->id,
+                'filename' => basename($filePath),
+                'url' => $fileUrl,
+                'type' => $fileType
+            ]);
+
+
+        }
         $user = Auth()->user();
 
         $this->badgeService->reviewerBadges($user);

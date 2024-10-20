@@ -49,13 +49,34 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
         $user = Auth()->user();
 
         $product = Product::find($id);
-        $reviews = $product->reviews()->with('user:id,name,gender')->orderBy('updated_at', 'desc')->get();
+        $sortOrder = $request->input('order', "");
+        $buyers = $request->input('buyers', "");
 
+        $orderColumn = 'updated_at';
+        $orderDirection = 'desc';
+
+        if ($sortOrder === 'populare') {
+            $orderColumn = 'likes';
+            $orderDirection = 'desc';
+        }
+
+        $reviewsQuery = $product->reviews()->with(['user:id,name,gender', 'reviewMedia']);
+        
+        if ($buyers === 'true') {
+            $reviewsQuery->whereHas('user.orders', function ($query) use ($id) {
+                $query->where('product_id', $id);
+            });
+        }
+
+        $reviews = $reviewsQuery->orderBy($orderColumn, $orderDirection)->get();
+    
+        
+     
         $reviews = $reviews->map(function ($review) use ($user, $id) {
             $userReview = $review->user;
             $isVerfied = $this->userService->isVerified($userReview, $id);
@@ -82,6 +103,7 @@ class ProductController extends Controller
                 'likes' => $review->likes,
                 'updated_at' => $review->updated_at->format('Y-m-d'),
                 'user' => $review->user,
+                'reviewMedia' => $review->reviewMedia,
                 'isLiked' => $this->userService->hasLikedReview($user, $review),
                 'isVerified' => $isVerfied,
                 'comments' => $comments,

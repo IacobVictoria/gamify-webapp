@@ -64,4 +64,9 @@ class Review extends Model
     {
         return $this->hasMany(ReviewComment::class);
     }
+
+    public function reviewMedia()
+    {
+        return $this->hasMany(ReviewMedia::class);
+    }
 }

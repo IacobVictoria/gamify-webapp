@@ -114,9 +114,22 @@
                             </div>
                         </div>
 
-                       
+
                     </div>
-                    <ProductsReviewList :reviews="reviews" :productId="product.id" ></ProductsReviewList>
+                    <div class="flex gap-16">
+                        <SortingComponent :filter="filter" v-model="sortOrder" :options="sortOptions">
+                        </SortingComponent>
+                        <div class="flex items-start">
+                            <button @click="authorizedBuyers"
+                                class="ml-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                                <VerifiedSVG class="mr-2" /> <!-- Adăugăm un spațiu între icon și text -->
+                                Doar cumpărători
+                            </button>
+                        </div>
+
+
+                    </div>
+                    <ProductsReviewList :reviews="reviews" :productId="product.id"></ProductsReviewList>
                     <TabGroup as="div">
                         <TabPanels as="template">
                             <TabPanel class="text-sm text-gray-500  mt-32">
@@ -151,6 +164,9 @@ import { TabGroup, TabPanel, TabPanels } from '@headlessui/vue';
 import ReviewForm from '../Reviews/ReviewForm.vue';
 import StarRating from 'vue-star-rating';
 import ProductsReviewList from '../Reviews/ProductsReviewList.vue';
+import SortingComponent from '@/Components/SortingComponent.vue';
+import debounce from "lodash/fp/debounce";
+import VerifiedSVG from '@/Components/VerifiedSVG.vue';
 
 
 export default {
@@ -162,6 +178,8 @@ export default {
         ReviewForm,
         StarRating,
         ProductsReviewList,
+        SortingComponent,
+        VerifiedSVG
     },
     props: {
         product: Object,
@@ -173,6 +191,12 @@ export default {
             editMode: false,
             editReviewForm: false,
             quantity: 1,
+            sortOrder: '',
+            sortOptions: [
+                { value: 'noi', label: 'Cele mai noi' },
+                { value: 'populare', label: 'Cele mai populare' },
+            ],
+            filter: { id: 'sortOrder', name: 'sortOrder', type: 'sorting', placeholder: 'Selectează metoda de sortare' },
             faqs: [
                 {
                     question: 'What format are these icons?',
@@ -213,6 +237,28 @@ export default {
                 quantity: this.quantity
             });
         },
-    }
+        authorizedBuyers() {
+            this.$inertia.get(route('products.show', this.product.id), {
+                buyers: true,
+            }, {
+                preserveState: true,
+                replace: true,
+            });
+        }
+    },
+    watch: {
+        sortOrder: {
+            handler: debounce(300, function () {
+                this.$inertia.get(route('products.show', this.product.id), {
+
+                    order: this.sortOrder,
+                }, {
+                    preserveState: true,
+                    replace: true,
+                });
+            }),
+            deep: true,
+        },
+    },
 };
 </script>

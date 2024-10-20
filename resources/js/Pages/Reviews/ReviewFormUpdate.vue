@@ -33,13 +33,25 @@
         <div class="mb-4">
             <label for="media" class="block text-sm font-medium text-gray-700">Media</label>
 
+
+            <div v-for="media in review.reviewMedia" :key="media.id">
+                <button v-if="!deletedMediaIds.includes(media.id)" type="button" @click="markForDeletion(media.id)" class="text-red-600 hover:text-red-800">
+                    X
+                </button>
+                <img v-if="!deletedMediaIds.includes(media.id)" :src="media.url" alt="Existing media"
+                    class="w-16 mb-2" />
+            </div>
+
+
             <input type="file" name="media" key="media_file" ref="media_file" @change="handleMediaUpload"
                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
         </div>
+
+
         <div>
             <button type="submit"
                 class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Submit Review
+                {{ editMode ? 'Update Review' : 'Submit Review' }}
             </button>
         </div>
     </form>
@@ -55,17 +67,28 @@ export default {
     },
     props: {
         productId: String,
+        review: Object,
+        editMode: Boolean,
     },
     data() {
         return {
             form: useForm({
-                title: '',
-                description: '',
-                rating: 0,
+                title: this.review.title,
+                description: this.review.description,
+                rating: parseFloat(this.review.rating),
                 media: [],
             }),
             deletedMediaIds: [],
         };
+    },
+    watch: {
+        review(newReview) {
+            this.form.title = newReview?.title;
+            this.form.description = newReview?.description;
+            this.form.rating = parseFloat(newReview?.rating);
+            this.form.media = newReview?.reviewMedia[0];
+            this.deletedMediaIds = [];
+        }
     },
     computed: {
         recommendedTitle() {
@@ -73,7 +96,7 @@ export default {
         },
     },
 
-    emits: ['update:showReviewForm'],
+    emits: ['update:editReviewForm'],
 
     methods: {
         getRatingTitle(rating) {
@@ -106,8 +129,19 @@ export default {
         },
         async submitReview() {
 
-            const formData = new FormData();
+            for (const mediaId of this.deletedMediaIds) {
+                await this.$inertia.delete(route('review_media.destroy', { reviewMediaId: mediaId }), {
+                    onError: (errors) => {
+                        console.log('Error during media deletion', errors);
+                    },
+                    onSuccess: () => {
+                        console.log(`Successfully deleted media: ${mediaId}`);
+                    }
+                });
+            }
 
+            const formData = new FormData();
+            formData.append('_method', 'PUT'); 
             formData.append('title', this.form.title);
             formData.append('description', this.form.description);
             formData.append('rating', this.form.rating);
@@ -116,22 +150,26 @@ export default {
                 formData.append('media_file', this.form.media);
             }
 
-            this.form.post(this.route('products.reviews.store', { id: this.productId }), {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-                data: formData, 
+            this.form.post(route('products.reviews.update', { productId: this.productId, reviewId: this.review.id }), {
+                data: formData,
+                preserveScroll: true,
+                preserveState: true,
                 onSuccess: () => {
                     this.form.reset();
-                    this.updateShowReviewForm(false);
-                    console.log('succes');
+                    this.updateEditReviewForm(false);
+
+
+                },
+                onError: (errors) => {
+                    console.log('error', errors);
                 }
             });
 
-
         },
-        updateShowReviewForm(newValue) {
-            this.$emit('update:showReviewForm', newValue);
+
+
+        updateEditReviewForm(newValue) {
+            this.$emit('update:editReviewForm', newValue);
         },
 
         updateTitle() {
@@ -140,9 +178,16 @@ export default {
 
         handleMediaUpload(event) {
             const file = event.target.files[0];
-            this.form.media = file;
+            if (file) {
+                this.form.media = file;              
+            }
         },
 
+        markForDeletion(mediaId) {
+
+            this.deletedMediaIds.push(mediaId);
+
+        }
     },
 
 };
