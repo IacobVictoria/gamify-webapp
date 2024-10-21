@@ -114,22 +114,25 @@
                             </div>
                         </div>
 
-
                     </div>
-                    <div class="flex gap-16">
+                    <div v-if="noStatistics">
+                        <ReviewSummary :averageRating="averageRating" :statistics="statistics"></ReviewSummary>
+                    </div>
+                    <div v-if="reviews.length > 0" class="flex gap-16">
                         <SortingComponent :filter="filter" v-model="sortOrder" :options="sortOptions">
                         </SortingComponent>
                         <div class="flex items-start">
                             <button @click="authorizedBuyers"
                                 class="ml-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
-                                <VerifiedSVG class="mr-2" /> <!-- Adăugăm un spațiu între icon și text -->
+                                <VerifiedSVG class="mr-2" />
                                 Doar cumpărători
                             </button>
                         </div>
 
-
                     </div>
-                    <ProductsReviewList :reviews="reviews" :productId="product.id"></ProductsReviewList>
+                    <ProductsReviewList :reviews="reviews" :productId="product.id" :message="noBuyersMessage"
+                        :statistics="statistics" :averageRating="averageRating">
+                    </ProductsReviewList>
                     <TabGroup as="div">
                         <TabPanels as="template">
                             <TabPanel class="text-sm text-gray-500  mt-32">
@@ -147,7 +150,6 @@
 
                             <TabPanel class="pt-10">
                                 <h3 class="sr-only">License</h3>
-
                                 <div class="prose prose-sm max-w-none text-gray-500" v-html="license.content" />
                             </TabPanel>
                         </TabPanels>
@@ -167,6 +169,7 @@ import ProductsReviewList from '../Reviews/ProductsReviewList.vue';
 import SortingComponent from '@/Components/SortingComponent.vue';
 import debounce from "lodash/fp/debounce";
 import VerifiedSVG from '@/Components/VerifiedSVG.vue';
+import ReviewSummary from '../Reviews/ReviewSummary.vue';
 
 
 export default {
@@ -179,11 +182,16 @@ export default {
         StarRating,
         ProductsReviewList,
         SortingComponent,
-        VerifiedSVG
+        VerifiedSVG,
+        ReviewSummary
     },
     props: {
         product: Object,
-        reviews: Array
+        reviews: Array,
+        noBuyersMessage: String,
+        statistics: Map,
+        averageRating: Number,
+        noStatistics: Boolean
     },
     data() {
         return {

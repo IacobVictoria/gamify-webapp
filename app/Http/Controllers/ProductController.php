@@ -57,6 +57,8 @@ class ProductController extends Controller
         $sortOrder = $request->input('order', "");
         $buyers = $request->input('buyers', "");
 
+        //Sorting and filter 
+
         $orderColumn = 'updated_at';
         $orderDirection = 'desc';
 
@@ -66,17 +68,42 @@ class ProductController extends Controller
         }
 
         $reviewsQuery = $product->reviews()->with(['user:id,name,gender', 'reviewMedia']);
-        
+
         if ($buyers === 'true') {
             $reviewsQuery->whereHas('user.orders', function ($query) use ($id) {
                 $query->where('product_id', $id);
             });
         }
+        $noBuyersMessage = '';
+        $noStatistics=true;
+
+        if (
+            $buyers === 'true' && $reviewsQuery->whereHas('user.orders', function ($query) use ($id) {
+                $query->where('product_id', $id);
+            })->exists()){
+
+            $noBuyersMessage = 'Nu există cumpărători care să fi lăsat o recenzie pentru acest produs.';
+            $noStatistics = false;
+        }
+
 
         $reviews = $reviewsQuery->orderBy($orderColumn, $orderDirection)->get();
-    
-        
-     
+
+        //Statistics
+
+        $totalReviews = $reviews->count();
+
+        $statistics = $reviews->groupBy('rating')->mapWithKeys(function ($group, $rating) use ($totalReviews) {
+            $percentage = ($group->count() / $totalReviews) * 100;
+            return [$rating => $percentage];
+        });
+
+        $averageRating = 0;
+
+        if ($totalReviews > 0) {
+            $averageRating = $reviews->sum('rating') / $totalReviews;
+        }
+
         $reviews = $reviews->map(function ($review) use ($user, $id) {
             $userReview = $review->user;
             $isVerfied = $this->userService->isVerified($userReview, $id);
@@ -113,7 +140,11 @@ class ProductController extends Controller
 
         return Inertia::render('Products/Show', [
             'product' => $product,
-            'reviews' => $reviews
+            'reviews' => $reviews,
+            'noBuyersMessage' => $noBuyersMessage,
+            'statistics' => $statistics,
+            'averageRating' => $averageRating,
+            'noStatistics' =>$noStatistics
         ]);
     }
 
