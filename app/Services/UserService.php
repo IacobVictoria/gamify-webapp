@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Interfaces\BadgeServiceInterface;
 use App\Interfaces\UserServiceInterface;
 use App\Models\Badge;
+use App\Models\Product;
 use App\Models\Review;
 use App\Models\ReviewComment;
 use App\Models\User;
@@ -92,5 +93,43 @@ class UserService implements UserServiceInterface
         }
 
         return $user->commentLikes()->where('review_comment_id', $comment->id)->exists();
+    }
+
+    public function likeProduct(?User $user, Product $product)
+    {
+        if (!$user) {
+            return;
+        }
+
+        if (!$this->hasLikedProduct($user, $product)) {
+            
+            $user->wishlists()->create([
+                'product_id' => $product->id
+            ]);
+          
+        }
+
+    }
+
+    public function dislikeProduct(?User $user, Product $product)
+    {
+        if (!$user) {
+            return;
+        }
+
+        if ($this->hasLikedProduct($user, $product)) {
+            $user->wishlists()->where('product_id', $product->id)->delete();
+        }
+
+    }
+
+    public function hasLikedProduct(?User $user, Product $product)
+    {
+        if (!$user) {
+            return;
+        }
+
+        return $user->wishlists()->where('product_id', $product->id)->exists();
+
     }
 }

@@ -35,15 +35,20 @@
                                         <img src="/images/pic1.jpg" alt="imageAlt"
                                             class="h-full w-full object-cover object-center" />
                                     </div>
-                                    <div class="pb-4 pt-10 text-center">
+                                    <div class="pb-4 pt-10 text-center flex flex-col">
                                         <h3 class="text-sm font-medium text-gray-900">
                                             <!-- Link to product page -->
 
                                             {{ product.name }}
                                         </h3>
                                         <p class="mt-4 text-base font-medium text-gray-900">{{ product.price }}</p>
+
                                     </div>
                                 </inertia-link>
+                                <button @click="product.isFavorite ? dislikeProduct(product) : likeProduct(product)" >
+                                    <AddHeartSVG :svg-class="product.isFavorite ? 'text-red-400' : 'text-gray-400'">
+                                    </AddHeartSVG>
+                                </button>
                             </div>
 
                         </div>
@@ -55,12 +60,14 @@
 </template>
 
 <script>
+import AddHeartSVG from '@/Components/AddHeartSVG.vue';
 import Layout from '@/Layouts/Layout.vue';
 
 export default {
     name: 'Products.Index',
     components: {
-        Layout
+        Layout,
+        AddHeartSVG
     },
     props: {
         products: Array,
@@ -73,14 +80,30 @@ export default {
     },
     methods: {
         fetchProducts() {
-           // console.log(this.searchQuery);
+            // console.log(this.searchQuery);
             this.$inertia.get(route('products.index', { search: this.searchQuery },
                 {
                     preserveState: true, // Menține starea actuală a paginii
                     replace: true, // Înlocuiește istoricul în loc să adauge o nouă intrare
                 }
             ))
+        },
+        async likeProduct(product) {
+            await this.$inertia.post(route('wishlist.products.like', product.id), {}, {
+                onSuccess: (page) => {
+
+                }
+            });
+        },
+
+        async dislikeProduct(product) {
+            await this.$inertia.post(route('wishlist.products.dislike', product.id), {}, {
+                onSuccess: (page) => {
+
+                }
+            });
         }
+
     }
 }
 </script>

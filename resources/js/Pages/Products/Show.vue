@@ -26,7 +26,11 @@
                                 <div class="mt-4">
                                     <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">{{
                                         product.name }}</h1>
-
+                                    <button
+                                        @click="isFavorite ? dislikeProduct(product) : likeProduct(product)">
+                                        <AddHeartSVG :svg-class="isFavorite ? 'text-red-400' : 'text-gray-400'">
+                                        </AddHeartSVG>
+                                    </button>
                                     <h2 id="information-heading" class="sr-only">Product information</h2>
 
                                 </div>
@@ -37,7 +41,7 @@
                             <div class="mt-6">
                                 <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
                                 <select id="quantity" v-model="quantity"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    class="mt-1 block w-16 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                     <option value="" disabled>Select quantity</option>
                                     <option v-for="num in 10" :key="num" :value="num">{{ num }}</option>
                                 </select>
@@ -170,6 +174,7 @@ import SortingComponent from '@/Components/SortingComponent.vue';
 import debounce from "lodash/fp/debounce";
 import VerifiedSVG from '@/Components/VerifiedSVG.vue';
 import ReviewSummary from '../Reviews/ReviewSummary.vue';
+import AddHeartSVG from '@/Components/AddHeartSVG.vue';
 
 
 export default {
@@ -183,7 +188,8 @@ export default {
         ProductsReviewList,
         SortingComponent,
         VerifiedSVG,
-        ReviewSummary
+        ReviewSummary,
+        AddHeartSVG
     },
     props: {
         product: Object,
@@ -191,7 +197,8 @@ export default {
         noBuyersMessage: String,
         statistics: Map,
         averageRating: Number,
-        noStatistics: Boolean
+        noStatistics: Boolean,
+        isFavorite: Boolean
     },
     data() {
         return {
@@ -251,6 +258,21 @@ export default {
             }, {
                 preserveState: true,
                 replace: true,
+            });
+        },
+        async likeProduct(product) {
+            await this.$inertia.post(route('wishlist.products.like', product.id), {}, {
+                onSuccess: (page) => {
+
+                }
+            });
+        },
+
+        async dislikeProduct(product) {
+            await this.$inertia.post(route('wishlist.products.dislike', product.id), {}, {
+                onSuccess: (page) => {
+
+                }
             });
         }
     },

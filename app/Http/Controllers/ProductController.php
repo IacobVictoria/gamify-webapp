@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Review;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ProductController extends Controller
@@ -20,10 +21,20 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
+        $user = Auth::user();
+
         $searchQuery = $request->input('search', '');
 
         $products = Product::where('name', 'like', "%{$searchQuery}%")->get();
 
+        $products = $products->map(function ($product) use ($user) {
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => $product->price,
+                'isFavorite' => $this->userService->hasLikedProduct($user, $product),
+            ];
+        });
         return Inertia::render('Products/Index', [
             'products' => $products,
             'searchQueryProp' => $searchQuery,
@@ -54,6 +65,7 @@ class ProductController extends Controller
         $user = Auth()->user();
 
         $product = Product::find($id);
+        $isFavorite = $this->userService->hasLikedProduct($user, $product);
         $sortOrder = $request->input('order', "");
         $buyers = $request->input('buyers', "");
 
@@ -75,12 +87,13 @@ class ProductController extends Controller
             });
         }
         $noBuyersMessage = '';
-        $noStatistics=true;
+        $noStatistics = true;
 
         if (
             $buyers === 'true' && $reviewsQuery->whereHas('user.orders', function ($query) use ($id) {
                 $query->where('product_id', $id);
-            })->exists()){
+            })->exists()
+        ) {
 
             $noBuyersMessage = 'Nu există cumpărători care să fi lăsat o recenzie pentru acest produs.';
             $noStatistics = false;
@@ -140,11 +153,12 @@ class ProductController extends Controller
 
         return Inertia::render('Products/Show', [
             'product' => $product,
+            'isFavorite' => $isFavorite,
             'reviews' => $reviews,
             'noBuyersMessage' => $noBuyersMessage,
             'statistics' => $statistics,
             'averageRating' => $averageRating,
-            'noStatistics' =>$noStatistics
+            'noStatistics' => $noStatistics
         ]);
     }
 

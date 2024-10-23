@@ -58,9 +58,10 @@ class UserShoppingCartController extends Controller
 
     public function addToCart(Request $request)
     {
+       
         $product = $request->input('product'); // Get the product details
         $quantity = $request->input('quantity'); // Get the quantity
-
+      
         // Ensure that product details and quantity are correctly set
         if (!$product || !$quantity) {
             return redirect()->back()->withErrors(['msg' => 'Product or quantity is missing.']);

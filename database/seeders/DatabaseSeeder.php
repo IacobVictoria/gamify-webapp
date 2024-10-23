@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             // RoleSeeder::class,
             //PermissionSeeder::class
             //    SupplierSeeder::class
-           //  SupplierProductSeeder::class
+           // SupplierProductSeeder::class
         ]);
 
     }

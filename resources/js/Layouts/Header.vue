@@ -27,12 +27,16 @@
             <div class="hidden lg:flex lg:flex-1 lg:justify-end gap-x-4">
                 <!-- Dacă utilizatorul este autentificat, afișează dropdown-ul cu avatar și nume -->
                 <div v-if="isLoggedIn()" class="relative">
+                    <div class="flex gap-2 items-center">
                     <button @click="dropdownOpen = !dropdownOpen" class="flex items-center space-x-2">
                         <img v-if="user.gender === 'Male'" src="/images/male.png" alt="User Avatar"
                             class="w-14 h-14 rounded-full" />
                         <img v-else src="/images/female.png" alt="User Avatar" class="w-14 h-14 rounded-full" />
                         <span class="font-semibold">{{ user.name }}</span>
                     </button>
+                   <inertia-link :href="route('user.wishlist.index')"> <WishlistLogoSVG></WishlistLogoSVG></inertia-link>
+                    <RecomandationLogoSVG></RecomandationLogoSVG>
+                </div>
                     <!-- Dropdown -->
                     <div v-if="dropdownOpen"
                         class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
@@ -166,6 +170,8 @@ export default {
 import { ref } from 'vue'
 import { Dialog, DialogPanel } from '@headlessui/vue'
 import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
+import WishlistLogoSVG from '@/Components/WishlistLogoSVG.vue';
+import RecomandationLogoSVG from '@/Components/RecomandationLogoSVG.vue';
 
 const navigation = [
     { name: 'Products', href: route('products.index') },

@@ -1,10 +1,12 @@
 <?php
 
+use App\Enums\ProductCategory;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -13,11 +15,19 @@ return new class extends Migration {
         Schema::create('products', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->string('category');
+            $table->enum('category', array_column(ProductCategory::cases(), 'value'));
             $table->text('description')->nullable();
             $table->integer('score');
             $table->decimal('price', 10, 2);
             $table->integer('stock');
+            $table->integer('calories')->nullable();      
+            $table->decimal('protein', 5, 2)->nullable();   
+            $table->decimal('carbs', 5, 2)->nullable();    
+            $table->decimal('fats', 5, 2)->nullable(); 
+            $table->decimal('fiber', 5, 2)->nullable();     
+            $table->decimal('sugar', 5, 2)->nullable();            
+            $table->text('ingredients')->nullable();        
+            $table->text('allergens')->nullable();   
             $table->timestamps();
         });
     }
