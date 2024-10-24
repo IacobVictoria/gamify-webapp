@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AchievementController;
+use App\Http\Controllers\ExportDataController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\ProductController;
@@ -60,5 +61,7 @@ Route::prefix('reviews')->group(function () {
     Route::post('/{reviewId}/create-media', [ReviewMediaController::class, 'store'])->name('review_media.store');
     Route::delete('/review_media/{reviewMediaId}', [ReviewMediaController::class, 'destroy'])->name('review_media.destroy');
 });
+
+Route::get('/export-data', [ExportDataController::class, 'exportData']);
 
 require __DIR__ . '/auth.php';

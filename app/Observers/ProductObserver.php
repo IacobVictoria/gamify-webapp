@@ -2,63 +2,51 @@
 
 namespace App\Observers;
 
-use App\Models\User;
-use App\Services\UserAchievementService;
+use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 
-class UserObserver
+class ProductObserver
 {
-    protected $achievementService;
-
-    public function __construct(UserAchievementService $achievementService)
-    {
-        $this->achievementService = $achievementService;
-    }
-
     /**
-     * Handle the User "created" event.
+     * Handle the Product "created" event.
      */
-    public function created(User $user): void
+    public function created(Product $product): void
     {
         $this->updateCSV();
     }
 
     /**
-     * Handle the User "updated" event.
+     * Handle the Product "updated" event.
      */
-    public function updated(User $user): void
-    {
-        $this->updateCSV();
-        // Check if the score has been updated
-        if ($user->isDirty('score')) {
-            $newScore = $user->score;
-            $this->achievementService->checkAndSendMedalEmail($user, $newScore, $user->score);
-        }
-    }
-
-    /**
-     * Handle the User "deleted" event.
-     */
-    public function deleted(User $user): void
+    public function updated(Product $product): void
     {
         $this->updateCSV();
     }
 
     /**
-     * Handle the User "restored" event.
+     * Handle the Product "deleted" event.
      */
-    public function restored(User $user): void
+    public function deleted(Product $product): void
+    {
+        $this->updateCSV();
+    }
+
+    /**
+     * Handle the Product "restored" event.
+     */
+    public function restored(Product $product): void
     {
         //
     }
 
     /**
-     * Handle the User "force deleted" event.
+     * Handle the Product "force deleted" event.
      */
-    public function forceDeleted(User $user): void
+    public function forceDeleted(Product $product): void
     {
         //
     }
+
     protected function updateCSV()
     {
         $data = DB::table('client_orders')

@@ -310,7 +310,7 @@ export default {
         submit() {
             this.form.post(route('user.checkout.order.store'), {
                 onError: (errors) => {
-                    console.log('NOT submitted successfully:');
+                    console.log('NOT submitted successfully:',errors);
                     this.errors = errors;
                 },
                 onSuccess: () => {

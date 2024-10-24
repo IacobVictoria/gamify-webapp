@@ -93,7 +93,7 @@ class AdminCheckoutController extends Controller
 
             if ($product) {
                 $product->stock = $product->stock + $productData['quantity'];
-                $product->save(); 
+                $product->save();
             } else {
                 Product::create([
                     'id' => Uuid::uuid(),
@@ -102,12 +102,20 @@ class AdminCheckoutController extends Controller
                     'description' => $supplierProduct->description,
                     'name' => $supplierProduct->name,
                     'score' => $supplierProduct->score,
-                    'stock' => $productData['quantity']
+                    'stock' => $productData['quantity'],
+                    'calories' => $supplierProduct->calories,
+                    'protein' => $supplierProduct->protein,
+                    'carbs' => $supplierProduct->carbs,
+                    'fats' => $supplierProduct->fats,
+                    'fiber' => $supplierProduct->fiber,
+                    'sugar' => $supplierProduct->sugar,
+                    'ingredients' => $supplierProduct->ingredients,
+                    'allergens' => $supplierProduct->allergens
                 ]);
-            //  adaug acum in stocul aceluiasi produs din tabela Products sau creez noul produs comandatca am cumparat asta
+                //  adaug acum in stocul aceluiasi produs din tabela Products sau creez noul produs comandatca am cumparat asta
 
+            }
         }
-    }
 
     }
     private function calculateTotal($products)

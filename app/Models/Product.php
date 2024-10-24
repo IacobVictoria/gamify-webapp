@@ -17,6 +17,14 @@ class Product extends Model
         'price',
         'stock',
         'score',
+        'calories',
+        'protein',
+        'carbs',
+        'fats',
+        'fiber',
+        'sugar',
+        'ingredients',
+        'allergens'
     ];
 
     protected $table = 'products';

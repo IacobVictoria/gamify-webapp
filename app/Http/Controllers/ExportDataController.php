@@ -1,65 +1,14 @@
 <?php
 
-namespace App\Observers;
+namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Services\UserAchievementService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class UserObserver
+class ExportDataController extends Controller
 {
-    protected $achievementService;
-
-    public function __construct(UserAchievementService $achievementService)
-    {
-        $this->achievementService = $achievementService;
-    }
-
-    /**
-     * Handle the User "created" event.
-     */
-    public function created(User $user): void
-    {
-        $this->updateCSV();
-    }
-
-    /**
-     * Handle the User "updated" event.
-     */
-    public function updated(User $user): void
-    {
-        $this->updateCSV();
-        // Check if the score has been updated
-        if ($user->isDirty('score')) {
-            $newScore = $user->score;
-            $this->achievementService->checkAndSendMedalEmail($user, $newScore, $user->score);
-        }
-    }
-
-    /**
-     * Handle the User "deleted" event.
-     */
-    public function deleted(User $user): void
-    {
-        $this->updateCSV();
-    }
-
-    /**
-     * Handle the User "restored" event.
-     */
-    public function restored(User $user): void
-    {
-        //
-    }
-
-    /**
-     * Handle the User "force deleted" event.
-     */
-    public function forceDeleted(User $user): void
-    {
-        //
-    }
-    protected function updateCSV()
+    public function exportData()
     {
         $data = DB::table('client_orders')
             ->join('order_products', 'client_orders.id', '=', 'order_products.order_id')
@@ -80,12 +29,18 @@ class UserObserver
             ->get();
 
         if ($data->isEmpty()) {
-            return;
+            return response()->json(['error' => 'No data found for export.'], 404);
         }
 
+        // Creează fișierul CSV
         $filePath = storage_path('app/user_orders.csv');
         $fileHandle = fopen($filePath, 'w');
 
+        if ($fileHandle === false) {
+            return response()->json(['error' => 'Could not create CSV file.'], 500);
+        }
+
+        // Scrie headerul CSV
         fputcsv($fileHandle, [
             'user_id',
             'user_name',
@@ -99,10 +54,16 @@ class UserObserver
             'order_timestamp'
         ]);
 
+        // Scrie fiecare rând de date în fișier
         foreach ($data as $row) {
             fputcsv($fileHandle, (array) $row);
         }
 
         fclose($fileHandle);
+        return response()->download($filePath)->deleteFileAfterSend(true);
     }
+
+
+
+
 }

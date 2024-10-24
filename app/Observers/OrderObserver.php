@@ -2,60 +2,48 @@
 
 namespace App\Observers;
 
-use App\Models\User;
-use App\Services\UserAchievementService;
+use App\Models\ClientOrder;
+use App\Models\Order;
 use Illuminate\Support\Facades\DB;
 
-class UserObserver
+class OrderObserver
 {
-    protected $achievementService;
-
-    public function __construct(UserAchievementService $achievementService)
-    {
-        $this->achievementService = $achievementService;
-    }
-
     /**
-     * Handle the User "created" event.
+     * Handle the Order "created" event.
      */
-    public function created(User $user): void
+    public function created(ClientOrder $order): void
     {
         $this->updateCSV();
     }
 
     /**
-     * Handle the User "updated" event.
+     * Handle the Order "updated" event.
      */
-    public function updated(User $user): void
-    {
-        $this->updateCSV();
-        // Check if the score has been updated
-        if ($user->isDirty('score')) {
-            $newScore = $user->score;
-            $this->achievementService->checkAndSendMedalEmail($user, $newScore, $user->score);
-        }
-    }
-
-    /**
-     * Handle the User "deleted" event.
-     */
-    public function deleted(User $user): void
+    public function updated(ClientOrder $order): void
     {
         $this->updateCSV();
     }
 
     /**
-     * Handle the User "restored" event.
+     * Handle the Order "deleted" event.
      */
-    public function restored(User $user): void
+    public function deleted(ClientOrder $order): void
+    {
+        $this->updateCSV();
+    }
+
+    /**
+     * Handle the Order "restored" event.
+     */
+    public function restored(ClientOrder $order): void
     {
         //
     }
 
     /**
-     * Handle the User "force deleted" event.
+     * Handle the Order "force deleted" event.
      */
-    public function forceDeleted(User $user): void
+    public function forceDeleted(ClientOrder $order): void
     {
         //
     }

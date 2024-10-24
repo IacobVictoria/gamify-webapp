@@ -17,7 +17,15 @@ class SupplierProduct extends Model
         'supplier_id',
         'price',
         'stock',
-        'score'
+        'score',
+        'calories',
+        'protein',
+        'carbs',
+        'fats',
+        'fiber',
+        'sugar',
+        'ingredients',
+        'allergens'
     ];
 
     protected $table = 'supplier_products';
