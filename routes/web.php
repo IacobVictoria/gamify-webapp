@@ -8,6 +8,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\QrScannerController;
+use App\Http\Controllers\RecommandationPythonController;
 use App\Http\Controllers\ReviewCommentController;
 use App\Http\Controllers\ReviewCommentLikeController;
 use App\Http\Controllers\ReviewController;
@@ -62,6 +63,7 @@ Route::prefix('reviews')->group(function () {
     Route::delete('/review_media/{reviewMediaId}', [ReviewMediaController::class, 'destroy'])->name('review_media.destroy');
 });
 
-Route::get('/export-data', [ExportDataController::class, 'exportData']);
+
+Route::get('/recommendations/{userId}', [RecommandationPythonController::class, 'index']);
 
 require __DIR__ . '/auth.php';
