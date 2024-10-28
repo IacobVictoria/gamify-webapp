@@ -24,6 +24,11 @@ class DatabaseSeeder extends Seeder
             //PermissionSeeder::class
             //    SupplierSeeder::class
             //SupplierProductSeeder::class
+            // UserQuizSeeder::class,
+            //  UserQuizQuestionSeeder::class,
+            // UserQuizAnswerSeeder::class,
+            //UserQuizRemarkSeeder::class,
+            // UserQuizResultSeeder::class
         ]);
 
     }

@@ -79,6 +79,9 @@ const showingNavigationDropdown = ref(false);
                                     <NavLink :href="route('admin.badges.index')" :active="route().current('admin.badges.index')">
                                         Badges
                                     </NavLink>
+                                    <NavLink :href="route('admin.user_quiz.index')" :active="route().current('admin.badges.index')">
+                                        UserQuiz
+                                    </NavLink>
                                 </template>
 
                             </div>

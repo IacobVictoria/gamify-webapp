@@ -6,6 +6,10 @@ use App\Http\Controllers\AdminCheckoutController;
 use App\Http\Controllers\AdminClientOrderController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminProductController;
+use App\Http\Controllers\AdminQuizAnswerController;
+use App\Http\Controllers\AdminQuizController;
+use App\Http\Controllers\AdminQuizManagerController;
+use App\Http\Controllers\AdminQuizQuestionController;
 use App\Http\Controllers\AdminShoppingCartController;
 use App\Http\Controllers\AdminSupplierController;
 use App\Http\Controllers\AdminSupplierOrderController;
@@ -102,3 +106,16 @@ Route::prefix('checkout')->group(function () {
     Route::post('/', [AdminCheckoutController::class, 'store'])
         ->name('checkout.store');
 });
+
+Route::prefix('user_quiz')->group(function () {
+    Route::get('/', [AdminQuizController::class, 'index'])->name('user_quiz.index');
+    Route::get('/create_quiz', [AdminQuizController::class, 'create'])->name('user_quiz.create');
+    Route::post('/create_quiz', [AdminQuizController::class, 'store'])->name('user_quiz.store');
+    Route::get('/update_quiz/{id}', [AdminQuizController::class, 'edit'])->name('user_quiz.edit');
+    Route::delete('/{id}', [AdminQuizController::class, 'destroy'])->name('user_quizzes.destroy');
+    Route::delete('/questions/{id}', [AdminQuizQuestionController::class, 'destroy'])->name('questions.destroy');
+    Route::delete('/answers/{id}', [AdminQuizAnswerController::class, 'destroy'])->name('answers.destroy');
+
+});
+
+Route::get('quiz_manager/{id}', [AdminQuizManagerController::class, 'show'])->name('quiz_manager.show');

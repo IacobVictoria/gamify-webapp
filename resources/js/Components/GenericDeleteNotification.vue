@@ -75,16 +75,16 @@ export default {
         },
         objectId: {
             type: [String, Number],
-            
+
         },
         items: {
             type: [Array, null],
-          
+
         },
 
         extraId: {
             type: [String, Number],
-         
+
         },
     },
     methods: {
