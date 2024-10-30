@@ -74,6 +74,7 @@ class AdminQuizController extends Controller
         $quiz = UserQuiz::create([
             'id' => Uuid::uuid(),
             'title' => $validated['title'],
+            'description' => $validated['description']
 
         ]);
 
@@ -120,17 +121,28 @@ class AdminQuizController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $quizId)
     {
-        //
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string|max:255'
+        ]);
+
+        $quiz = UserQuiz::find($quizId);
+        $quiz->update([
+            'title' => $validatedData['title'],
+            'description' => $validatedData['description']
+        ]);
+
+        return redirect()->back()->with('Succes Updated the quiz');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $quizId)
     {
-        $quiz = UserQuiz::find($id);
+        $quiz = UserQuiz::find($quizId);
 
         $quiz->delete();
 

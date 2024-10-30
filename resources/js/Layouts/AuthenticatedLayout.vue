@@ -47,6 +47,10 @@ const showingNavigationDropdown = ref(false);
                                         :active="route().current('user.order_history.index')">
                                         Orders History
                                     </NavLink>
+                                    <NavLink :href="route('user.quizzes.index')"
+                                        :active="route().current('user.quizzes.index')">
+                                        Quizzes
+                                    </NavLink>
                                 </template>
                                 <template v-if="authUserHasRole('Admin')">
                                     <NavLink :href="route('admin.dashboard')"
@@ -76,10 +80,12 @@ const showingNavigationDropdown = ref(false);
                                     <NavLink :href="route('admin.qrcodes')" :active="route().current('admin.qrcodes')">
                                         QrCodes
                                     </NavLink>
-                                    <NavLink :href="route('admin.badges.index')" :active="route().current('admin.badges.index')">
+                                    <NavLink :href="route('admin.badges.index')"
+                                        :active="route().current('admin.badges.index')">
                                         Badges
                                     </NavLink>
-                                    <NavLink :href="route('admin.user_quiz.index')" :active="route().current('admin.badges.index')">
+                                    <NavLink :href="route('admin.user_quiz.index')"
+                                        :active="route().current('admin.badges.index')">
                                         UserQuiz
                                     </NavLink>
                                 </template>

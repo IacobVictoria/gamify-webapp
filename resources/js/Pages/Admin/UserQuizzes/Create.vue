@@ -4,6 +4,7 @@
             <h1 class="text-xl font-semibold mb-4">Create New Quiz</h1>
             <div class="mb-4">
                 <input v-model="quizTitle" placeholder="Quiz Title" class="w-full p-2 border rounded" />
+                <input v-model="quizDescription" placeholder="Quiz Description" class="w-full p-2 border rounded" />
             </div>
 
             <button @click="openQuestionModal" class="bg-blue-500 text-white px-4 py-2 rounded">
@@ -31,7 +32,8 @@
                     <label class="block text-gray-700 font-semibold mb-2">Question</label>
                     <input v-model="newQuestionText" placeholder="Enter question text"
                         class="w-full p-2 border rounded" />
-                    <input v-model="newQuestionScore" type="number" placeholder="Enter a score for the question" class="w-full p-2 border rounded mt-2" />
+                    <input v-model="newQuestionScore" type="number" placeholder="Enter a score for the question"
+                        class="w-full p-2 border rounded mt-2" />
                 </div>
                 <h3 class="text-gray-700 font-semibold mb-2">Answers</h3>
                 <div class="grid grid-cols-3 mb-2">
@@ -79,6 +81,7 @@ export default {
     data() {
         return {
             quizTitle: '',
+            quizDescription: '',
             isQuestionModalOpen: false,
             newQuestionText: '',
             newQuestionScore: '',
@@ -92,12 +95,6 @@ export default {
             this.isQuestionModalOpen = true;
         },
 
-        closeQuestionModal() {
-            this.isQuestionModalOpen = false;
-            // Reset modal fields when closed
-            this.resetQuestionModal();
-        },
-
         addAnswer() {
             this.newAnswers.push({ text: '', isCorrect: false });
         },
@@ -107,13 +104,12 @@ export default {
         },
 
         saveQuestion() {
-            // Validate question input before saving
+
             if (!this.newQuestionText || this.newAnswers.length === 0 || this.correctAnswerIndex === null) {
                 alert("Please fill in all fields for the question and answers.");
                 return;
             }
 
-            // Add the new question and its answers to the questions array
             this.questions.push({
                 text: this.newQuestionText,
                 score: this.newQuestionScore,
@@ -123,8 +119,12 @@ export default {
                 }))
             });
 
-            // Close modal and reset fields
             this.closeQuestionModal();
+        },
+
+        closeQuestionModal() {
+            this.isQuestionModalOpen = false;
+            this.resetQuestionModal();
         },
 
         resetQuestionModal() {
@@ -135,13 +135,14 @@ export default {
         },
 
         postQuiz() {
-            // Prepare the data to be sent to the backend
+
             const payload = {
                 title: this.quizTitle,
+                description: this.quizDescription,
                 questions: this.questions.map(question => ({
                     text: question.text,
                     score: question.score,
-                    answers: question.answers.map((answer, index) => ({
+                    answers: question.answers.map((answer) => ({
                         text: answer.text,
                         isCorrect: answer.isCorrect,
                     }))
@@ -149,15 +150,7 @@ export default {
             };
 
             // Send the data to the backend to store
-            this.$inertia.post(route('admin.user_quiz.store'), payload)
-                .then(() => {
-                    // Reset the form after successful submission
-                    this.quizTitle = '';
-                    this.questions = [];
-                })
-                .catch(error => {
-                    console.error("Error posting quiz:", error);
-                });
+            this.$inertia.post(route('admin.user_quiz.store'), payload);
         }
     }
 };

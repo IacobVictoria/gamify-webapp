@@ -64,7 +64,6 @@ class AdminQuizAnswerController extends Controller
 
         $answer->delete();
 
-        return redirect()->route('admin.user_quiz.index')
-        ->with('success', 'Answer deleted successfully!');
+        return redirect()->back();
     }
 }

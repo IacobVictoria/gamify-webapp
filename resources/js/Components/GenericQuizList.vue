@@ -52,22 +52,6 @@
                                         </button>
 
                     </div>
-
-                    <div v-if="authUserHasRole('Admin')" class="mt-2">
-                        <template v-if="invoice === 'clients'">
-                            <button @click="showInvoiceClient(item.id, item.id_person)"
-                                class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">
-                                Factura Client
-                            </button>
-                        </template>
-                        <template v-else-if="invoice === 'suppliers'">
-                            <button @click="showInvoiceSupplier(item.id, item.id_supplier)"
-                                class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
-                                Factura Furnizor
-                            </button>
-                        </template>
-
-                    </div>
                     </td>
                     </tr>
                     <tr v-if="showDetails[index]" class="details-row">
@@ -111,8 +95,6 @@
                                             </ul>
 
                                         </div>
-
-
 
                                     </Slide>
                                     <template #addons>

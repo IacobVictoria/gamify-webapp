@@ -111,11 +111,14 @@ Route::prefix('user_quiz')->group(function () {
     Route::get('/', [AdminQuizController::class, 'index'])->name('user_quiz.index');
     Route::get('/create_quiz', [AdminQuizController::class, 'create'])->name('user_quiz.create');
     Route::post('/create_quiz', [AdminQuizController::class, 'store'])->name('user_quiz.store');
+    Route::put('/update_quiz/{quizId}',[AdminQuizController::class,'update'])->name('user_quiz.update');
     Route::get('/update_quiz/{id}', [AdminQuizController::class, 'edit'])->name('user_quiz.edit');
-    Route::delete('/{id}', [AdminQuizController::class, 'destroy'])->name('user_quizzes.destroy');
+    Route::delete('/{quizId}', [AdminQuizController::class, 'destroy'])->name('user_quiz.destroy');
     Route::delete('/questions/{id}', [AdminQuizQuestionController::class, 'destroy'])->name('questions.destroy');
     Route::delete('/answers/{id}', [AdminQuizAnswerController::class, 'destroy'])->name('answers.destroy');
 
 });
 
 Route::get('quiz_manager/{id}', [AdminQuizManagerController::class, 'show'])->name('quiz_manager.show');
+Route::post('quiz_manager/{quizId}/add_question', [AdminQuizManagerController::class, 'addQuestion'])->name('quiz_add_questions.store');
+Route::put('/quiz_manager/{quizId}/update_question', [AdminQuizManagerController::class, 'updateQuestion'])->name('quiz_update_question.update');
