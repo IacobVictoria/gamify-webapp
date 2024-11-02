@@ -51,7 +51,14 @@
                                             {{ showDetails[index] ? 'Ascunde' : 'Afișează' }} intrebarile
                                         </button>
 
+                                        <td class="px-6 py-4 whitespace-nowrap text-center text-md font-medium">
+                                            <inertia-link :href="route('admin.quiz_remarks.show', item.id)"
+                                                class="text-indigo-600 hover:text-indigo-900">Quiz
+                                                Feedback</inertia-link>
+
+                                        </td>
                     </div>
+
                     </td>
                     </tr>
                     <tr v-if="showDetails[index]" class="details-row">

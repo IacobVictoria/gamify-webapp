@@ -16,6 +16,8 @@ class UserQuizResult extends Model
         'date',
         'total_score',
         'attempt_number',
+        'percentage_score',
+        'is_locked'
     ];
 
     protected $table = 'user_quiz_results';

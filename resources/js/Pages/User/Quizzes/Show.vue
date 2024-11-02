@@ -3,14 +3,20 @@
         <inertia-link :href="route('user.quizzes.index')" class="text-blue-500 underline">Back to search for
             quizzes</inertia-link>
 
-        <StartScreen v-if="!quizStarted && !quizEnded" :quiz="quiz" @start-quiz="startQuiz" />
+        <StartScreen v-if="!quizStarted && !quizEnded && !isQuizLocked && $page.props.nr_attempts <3" :quiz="quiz" @start-quiz="startQuiz" :nr_attempts="nr_attempts"/>
 
-        <QuizCard v-if="quizStarted" :question="currentQuestion" :questionIndex="currentQuestionIndex"
-            :totalQuestions="quiz.questions.length" :initialScore="score" @next-question="nextQuestion"
-            @quit-quiz="quitQuiz" @score-updated="updateScore" @quiz-completed="quizCompleted" />
+        <div v-if="quiz.questions.length > 0">
+            <QuizCard v-if="quizStarted" :question="currentQuestion" :questionIndex="currentQuestionIndex"
+                :totalQuestions="quiz.questions.length" :initialScore="score" @next-question="nextQuestion"
+                @quit-quiz="quitQuiz" @score-updated="updateScore" @quiz-completed="quizCompleted" :nr_attempts="nr_attempts"/>
+        </div>
 
-        <FinalScreen v-if="quizEnded" :score="score" :totalQuestions="quiz.questions.length"
-            :correct-answers="correctAnswersCount" @quit-quiz="quitQuiz" :quiz-id="quiz.id" :responses="responses" />
+        <FinalScreen v-if="quizEnded === true" :score="score" :totalQuestions="quiz.questions.length"
+            :correct-answers="correctAnswersCount" @lock-quiz="lockQuiz" :quiz-id="quiz.id" :responses="responses"
+            @retry-quiz="retryQuiz" :nr-attempts="nr_attempts"  />
+
+        <!-- componenta de vizualizare rezultate finale -->
+        <FinalResult v-if="isQuizLocked === true " :responses="responses" :quiz="quiz"></FinalResult>
     </div>
 </template>
 
@@ -18,15 +24,18 @@
 import QuizCard from './QuizCard.vue';
 import StartScreen from './StartScreen.vue';
 import FinalScreen from './FinalScreen.vue';
+import FinalResult from './FinalResult.vue';
 
 export default {
     components: {
         StartScreen,
         QuizCard,
-        FinalScreen
+        FinalScreen,
+        FinalResult
     },
     props: {
-        quiz: Object
+        quiz: Object,
+        nr_attempts: Number,
     },
     data() {
         return {
@@ -35,7 +44,8 @@ export default {
             score: 0,
             quizEnded: false,
             correctAnswersCount: 0,
-            responses: []
+            responses: [],
+            isQuizLocked: false
         };
     },
     computed: {
@@ -77,6 +87,19 @@ export default {
             this.quizEnded = true;
 
         },
+
+        retryQuiz() {
+            this.quizStarted = true;
+            this.quizEnded = false;
+            this.currentQuestionIndex = 0;
+            this.score = 0;
+        },
+
+        lockQuiz() {
+            this.quizStarted = false;
+            this.quizEnded = false;
+            this.isQuizLocked = true;
+        }
 
     }
 };

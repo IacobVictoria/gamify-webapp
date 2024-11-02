@@ -104,7 +104,6 @@ export default {
         },
 
         saveQuestion() {
-
             if (!this.newQuestionText || this.newAnswers.length === 0 || this.correctAnswerIndex === null) {
                 alert("Please fill in all fields for the question and answers.");
                 return;
@@ -135,7 +134,6 @@ export default {
         },
 
         postQuiz() {
-
             const payload = {
                 title: this.quizTitle,
                 description: this.quizDescription,

@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserOrderHistoryController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\UserQuizController;
+use App\Http\Controllers\UserQuizRemarkController;
 use App\Http\Controllers\UserShoppingCartController;
 use App\Http\Controllers\UserWishlistController;
 use Illuminate\Support\Facades\Route;
@@ -51,8 +52,9 @@ Route::prefix('wishlist')->group(function () {
 
 Route::prefix('quizzes')->group(function () {
     Route::get('/', [UserQuizController::class, 'index'])->name('quizzes.index');
-    Route::get('/{quizId}',[UserQuizController::class,'show'])->name('quiz.show');
+    Route::get('/{quizId}', [UserQuizController::class, 'show'])->name('quiz.show');
+    Route::post('/remarks/{quizId}', [UserQuizRemarkController::class, 'store'])->name('quiz.remark.store');
 });
 
-Route::post('/user_quiz/retry',[UserQuizController::class,'retryQuiz'])->name('user_quiz.retry');
-Route::post('/user_quiz/lock',[UserQuizController::class,'lockQuiz'])->name('user_quiz.lock');
+Route::post('/user_quiz/retry', [UserQuizController::class, 'retryQuiz'])->name('user_quiz.retry');
+Route::post('/user_quiz/lock', [UserQuizController::class, 'lockQuiz'])->name('user_quiz.lock');

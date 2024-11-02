@@ -17,4 +17,18 @@ class UserScoreService implements UserScoreInterface
         $user->score += $score;
         $user->save();
     }
+
+    public function quizAttemptScore(User $user, $nr_attempt, $obtained_score)
+    {
+        $multiplier = match ($nr_attempt) {
+            1 => 1.0,
+            2 => 0.8,
+            3 => 0.6
+        };
+
+        $final_score = $obtained_score * $multiplier;
+
+        $user->score += $final_score;
+        $user->save();
+    }
 }

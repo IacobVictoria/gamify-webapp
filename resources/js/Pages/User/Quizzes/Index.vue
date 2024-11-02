@@ -4,7 +4,8 @@
             Hello, {{ $page.props.user.name }}
         </div>
 
-        <!-- Quiz Sections Container -->
+                <LeaderBoardQuizzes :leaderboard="leaderboard" />       
+
         <div class="container mx-auto mt-6 space-y-12 px-4">
             <!-- Easy Quizzes -->
             <div v-if="quizzes['easy'].length" class="space-y-6">
@@ -13,8 +14,8 @@
                     <div v-for="quiz in quizzes['easy']" :key="quiz.quizData.id"
                         class="flex-1 max-w-md bg-gradient-to-r from-green-300 to-green-500 p-6 rounded-lg shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-2xl flex flex-col items-center text-center">
                         <img :src="quiz.image" alt="Quiz Image" class="w-full h-40 object-cover rounded-md mb-4">
-                        <h3 class="text-2xl font-extrabold text-white mb-2">{{ quiz.title }}</h3>
-                       
+                        <h3 class="text-2xl font-extrabold text-white mb-2">{{ quiz.quizData.title }}</h3>
+
                         <span
                             class="bg-white text-green-600 text-xs font-semibold py-1 px-2 rounded-full shadow-md mb-2">
                             Easy
@@ -40,7 +41,7 @@
                         class="flex-1 max-w-md bg-gradient-to-r from-yellow-300 to-yellow-500 p-6 rounded-lg shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-2xl flex flex-col items-center text-center">
                         <img :src="quiz.image" alt="Quiz Image" class="w-full h-40 object-cover rounded-md mb-4">
                         <h3 class="text-2xl font-extrabold text-white mb-2">{{ quiz.quizData.title }}</h3>
-                       
+
                         <span
                             class="bg-white text-yellow-600 text-xs font-semibold py-1 px-2 rounded-full shadow-md mb-2">
                             Medium
@@ -88,15 +89,41 @@
 
 <script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import LeaderBoardQuizzes from './LeaderBoardQuizzes.vue';
 export default {
     components: {
         AuthenticatedLayout
     },
+
     props: {
         quizzes: {
             type: Array,
             required: true
+        },
+        leaderboard: {
+            type: Array,
+            required: true
         }
     },
+    components: {
+        LeaderBoardQuizzes,
+        AuthenticatedLayout
+    },
+    watch: {
+        quizzes: {
+            deep: true,
+            immediate: true,
+            handler: (newQuizzes, oldQuizzes) => {
+                //console.log("Quizzes changed:", newQuizzes, oldQuizzes);
+            }
+        }
+    },
+    methods: {
+        // showResults(quizId) {
+        //     Inertia.visit(`/quizzes/${quizId}`, {
+        //         data: { isLocked: true } // Trimite date suplimentare
+        //     });
+        // }
+    }
 }
 </script>

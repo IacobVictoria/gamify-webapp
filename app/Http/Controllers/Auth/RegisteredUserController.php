@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Enums\CityRomania;
 use App\Enums\Gender;
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -56,10 +58,14 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        UserRole::insert([
+            'user_id' => $user->id,
+            'role_id' => Role::query()->where('name', 'user')->first()->id,
+        ]);
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('user.dashboard'));
     }
 }

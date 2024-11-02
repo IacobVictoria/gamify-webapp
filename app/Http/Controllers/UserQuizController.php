@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\UserQuiz;
 use App\Models\UserQuizAnswer;
 use App\Models\UserQuizResponse;
 use App\Models\UserQuizResult;
+use App\Services\BadgeService;
+use App\Services\UserQuizService;
+use App\Services\UserScoreService;
+use App\Services\UserService;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,9 +18,17 @@ use Inertia\Inertia;
 
 class UserQuizController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $userScoreService;
+    protected $badgeService;
+    protected $quizService;
+
+    public function __construct(UserScoreService $userScoreService, BadgeService $badgeService, UserQuizService $quizService)
+    {
+        $this->userScoreService = $userScoreService;
+        $this->badgeService = $badgeService;
+        $this->quizService = $quizService;
+    }
+
     public function index()
     {
         $user = Auth::user();
@@ -23,19 +36,37 @@ class UserQuizController extends Controller
 
         $groupedQuizzes = $quizzes->groupBy('difficulty')->map(function ($quizzes) use ($user) {
             return $quizzes->map(function ($quiz) use ($user) {
- 
+
                 $result = UserQuizResult::where('user_id', $user->id)
                     ->where('quiz_id', $quiz->id)
                     ->first();
-    
                 return [
                     'quizData' => $quiz,
-                    'is_locked' => $result ? $result->is_locked : false, 
+                    'is_locked' => $result ? $result->is_locked : false,
                 ];
             });
         });
+
+        $leaderBoard = User::with('quizResults')->get()->map(function ($user) {
+            $totalScore = $user->quizResults->sum('total_score');
+            $challenges = $user->quizResults->unique('quiz_id')->count();
+
+            return [
+                'user_id' => $user->id,
+                'name' => $user->name,
+                'gender' => $user->gender,
+                'total_score' => $totalScore,
+                'challenges' => $challenges,
+            ];
+        })
+            ->sortByDesc('total_score')
+            ->take(3)
+            ->values()
+            ->toArray();
+
         return Inertia::render('User/Quizzes/Index', [
-            'quizzes' => $groupedQuizzes
+            'quizzes' => $groupedQuizzes,
+            'leaderboard' => $leaderBoard
         ]);
     }
 
@@ -60,6 +91,8 @@ class UserQuizController extends Controller
      */
     public function show(string $quizId)
     {
+        $user = Auth::user();
+
         $quiz = UserQuiz::with([
             'questions.answers' => function ($query) {
                 $query->orderByRaw('RAND()');
@@ -68,140 +101,24 @@ class UserQuizController extends Controller
 
         $quiz->questions = $quiz->questions->shuffle();
 
+        $nr_attempts = $user->quizResults()->where('quiz_id', $quizId)->max('attempt_number') ?? 0;
+
         return Inertia::render('User/Quizzes/Show', [
-            'quiz' => $quiz
+            'quiz' => $quiz,
+            'nr_attempts' => $nr_attempts,
         ]);
     }
 
+
     public function retryQuiz(Request $request)
     {
-        $quizId = $request->input('quiz_id');
-        $userId = $request->input('user_id');
-        $score = $request->input('score');
-        $responses = $request->input('responses');
-
-        // Verifică dacă există deja un rezultat pentru acest quiz și user
-        $quizResult = UserQuizResult::where('user_id', $userId)
-            ->where('quiz_id', $quizId)
-            ->first();
-
-        if (!$quizResult) {
-            // Dacă nu există un rezultat anterior, creează unul nou cu attempt_number = 1
-            $quizResult = new UserQuizResult([
-                'id' => Uuid::uuid(),
-                'user_id' => $userId,
-                'quiz_id' => $quizId,
-                'attempt_number' => 1,
-                'total_score' => $score,
-                'is_locked' => false
-            ]);
-        } else {
-            // Dacă există deja un rezultat, incrementează attempt_number
-            $quizResult->attempt_number += 1;
-            $quizResult->total_score = $score;
-        }
-
-        // Blochează quiz-ul dacă numărul de încercări depășește 3
-        if ($quizResult->attempt_number > 3) {
-            $quizResult->is_locked = true;
-        }
-
-        $quizResult->save();
-
-        // Salvează răspunsurile utilizatorului
-        foreach ($responses as $response) {
-            // Caută dacă există deja un răspuns
-            $existingResponse = UserQuizResponse::where([
-                'user_id' => $userId,
-                'quiz_id' => $quizId,
-                'question_id' => $response['questionId']
-            ])->first();
-
-            if ($existingResponse) {
-                // Actualizează răspunsul existent
-                $existingResponse->update([
-                    'answer_id' => $response['answerId'],
-                    'is_correct' => UserQuizAnswer::find($response['answerId'])->is_correct,
-                ]);
-            } else {
-                // Creează un nou răspuns
-                UserQuizResponse::create([
-                    'id' => Uuid::uuid(), // Generează un UUID nou
-                    'user_id' => $userId,
-                    'quiz_id' => $quizId,
-                    'question_id' => $response['questionId'],
-                    'answer_id' => $response['answerId'],
-                    'is_correct' => UserQuizAnswer::find($response['answerId'])->is_correct,
-                ]);
-            }
-        }
-
-        return redirect()->route('user.quiz.show', ['quizId' => $quizId]);
-
+        $this->quizService->retryQuiz($request);
     }
 
     public function lockQuiz(Request $request)
     {
-        $quizId = $request->input('quiz_id');
-        $userId = $request->input('user_id');
-        $score = $request->input('score');
-        $responses = $request->input('responses');
-
-        // Verifică dacă există deja un rezultat pentru acest quiz și user
-        $quizResult = UserQuizResult::where('user_id', $userId)
-            ->where('quiz_id', $quizId)
-            ->first();
-
-        if (!$quizResult) {
-            // Dacă nu există un rezultat anterior, creează unul nou cu attempt_number = 1
-            $quizResult = new UserQuizResult([
-                'id' => Uuid::uuid(),
-                'user_id' => $userId,
-                'quiz_id' => $quizId,
-                'attempt_number' => 1,
-                'total_score' => $score,
-                'is_locked' => true
-            ]);
-        } else {
-            // Dacă există deja un rezultat, setează attempt_number și blochează quiz-ul
-            $quizResult->attempt_number += 1;
-            $quizResult->total_score = $score;
-            $quizResult->is_locked = true;
-        }
-
-        $quizResult->save();
-
-        // Salvează răspunsurile utilizatorului
-        foreach ($responses as $response) {
-            // Caută dacă există deja un răspuns
-            $existingResponse = UserQuizResponse::where([
-                'user_id' => $userId,
-                'quiz_id' => $quizId,
-                'question_id' => $response['questionId']
-            ])->first();
-
-            if ($existingResponse) {
-                // Actualizează răspunsul existent
-                $existingResponse->update([
-                    'answer_id' => $response['answerId'],
-                    'is_correct' => UserQuizAnswer::find($response['answerId'])->is_correct,
-                ]);
-            } else {
-                // Creează un nou răspuns
-                UserQuizResponse::create([
-                    'id' => Uuid::uuid(), // Generează un UUID nou
-                    'user_id' => $userId,
-                    'quiz_id' => $quizId,
-                    'question_id' => $response['questionId'],
-                    'answer_id' => $response['answerId'],
-                    'is_correct' => UserQuizAnswer::find($response['answerId'])->is_correct,
-                ]);
-            }
-        }
-
-        return redirect()->route('user.quiz.show', ['quizId' => $quizId]);
+        $this->quizService->lockQuiz($request);
     }
-
 
     /**
      * Show the form for editing the specified resource.

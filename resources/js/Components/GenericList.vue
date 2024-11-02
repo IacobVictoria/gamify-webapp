@@ -144,6 +144,7 @@ export default {
         filters: Array,
         prevFilters: Object,
         getRoute: String,
+        extraId: String,
         createRoute: {
             type: String,
             required: false,
@@ -164,12 +165,22 @@ export default {
     watch: {
         filterValues: {
             handler: debounce(300, function () {
+                if(this.extraId){
+                    this.$inertia.get(route(this.getRoute,this.extraId), {
+                    filters: this.filterValues,
+                }, {
+                    preserveState: true,
+                    replace: true,
+                });
+                }
+                else{
                 this.$inertia.get(route(this.getRoute), {
                     filters: this.filterValues,
                 }, {
                     preserveState: true,
                     replace: true,
                 });
+            }
             }),
             deep: true,
         },

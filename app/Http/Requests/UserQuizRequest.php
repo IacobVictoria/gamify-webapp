@@ -23,6 +23,7 @@ class UserQuizRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
             'questions' => 'required|array',
             'questions.*.text' => 'required|string',
             'questions.*.score' => 'nullable|integer',

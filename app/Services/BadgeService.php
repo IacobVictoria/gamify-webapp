@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+use App\Enums\UserQuizDifficulty;
 use App\Interfaces\BadgeServiceInterface;
 use App\Models\Badge;
 use App\Models\Review;
@@ -38,6 +39,14 @@ class BadgeService implements BadgeServiceInterface
     {
         $this->awardActiveShoppingBadge($user);
         $this->awardMonthlyShoppingBadge($user);
+    }
+
+    public function quizBadges(?User $user)
+    {
+        $this->awardQuizPerfectScore($user);
+        $this->awardQuizNoviceBadge($user);
+        $this->awardQuizEnthusiastBadge($user);
+        $this->awardQuizExplorerBadge($user);
     }
 
     public function awardTopReviewerBadge(User $user)
@@ -183,6 +192,79 @@ class BadgeService implements BadgeServiceInterface
 
     }
 
+    public function awardQuizExplorerBadge(User $user)
+    {
+
+        $categories = UserQuizDifficulty::cases();
+
+        $badge = Badge::where('name', 'Quiz Explorer')->first();
+
+        // Verificăm dacă utilizatorul a participat la cel puțin un quiz din fiecare categorie
+        $completedQuizzes = $user->quizResults()->get()->pluck('quiz.category')->unique();
+
+        if (count($completedQuizzes) === count($categories) && !$user->badges()->where('name', 'Quiz Explorer')->exists()) {
+            $this->assignBadge($user, 'Quiz Explorer');
+        }
+
+        
+        $this->userScoreService->addScore($user, $badge->score);
+
+    }
+
+    public function awardQuizNoviceBadge(User $user)
+    {
+        $badge = Badge::where('name', 'Quiz Novice')->first();
+        //daca a terminat vreun quiz
+        $completedQuizzes = $user->quizResults()->where('is_locked', true)->count();
+
+        if ($completedQuizzes === 1 && !$user->badges()->where('name', 'Quiz Novice')->exists()) {
+            $this->assignBadge($user, 'Quiz Novice');
+        }
+
+        
+        $this->userScoreService->addScore($user, $badge->score);
+
+    }
+
+    public function awardQuizEnthusiastBadge(User $user)
+    {
+        $badge = Badge::where('name', 'Quiz Enthusiast')->first();
+
+        $quizResults = $user->quizResults()->where('is_locked', true)->get();
+
+        if ($quizResults->count() >= 5) {
+            $averageScore = $quizResults->avg('percentage_score');
+
+            // verificăm dacă media este >= 80%
+            if ($averageScore >= 80 && !$user->badges()->where('name', 'Quiz Enthusiast')->exists()) {
+                $this->assignBadge($user, 'Quiz Enthusiast');
+            }
+        }
+
+        
+        $this->userScoreService->addScore($user, $badge->score);
+
+    }
+
+    public function awardQuizPerfectScore(User $user)
+    {
+        $badge = Badge::where('name', 'Quiz Perfect Score')->first();
+        //Obținerea unui punctaj maxim (de exemplu, 100%) la 3 quiz uri
+        $quizResults = $user->quizResults()->where('is_locked', true)->get();
+
+        if ($quizResults->count() >= 3) {
+            $averageScore = $quizResults->avg('percentage_score');
+
+            if ($averageScore === 100 && !$user->badges()->where('name', 'Quiz Perfect Score')->exists()) {
+                $this->assignBadge($user, 'Quiz Perfect Score');
+            }
+        }
+
+        
+        $this->userScoreService->addScore($user, $badge->score);
+
+
+    }
 
 
 }

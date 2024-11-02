@@ -117,5 +117,8 @@ class User extends Authenticatable
         return $this->hasMany(Wishlist::class);
     }
 
-
+    public function quizResults()
+    {
+        return $this->hasMany(UserQuizResult::class, 'user_id');
+    }
 }

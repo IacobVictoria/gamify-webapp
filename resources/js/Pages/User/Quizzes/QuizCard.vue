@@ -6,7 +6,6 @@
             style="background: linear-gradient(90deg, #4F46E5 0%, #A78BFA 100%);">
         </div>
 
-        <!-- Timer și Score -->
         <div class="relative z-10 mb-8">
             <div class="flex justify-between items-center mb-2">
                 <div class="w-full">
@@ -56,6 +55,7 @@
             Finish Quiz
         </button>
     </div>
+    <div>Round {{ this.$page.props.nr_attempts+1}}</div>
 </template>
 
 <script>
@@ -64,7 +64,8 @@ export default {
         question: Object,
         questionIndex: Number,
         totalQuestions: Number,
-        initialScore: Number
+        initialScore: Number,
+        nr_attempts: Number
     },
     data() {
         return {
@@ -80,7 +81,8 @@ export default {
     computed: {
         timerWidth() {
             return (this.timeRemaining / 30) * 100;
-        }
+        },
+    
     },
     methods: {
         finishQuiz() {
@@ -126,7 +128,7 @@ export default {
             if (this.selectedAnswer) return;
             this.selectedAnswer = answer.id;
             clearInterval(this.interval);
-            // Track the question and selected answer
+            // track the question and selected answer
             this.responses.push({
                 questionId: this.question.id,
                 answerId: answer.id
@@ -204,12 +206,11 @@ button:disabled {
     cursor: default;
 }
 
-/* Stilizare pentru letterbox */
 button span {
     transition: all 0.3s ease;
 }
 
-/* Shadow pentru card */
+
 .quiz-card {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }

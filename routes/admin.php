@@ -14,6 +14,7 @@ use App\Http\Controllers\AdminShoppingCartController;
 use App\Http\Controllers\AdminSupplierController;
 use App\Http\Controllers\AdminSupplierOrderController;
 use App\Http\Controllers\AdminSupplierProductController;
+use App\Http\Controllers\AdminUserQuizRemarkController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\SupplierController;
@@ -119,6 +120,10 @@ Route::prefix('user_quiz')->group(function () {
 
 });
 
-Route::get('quiz_manager/{id}', [AdminQuizManagerController::class, 'show'])->name('quiz_manager.show');
-Route::post('quiz_manager/{quizId}/add_question', [AdminQuizManagerController::class, 'addQuestion'])->name('quiz_add_questions.store');
-Route::put('/quiz_manager/{quizId}/update_question', [AdminQuizManagerController::class, 'updateQuestion'])->name('quiz_update_question.update');
+Route::prefix('quiz_manager')->group(function() {
+    Route::get('/{id}', [AdminQuizManagerController::class, 'show'])->name('quiz_manager.show');
+    Route::post('/{quizId}/add_question', [AdminQuizManagerController::class, 'addQuestion'])->name('quiz_add_questions.store');
+    Route::put('/{quizId}/update_question', [AdminQuizManagerController::class, 'updateQuestion'])->name('quiz_update_question.update');
+    Route::get('/quiz_remarks/{quizId}',[AdminUserQuizRemarkController::class,'show'])->name('quiz_remarks.show');
+});
+
