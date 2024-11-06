@@ -2,6 +2,7 @@
 
 namespace App\Services;
 use App\Enums\UserQuizDifficulty;
+use App\Events\ObtainBadge;
 use App\Interfaces\BadgeServiceInterface;
 use App\Models\Badge;
 use App\Models\Review;
@@ -189,6 +190,8 @@ class BadgeService implements BadgeServiceInterface
         $badge = Badge::where('name', $badgeName)->first();
 
         $user->badges()->attach($badge, ['id' => Uuid::uuid(), 'awarded_at' => now()]);
+
+        broadcast(new ObtainBadge($user,$badge));
 
     }
 

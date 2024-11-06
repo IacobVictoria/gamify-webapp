@@ -66,4 +66,6 @@ Route::prefix('reviews')->group(function () {
 
 Route::get('/recommendations/{userId}', [RecommandationPythonController::class, 'index']);
 
+Broadcast::routes(['middleware' => ['web', 'auth']]);
+
 require __DIR__ . '/auth.php';

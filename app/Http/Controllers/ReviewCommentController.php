@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CommentEvent;
 use App\Http\Requests\ReviewCommentRequest;
 use App\Models\Review;
 use App\Models\ReviewComment;
@@ -48,6 +49,8 @@ class ReviewCommentController extends Controller
         $comment->save();
 
         $this->badgeService->awardActiveCommenterBadge($user);
+
+        broadcast(new CommentEvent($comment,$user));
 
         return redirect()->back()
             ->with('success', 'Comment Review created successfully!');

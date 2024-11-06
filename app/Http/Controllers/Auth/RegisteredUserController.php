@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Enums\CityRomania;
 use App\Enums\Gender;
+use App\Events\UserRegistration;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
@@ -63,6 +64,7 @@ class RegisteredUserController extends Controller
             'role_id' => Role::query()->where('name', 'user')->first()->id,
         ]);
         event(new Registered($user));
+        event(new UserRegistration($user));
 
         Auth::login($user);
 

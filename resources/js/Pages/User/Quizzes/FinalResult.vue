@@ -1,5 +1,5 @@
 <template>
-
+<AuthenticatedLayout>
     <div class="flex flex-col justify-center items-center w-3/5 bg-gray-200">
         <div class="w-full max-w-3xl p-6 bg-white rounded-lg shadow-lg">
             <template v-if="isFeedback" class="mt-6">
@@ -36,9 +36,12 @@
             </div>
         </div>
     </div>
+</AuthenticatedLayout>
 </template>
 
 <script>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+
 export default {
     props: {
         responses: {
@@ -50,12 +53,16 @@ export default {
             required: true
         }
     },
+    components:{
+        AuthenticatedLayout,
+    },
     data() {
         return {
             feedback: '',
             isFeedback: true
         }
     },
+    
     methods: {
         isCorrectAnswer(question, answer) {
             const userResponse = this.responses.find(resp => resp.questionId === question.id);

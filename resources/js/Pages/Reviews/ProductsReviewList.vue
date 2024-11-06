@@ -172,7 +172,6 @@ export default {
         ReviewSummary
 
     },
-
     props: {
         reviews: {
             type: Array,
@@ -194,10 +193,16 @@ export default {
             isLiked: false,
             editMode: false,
             reviewStates: [],
+            userId: this.$page.props.user.id,
 
         }
     },
-
+    mounted() {
+        console.log('sdbv');
+        window.Echo.private(`comments.${this.userId}`).listen('.CommentEvent', (event) => {        
+        console.log(event);
+    });
+    },
     watch: {
         reviews: {
             handler() {
