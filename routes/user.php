@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReviewCommentController;
 use App\Http\Controllers\ReviewLikeController;
 use App\Http\Controllers\UserCheckoutController;
@@ -58,3 +59,8 @@ Route::prefix('quizzes')->group(function () {
 
 Route::post('/user_quiz/retry', [UserQuizController::class, 'retryQuiz'])->name('user_quiz.retry');
 Route::post('/user_quiz/lock', [UserQuizController::class, 'lockQuiz'])->name('user_quiz.lock');
+
+Route::prefix('notifications')->group(function () {
+    Route::get('/', [NotificationController::class, 'getNotifications'])->name('notifications.getNotifications');
+    Route::post('/mark-as-read', [NotificationController::class, 'markNotificationsAsRead'])->name('notifications.markNotificationAsRead');
+});

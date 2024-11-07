@@ -1,6 +1,7 @@
 <template>
     <div>
         <Header />
+        <NotificationCenter />
         <main>
             <slot>
             </slot>
@@ -57,7 +58,7 @@
 import { CheckCircleIcon, XCircleIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 import Footer from './Footer.vue';
 import Header from './Header.vue';
-
+import NotificationCenter from '@/Pages/Notification_System/NotificationCenter.vue';
 
 export default {
     name: 'AppLayout',
@@ -67,7 +68,8 @@ export default {
         Footer,
         CheckCircleIcon,
         XCircleIcon,
-        XMarkIcon
+        XMarkIcon,
+        NotificationCenter
     },
 
     data() {

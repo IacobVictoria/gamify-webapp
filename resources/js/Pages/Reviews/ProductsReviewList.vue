@@ -1,4 +1,5 @@
 <template>
+   
     <div v-if="isLoggedIn()" class="mt-10">
         <div v-if="authUserHasRole('User')">
             <button @click="toggleReviewForm"
@@ -155,6 +156,7 @@ import SortingComponent from '@/Components/SortingComponent.vue';
 import ReviewFormUpdate from './ReviewFormUpdate.vue';
 import VerifiedSVG from '@/Components/VerifiedSVG.vue';
 import ReviewSummary from './ReviewSummary.vue';
+import NotificationCenter from '../Notification_System/NotificationCenter.vue';
 
 
 export default {
@@ -169,7 +171,8 @@ export default {
         SortingComponent,
         ReviewFormUpdate,
         VerifiedSVG,
-        ReviewSummary
+        ReviewSummary,
+       
 
     },
     props: {
@@ -198,10 +201,10 @@ export default {
         }
     },
     mounted() {
-        console.log('sdbv');
-        window.Echo.private(`comments.${this.userId}`).listen('.CommentEvent', (event) => {        
-        console.log(event);
-    });
+    //     console.log('sdbv');
+    //     window.Echo.private(`comments.${this.userId}`).listen('.CommentEvent', (event) => {        
+    //     console.log(event);
+    // });
     },
     watch: {
         reviews: {

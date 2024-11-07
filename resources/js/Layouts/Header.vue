@@ -28,27 +28,30 @@
                 <!-- Dacă utilizatorul este autentificat, afișează dropdown-ul cu avatar și nume -->
                 <div v-if="isLoggedIn()" class="relative">
                     <div class="flex gap-2 items-center">
-                    <button @click="dropdownOpen = !dropdownOpen" class="flex items-center space-x-2">
-                        <img v-if="user.gender === 'Male'" src="/images/male.png" alt="User Avatar"
-                            class="w-14 h-14 rounded-full" />
-                        <img v-else src="/images/female.png" alt="User Avatar" class="w-14 h-14 rounded-full" />
-                        <span class="font-semibold">{{ user.name }}</span>
-                    </button>
-                   <inertia-link :href="route('user.wishlist.index')"> <WishlistLogoSVG></WishlistLogoSVG></inertia-link>
-                    <RecomandationLogoSVG></RecomandationLogoSVG>
-                </div>
+                        <button @click="dropdownOpen = !dropdownOpen" class="flex items-center space-x-2">
+                            <img v-if="user.gender === 'Male'" src="/images/male.png" alt="User Avatar"
+                                class="w-14 h-14 rounded-full" />
+                            <img v-else src="/images/female.png" alt="User Avatar" class="w-14 h-14 rounded-full" />
+                            <span class="font-semibold">{{ user.name }}</span>
+                        </button>
+                        <inertia-link :href="route('user.wishlist.index')">
+                            <WishlistLogoSVG></WishlistLogoSVG>
+                        </inertia-link>
+                        <RecomandationLogoSVG></RecomandationLogoSVG>
+                        <NotificationComponentIcon></NotificationComponentIcon>
+                    </div>
                     <!-- Dropdown -->
                     <div v-if="dropdownOpen"
                         class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
                         <template v-if="authUserHasRole('Admin')">
                             <inertia-link :href="route('admin.dashboard')"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Admin Dashboard
                             </inertia-link>
                         </template>
                         <template v-if="authUserHasRole('User')">
                             <inertia-link :href="route('user.dashboard')"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 User Dashboard
                             </inertia-link>
                         </template>
@@ -172,6 +175,7 @@ import { Dialog, DialogPanel } from '@headlessui/vue'
 import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
 import WishlistLogoSVG from '@/Components/WishlistLogoSVG.vue';
 import RecomandationLogoSVG from '@/Components/RecomandationLogoSVG.vue';
+import NotificationComponentIcon from '@/Pages/Notification_System/NotificationComponentIcon.vue';
 
 const navigation = [
     { name: 'Products', href: route('products.index') },

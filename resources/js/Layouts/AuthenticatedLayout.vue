@@ -5,17 +5,9 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link ,usePage} from '@inertiajs/vue3';
-
+import { Link, usePage } from '@inertiajs/vue3';
+import NotificationCenter from '@/Pages/Notification_System/NotificationCenter.vue';
 const showingNavigationDropdown = ref(false);
-const { user } = usePage().props;
-
-// onMounted(() => {
-//     Echo.private(`user.${user.id}`).listen('UserRegistration', (event) => {
-//         console.log('sdbv');
-//         console.log(event);
-//     });
-// });
 </script>
 
 <template>
@@ -205,6 +197,7 @@ const { user } = usePage().props;
             </header>
 
             <!-- Page Content -->
+            <NotificationCenter />
             <main>
                 <slot />
             </main>

@@ -1,23 +1,27 @@
 <template>
-    <div class="flex flex-col justify-center items-center min-h-screen bg-gray-200 space-y-4">
-        <inertia-link :href="route('user.quizzes.index')" class="text-blue-500 underline">Back to search for
-            quizzes</inertia-link>
+    <AuthenticatedLayout>
+        <div class="flex flex-col justify-center items-center min-h-screen bg-gray-200 space-y-4">
+            <inertia-link :href="route('user.quizzes.index')" class="text-blue-500 underline">Back to search for
+                quizzes</inertia-link>
 
-        <StartScreen v-if="!quizStarted && !quizEnded && !isQuizLocked && $page.props.nr_attempts <3" :quiz="quiz" @start-quiz="startQuiz" :nr_attempts="nr_attempts"/>
+            <StartScreen v-if="!quizStarted && !quizEnded && !isQuizLocked && $page.props.nr_attempts < 3" :quiz="quiz"
+                @start-quiz="startQuiz" :nr_attempts="nr_attempts" />
 
-        <div v-if="quiz.questions.length > 0">
-            <QuizCard v-if="quizStarted" :question="currentQuestion" :questionIndex="currentQuestionIndex"
-                :totalQuestions="quiz.questions.length" :initialScore="score" @next-question="nextQuestion"
-                @quit-quiz="quitQuiz" @score-updated="updateScore" @quiz-completed="quizCompleted" :nr_attempts="nr_attempts"/>
+            <div v-if="quiz.questions.length > 0">
+                <QuizCard v-if="quizStarted" :question="currentQuestion" :questionIndex="currentQuestionIndex"
+                    :totalQuestions="quiz.questions.length" :initialScore="score" @next-question="nextQuestion"
+                    @quit-quiz="quitQuiz" @score-updated="updateScore" @quiz-completed="quizCompleted"
+                    :nr_attempts="nr_attempts" />
+            </div>
+
+            <FinalScreen v-if="quizEnded === true" :score="score" :totalQuestions="quiz.questions.length"
+                :correct-answers="correctAnswersCount" @lock-quiz="lockQuiz" :quiz-id="quiz.id" :responses="responses"
+                @retry-quiz="retryQuiz" :nr-attempts="nr_attempts" />
+
+            <!-- componenta de vizualizare rezultate finale -->
+            <FinalResult v-if="isQuizLocked === true" :responses="responses" :quiz="quiz"></FinalResult>
         </div>
-
-        <FinalScreen v-if="quizEnded === true" :score="score" :totalQuestions="quiz.questions.length"
-            :correct-answers="correctAnswersCount" @lock-quiz="lockQuiz" :quiz-id="quiz.id" :responses="responses"
-            @retry-quiz="retryQuiz" :nr-attempts="nr_attempts"  />
-
-        <!-- componenta de vizualizare rezultate finale -->
-        <FinalResult v-if="isQuizLocked === true " :responses="responses" :quiz="quiz"></FinalResult>
-    </div>
+    </AuthenticatedLayout>
 </template>
 
 <script>
@@ -25,13 +29,15 @@ import QuizCard from './QuizCard.vue';
 import StartScreen from './StartScreen.vue';
 import FinalScreen from './FinalScreen.vue';
 import FinalResult from './FinalResult.vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 export default {
     components: {
         StartScreen,
         QuizCard,
         FinalScreen,
-        FinalResult
+        FinalResult,
+        AuthenticatedLayout
     },
     props: {
         quiz: Object,

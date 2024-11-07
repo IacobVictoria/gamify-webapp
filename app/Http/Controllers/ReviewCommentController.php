@@ -36,8 +36,9 @@ class ReviewCommentController extends Controller
      */
     public function store(ReviewCommentRequest $request, string $reviewId)
     {
-        $review = Review::find($reviewId);
+        
         $user = Auth()->user();
+        $reviewer = Review::find($reviewId)->user;
 
         $validatedData = $request->validated();
 
@@ -50,7 +51,7 @@ class ReviewCommentController extends Controller
 
         $this->badgeService->awardActiveCommenterBadge($user);
 
-        broadcast(new CommentEvent($comment,$user));
+        broadcast(new CommentEvent($comment,$user,$reviewer));
 
         return redirect()->back()
             ->with('success', 'Comment Review created successfully!');
