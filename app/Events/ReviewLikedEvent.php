@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Models\Notification;
+use App\Models\Review;
 use App\Services\NotificationService;
 use Faker\Provider\Uuid;
 use Illuminate\Broadcasting\Channel;
@@ -14,38 +15,40 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ObtainBadge implements ShouldBroadcastNow
+class ReviewLikedEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $user;
-    public $badge, $notificationService;
-    public function __construct($user, $badge, NotificationService $notificationService)
+    public $user, $review, $notificationService;
+    public function __construct($user, $review, NotificationService $notificationService)
     {
         $this->user = $user;
-        $this->badge = $badge;
+        $this->review = $review;
         $this->notificationService = $notificationService;
 
         $this->makeNotification();
 
     }
-
     public function makeNotification()
     {
         $message = '';
-        $message = 'Felicitări, ' . $this->user->name . '! Ai obținut badge-ul: ' . $this->badge->name . '+' . $this->badge->score;
+        $message = 'Userul ' . $this->user->name . 'ti-a dat like la review-ul: ' . $this->review->description;
 
         $notification = Notification::create([
             'id' => Uuid::uuid(),
-            'user_id' => $this->user->id,
+            'user_id' => $this->review->user->id,
             'message' => $message,
             'is_read' => false,
-            'type' => 'ObtainBadge'
+            'data' => json_encode([
+                'review_id' => $this->review->id,
+                'user_id' => $this->user->id
+            ]),
+            'type' => 'ReviewLiked'
         ]);
 
         $notification->save();
 
-        $this->notificationService->updateNotifications($this->user);
+        $this->notificationService->updateNotifications($this->review->user);
     }
 
     /**
@@ -56,20 +59,21 @@ class ObtainBadge implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('obtain_badge.' . $this->user->id),
+            new PrivateChannel('review_liked.' . $this->review->user->id),
         ];
     }
 
     public function broadcastAs()
     {
-        return 'ObtainBadge';
+        return 'ReviewLikedEvent';
     }
 
     public function broadcastWith()
     {
         return [
-            'message' => 'Felicitări, ' . $this->user->name . '! Ai obținut badge-ul: ' . $this->badge->name . '+' . $this->badge->score,
-
+            'message' => 'Userul ' . $this->user->name . 'ti-a dat like la review-ul: ' . $this->review->description,
         ];
     }
+
+
 }

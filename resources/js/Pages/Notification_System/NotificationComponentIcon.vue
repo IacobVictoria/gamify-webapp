@@ -33,6 +33,10 @@ export default {
     },
     mounted() {
         this.fetchUnreadNotifications();
+        window.Echo.private(`notifications.${this.$page.props.user.id}`)
+            .listen('.NotificationUpdatedEvent', (event) => {
+                this.unreadNotifications = event.unreadNotifications;
+            });
     },
     methods: {
         async toggleDropdown() {
@@ -52,7 +56,8 @@ export default {
             } catch (error) {
                 console.error('Error fetching notifications:', error);
             }
-        }
+        },
+
     }
 }
 </script>

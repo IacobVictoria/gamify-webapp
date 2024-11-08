@@ -7,16 +7,18 @@ use App\Http\Requests\ReviewCommentRequest;
 use App\Models\Review;
 use App\Models\ReviewComment;
 use App\Services\BadgeService;
+use App\Services\NotificationService;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
 
 class ReviewCommentController extends Controller
 {
-    protected $badgeService;
+    protected $badgeService, $notificationService;
 
-    public function __construct(BadgeService $badgeService)
+    public function __construct(BadgeService $badgeService,NotificationService $notificationService)
     {
         $this->badgeService = $badgeService;
+        $this->notificationService = $notificationService;
     }
     public function index()
     {
@@ -51,7 +53,7 @@ class ReviewCommentController extends Controller
 
         $this->badgeService->awardActiveCommenterBadge($user);
 
-        broadcast(new CommentEvent($comment,$user,$reviewer));
+        broadcast(new CommentEvent($comment,$user,$reviewer,$this->notificationService));
 
         return redirect()->back()
             ->with('success', 'Comment Review created successfully!');

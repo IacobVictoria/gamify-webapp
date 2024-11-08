@@ -34,8 +34,10 @@ export default {
                     this.addNotification('Notificare nouă', event.message);
                 });
             window.Echo.private(`obtain_badge.${user.id}`).listen('.ObtainBadge', (event) => {
-                console.log('heellp',event.message);
                 this.addNotification('Badge nou', event.message);
+            });
+            window.Echo.private(`review_liked.${user.id}`).listen('.ReviewLikedEvent', (event) => {
+                this.addNotification('Like nou', event.message);
             });
         }
     },

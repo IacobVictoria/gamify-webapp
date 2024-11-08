@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationUpdatedEvent;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
+
 
 class NotificationController extends Controller
 {
@@ -91,8 +93,9 @@ class NotificationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $notificationId)
     {
-        //
+        $notification = Notification::findOrFail($notificationId);
+        $notification->delete();
     }
 }
