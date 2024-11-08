@@ -13,7 +13,7 @@ export default {
     components: { NotificationPopup },
     data() {
         return {
-            notifications: [], 
+            notifications: [],
         };
     },
     methods: {
@@ -29,17 +29,31 @@ export default {
         const { user } = usePage().props;
 
         if (user && user.id) {
+
             window.Echo.private(`comments.${user.id}`)
                 .listen('.CommentEvent', (event) => {
-                    this.addNotification('Notificare nouă', event.message);
+                    this.addNotification('Comment nou!', event.message);
                 });
+
+            window.Echo.channel('leaderboard')
+                .listen('.UserMadeLeaderboard', (event) => {
+                    this.addNotification('Felicitări!', event.message);
+                })
+
             window.Echo.private(`obtain_badge.${user.id}`).listen('.ObtainBadge', (event) => {
-                this.addNotification('Badge nou', event.message);
+                this.addNotification('Badge nou!', event.message);
             });
+
             window.Echo.private(`review_liked.${user.id}`).listen('.ReviewLikedEvent', (event) => {
-                this.addNotification('Like nou', event.message);
+                this.addNotification('Like nou!', event.message);
             });
+
+            window.Echo.private(`user.${user.id}`)
+                .listen('.UserScoreUpdatedEvent', (event) => {
+                    this.addNotification('Felicitări!', event.message);
+                });
         }
+
     },
 };
 </script>

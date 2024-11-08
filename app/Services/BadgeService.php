@@ -12,11 +12,12 @@ use Faker\Provider\Uuid;
 
 class BadgeService implements BadgeServiceInterface
 {
-    protected $userScoreService;
+    protected $userScoreService, $notificationService;
 
-    function __construct(UserScoreService $service)
+    function __construct(UserScoreService $service, NotificationService $notificationService)
     {
         $this->userScoreService = $service;
+        $this->notificationService = $notificationService;
     }
 
     public function reviewerBadges(?User $user)
@@ -191,7 +192,7 @@ class BadgeService implements BadgeServiceInterface
 
         $user->badges()->attach($badge, ['id' => Uuid::uuid(), 'awarded_at' => now()]);
 
-        broadcast(new ObtainBadge($user,$badge));
+        broadcast(new ObtainBadge($user, $badge, $this->notificationService));
 
     }
 
@@ -209,7 +210,7 @@ class BadgeService implements BadgeServiceInterface
             $this->assignBadge($user, 'Quiz Explorer');
         }
 
-        
+
         $this->userScoreService->addScore($user, $badge->score);
 
     }
@@ -224,7 +225,7 @@ class BadgeService implements BadgeServiceInterface
             $this->assignBadge($user, 'Quiz Novice');
         }
 
-        
+
         $this->userScoreService->addScore($user, $badge->score);
 
     }
@@ -244,7 +245,7 @@ class BadgeService implements BadgeServiceInterface
             }
         }
 
-        
+
         $this->userScoreService->addScore($user, $badge->score);
 
     }
@@ -263,7 +264,7 @@ class BadgeService implements BadgeServiceInterface
             }
         }
 
-        
+
         $this->userScoreService->addScore($user, $badge->score);
 
 

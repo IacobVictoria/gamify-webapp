@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+use App\Events\UserScoreUpdatedEvent;
 use App\Models\UserQuizResult;
 use App\Models\UserQuizResponse;
 use App\Models\UserQuizAnswer;
@@ -13,12 +14,13 @@ use App\Interfaces\UserQuizInterface;
 class UserQuizService implements UserQuizInterface
 {
     protected $badgeService;
-    protected $userScoreService;
+    protected $userScoreService, $notificationService;
 
-    public function __construct(BadgeService $badgeService, UserScoreService $userScoreService)
+    public function __construct(BadgeService $badgeService, UserScoreService $userScoreService, NotificationService $notificationService)
     {
         $this->badgeService = $badgeService;
         $this->userScoreService = $userScoreService;
+        $this->notificationService = $notificationService;
     }
 
     public function retryQuiz(Request $request)
@@ -125,7 +127,7 @@ class UserQuizService implements UserQuizInterface
             $quizResult->is_locked = true;
             $quizResult->percentage_score = $percentage;
         }
-//dd($quizResult);
+        //dd($quizResult);
         $quizResult->save();
         // dd($quizResult->is_locked);
 
@@ -164,6 +166,7 @@ class UserQuizService implements UserQuizInterface
         $user = User::find($userId);
         $this->userScoreService->quizAttemptScore($user, $quizResult->attempt_number, $quizResult->total_score);
 
+        broadcast(new UserScoreUpdatedEvent($user, $quizResult->total_score, "Quiz completat cu succes! ", $this->notificationService));
         // return redirect()->route('user.quizzes.index');
     }
 

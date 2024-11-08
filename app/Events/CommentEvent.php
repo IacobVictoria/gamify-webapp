@@ -42,6 +42,10 @@ class CommentEvent implements ShouldBroadcastNow
         $notification = Notification::create([
             'id' => Uuid::uuid(),
             'user_id' => $this->reviewOwner->id,
+            'data' => json_encode([
+                'comment_id' => $this->comment->id,
+                'user_id' => $this->reviewOwner->id
+            ]),
             'message' => $message,
             'is_read' => false,
             'type' => 'CommentEvent'

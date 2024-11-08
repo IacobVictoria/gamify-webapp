@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserMadeLeaderboardEvent;
 use App\Models\User;
 use App\Models\UserQuiz;
 use App\Models\UserQuizAnswer;
 use App\Models\UserQuizResponse;
 use App\Models\UserQuizResult;
 use App\Services\BadgeService;
+use App\Services\NotificationService;
 use App\Services\UserQuizService;
 use App\Services\UserScoreService;
 use App\Services\UserService;
@@ -20,13 +22,14 @@ class UserQuizController extends Controller
 {
     protected $userScoreService;
     protected $badgeService;
-    protected $quizService;
+    protected $quizService, $notificationService;
 
-    public function __construct(UserScoreService $userScoreService, BadgeService $badgeService, UserQuizService $quizService)
+    public function __construct(UserScoreService $userScoreService, BadgeService $badgeService, UserQuizService $quizService, NotificationService $notificationService)
     {
         $this->userScoreService = $userScoreService;
         $this->badgeService = $badgeService;
         $this->quizService = $quizService;
+        $this->notificationService = $notificationService;
     }
 
     public function index()
@@ -63,6 +66,14 @@ class UserQuizController extends Controller
             ->take(3)
             ->values()
             ->toArray();
+
+            //event for leaderboard
+        $rankedUsers = collect($leaderBoard);
+        if ($rankedUsers->contains('user_id', $user->id)) {
+
+            broadcast(new UserMadeLeaderboardEvent($user, $this->notificationService));
+        }
+
 
         return Inertia::render('User/Quizzes/Index', [
             'quizzes' => $groupedQuizzes,

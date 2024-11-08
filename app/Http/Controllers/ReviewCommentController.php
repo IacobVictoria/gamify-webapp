@@ -10,12 +10,13 @@ use App\Services\BadgeService;
 use App\Services\NotificationService;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReviewCommentController extends Controller
 {
     protected $badgeService, $notificationService;
 
-    public function __construct(BadgeService $badgeService,NotificationService $notificationService)
+    public function __construct(BadgeService $badgeService, NotificationService $notificationService)
     {
         $this->badgeService = $badgeService;
         $this->notificationService = $notificationService;
@@ -38,7 +39,7 @@ class ReviewCommentController extends Controller
      */
     public function store(ReviewCommentRequest $request, string $reviewId)
     {
-        
+
         $user = Auth()->user();
         $reviewer = Review::find($reviewId)->user;
 
@@ -53,7 +54,7 @@ class ReviewCommentController extends Controller
 
         $this->badgeService->awardActiveCommenterBadge($user);
 
-        broadcast(new CommentEvent($comment,$user,$reviewer,$this->notificationService));
+        broadcast(new CommentEvent($comment, $user, $reviewer, $this->notificationService));
 
         return redirect()->back()
             ->with('success', 'Comment Review created successfully!');
@@ -93,12 +94,14 @@ class ReviewCommentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( string $commentId)
+    public function destroy(string $commentId)
     {
-        $review = ReviewComment::findOrFail($commentId);
-        $review->delete();
+        $comment = ReviewComment::findOrFail($commentId);
+
+        $this->notificationService->removeCommentNotification($comment);
+        $comment->delete();
 
         return redirect()->back()
-            ->with('success', 'Review deleted successfully!');
+            ->with('success', 'Comment deleted successfully!');
     }
 }

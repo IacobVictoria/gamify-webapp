@@ -36,7 +36,7 @@ class ReviewLikeController extends Controller
         $review->likes = $review->reviewLikes()->count();
         $review->save();
 
-        broadcast(new ReviewLikedEvent($user, $review));
+        broadcast(new ReviewLikedEvent($user, $review, $this->notificationService));
 
         $this->badgeService->reviewerBadges($user);
     }

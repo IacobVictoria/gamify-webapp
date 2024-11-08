@@ -1,11 +1,18 @@
 <?php
 
 namespace App\Services;
+use App\Events\UserScoreUpdatedEvent;
 use App\Interfaces\UserScoreInterface;
 use App\Models\User;
 
 class UserScoreService implements UserScoreInterface
 {
+    protected $notificationService;
+
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
     public function addScore(User $user, $score)
     {
         $user->score += $score;
@@ -30,5 +37,8 @@ class UserScoreService implements UserScoreInterface
 
         $user->score += $final_score;
         $user->save();
+
+        broadcast(new UserScoreUpdatedEvent($user, $final_score, "Quiz ul completat ti-a adus puncte!", $this->notificationService));
+
     }
 }

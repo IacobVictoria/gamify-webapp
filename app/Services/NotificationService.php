@@ -19,7 +19,25 @@ class NotificationService
 
         if ($notification) {
             $notification->delete();
+            $this->updateNotifications($review->user); // nr notif necitite
         }
+
+    }
+
+    public function removeCommentNotification($comment)
+    {
+        $reviewOwner = $comment->review->user;
+        $notification = Notification::where('user_id', $reviewOwner->id)
+            ->where('type', 'CommentEvent')
+            ->whereJsonContains('data->comment_id', $comment->id)
+            ->first();
+
+        if ($notification) {
+            $notification->delete();
+            // actualizează numărul de notificări necitite
+            $this->updateNotifications($reviewOwner);
+        }
+
     }
 
     public function updateNotifications(User $user)
