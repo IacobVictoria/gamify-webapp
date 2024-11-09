@@ -20,7 +20,7 @@ class UserMadeLeaderboardEvent implements ShouldBroadcastNow
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $user, $notificationService;
-    public function __construct(?User $user, NotificationService $notificationService)
+    public function __construct(User $user, NotificationService $notificationService)
     {
         $this->user = $user;
         $this->notificationService = $notificationService;
@@ -52,7 +52,7 @@ class UserMadeLeaderboardEvent implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new Channel('leaderboard'),
+            new PrivateChannel('leaderboard.'.$this->user->id),
         ];
     }
 

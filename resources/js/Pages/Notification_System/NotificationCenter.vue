@@ -35,7 +35,7 @@ export default {
                     this.addNotification('Comment nou!', event.message);
                 });
 
-            window.Echo.channel('leaderboard')
+            window.Echo.channel(`leaderboard.${user.id}`)
                 .listen('.UserMadeLeaderboard', (event) => {
                     this.addNotification('Felicitări!', event.message);
                 })

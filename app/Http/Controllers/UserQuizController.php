@@ -16,6 +16,7 @@ use App\Services\UserService;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class UserQuizController extends Controller
@@ -50,30 +51,7 @@ class UserQuizController extends Controller
             });
         });
 
-        $leaderBoard = User::with('quizResults')->get()->map(function ($user) {
-            $totalScore = $user->quizResults->sum('total_score');
-            $challenges = $user->quizResults->unique('quiz_id')->count();
-
-            return [
-                'user_id' => $user->id,
-                'name' => $user->name,
-                'gender' => $user->gender,
-                'total_score' => $totalScore,
-                'challenges' => $challenges,
-            ];
-        })
-            ->sortByDesc('total_score')
-            ->take(3)
-            ->values()
-            ->toArray();
-
-            //event for leaderboard
-        $rankedUsers = collect($leaderBoard);
-        if ($rankedUsers->contains('user_id', $user->id)) {
-
-            broadcast(new UserMadeLeaderboardEvent($user, $this->notificationService));
-        }
-
+        $leaderBoard = Cache::get('weekly_leaderboard', []);
 
         return Inertia::render('User/Quizzes/Index', [
             'quizzes' => $groupedQuizzes,
