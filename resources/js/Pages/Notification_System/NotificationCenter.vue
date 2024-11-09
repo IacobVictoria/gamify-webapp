@@ -35,10 +35,16 @@ export default {
                     this.addNotification('Comment nou!', event.message);
                 });
 
-            window.Echo.channel(`leaderboard.${user.id}`)
+            window.Echo.private(`leaderboard.${user.id}`)
                 .listen('.UserMadeLeaderboard', (event) => {
                     this.addNotification('Felicitări!', event.message);
-                })
+                });
+            if (user.roles[0].name==='Admin') {
+                window.Echo.private('admin-channel') 
+                    .listen('.UserRemarkedOnQuiz', (event) => {
+                        this.addNotification('New Remark!', event.message);
+                    });
+            }
 
             window.Echo.private(`obtain_badge.${user.id}`).listen('.ObtainBadge', (event) => {
                 this.addNotification('Badge nou!', event.message);

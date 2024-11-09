@@ -23,10 +23,10 @@ Broadcast::channel('notifications.{id}', function (User $user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('leaderboard.{userId}', function ($user, $userId) {
-    // leaderboard-ul din cache
-    $leaderboard = Cache::get('weekly_leaderboard', []);
+Broadcast::channel('leaderboard.{id}', function ($user, $id) {
+    return (int) $user->id === (int) $id;
+});
 
-    // dacă utilizatorul există în leaderboard și are rolul 'user'
-    return in_array($userId, array_column($leaderboard, 'user_id')) && $user->id == $userId;
+Broadcast::channel('admin-channel', function ($user) {
+    return $user && $user->hasRole('admin');  
 });

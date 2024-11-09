@@ -8,6 +8,7 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import NotificationCenter from '@/Pages/Notification_System/NotificationCenter.vue';
 const showingNavigationDropdown = ref(false);
+
 </script>
 
 <template>

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserRemarkedOnQuizEvent;
+use App\Models\UserQuiz;
 use App\Models\UserQuizRemark;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
@@ -35,20 +37,14 @@ class UserQuizRemarkController extends Controller
         ]);
 
         $user = Auth::user();
-        $existingRemark = UserQuizRemark::where('quiz_id', $quizId)
-        ->where('user_id', $user->id)
-        ->first();
-
-    if ($existingRemark) {
-        // Folosește dd() pentru a afișa intrarea existentă
-        dd("Feedback existent", $existingRemark);
-    } 
-        UserQuizRemark::create([
+        $userQuizRemark = UserQuizRemark::create([
             'id' => Uuid::uuid(),
             'user_id' => $user->id,
             'quiz_id' => $quizId,
             'description' => $validatedData['feedback']
         ]);
+        $quiz = UserQuiz::find($quizId);
+        broadcast(new UserRemarkedOnQuizEvent($user, $quiz, $userQuizRemark));
 
     }
 
