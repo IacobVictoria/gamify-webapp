@@ -9,13 +9,14 @@ class AdminController extends BaseRoleController
 {
     protected $dashboardService;
 
-    function __construct(DashboardService $service){
+    function __construct(DashboardService $service)
+    {
         parent::__construct('Admin');
         $this->dashboardService = $service;
     }
 
     protected function getDashboardData()
-{
+    {
         return $this->dashboardService->getAdminDashboardData();
-}
+    }
 }

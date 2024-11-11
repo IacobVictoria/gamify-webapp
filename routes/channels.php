@@ -30,3 +30,9 @@ Broadcast::channel('leaderboard.{id}', function ($user, $id) {
 Broadcast::channel('admin-channel', function ($user) {
     return $user && $user->hasRole('admin');  
 });
+
+Broadcast::channel('chat.{id}', function ($user, $id) {
+
+    return (int) $user->id === (int) $id;
+});
+

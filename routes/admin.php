@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminAccountController;
 use App\Http\Controllers\AdminBadgeController;
+use App\Http\Controllers\AdminChatController;
 use App\Http\Controllers\AdminCheckoutController;
 use App\Http\Controllers\AdminClientOrderController;
 use App\Http\Controllers\AdminController;
@@ -112,7 +113,7 @@ Route::prefix('user_quiz')->group(function () {
     Route::get('/', [AdminQuizController::class, 'index'])->name('user_quiz.index');
     Route::get('/create_quiz', [AdminQuizController::class, 'create'])->name('user_quiz.create');
     Route::post('/create_quiz', [AdminQuizController::class, 'store'])->name('user_quiz.store');
-    Route::put('/update_quiz/{quizId}',[AdminQuizController::class,'update'])->name('user_quiz.update');
+    Route::put('/update_quiz/{quizId}', [AdminQuizController::class, 'update'])->name('user_quiz.update');
     Route::get('/update_quiz/{id}', [AdminQuizController::class, 'edit'])->name('user_quiz.edit');
     Route::delete('/{quizId}', [AdminQuizController::class, 'destroy'])->name('user_quiz.destroy');
     Route::delete('/questions/{id}', [AdminQuizQuestionController::class, 'destroy'])->name('questions.destroy');
@@ -120,10 +121,15 @@ Route::prefix('user_quiz')->group(function () {
 
 });
 
-Route::prefix('quiz_manager')->group(function() {
+Route::prefix('quiz_manager')->group(function () {
     Route::get('/{id}', [AdminQuizManagerController::class, 'show'])->name('quiz_manager.show');
     Route::post('/{quizId}/add_question', [AdminQuizManagerController::class, 'addQuestion'])->name('quiz_add_questions.store');
     Route::put('/{quizId}/update_question', [AdminQuizManagerController::class, 'updateQuestion'])->name('quiz_update_question.update');
-    Route::get('/quiz_remarks/{quizId}',[AdminUserQuizRemarkController::class,'show'])->name('quiz_remarks.show');
+    Route::get('/quiz_remarks/{quizId}', [AdminUserQuizRemarkController::class, 'show'])->name('quiz_remarks.show');
 });
 
+
+Route::prefix('admin_chat')->group(function(){
+    Route::get('/{user}', [AdminChatController::class, 'chat'])->name('chat');
+    Route::post('/messages/{user}', [AdminChatController::class, 'sendMessage']);
+});

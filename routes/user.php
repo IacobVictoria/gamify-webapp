@@ -5,6 +5,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReviewCommentController;
 use App\Http\Controllers\ReviewLikeController;
+use App\Http\Controllers\UserChatController;
 use App\Http\Controllers\UserCheckoutController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserOrderHistoryController;
@@ -63,4 +64,10 @@ Route::post('/user_quiz/lock', [UserQuizController::class, 'lockQuiz'])->name('u
 Route::prefix('notifications')->group(function () {
     Route::get('/', [NotificationController::class, 'getNotifications'])->name('notifications.getNotifications');
     Route::post('/mark-as-read', [NotificationController::class, 'markNotificationsAsRead'])->name('notifications.markNotificationAsRead');
+});
+
+Route::prefix('user_chat')->group(function(){
+    Route::get('/',[UserChatController::class,'index'])->name('user_chat.index');
+    Route::get('/messages/{friendId}', [UserChatController::class, 'getConversation'])->name('user_chat.conversation');
+    Route::post('/messages/{friendId}', [UserChatController::class, 'sendMessage'])->name('user_chat.sendMessage');
 });
