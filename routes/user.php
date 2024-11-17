@@ -70,4 +70,5 @@ Route::prefix('user_chat')->group(function(){
     Route::get('/',[UserChatController::class,'index'])->name('user_chat.index');
     Route::get('/messages/{friendId}', [UserChatController::class, 'getConversation'])->name('user_chat.conversation');
     Route::post('/messages/{friendId}', [UserChatController::class, 'sendMessage'])->name('user_chat.sendMessage');
+    Route::put('/mark-read/{friendId}', [UserChatController::class, 'markMessagesAsRead']);
 });

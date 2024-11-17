@@ -4,6 +4,7 @@
             <div v-for="message in messages" :key="message.id" class="mb-2">
                 <div v-if="message.sender_id === currentUser.id" class="text-right">
                     <span class="bg-blue-500 text-white p-2 rounded-lg ">{{ message.content }}</span>
+                    <MessageSeenSVG :isSeen="message.is_read === 1" />
                 </div>
                 <div v-else class="text-left">
                     <span class="bg-gray-200 p-2 rounded-lg mb-2">{{ message.content }}</span>
@@ -23,6 +24,8 @@
 </template>
 
 <script>
+import MessageSeenSVG from "@/Components/MessageSeenSVG.vue";
+
 import axios from "axios";
 
 export default {
@@ -40,13 +43,36 @@ export default {
         return {
             messages: [],
             newMessage: "",
+            isActive: false,
         };
     },
+    beforeUnmount() {
+        this.isActive = false;
+    },
     mounted() {
-           this.fetchMessages();
-       
+        this.isActive = true;
+        this.fetchMessages();
+
+    },
+    components: {
+        MessageSeenSVG
     },
     methods: {
+        async markMessagesAsRead() {
+            try {
+                await axios.put(`/user/user_chat/mark-read/${this.friend.id}`);
+                // actualizăm local starea mesajelor
+                this.messages = this.messages.map(message => {
+                    if (message.sender_id === this.friend.id) {
+                        message.is_read = true;
+                    }
+                    return message;
+                });
+            } catch (error) {
+                console.error('Error marking messages as read:', error);
+            }
+        },
+
         async fetchMessages() {
             const response = await axios.get(`/user/user_chat/messages/${this.friend.id}`);
             this.messages = response.data;
@@ -60,16 +86,27 @@ export default {
                 });
                 this.messages.push(response.data);
                 this.newMessage = "";
-               
             }
         },
-        listenMessages(){
-            window.Echo.private(`chat.${this.currentUser.id}`).listen('.ChatMessageSent',(event)=>{
+        listenMessages() {
+            window.Echo.private(`chat.${this.currentUser.id}`).listen('.ChatMessageSent', (event) => {
                 this.messages.push(event.message);
-                    this.newMessage = "";
+                this.newMessage = "";
+                // dacă suntem în conversația cu expeditorul, marcăm mesajul ca citit imediat
+                if (this.isActive && event.message.sender_id === this.friend.id) {
+                    this.markMessagesAsRead();
+                }
+            });
+
+            window.Echo.private(`chat_read.${this.currentUser.id}`).listen('.MessageRead', (event) => {
+                this.messages = this.messages.map(message => {
+                    if (message.sender_id === this.currentUser.id) {
+                        message.is_read = 1;
+                    }
+                    return message;
                 });
-          }
-        
+            });
+        }
     },
 
 };

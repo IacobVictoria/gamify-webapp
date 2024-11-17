@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\ChatMessageSent;
+use App\Events\MessageRead;
 use App\Models\ChatMessage;
 use App\Models\User;
 use Faker\Provider\Uuid;
@@ -23,7 +24,7 @@ class UserChatController extends Controller
                 return $message->sender_id === $currentUser->id ? $message->receiver_id : $message->sender_id;
             })
             ->map(function ($messages) {
-                $lastMessage = $messages->last(); //mesajul cel mai recent
+                $lastMessage = $messages->sortByDesc('sent_at')->first(); //mesajul cel mai recent
                 $friend = $lastMessage->sender_id === Auth::id() ? $lastMessage->receiver : $lastMessage->sender;
 
                 return [
@@ -33,6 +34,7 @@ class UserChatController extends Controller
                     ],
                     'lastMessage' => $lastMessage,
                     'sent_at' => $lastMessage->sent_at,
+                    'is_read' => $lastMessage->is_read
                 ];
             });
 
@@ -42,7 +44,24 @@ class UserChatController extends Controller
         ]);
     }
 
-    public function getConversation(string $friendId)
+    public function markMessagesAsRead(string $friendId)
+    {
+        $currentUser = Auth::user();
+        $friend = User::find($friendId);
+
+        $updatedRows = ChatMessage::where('sender_id', $friendId)
+            ->where('receiver_id', $currentUser->id)
+            ->where('is_read', false)
+            ->update(['is_read' => true, 'read_at' => now()]);
+
+        if ($updatedRows > 0) {
+            broadcast(new MessageRead($friendId, $currentUser->id));
+        }
+
+        return response()->json(['status' => 'success']);
+    }
+
+    public function getConversation( $friendId)
     {
         $currentUser = Auth::user();
         $friend = User::find($friendId);
@@ -59,6 +78,16 @@ class UserChatController extends Controller
             ->orderBy('created_at', 'asc')
             ->get();
 
+        // facem toate mesajele ca fiind citite când accesăm conversația
+        $updatedRows = ChatMessage::where('sender_id', $friendId)
+            ->where('receiver_id', $currentUser->id)
+            ->where('is_read', false)
+            ->update(['is_read' => true, 'read_at' => now()]);
+            
+        if ($updatedRows > 0) {
+            broadcast(new MessageRead($friendId, $currentUser->id));
+        }
+
         return response()->json($messages);
     }
 
@@ -67,13 +96,14 @@ class UserChatController extends Controller
     public function sendMessage(string $friendId, Request $request)
     {
         $currentUser = Auth::user();
-       
+
         $message = ChatMessage::create([
             'id' => Uuid::uuid(),
             'sender_id' => $currentUser->id,
             'receiver_id' => $friendId,
             'content' => $request->input('message'),
             'sent_at' => now(),
+            'is_read' => false,
         ]);
 
 
