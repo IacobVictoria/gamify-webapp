@@ -102,6 +102,7 @@ class UserChatController extends Controller
             'sender_id' => $currentUser->id,
             'receiver_id' => $friendId,
             'content' => $request->input('message'),
+            'reply_to_message_id' => $request->input('reply_to_message_id'),
             'sent_at' => now(),
             'is_read' => false,
         ]);
