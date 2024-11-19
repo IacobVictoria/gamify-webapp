@@ -2,7 +2,7 @@
     <AuthenticatedLayout>
         <div class="flex h-screen">
             <!-- Sidebar-ul cu lista de conversații -->
-            <ChatSidebar :conversations="conversations" :current-user="currentUser"   @selectConversation="openConversation" />
+            <ChatSidebar  :conversations="conversations" :current-user="currentUser"   @selectConversation="openConversation" />
 
             <!-- Fereastra pentru conversația selectată -->
             <div class="flex-1">

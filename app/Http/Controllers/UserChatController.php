@@ -4,15 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Events\ChatMessageSent;
 use App\Events\MessageRead;
+use App\Events\MessageUnreadUpdatedEvent;
 use App\Models\ChatMessage;
 use App\Models\User;
+use App\Services\NotificationService;
 use Faker\Provider\Uuid;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class UserChatController extends Controller
 {
+    protected $notificationService;
+
+    public function __construct(
+        NotificationService $notificationService
+    ) {
+        $this->notificationService = $notificationService;
+    }
+
     public function index()
     {
         $currentUser = Auth::user();
@@ -23,10 +34,13 @@ class UserChatController extends Controller
             ->groupBy(function ($message) use ($currentUser) {
                 return $message->sender_id === $currentUser->id ? $message->receiver_id : $message->sender_id;
             })
-            ->map(function ($messages) {
+            ->map(function ($messages) use ($currentUser) {
                 $lastMessage = $messages->sortByDesc('sent_at')->first(); //mesajul cel mai recent
                 $friend = $lastMessage->sender_id === Auth::id() ? $lastMessage->receiver : $lastMessage->sender;
 
+                $unreadCount = $messages->where('receiver_id', $currentUser->id)
+                    ->where('is_read', false) // Mesaje necitite
+                    ->count();
                 return [
                     'friend' => [
                         'id' => $friend->id,
@@ -34,9 +48,11 @@ class UserChatController extends Controller
                     ],
                     'lastMessage' => $lastMessage,
                     'sent_at' => $lastMessage->sent_at,
-                    'is_read' => $lastMessage->is_read
+                    'is_read' => $lastMessage->is_read,
+                    'unreadCount' => $unreadCount
                 ];
-            });
+            })->values()
+            ->toArray();
 
         return Inertia::render('ChatRoom/Chat', [
             'currentUser' => $currentUser,
@@ -61,7 +77,7 @@ class UserChatController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    public function getConversation( $friendId)
+    public function getConversation($friendId)
     {
         $currentUser = Auth::user();
         $friend = User::find($friendId);
@@ -83,9 +99,15 @@ class UserChatController extends Controller
             ->where('receiver_id', $currentUser->id)
             ->where('is_read', false)
             ->update(['is_read' => true, 'read_at' => now()]);
-            
+
+            $unreadMessages = ChatMessage::where('receiver_id', $friendId)
+            ->where('is_read', 0)
+            ->count();
+
+         broadcast(new MessageUnreadUpdatedEvent($unreadMessages, $currentUser->id, $friend));
         if ($updatedRows > 0) {
             broadcast(new MessageRead($friendId, $currentUser->id));
+
         }
 
         return response()->json($messages);
@@ -106,10 +128,11 @@ class UserChatController extends Controller
             'sent_at' => now(),
             'is_read' => false,
         ]);
-
+      
 
         broadcast(new ChatMessageSent($message));
-
+        $this->notificationService->updateNotificationChat($currentUser, $friendId);
+        // broadcast(new MessageUnreadUpdatedEvent($unreadMessages, $friendId,$currentUser));
         return response()->json($message, 200);
     }
 }

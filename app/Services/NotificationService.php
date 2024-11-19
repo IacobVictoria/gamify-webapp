@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\MessageUnreadUpdatedEvent;
 use App\Events\NotificationUpdatedEvent;
 use App\Models\Notification;
 use App\Models\User;
@@ -47,4 +48,10 @@ class NotificationService
         broadcast(new NotificationUpdatedEvent($notificationsCount, $user));
     }
 
+    public function updateNotificationChat(?User $user, $friendId)
+    {
+        $userCurrent = User::find($friendId);
+        $unreadMessages = $userCurrent->chatMessagesReceived()->where('is_read', false)->count();
+        broadcast(new MessageUnreadUpdatedEvent($unreadMessages, $friendId, $user));
+    }
 }

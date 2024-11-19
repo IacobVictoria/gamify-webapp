@@ -126,4 +126,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Notification::class,'user_id');
     }
+    public function chatMessagesReceived()
+{
+    return $this->hasMany(ChatMessage::class, 'receiver_id');
+}
+
 }
