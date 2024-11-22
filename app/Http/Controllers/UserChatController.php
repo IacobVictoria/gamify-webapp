@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use App\Events\ChatMessageSent;
 use App\Events\MessageRead;
 use App\Events\MessageUnreadUpdatedEvent;
+use App\Events\UserStatusChangedEvent;
 use App\Models\ChatMessage;
 use App\Models\User;
 use App\Services\NotificationService;
+use Carbon\Carbon;
 use Faker\Provider\Uuid;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class UserChatController extends Controller
@@ -24,9 +27,12 @@ class UserChatController extends Controller
         $this->notificationService = $notificationService;
     }
 
+
+
     public function index()
     {
         $currentUser = Auth::user();
+
         $conversations = ChatMessage::where('sender_id', $currentUser->id)
             ->orWhere('receiver_id', $currentUser->id)
             ->with(['sender', 'receiver'])
@@ -41,6 +47,8 @@ class UserChatController extends Controller
                 $unreadCount = $messages->where('receiver_id', $currentUser->id)
                     ->where('is_read', false) // Mesaje necitite
                     ->count();
+                // broadcast(new UserStatusChangedEvent($currentUser, 'online', $friend));
+    
                 return [
                     'friend' => [
                         'id' => $friend->id,
@@ -49,7 +57,8 @@ class UserChatController extends Controller
                     'lastMessage' => $lastMessage,
                     'sent_at' => $lastMessage->sent_at,
                     'is_read' => $lastMessage->is_read,
-                    'unreadCount' => $unreadCount
+                    'unreadCount' => $unreadCount,
+                    'status' => ''
                 ];
             })->values()
             ->toArray();
@@ -92,7 +101,13 @@ class UserChatController extends Controller
                     ->where('receiver_id', $currentUser->id);
             })
             ->orderBy('created_at', 'asc')
-            ->get();
+            ->get()
+            ->map(function ($message) {
+                // Adaugă formatul dorit în fiecare mesaj
+                $message->sent_at_formatted = Carbon::parse($message->created_at)->format('H:i');
+                return $message;
+            });
+        ;
 
         // facem toate mesajele ca fiind citite când accesăm conversația
         $updatedRows = ChatMessage::where('sender_id', $friendId)
@@ -100,11 +115,11 @@ class UserChatController extends Controller
             ->where('is_read', false)
             ->update(['is_read' => true, 'read_at' => now()]);
 
-            $unreadMessages = ChatMessage::where('receiver_id', $friendId)
+        $unreadMessages = ChatMessage::where('receiver_id', $friendId)
             ->where('is_read', 0)
             ->count();
 
-         broadcast(new MessageUnreadUpdatedEvent($unreadMessages, $currentUser->id, $friend));
+        broadcast(new MessageUnreadUpdatedEvent($unreadMessages, $currentUser->id, $friend));
         if ($updatedRows > 0) {
             broadcast(new MessageRead($friendId, $currentUser->id));
 
@@ -128,11 +143,21 @@ class UserChatController extends Controller
             'sent_at' => now(),
             'is_read' => false,
         ]);
-      
+
 
         broadcast(new ChatMessageSent($message));
         $this->notificationService->updateNotificationChat($currentUser, $friendId);
         // broadcast(new MessageUnreadUpdatedEvent($unreadMessages, $friendId,$currentUser));
         return response()->json($message, 200);
+    }
+    public function checkUserStatus($userId)
+    {
+        $cacheKey = 'user_activity_' . $userId;
+
+        $status = Cache::get($cacheKey, 'Offline');
+
+        return response()->json([
+            'status' => $status
+        ]);
     }
 }

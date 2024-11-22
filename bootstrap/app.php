@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Middleware\TrackUserActivity;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -12,12 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
             $router->middleware('web')
                 ->group(base_path('routes/web.php'));
 
-            $router->middleware(['web', 'role:user','auth', 'verified'])
+            $router->middleware(['web', 'role:user', 'auth', 'verified'])
                 ->name('user.')
                 ->prefix('user')
                 ->group(base_path('routes/user.php'));
 
-            $router->middleware(['web', 'role:admin','auth', 'verified'])
+            $router->middleware(['web', 'role:admin', 'auth', 'verified'])
                 ->name('admin.')
                 ->prefix('admin')
                 ->group(base_path('routes/admin.php'));
@@ -34,10 +35,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+            App\Http\Middleware\TrackUserActivity::class
         ]);
 
         $middleware->alias([
             'role' => RoleMiddleware::class,
+            'user-status' => TrackUserActivity::class
         ]);
 
         //

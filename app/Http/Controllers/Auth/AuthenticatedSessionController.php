@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\UserStatusChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
@@ -33,7 +34,7 @@ class AuthenticatedSessionController extends Controller
 
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
-
+         
             // take the cart from cookie
             $cookieCart = json_decode($request->cookie('cart_' . auth()->id(), '[]'), true);
             // Combinăm coșul din cookie cu cel din sesiune
@@ -61,6 +62,9 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $user = Auth::user();
+        broadcast(new UserStatusChangedEvent($user, 'Offline'))->toOthers();
+        
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

@@ -28,7 +28,7 @@ Broadcast::channel('leaderboard.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('admin-channel', function ($user) {
-    return $user && $user->hasRole('admin');  
+    return $user && $user->hasRole('admin');
 });
 
 Broadcast::channel('chat.{id}', function ($user, $id) {
@@ -43,4 +43,8 @@ Broadcast::channel('chat_read.{id}', function ($user, $id) {
 Broadcast::channel('user_message.{id}', function ($user, $id) {
 
     return (int) $user->id === (int) $id;
+});
+Broadcast::channel('chat_status', function ($user) {
+    
+    return true;
 });

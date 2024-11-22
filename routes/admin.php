@@ -129,7 +129,3 @@ Route::prefix('quiz_manager')->group(function () {
 });
 
 
-Route::prefix('admin_chat')->group(function(){
-    Route::get('/{user}', [AdminChatController::class, 'chat'])->name('chat');
-    Route::post('/messages/{user}', [AdminChatController::class, 'sendMessage']);
-});

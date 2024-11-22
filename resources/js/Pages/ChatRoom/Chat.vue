@@ -2,7 +2,8 @@
     <AuthenticatedLayout>
         <div class="flex h-screen">
             <!-- Sidebar-ul cu lista de conversații -->
-            <ChatSidebar  :conversations="conversations" :current-user="currentUser"   @selectConversation="openConversation" />
+            <ChatSidebar :conversations="conversations" :current-user="currentUser"
+                @selectConversation="openConversation" />
 
             <!-- Fereastra pentru conversația selectată -->
             <div class="flex-1">
@@ -38,14 +39,15 @@ export default {
     },
     data() {
         return {
-            selectedFriend: null, 
+            selectedFriend: null,
         };
     },
+
     methods: {
- 
         openConversation(friend) {
             this.selectedFriend = friend;
         },
+     
     },
 };
 </script>

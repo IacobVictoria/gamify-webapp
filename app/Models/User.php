@@ -124,11 +124,12 @@ class User extends Authenticatable
 
     public function notifications()
     {
-        return $this->hasMany(Notification::class,'user_id');
+        return $this->hasMany(Notification::class, 'user_id');
     }
     public function chatMessagesReceived()
-{
-    return $this->hasMany(ChatMessage::class, 'receiver_id');
-}
+    {
+        return $this->hasMany(ChatMessage::class, 'receiver_id');
+    }
+
 
 }
