@@ -33,8 +33,11 @@
         "font-awesome": "^4.7.0",
         "html5-qrcode": "^2.3.8",
         "lodash": "^4.17.21",
+        "vue-md-player": "^2.1.2",
         "vue-router": "^4.4.5",
         "vue-star-rating": "^2.1.0",
-        "vue3-carousel": "^0.4.0"
+        "vue3-audio-player": "^1.0.7",
+        "vue3-carousel": "^0.4.0",
+        "vue3-wave-audio-player": "^2.0.3"
     }
 }

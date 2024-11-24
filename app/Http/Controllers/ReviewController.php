@@ -25,7 +25,7 @@ class ReviewController extends Controller
     {
         $product = Product::findOrFail($productId);
         $reviews = Review::where('product_id', $productId)->get();
-        dd($reviews);
+
         return Inertia::render('Products/Reviews', [
             'product' => $product,
             'reviews' => $reviews
