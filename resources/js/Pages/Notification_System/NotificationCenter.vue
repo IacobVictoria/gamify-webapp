@@ -39,8 +39,8 @@ export default {
                 .listen('.UserMadeLeaderboard', (event) => {
                     this.addNotification('Felicitări!', event.message);
                 });
-            if (user.roles[0].name==='Admin') {
-                window.Echo.private('admin-channel') 
+            if (user.roles[0].name === 'Admin') {
+                window.Echo.private('admin-channel')
                     .listen('.UserRemarkedOnQuiz', (event) => {
                         this.addNotification('New Remark!', event.message);
                     });
@@ -57,7 +57,13 @@ export default {
             window.Echo.private(`user.${user.id}`)
                 .listen('.UserScoreUpdatedEvent', (event) => {
                     this.addNotification('Felicitări!', event.message);
+                })
+                .listen('.FriendRequestAccepted',(event)=>{
+                    this.addNotification('New friend!', event.message);
                 });
+            window.Echo.private(`friend-requests.${user.id}`).listen('.FriendRequestSent', (event) => {               
+                this.addNotification('New friend request', event.message);
+            });
         }
 
     },

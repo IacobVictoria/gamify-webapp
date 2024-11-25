@@ -28,8 +28,6 @@ class UserChatController extends Controller
         $this->notificationService = $notificationService;
     }
 
-
-
     public function index()
     {
         $currentUser = Auth::user();
@@ -73,7 +71,6 @@ class UserChatController extends Controller
     public function markMessagesAsRead(string $friendId)
     {
         $currentUser = Auth::user();
-        $friend = User::find($friendId);
 
         $updatedRows = ChatMessage::where('sender_id', $friendId)
             ->where('receiver_id', $currentUser->id)
@@ -104,12 +101,10 @@ class UserChatController extends Controller
             ->orderBy('created_at', 'asc')
             ->get()
             ->map(function ($message) {
-                // Adaugă formatul dorit în fiecare mesaj
                 $message->sent_at_formatted = Carbon::parse($message->created_at)->format('H:i');
                 return $message;
             });
-        ;
-    logger($messages);
+
         // facem toate mesajele ca fiind citite când accesăm conversația
         $updatedRows = ChatMessage::where('sender_id', $friendId)
             ->where('receiver_id', $currentUser->id)
@@ -129,17 +124,15 @@ class UserChatController extends Controller
         return response()->json($messages);
     }
 
-
-
     public function sendMessage(string $friendId, Request $request)
     {
         $currentUser = Auth::user();
         $messageType = $request->input('message_type', 'text');
         $attachmentUrl = null;
 
-        if ($messageType === 'file') {  
+        if ($messageType === 'file') {
             $request->validate([
-                'file' => 'required|file|mimes:mp3,wav,webm|max:2048', 
+                'file' => 'required|file|mimes:mp3,wav,webm|max:2048',
             ]);
 
             $file = $request->file('file');
@@ -149,7 +142,7 @@ class UserChatController extends Controller
             Storage::disk('s3')->setVisibility($filePath, 'public');
 
             $attachmentUrl = Storage::disk('s3')->url($filePath);
-        
+
         }
 
         $message = ChatMessage::create([
@@ -163,7 +156,6 @@ class UserChatController extends Controller
             'attachment_url' => $attachmentUrl,
             'is_read' => false,
         ]);
-
 
         broadcast(new ChatMessageSent($message));
         $this->notificationService->updateNotificationChat($currentUser, $friendId);

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AchievementController;
+use App\Http\Controllers\FriendController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReviewCommentController;
@@ -72,4 +73,11 @@ Route::prefix('user_chat')->group(function () {
     Route::post('/messages/{friendId}', [UserChatController::class, 'sendMessage'])->name('user_chat.sendMessage');
     Route::put('/mark-read/{friendId}', [UserChatController::class, 'markMessagesAsRead']);
     Route::get('/check-status/{friendId}', [UserChatController::class, 'checkUserStatus']);
+});
+
+Route::prefix('user_friends')->group(function () {
+    Route::post('/request', [FriendController::class, 'sendFriendRequest']);
+    Route::post('/accept', [FriendController::class, 'acceptFriendRequest']);
+    Route::get('/search', [FriendController::class, 'searchUsers']);
+    Route::post('/{notifId}/respond', [NotificationController::class, 'handleRequestNotification']);
 });
