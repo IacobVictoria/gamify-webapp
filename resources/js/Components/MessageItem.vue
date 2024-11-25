@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-start gap-2.5 mb-2">
+    <div class="flex items-start gap-2.5 mb-2 ">
         <img v-if="message.sender_id !== currentUser.id" class="w-8 h-8 rounded-full"
             :src="message.sender_gender === 'Male' ? '/images/male.png' : '/images/female.png'" alt="User Avatar" />
         <div v-if="repliedMessage"
@@ -23,9 +23,17 @@
                 </span>
             </div>
             <div class="flex">
-                <p class="text-sm font-normal py-2.5">
-                    {{ message.content }}
+                <p v-if="message.message_type === 'file'">
+                    <AudioPlayer v-if="message.attachment_url" :option="{
+                        src: cleanAttachmentUrl(message.attachment_url),
+                        progressBarColor: '#FF5733',
+                        indicatorColor: '#FF5733',
+                        coverRotate: true,                   
+                    }" class=" max-w-[200px] mx-auto  text-blue-300" />
+            
                 </p>
+
+                <p v-else class="text-sm font-normal py-2.5">{{ message.content }}</p>
                 <MessageSeenSVG v-if="message.sender_id === currentUser.id" :isSeen="message.is_read === 1"
                     class="mt-2 ml-4" />
             </div>
@@ -35,10 +43,13 @@
 </template>
 <script>
 import MessageSeenSVG from "@/Components/MessageSeenSVG.vue";
+import AudioPlayer from "vue3-audio-player";
+import 'vue3-audio-player/dist/style.css';
 
 export default {
     components: {
         MessageSeenSVG,
+        AudioPlayer
     },
     props: {
         message: {
@@ -55,6 +66,11 @@ export default {
         },
     },
     emits: ['reply', 'scrollMessage'],
-
+    methods: {
+        cleanAttachmentUrl(url) {
+            return url.replace('http://127.0.0.1:8000/storage/', '');
+        },
+    }
 };
 </script>
+

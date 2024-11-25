@@ -26,10 +26,16 @@
                 </div>
 
                 <!-- Input for sending messages -->
-                <div class="p-4 border-t flex items-center" id="inputMessage">
+                <div class="p-4 border-t flex items-center gap-2" id="inputMessage">
                     <input v-model="newMessage" @keyup.enter="sendMessage" placeholder="Write a message..."
                         class="flex-1 p-2 border rounded-lg" />
                     <button @click="sendMessage" class="ml-2 bg-blue-500 text-white p-2 rounded-lg">Send</button>
+                    <button @click="startRecording" class="bg-gray-300 p-2 rounded-full">
+                        <MicrofoneSVG></MicrofoneSVG>
+                    </button>
+                    <button v-if="isRecording" @click="stopRecording" class="bg-red-500 text-white p-2 rounded-full">
+                        Stop
+                    </button>
                 </div>
             </div>
         </div>
@@ -40,6 +46,8 @@
 <script>
 import MessageItem from "@/Components/MessageItem.vue";
 import MessageSeenSVG from "@/Components/MessageSeenSVG.vue";
+import MicrofoneSVG from "@/Components/MicrofoneSVG.vue";
+
 
 import axios from "axios";
 
@@ -60,6 +68,10 @@ export default {
             newMessage: "",
             isActive: false,
             replyMessage: null,
+            //media
+            isRecording: false, 
+            mediaRecorder: null, 
+            audioChunks: [],
         };
     },
     beforeUnmount() {
@@ -72,7 +84,8 @@ export default {
     },
     components: {
         MessageSeenSVG,
-        MessageItem
+        MessageItem,
+        MicrofoneSVG
     },
     methods: {
         setReplyMessage(message) {
@@ -132,6 +145,56 @@ export default {
                 this.clearReply(); // Clear reply after sending
             }
         },
+        async startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                this.mediaRecorder = new MediaRecorder(stream);
+                this.mediaRecorder.start();
+                this.audioChunks = [];
+                this.isRecording = true;
+
+                this.mediaRecorder.ondataavailable = (event) => {
+                    this.audioChunks.push(event.data);
+                };
+            } catch (error) {
+                console.error("Error starting recording:", error);
+            }
+        },
+        stopRecording() {
+            this.isRecording = false;
+            this.mediaRecorder.stop();
+
+            this.mediaRecorder.onstop = async () => {
+                const audioBlob = new Blob(this.audioChunks, { type: "audio/webm" });
+
+                if (audioBlob.size > 0) {
+                    await this.uploadAudio(audioBlob);
+                } else {
+                    console.error("Fișierul audio este gol!");
+                }
+            };
+        }
+        ,
+        async uploadAudio(fileBlob) {
+            const formData = new FormData();
+            formData.append("file", fileBlob);  // "file" - cheia pentru a trimite fișierul
+            formData.append("message_type", "file");  
+
+            try {
+                const response = await axios.post(`/user/user_chat/messages/${this.friend.id}`, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
+                this.messages.push(response.data);
+                this.$nextTick(() => {
+                    this.scrollToLastMessage();
+                });
+            } catch (error) {
+                console.error("Error uploading file:", error);
+            }
+        }
+        ,
         listenMessages() {
             window.Echo.private(`chat.${this.currentUser.id}`).listen('.ChatMessageSent', (event) => {
                 this.messages.push(event.message);
