@@ -4,6 +4,8 @@ use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\NutritionAndWellnessController;
+use App\Http\Controllers\OpenAiController;
 use App\Http\Controllers\ReviewCommentController;
 use App\Http\Controllers\ReviewLikeController;
 use App\Http\Controllers\UserChatController;
@@ -73,6 +75,7 @@ Route::prefix('user_chat')->group(function () {
     Route::post('/messages/{friendId}', [UserChatController::class, 'sendMessage'])->name('user_chat.sendMessage');
     Route::put('/mark-read/{friendId}', [UserChatController::class, 'markMessagesAsRead']);
     Route::get('/check-status/{friendId}', [UserChatController::class, 'checkUserStatus']);
+    Route::get('/searchFriendConversation', [UserChatController::class, 'searchFriendConversation']);
 });
 
 Route::prefix('user_friends')->group(function () {
@@ -80,4 +83,10 @@ Route::prefix('user_friends')->group(function () {
     Route::post('/accept', [FriendController::class, 'acceptFriendRequest']);
     Route::get('/search', [FriendController::class, 'searchUsers']);
     Route::post('/{notifId}/respond', [NotificationController::class, 'handleRequestNotification']);
+});
+
+Route::prefix('wellness')->group(function () {
+    Route::get('/', [NutritionAndWellnessController::class, 'index'])->name('wellness.index');
+    Route::post('/count_calories', [NutritionAndWellnessController::class, 'countCalories'])->name('wellness.count_calories');
+    Route::post('/openai/respond-messages', [OpenAiController::class, 'respondMessages']);
 });
