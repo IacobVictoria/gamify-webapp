@@ -4,6 +4,7 @@ use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\ExportDataController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\OpenAiController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QrCodeController;
@@ -65,6 +66,7 @@ Route::prefix('reviews')->group(function () {
 
 
 Route::get('/recommendations/{userId}', [RecommandationPythonController::class, 'index']);
+
 
 Broadcast::routes(['middleware' => ['web', 'auth']]);
 

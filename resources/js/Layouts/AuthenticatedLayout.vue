@@ -56,6 +56,10 @@ const showingNavigationDropdown = ref(false);
                                         :active="route().current('user.user_chat.index')">
                                         Chat 
                                     </NavLink>
+                                    <NavLink :href="route('user.wellness.index')"
+                                        :active="route().current('user.wellness.index')">
+                                         Wellness
+                                    </NavLink>
                                 </template>
                                 <template v-if="authUserHasRole('Admin')">
                                     <NavLink :href="route('admin.dashboard')"

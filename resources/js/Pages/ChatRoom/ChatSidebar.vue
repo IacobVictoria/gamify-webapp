@@ -1,8 +1,10 @@
 <template>
     <div class="w-1/4 p-4 border-r">
+        <input type="text" v-model="searchQuery" @input="searchFriendConversation"
+            placeholder="Search by email friend..." class="w-full p-2 border rounded mb-4">
         <h2 class="text-lg font-semibold mb-4">Conversațiile tale</h2>
-        <ul>
-            <li v-for="conversation in conversations" :key="conversation.friend.id"
+        <ul v-if="searchResults.length > 0">
+            <li v-for="conversation in searchResults" :key="conversation.friend.id"
                 @click="selectConversation(conversation.friend)"
                 class="p-2 mb-2 cursor-pointer bg-gray-200 rounded-lg hover:bg-gray-300 relative">
                 <!-- <p>{{ conversation.status }}</p> -->
@@ -36,10 +38,32 @@ export default {
     data() {
         return {
             selectedConversation: null,
+            searchQuery: '',
+            searchResults: [],
 
         };
     },
     methods: {
+        async searchFriendConversation() {
+            if (this.searchQuery.trim() === "") {
+                this.searchResults = [];
+                return;
+            }
+
+            try {
+                const response = await axios.get('/user/user_chat/searchFriendConversation',
+                    {
+                        params: { emailFriend: this.searchQuery }
+                    });
+                console.log(response.data)
+                this.searchResults = response.data;
+                console.log(this.searchResults)
+            } catch (error) {
+                console.error("Error searching friends:", error);
+                this.searchResults = [];
+            }
+
+        },
         selectConversation(friend) {
             this.selectedConversation = friend.id;
 
@@ -67,6 +91,8 @@ export default {
         }
     },
     mounted() {
+        this.searchResults = this.conversations;
+        
         this.conversations.forEach(conversation => {
             this.checkUserStatus(conversation.friend.id);
         });
