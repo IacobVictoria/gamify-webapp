@@ -26,8 +26,7 @@
                                 <div class="mt-4">
                                     <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">{{
                                         product.name }}</h1>
-                                    <button
-                                        @click="isFavorite ? dislikeProduct(product) : likeProduct(product)">
+                                    <button @click="isFavorite ? dislikeProduct(product) : likeProduct(product)">
                                         <AddHeartSVG :svg-class="isFavorite ? 'text-red-400' : 'text-gray-400'">
                                         </AddHeartSVG>
                                     </button>
@@ -38,6 +37,9 @@
 
                             <p class="mt-6 text-gray-500">{{ product.description }}</p>
                             <p class="mt-6 text-gray-500">{{ product.price }}</p>
+                            <!---Comparison  -->
+                        <ComparisonDropdown :product="product" :isChecked="comparisonChecked"></ComparisonDropdown>
+
                             <div class="mt-6">
                                 <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
                                 <select id="quantity" v-model="quantity"
@@ -175,6 +177,7 @@ import debounce from "lodash/fp/debounce";
 import VerifiedSVG from '@/Components/VerifiedSVG.vue';
 import ReviewSummary from '../Reviews/ReviewSummary.vue';
 import AddHeartSVG from '@/Components/AddHeartSVG.vue';
+import ComparisonDropdown from './ComparisonDropdown.vue';
 
 
 export default {
@@ -189,7 +192,8 @@ export default {
         SortingComponent,
         VerifiedSVG,
         ReviewSummary,
-        AddHeartSVG
+        AddHeartSVG,
+        ComparisonDropdown
     },
     props: {
         product: Object,
@@ -198,8 +202,10 @@ export default {
         statistics: Map,
         averageRating: Number,
         noStatistics: Boolean,
-        isFavorite: Boolean
+        isFavorite: Boolean,
+        comparisonChecked: Boolean
     },
+
     data() {
         return {
             showReviewForm: false,
@@ -246,6 +252,7 @@ export default {
         };
     },
     methods: {
+
         addToCart(product) {
             this.$inertia.post(route('user.shopping-cart.add'), {
                 product: product,

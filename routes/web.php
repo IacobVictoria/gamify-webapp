@@ -5,6 +5,7 @@ use App\Http\Controllers\ExportDataController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\OpenAiController;
+use App\Http\Controllers\ProductComparisonController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QrCodeController;
@@ -66,6 +67,14 @@ Route::prefix('reviews')->group(function () {
 
 
 Route::get('/recommendations/{userId}', [RecommandationPythonController::class, 'index']);
+
+Route::prefix('comparison')->group(function () {
+    Route::post('/add', [ProductComparisonController::class, 'addToComparison']);
+    Route::delete('/remove/{productId}', [ProductComparisonController::class, 'removeFromComparison']);
+    Route::get('/', [ProductComparisonController::class, 'getProductsComparison']);
+    Route::get('/{ids}', [ProductComparisonController::class, 'getComparisonByIds'])->name('comparison.show');;
+    Route::post('/reset', [ProductComparisonController::class, 'resetComparison']);
+});
 
 
 Broadcast::routes(['middleware' => ['web', 'auth']]);

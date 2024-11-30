@@ -68,6 +68,8 @@ class ProductController extends Controller
         $isFavorite = $this->userService->hasLikedProduct($user, $product);
         $sortOrder = $request->input('order', "");
         $buyers = $request->input('buyers', "");
+        $comparison = session('comparison', []);
+        $comparisonChecked = in_array($id, $comparison);
 
         //Sorting and filter 
 
@@ -158,7 +160,8 @@ class ProductController extends Controller
             'noBuyersMessage' => $noBuyersMessage,
             'statistics' => $statistics,
             'averageRating' => $averageRating,
-            'noStatistics' => $noStatistics
+            'noStatistics' => $noStatistics,
+            'comparisonChecked' => $comparisonChecked
         ]);
     }
 
