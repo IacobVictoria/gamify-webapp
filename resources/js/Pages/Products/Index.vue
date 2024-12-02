@@ -4,7 +4,10 @@
             <main class="mt-32 mb-20">
                 <div class="bg-white">
                     <div class="mx-auto max-w-7xl overflow-hidden sm:px-6 lg:px-8">
-
+                        <!-- <button @click="sendPromoMessage"
+                            class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600">
+                            Trimite Promoție
+                        </button> -->
                         <!-- Search Bar -->
                         <div class="relative mb-8">
                             <label for="search" class="sr-only">Search</label>
@@ -45,7 +48,7 @@
 
                                     </div>
                                 </inertia-link>
-                                <button @click="product.isFavorite ? dislikeProduct(product) : likeProduct(product)" >
+                                <button @click="product.isFavorite ? dislikeProduct(product) : likeProduct(product)">
                                     <AddHeartSVG :svg-class="product.isFavorite ? 'text-red-400' : 'text-gray-400'">
                                     </AddHeartSVG>
                                 </button>
@@ -102,8 +105,23 @@ export default {
 
                 }
             });
-        }
+        },
 
-    }
+        // sendPromoMessage() {
+        //     axios.post('/send-promotion', {
+        //         phone: '+40727142462',
+        //         name: 'John Doe',
+        //         link: 'https://siteulmeu.ro'
+        //     })
+        //         .then(response => {
+        //             console.log('Mesaj trimis cu succes:', response.data);
+        //         })
+        //         .catch(error => {
+        //             console.error('Eroare la trimitere:', error);
+        //         });
+        // }
+
+
+    },
 }
 </script>

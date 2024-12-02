@@ -17,6 +17,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReviewLikeController;
 use App\Http\Controllers\ReviewMediaController;
 use App\Http\Controllers\UserWishlistController;
+use App\Http\Controllers\WhatsAppController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -72,9 +73,13 @@ Route::prefix('comparison')->group(function () {
     Route::post('/add', [ProductComparisonController::class, 'addToComparison']);
     Route::delete('/remove/{productId}', [ProductComparisonController::class, 'removeFromComparison']);
     Route::get('/', [ProductComparisonController::class, 'getProductsComparison']);
-    Route::get('/{ids}', [ProductComparisonController::class, 'getComparisonByIds'])->name('comparison.show');;
+    Route::get('/{ids}', [ProductComparisonController::class, 'getComparisonByIds'])->name('comparison.show');
+    ;
     Route::post('/reset', [ProductComparisonController::class, 'resetComparison']);
+
 });
+//Route::post('/send-whatsapp', [WhatsAppController::class, 'sendWhatsAppMessage'])->name('web.send-whatsapp');
+Route::post('/send-promotion', [WhatsappController::class, 'sendPromotion']);
 
 
 Broadcast::routes(['middleware' => ['web', 'auth']]);

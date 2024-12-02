@@ -1,6 +1,15 @@
 <template>
+  <button @click="copyClipBoard(currentUrl)"
+    class="bg-green-500 text-white font-bold py-2 px-4 rounded shadow-lg hover:bg-green-600 hover:shadow-xl hover:-translate-y-1 active:bg-green-700 active:shadow-md active:translate-y-0 transition-transform">
+    Copy in clipboard
+  </button>
+  <div v-if="showPopup"
+    class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-600 text-white py-2 px-4 rounded shadow-lg">
+    URL copiat cu succes!
+  </div>
+
   <div class="overflow-x-auto">
-    <table class="min-w-full border-collapse border border-gray-200">
+    <table class="min-w-full border-collapse border border-gray-200 mt-12">
       <thead>
         <tr class="bg-gray-100">
           <th class="border border-gray-200 p-4 text-left font-semibold">Atribut</th>
@@ -65,6 +74,12 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      currentUrl: window.location.href,
+      showPopup: false
+    }
+  },
   computed: {
     attributes() {
       return [
@@ -97,6 +112,19 @@ export default {
       }
       return '';
     },
+    copyClipBoard(currentUrl) {
+      navigator.clipboard.writeText(currentUrl)
+        .then(() => {
+          this.showPopup = true
+          setTimeout(() => {
+            this.showPopup = false;
+          }, 2000);
+        })
+        .catch((error) => {
+          console.error('Nu s-a putut copia în clipboard: ', error);
+        });
+    }
+
   },
 };
 </script>

@@ -10,7 +10,7 @@
 
         <div class="rounded-[2rem] overflow-hidden h-[650px] w-[450px] bg-white dark:bg-gray-800 p-2">
             <div class="flex flex-col h-full">
-                <div class="flex-1 overflow-y-auto p-4">
+                <div ref="scrollContainer" class="flex-1 overflow-y-auto p-4">
                     <div v-for="message in messages" :key="message.id" :id="'message-' + message.id" class="mb-2">
                         <MessageItem :key="message.id" :message="message"
                             :repliedMessage="findMessageById(message.reply_to_message_id)" :currentUser="currentUser"
@@ -69,18 +69,28 @@ export default {
             isActive: false,
             replyMessage: null,
             //media
-            isRecording: false, 
-            mediaRecorder: null, 
+            isRecording: false,
+            mediaRecorder: null,
             audioChunks: [],
+            isLoading: false,
+            noMoreItems: false,
+            offset: 0, 
+            limit: 10, 
         };
     },
     beforeUnmount() {
         this.isActive = false;
+        this.$refs.scrollContainer.removeEventListener("scroll", this.handleScroll);
     },
     mounted() {
         this.isActive = true;
-        this.fetchMessages();
+        this.loadMessages().then(() => {
+            this.scrollToLastMessage(); 
+        }); 
 
+        const container = this.$refs.scrollContainer;
+
+        container.addEventListener("scroll", this.handleScroll);
     },
     components: {
         MessageSeenSVG,
@@ -113,15 +123,6 @@ export default {
             } catch (error) {
                 console.error('Error marking messages as read:', error);
             }
-        },
-
-        async fetchMessages() {
-            const response = await axios.get(`/user/user_chat/messages/${this.friend.id}`);
-            this.messages = response.data;
-            this.listenMessages();
-            this.$nextTick(() => {
-                this.scrollToLastMessage();
-            });
         },
         findMessageById(id) {
             return this.messages.find((message) => message.id === id);
@@ -178,7 +179,7 @@ export default {
         async uploadAudio(fileBlob) {
             const formData = new FormData();
             formData.append("file", fileBlob);  // "file" - cheia pentru a trimite fișierul
-            formData.append("message_type", "file");  
+            formData.append("message_type", "file");
 
             try {
                 const response = await axios.post(`/user/user_chat/messages/${this.friend.id}`, formData, {
@@ -219,7 +220,7 @@ export default {
         },
         scrollToLastMessage() {
             this.$nextTick(() => {
-                const container = document.querySelector('.overflow-y-auto'); //  containerul cu mesaje
+                const container = this.$refs.scrollContainer; //  containerul cu mesaje
                 if (container) {
                     container.scrollTop = container.scrollHeight; // scroll la ultimul element
                 }
@@ -233,6 +234,48 @@ export default {
                 }
             });
         },
+        async loadMessages() {
+            if (this.isLoading || this.noMoreItems) return;
+
+            this.isLoading = true;
+            const container = this.$refs.scrollContainer;
+
+            try {
+                // Salvează înălțimea curentă a containerului înainte de a adăuga noi mesaje
+                const previousScrollHeight = container.scrollHeight;
+
+                const response = await axios.get(`/user/user_chat/messages/${this.friend.id}`, {
+                    params: {
+                        offset: this.offset,
+                        limit: this.limit,
+                    },
+                });
+
+                if (response.data.length > 0) {
+                    this.messages = [...response.data.reverse(), ...this.messages]; 
+                    this.offset += this.limit; 
+                } else {
+                    this.noMoreItems = true; 
+                }
+
+                this.$nextTick(() => {
+                    const newScrollHeight = container.scrollHeight;
+                    container.scrollTop = newScrollHeight - previousScrollHeight;
+                });
+            } catch (error) {
+                console.error("Error loading messages:", error);
+            } finally {
+                this.isLoading = false;
+            }
+        },
+        handleScroll() {
+            const container = this.$refs.scrollContainer;
+            //  scroll-ul este aproape de partea de sus
+            if (container.scrollTop <= 50 && !this.isLoading && !this.noMoreItems) {
+                this.loadMessages(); 
+            }
+        },
+
     },
 
 

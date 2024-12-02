@@ -86,10 +86,12 @@ class UserChatController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    public function getConversation($friendId)
+    public function getConversation(Request $request, $friendId)
     {
         $currentUser = Auth::user();
         $friend = User::find($friendId);
+        $offset = $request->query('offset', 0); // Offset-ul implicit este 0
+        $limit = $request->query('limit', 10);
 
         //  intreaga conversație între utilizatorul curent și prietenul selectat
         $messages = ChatMessage::where(function ($query) use ($currentUser, $friend) {
@@ -101,6 +103,8 @@ class UserChatController extends Controller
                     ->where('receiver_id', $currentUser->id);
             })
             ->orderBy('created_at', 'asc')
+            ->offset($offset) // Offset-ul pentru paginare
+            ->limit($limit)
             ->get()
             ->map(function ($message) {
                 $message->sent_at_formatted = Carbon::parse($message->created_at)->format('H:i');
@@ -179,52 +183,52 @@ class UserChatController extends Controller
     {
         $currentUser = Auth::user();
         $email = $request->input('emailFriend');
-    
+
         $friends = User::where('email', 'like', "%{$email}%")->get(['id', 'name', 'email']);
-    
+
         if ($friends->isEmpty()) {
             return response()->json([], 200);
         }
-    
+
         // grupăm toate mesajele între utilizatorul curent și prietenii găsiți
         $conversations = ChatMessage::where(function ($query) use ($currentUser, $friends) {
             $query->where('sender_id', $currentUser->id)
-                  ->whereIn('receiver_id', $friends->pluck('id'));
+                ->whereIn('receiver_id', $friends->pluck('id'));
         })
-        ->orWhere(function ($query) use ($currentUser, $friends) {
-            $query->whereIn('sender_id', $friends->pluck('id'))
-                  ->where('receiver_id', $currentUser->id);
-        })
-        ->with(['sender', 'receiver'])
-        ->get()
-        ->groupBy(function ($message) use ($currentUser) {
-            // grupăm mesajele pe baza ID-ului prietenului
-            return $message->sender_id === $currentUser->id ? $message->receiver_id : $message->sender_id;
-        })
-        ->map(function ($messages) use ($currentUser) {
-            $lastMessage = $messages->sortByDesc('created_at')->first();
-            $friend = $lastMessage->sender_id === $currentUser->id ? $lastMessage->receiver : $lastMessage->sender;
-    
-            $unreadCount = $messages->where('receiver_id', $currentUser->id)
-                                    ->where('is_read', false)
-                                    ->count();
-    
-            return [
-                'friend' => [
-                    'id' => $friend->id,
-                    'name' => $friend->name,
-                ],
-                'lastMessage' => $lastMessage,
-                'sent_at' => $lastMessage->sent_at, 
-                'is_read' => $lastMessage->is_read,
-                'unreadCount' => $unreadCount,
-                'status' => Cache::get('user_activity_' . $friend->id, 'Offline'),
-            ];
-        })
-        ->values()
-        ->toArray();
-    
+            ->orWhere(function ($query) use ($currentUser, $friends) {
+                $query->whereIn('sender_id', $friends->pluck('id'))
+                    ->where('receiver_id', $currentUser->id);
+            })
+            ->with(['sender', 'receiver'])
+            ->get()
+            ->groupBy(function ($message) use ($currentUser) {
+                // grupăm mesajele pe baza ID-ului prietenului
+                return $message->sender_id === $currentUser->id ? $message->receiver_id : $message->sender_id;
+            })
+            ->map(function ($messages) use ($currentUser) {
+                $lastMessage = $messages->sortByDesc('created_at')->first();
+                $friend = $lastMessage->sender_id === $currentUser->id ? $lastMessage->receiver : $lastMessage->sender;
+
+                $unreadCount = $messages->where('receiver_id', $currentUser->id)
+                    ->where('is_read', false)
+                    ->count();
+
+                return [
+                    'friend' => [
+                        'id' => $friend->id,
+                        'name' => $friend->name,
+                    ],
+                    'lastMessage' => $lastMessage,
+                    'sent_at' => $lastMessage->sent_at,
+                    'is_read' => $lastMessage->is_read,
+                    'unreadCount' => $unreadCount,
+                    'status' => Cache::get('user_activity_' . $friend->id, 'Offline'),
+                ];
+            })
+            ->values()
+            ->toArray();
+
         return response()->json($conversations);
     }
-    
+
 }

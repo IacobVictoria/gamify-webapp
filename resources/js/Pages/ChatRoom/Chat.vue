@@ -50,7 +50,7 @@ export default {
             type: Array,
             required: true,
         },
-        
+
     },
     data() {
         return {
@@ -62,7 +62,13 @@ export default {
 
     methods: {
         openConversation(friend) {
-            this.selectedFriend = friend;
+            if (this.selectedFriend && this.selectedFriend.id === friend.id) {
+                return;
+            }
+            this.selectedFriend = null;
+            this.$nextTick(() => {
+                this.selectedFriend = friend;
+            });
         },
         async searchUsers() {
             if (this.searchQuery.trim() === "") {
@@ -74,7 +80,7 @@ export default {
                 const response = await axios.get(`/user/user_friends/search`, {
                     params: { email: this.searchQuery },
                 });
-                this.searchResults = response.data; 
+                this.searchResults = response.data;
             } catch (error) {
                 console.error("Error searching users:", error);
             }
@@ -83,7 +89,7 @@ export default {
             try {
                 await axios.post(`/user/user_friends/request`, { receiver_id: userId });
                 this.searchResults = this.searchResults.filter((user) => user.id !== userId);
-             
+
             } catch (error) {
                 console.error("Error sending friend request:", error);
             }

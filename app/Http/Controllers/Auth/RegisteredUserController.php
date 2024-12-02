@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserRole;
+use App\Services\WhatsappService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,14 +21,21 @@ use Inertia\Response;
 
 class RegisteredUserController extends Controller
 {
+    protected $whatsappService;
+
+    public function __construct(WhatsappService $whatsappService)
+    {
+        $this->whatsappService = $whatsappService;
+    }
+
     /**
      * Display the registration view.
      */
     public function create(): Response
     {
-        return Inertia::render('Auth/Register',[
+        return Inertia::render('Auth/Register', [
             'locations' => CityRomania::getAllCities(), // Send cities to the frontend
-            'genders' => Gender::getAllGenders()  
+            'genders' => Gender::getAllGenders()
         ]);
     }
 
@@ -46,7 +54,7 @@ class RegisteredUserController extends Controller
             'gender' => ['required', 'in:' . implode(',', $genders)],
             'birthdate' => 'required|date',
             'location' => ['nullable', 'in:' . implode(',', $locations)],
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -66,6 +74,7 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
         event(new UserRegistration($user));
 
+      //  $this->whatsappService->sendWhatsappMessage($user->name);
         Auth::login($user);
 
         return redirect(route('user.dashboard'));
