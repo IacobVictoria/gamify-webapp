@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminChatController;
 use App\Http\Controllers\AdminCheckoutController;
 use App\Http\Controllers\AdminClientOrderController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminEventCalendarController;
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AdminQuizAnswerController;
 use App\Http\Controllers\AdminQuizController;
@@ -126,6 +127,12 @@ Route::prefix('quiz_manager')->group(function () {
     Route::post('/{quizId}/add_question', [AdminQuizManagerController::class, 'addQuestion'])->name('quiz_add_questions.store');
     Route::put('/{quizId}/update_question', [AdminQuizManagerController::class, 'updateQuestion'])->name('quiz_update_question.update');
     Route::get('/quiz_remarks/{quizId}', [AdminUserQuizRemarkController::class, 'show'])->name('quiz_remarks.show');
+});
+
+Route::prefix('calendar')->group(function () {
+    Route::get('/', [AdminEventCalendarController::class, 'index'])->name('calendar.index');
+    Route::post('/create_event', [AdminEventCalendarController::class, 'store'])->name('calendar.event.store');
+    Route::put('/update_event/{id}', [AdminEventCalendarController::class, 'update'])->name('calendar.event.update');
 });
 
 
