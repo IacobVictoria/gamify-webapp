@@ -1,5 +1,5 @@
 <template>
-    <div v-if="!showModal" class="event">
+    <div v-if="!showModal && !eventDeleted" class="event"> 
         <div class="event-header">
             <img src="/images/event_title.png" alt="">
             <h3>{{ calendarEvent.title }}</h3>
@@ -19,12 +19,14 @@
             <button @click="deleteEvent" class="delete-btn">❌ Delete</button>
         </div>
     </div>
-    <EditEventModal :show-modal="showModal" :selected-type="selectedType" :calendar-event="calendarEvent">
+    <EditEventModal :show-modal="showModal" :selected-type="selectedType" :calendar-event="calendarEvent"
+        @close="closeModal">
     </EditEventModal>
 </template>
 
 <script>
 import EditEventModal from './EditEventModal.vue';
+
 export default {
     props: {
         calendarEvent: Object
@@ -32,8 +34,9 @@ export default {
     data() {
         return {
             showModal: false,
-            selectedType: this.calendarEvent.type
-        }
+            selectedType: this.calendarEvent.type,
+            eventDeleted: false 
+        };
     },
     components: {
         EditEventModal
@@ -41,10 +44,21 @@ export default {
     methods: {
         editEvent() {
             this.showModal = true;
-
+        },
+        closeModal() {
+            this.showModal = false; 
+            this.selectedType = null; 
         },
         deleteEvent() {
-
+            this.$inertia.delete(route('admin.calendar.event.destroy', { id: this.calendarEvent.id }), {
+                onSuccess: () => {
+                    this.eventDeleted = true;
+                    this.closeModal(); 
+                },
+                onError: (error) => {
+                    console.error("Error deleting event:", error);
+                }
+            });
         }
     }
 }

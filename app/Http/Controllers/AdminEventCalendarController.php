@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Product;
+use App\Models\Supplier;
+use App\Models\SupplierProduct;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -15,8 +18,17 @@ class AdminEventCalendarController extends Controller
     public function index()
     {
         $events = Event::all();
+        $categories = Product::distinct()->pluck('category');
+        $suppliers = Supplier::all();
+        $productsBySupplier = SupplierProduct::with('supplier')
+            ->get()
+            ->groupBy('supplier_id');
+         
         return Inertia::render('Admin/Calendar/Index', [
             'events' => $events,
+            'categories' => $categories,
+            'suppliers' => $suppliers,
+            'products' => $productsBySupplier->toArray()
         ]);
     }
 
@@ -37,8 +49,8 @@ class AdminEventCalendarController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'start' => 'required|string', 
-            'end' => 'required|string',   
+            'start' => 'required|string',
+            'end' => 'required|string',
             'status' => 'nullable|in:CLOSED,OPEN',
             'type' => 'nullable|string',
             'details' => 'nullable|json',
@@ -49,9 +61,9 @@ class AdminEventCalendarController extends Controller
             'id' => Uuid::uuid(),
             'title' => $validated['title'],
             'description' => $validated['description'],
-            'start' => $validated['start'], 
+            'start' => $validated['start'],
             'end' => $validated['end'],
-            'status' => $validated['status'] ?? 'OPEN', 
+            'status' => $validated['status'] ?? 'OPEN',
             'type' => $validated['type'] ?? 'event',
             'details' => $validated['details'] ?? null,
             'calendarId' => $validated['calendarId'],
@@ -59,7 +71,7 @@ class AdminEventCalendarController extends Controller
 
         $event->save();
 
-        return redirect()->back()->with('success', 'Event created successfully!');
+        return redirect()->back();
 
     }
 
@@ -85,12 +97,12 @@ class AdminEventCalendarController extends Controller
     public function update(Request $request, string $id)
     {
         $event = Event::findOrFail($id);
-        $validatedData = $request->validate([
+        $request->validate([
             'payload.title' => 'required|string|max:255',
             'payload.description' => 'required|string|max:500',
             'payload.start' => 'required|date',
             'payload.end' => 'required|date|after:payload.start',
-            'payload.status' => 'required|in:CLOSED,OPEN',  
+            'payload.status' => 'required|in:CLOSED,OPEN',
         ]);
         $payload = $request->input('payload');
 
@@ -102,7 +114,7 @@ class AdminEventCalendarController extends Controller
 
         $event->save();
 
-        return response()->json(['message' => 'Event updated successfully']);
+        return redirect()->back();
     }
 
     /**
@@ -110,6 +122,8 @@ class AdminEventCalendarController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $event = Event::find($id);
+        $event->delete();
+        return redirect()->back();
     }
 }

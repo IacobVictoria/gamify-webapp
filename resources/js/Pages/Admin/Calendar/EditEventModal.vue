@@ -17,16 +17,16 @@
                             class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
 
                             <div v-if="selectedType === 'event'">
-                                <EditEventForm :calendarEvent="calendarEvent" @closeForm="closeForm" />
+                                <EditEventForm :calendarEvent="calendarEvent" @formSubmitted="closeModal" />
                             </div>
-                            <!-- <div v-if="selectedType === 'order'">
-                  <EditComandForm @closeForm="closeForm" />
-                </div>
-                <div v-if="selectedType === 'discount'">
-                  <EditDiscountForm @closeForm="closeForm" />
-                </div>
-   -->
-                            <div v-if="selectedType === null" class="mt-5 sm:mt-6">
+                            <div v-if="selectedType === 'supplier_order'">
+                                <EditSupplierOrderForm :calendarEvent="calendarEvent" @closeForm="closeForm" :suppliers="props.suppliers" :products="props.products" />
+                            </div>
+                            <div v-if="selectedType === 'discount'">
+                                <EditDiscountForm :calendarEvent="calendarEvent" @formSubmitted="closeModal" :categories="props.categories"/>
+                            </div>
+
+                            <div class="mt-5 sm:mt-6">
                                 <button type="button"
                                     class="inline-flex w-full justify-center mt-3 rounded-md bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-200"
                                     @click="closeModal">
@@ -42,30 +42,23 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import EditEventForm from './EditEventForm.vue'
+import EditDiscountForm from './EditDiscountForm.vue'
+import EditSupplierOrderForm from './EditSupplierOrderForm.vue'
 
-// Props și emiteri
 const props = defineProps({
     showModal: Boolean,
     selectedType: String,
-    calendarEvent: Object
+    calendarEvent: Object,
+    categories: Array,
+    suppliers: Array,
+    products: Array
 });
 
-const emit = defineEmits();
+const emit = defineEmits(['close']);
 
 function closeModal() {
-    emit('update:showModal', false);
-    emit('update:selectedType', null); // Resetarea tipului când se închide modalul
+    emit('close');
 }
-
-function closeForm() {
-    emit('update:selectedType', null); // Resetarea tipului după ce se închide formularul
-}
-
 </script>
-
-<style scoped>
-/* Stiluri pentru dialog și panou */
-</style>

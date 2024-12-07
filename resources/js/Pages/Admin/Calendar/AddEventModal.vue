@@ -22,10 +22,10 @@
                                 <EventForm :selectedDate="selectedDate" @closeForm="closeForm" />
                             </div>
                             <div v-if="selectedType === 'order'">
-                                <ComandForm :selectedDate="selectedDate" @closeForm="closeForm" />
+                                <SupplierOrderForm :selectedDate="selectedDate" @closeForm="closeForm" :suppliers="props.suppliers" :products="props.products"/>
                             </div>
                             <div v-if="selectedType === 'discount'">
-                                <DiscountForm :selectedDate="selectedDate" @closeForm="closeForm" />
+                                <DiscountForm :selectedDate="selectedDate" @closeForm="closeForm" :categories="props.categories" />
                             </div>
 
                             <div v-if="selectedType === null" class="mt-5 sm:mt-6">
@@ -49,12 +49,15 @@ import { ref } from 'vue'
 import StartPage from './StartPage.vue'
 import EventForm from './EventForm.vue';
 import DiscountForm from './DiscountForm.vue';
-import ComandForm from './ComandForm.vue';
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue';
+import SupplierOrderForm from './SupplierOrderForm.vue';
 
 const props = defineProps({
     showModal: Boolean,
     selectedDate: String,
+    categories: Array,
+    products: Array,
+    suppliers: Array
 });
 const emit = defineEmits()
 const selectedType = ref(null)

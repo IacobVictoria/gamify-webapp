@@ -76,7 +76,7 @@ function submitForm() {
 
     formData.post(route('admin.calendar.event.store'), {
         onSuccess: () => {
-            closeForm()
+            closeForm();
         },
         onError: (errors) => {
             console.error("Errors:", errors)

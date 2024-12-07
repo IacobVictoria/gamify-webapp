@@ -6,13 +6,19 @@
                     <div v-if="calendarEvent.type === 'event'">
                         <CustomEventComponent :calendar-event="calendarEvent" />
                     </div>
-
+                    <div v-if="calendarEvent.type === 'discount'">
+                        <DiscountEventComponent :calendar-event="calendarEvent" :categories="props.categories"/>
+                    </div>
+                    <div v-if="calendarEvent.type === 'supplier_order'">
+                        <SupplierOrderComponent :calendar-event="calendarEvent" :products="props.products" :suppliers="props.suppliers"/>
+                    </div>
                 </div>
+
             </template>
         </ScheduleXCalendar>
 
-        <AddEventModal v-if="showModal" :selectedDate="selectedDate" :showModal="showModal"
-            @update:showModal="showModal = $event" @submit="handleSubmit" />
+        <AddEventModal v-if="showModal" :selectedDate="selectedDate" :showModal="showModal" :categories="props.categories"
+            @update:showModal="showModal = $event" @submit="handleSubmit" :suppliers="props.suppliers" :products="props.products"/>
     </div>
 </template>
 
@@ -26,6 +32,8 @@ import { createEventsServicePlugin } from '@schedule-x/events-service'
 import { createEventModalPlugin } from '@schedule-x/event-modal'
 import { createCalendarControlsPlugin } from '@schedule-x/calendar-controls'
 import CustomEventComponent from './CustomEventComponent.vue'
+import DiscountEventComponent from './DiscountEventComponent.vue'
+import SupplierOrderComponent from './SupplierOrderComponent.vue'
 
 const eventsServicePlugin = createEventsServicePlugin();
 const eventModal = createEventModalPlugin();
@@ -35,7 +43,9 @@ const props = defineProps({
     events: {
         type: Array,
         required: true
-    }
+    }, categories: Array,
+    products: Array,
+    suppliers: Array
 })
 
 const calendarApp = createCalendar({
@@ -108,6 +118,7 @@ const calendarApp = createCalendar({
         onClickDate(date) {
             selectedDate.value = date;
             showModal.value = true;
+
         },
     },
 });

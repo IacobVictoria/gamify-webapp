@@ -41,8 +41,6 @@
                     </button>
                 </div>
             </form>
-
-            <button @click="closeModal" class="close-btn">❌ Close</button>
         </div>
     </div>
 </template>
@@ -57,8 +55,8 @@ export default {
             formData: {
                 title: this.calendarEvent.title || '',
                 description: this.calendarEvent.description || '',
-                start: this.calendarEvent.start || '',
-                end: this.calendarEvent.end || '',
+                start: this.toDateTimeLocalFormat(this.calendarEvent.start) || '',
+                end: this.toDateTimeLocalFormat(this.calendarEvent.end) || '',
                 status: this.calendarEvent.status || 'OPEN',
             }
         };
@@ -69,8 +67,9 @@ export default {
         }
     },
     methods: {
-        closeModal() {
-            this.$emit('close');
+        toDateTimeLocalFormat(datetime) {
+            if (!datetime) return '';
+            return datetime.replace(' ', 'T'); // Înlocuim spațiul cu 'T' pentru compatibilitate
         },
         formatDate(dateTime) {
             if (!dateTime) return null;
@@ -93,7 +92,7 @@ export default {
             this.$inertia.put(route('admin.calendar.event.update', { id: this.calendarEvent.id }), {
                 payload: this.formData
             });
-            this.closeModal();
+            this.$emit('formSubmitted');
         }
     }
 };
