@@ -52,3 +52,8 @@ Broadcast::channel('friend-requests.{id}', function ($user, $id) {
 
     return (int) $user->id === (int) $id;
 });
+
+Broadcast::channel('admin-channel.{id}',function($user,$id){
+    return (int) $user->id === (int) $id && $user->hasRole('Admin');
+});
+

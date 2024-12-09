@@ -7,7 +7,9 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import NotificationCenter from '@/Pages/Notification_System/NotificationCenter.vue';
+import NotificationComponentIcon from '@/Pages/Notification_System/NotificationComponentIcon.vue';
 const showingNavigationDropdown = ref(false);
+import Icon from '@/Pages/Admin/Notifications/Icon.vue';
 
 </script>
 
@@ -119,6 +121,7 @@ const showingNavigationDropdown = ref(false);
                                                         clip-rule="evenodd" />
                                                 </svg>
                                             </button>
+                                            <Icon></Icon>
                                         </span>
                                     </template>
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminCheckoutController;
 use App\Http\Controllers\AdminClientOrderController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminEventCalendarController;
+use App\Http\Controllers\AdminNotificationController;
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AdminQuizAnswerController;
 use App\Http\Controllers\AdminQuizController;
@@ -136,4 +137,8 @@ Route::prefix('calendar')->group(function () {
     Route::delete('/delete/{id}', [AdminEventCalendarController::class, 'destroy'])->name('calendar.event.destroy');
 });
 
-
+Route::prefix('notifications')->group(function () {
+Route::get('/', [AdminNotificationController::class, 'getNotifications'])->name('notifications.getNotifications');
+Route::post('/markAsRead', [AdminNotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+Route::post('/{id}/handle', [AdminNotificationController::class, 'handleNotification'])->name('notifications.handle');
+});

@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { ScheduleXCalendar } from '@schedule-x/vue'
 import { createCalendar, createViewDay, createViewWeek, createViewMonthGrid } from '@schedule-x/calendar'
 import '@schedule-x/theme-default/dist/index.css'
@@ -39,6 +39,7 @@ const eventsServicePlugin = createEventsServicePlugin();
 const eventModal = createEventModalPlugin();
 
 const calendarControls = createCalendarControlsPlugin()
+
 const props = defineProps({
     events: {
         type: Array,
@@ -123,7 +124,9 @@ const calendarApp = createCalendar({
     },
 });
 calendarControls.setView('month-grid');
-
+onMounted(()=>{
+    console.log(props.events)
+});
 const selectedDate = ref(null)
 const showModal = ref(false)
 

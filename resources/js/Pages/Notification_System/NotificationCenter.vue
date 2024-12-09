@@ -58,11 +58,14 @@ export default {
                 .listen('.UserScoreUpdatedEvent', (event) => {
                     this.addNotification('Felicitări!', event.message);
                 })
-                .listen('.FriendRequestAccepted',(event)=>{
+                .listen('.FriendRequestAccepted', (event) => {
                     this.addNotification('New friend!', event.message);
                 });
-            window.Echo.private(`friend-requests.${user.id}`).listen('.FriendRequestSent', (event) => {               
+            window.Echo.private(`friend-requests.${user.id}`).listen('.FriendRequestSent', (event) => {
                 this.addNotification('New friend request', event.message);
+            });
+            window.Echo.private(`admin-channel.${user.id}`).listen('.SupplierOrderError', (event) => {
+                this.addNotification('Error', event.message);
             });
         }
 
