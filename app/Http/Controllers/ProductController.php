@@ -8,6 +8,7 @@ use App\Models\Review;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class ProductController extends Controller
@@ -28,13 +29,26 @@ class ProductController extends Controller
         $products = Product::where('name', 'like', "%{$searchQuery}%")->get();
 
         $products = $products->map(function ($product) use ($user) {
+            // Verifică dacă există reduceri active pentru acest produs
+            $discountDetails = Cache::get("discount_product_{$product->id}");
+            $discount = null;
+    
+            // Dacă există reduceri în cache, le obținem
+            if ($discountDetails && isset($discountDetails['discount'])) {
+                $discount = $discountDetails['discount'];
+
+            }
+            
             return [
                 'id' => $product->id,
                 'name' => $product->name,
                 'price' => $product->price,
+                'old_price'=>$product->old_price,
                 'isFavorite' => $this->userService->hasLikedProduct($user, $product),
+                'discount' => $discount
             ];
         });
+
         return Inertia::render('Products/Index', [
             'products' => $products,
             'searchQueryProp' => $searchQuery,
@@ -70,7 +84,14 @@ class ProductController extends Controller
         $buyers = $request->input('buyers', "");
         $comparison = session('comparison', []);
         $comparisonChecked = in_array($id, $comparison);
+        $discountDetails = Cache::get("discount_product_{$product->id}");
+        $discount = null;
 
+        // Dacă există reduceri în cache, le obținem
+        if ($discountDetails && isset($discountDetails['discount'])) {
+            $discount = $discountDetails['discount'];
+
+        }
         //Sorting and filter 
 
         $orderColumn = 'updated_at';
@@ -155,6 +176,7 @@ class ProductController extends Controller
 
         return Inertia::render('Products/Show', [
             'product' => $product,
+            'discount'=>$discount,
             'isFavorite' => $isFavorite,
             'reviews' => $reviews,
             'noBuyersMessage' => $noBuyersMessage,

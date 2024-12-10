@@ -44,7 +44,19 @@
 
                                             {{ product.name }}
                                         </h3>
-                                        <p class="mt-4 text-base font-medium text-gray-900">{{ product.price }}</p>
+                                        <div v-if="product.discount">
+                                            <p class="mt-4 text-base font-medium text-red-500 line-through">
+                                                {{ product.old_price }} Lei</p>
+                                            <p class="mt-4 text-base font-medium text-gray-900">
+                                                {{ product.price }} Lei
+                                            </p>
+                                            <p class="mt-2 text-xs text-green-500">
+                                                Reducere: {{ product.discount }}%
+                                            </p>
+                                        </div>
+                                        <div v-else class="mt-4 text-base font-medium text-gray-900">
+                                            {{ product.price }} Lei
+                                        </div>
 
                                     </div>
                                 </inertia-link>

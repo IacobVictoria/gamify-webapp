@@ -45,7 +45,7 @@ Broadcast::channel('user_message.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 Broadcast::channel('chat_status', function ($user) {
-    
+
     return true;
 });
 Broadcast::channel('friend-requests.{id}', function ($user, $id) {
@@ -53,7 +53,8 @@ Broadcast::channel('friend-requests.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('admin-channel.{id}',function($user,$id){
-    return (int) $user->id === (int) $id && $user->hasRole('Admin');
+Broadcast::channel('admin-channel.{id}', function ($user, $id) {
+    return (int) $user->id === (int) $id;
 });
+
 

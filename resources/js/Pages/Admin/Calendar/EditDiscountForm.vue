@@ -44,7 +44,7 @@
                 <div v-if="formData.applyTo === 'categories'" class="mt-2">
                     <label for="category" class="block text-sm font-medium text-gray-700">Select Category</label>
                     <select v-model="formData.category" id="category" class="input">
-                        <option v-for="(category, index) in props.categories" :key="index" :value="category">
+                        <option v-for="(category, index) in categories" :key="index" :value="category">
                             {{ category }}
                         </option>
                     </select>
@@ -52,8 +52,8 @@
 
                 <div class="mt-2">
                     <label for="discount" class="block text-sm font-medium text-gray-700">Discount Percentage</label>
-                    <input v-model="formData.discount" type="number" id="discount" placeholder="Enter discount percentage"
-                        class="input" min="0" max="100" />
+                    <input v-model="formData.discount" type="number" id="discount"
+                        placeholder="Enter discount percentage" class="input" min="0" max="100" />
                 </div>
 
                 <div class="mt-5 sm:mt-6">
@@ -67,61 +67,69 @@
     </div>
 </template>
 
-<script setup>
-import { useForm } from '@inertiajs/vue3';
+<script>
 
-const props = defineProps({
-    calendarEvent: Object,
-    categories: Array
-});
-
-const formData = useForm({
-    title: props.calendarEvent.title || '',
-    description: props.calendarEvent.description || '',
-    start: formatDate(props.calendarEvent.start) || '',
-    end: formatDate(props.calendarEvent.end) || '',
-    applyTo: props.calendarEvent.details ? JSON.parse(props.calendarEvent.details).applyTo : 'all',
-    category: props.calendarEvent.details ? JSON.parse(props.calendarEvent.details).category : '',
-    discount: props.calendarEvent.details ? JSON.parse(props.calendarEvent.details).discount : 0
-});
-
-function formatDate(dateTime) {
-    if (!dateTime) return '';
-    return dateTime.replace(' ', 'T'); 
-}
-
-const startTimeMin = new Date().toISOString().split("T")[0] + 'T00:00';
-
-const emit = defineEmits(['formSubmitted', 'closeForm']);
-
-function closeForm() {
-    emit('closeForm');
-}
-
-
-function submitForm() {
-    if (new Date(formData.end) <= new Date(formData.start)) {
-        alert("End time must be greater than start time.");
-        return;
-    }
-    
-    const details = {
-        applyTo: formData.applyTo,
-        category: formData.category,
-        discount: formData.discount
-    };
-
-    formData.details = JSON.stringify(details);
-
-    formData.post(route('admin.calendar.event.update', { id: props.calendarEvent.id }), {
-        onSuccess: () => {
-            emit('formSubmitted');
+export default {
+    props: {
+        calendarEvent: Object,
+        categories: Array
+    },
+    data() {
+        return {
+            formData: {
+                title: this.calendarEvent.title || '',
+                description: this.calendarEvent.description || '',
+                start: this.formatDate(this.calendarEvent.start) || '',
+                end: this.formatDate(this.calendarEvent.end) || '',
+                applyTo: this.calendarEvent.details ? JSON.parse(this.calendarEvent.details).applyTo : 'all',
+                category: this.calendarEvent.details ? JSON.parse(this.calendarEvent.details).category : '',
+                discount: this.calendarEvent.details ? JSON.parse(this.calendarEvent.details).discount : 0,
+            },
+            startTimeMin: new Date().toISOString().split("T")[0] + 'T00:00'
+        };
+    },
+    methods: {
+        formatDate(dateTime) {
+            if (!dateTime) return '';
+            return dateTime.replace(' ', 'T');
         },
-        onError: (errors) => {
-            console.error("Errors:", errors);
+        formatDatePayload(dateTime) {
+            if (!dateTime) return null;
+
+            const date = new Date(dateTime);
+
+            if (dateTime.includes("T")) {
+                return date.toISOString().slice(0, 16).replace('T', ' ');
+            } else {
+                return date.toISOString().slice(0, 10);
+            }
+        },
+        closeForm() {
+            this.$emit('closeForm');
+        },
+        submitForm() {
+            if (new Date(this.formData.end) <= new Date(this.formData.start)) {
+                alert("End time must be greater than start time.");
+                return;
+            }
+
+            const details = {
+                applyTo: this.formData.applyTo,
+                category: this.formData.category,
+                discount: this.formData.discount
+            };
+
+            this.formData.details = JSON.stringify(details);
+            this.formData.start = this.formatDatePayload(this.formData.start)
+            this.formData.end = this.formatDatePayload(this.formData.end)
+
+            this.$inertia.put(route('admin.calendar.event.update', { id: this.calendarEvent.id }), {
+                payload: this.formData
+            });
+            this.$emit('formSubmitted');
         }
-    });
-}
+    }
+};
 </script>
 
 <style scoped>

@@ -17,6 +17,7 @@ import { Head } from '@inertiajs/vue3';
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
           <div class="max-w-7xl mx-auto mb-10 w-full bg-[#334155] text-white p-10  text-left">
             <span class="text-xl block text-left ml-0">Hello, {{ $page.props.user.name }} 👋</span>
+            <inertia-link :href="route('admin.calendar.index')">Check your calendar</inertia-link>
           </div>
           <div class="flex flex-col gap-5 w-full max-w-7xl mx-auto">
             <div class="w-full">

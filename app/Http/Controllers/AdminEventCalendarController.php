@@ -6,6 +6,7 @@ use App\Models\Event;
 use App\Models\Product;
 use App\Models\Supplier;
 use App\Models\SupplierProduct;
+use Carbon\Carbon;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -23,7 +24,7 @@ class AdminEventCalendarController extends Controller
         $productsBySupplier = SupplierProduct::with('supplier')
             ->get()
             ->groupBy('supplier_id');
-         
+
         return Inertia::render('Admin/Calendar/Index', [
             'events' => $events,
             'categories' => $categories,
@@ -97,12 +98,12 @@ class AdminEventCalendarController extends Controller
     public function update(Request $request, string $id)
     {
         $event = Event::findOrFail($id);
+
         $request->validate([
             'payload.title' => 'required|string|max:255',
             'payload.description' => 'required|string|max:500',
             'payload.start' => 'required|date',
             'payload.end' => 'required|date|after:payload.start',
-            'payload.status' => 'required|in:CLOSED,OPEN',
         ]);
         $payload = $request->input('payload');
 
@@ -110,7 +111,16 @@ class AdminEventCalendarController extends Controller
         $event->description = $payload['description'];
         $event->start = $payload['start'];
         $event->end = $payload['end'];
-        $event->status = $payload['status'];
+        if (isset($payload['status'])) {
+            $event->status = $payload['status'];
+        } else {
+            $now = now();
+            if (Carbon::parse($payload['end'])->gt($now)) {
+                $event->status = 'OPEN'; // Dacă end time este mai mare decât data curentă, setăm statusul ca OPEN
+            } else {
+                $event->status = 'CLOSED'; // Dacă end time a expirat, setăm statusul ca CLOSED
+            }
+        }
 
         $event->save();
 

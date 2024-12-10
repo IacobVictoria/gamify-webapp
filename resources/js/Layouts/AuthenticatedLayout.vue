@@ -56,11 +56,11 @@ import Icon from '@/Pages/Admin/Notifications/Icon.vue';
                                     </NavLink>
                                     <NavLink :href="route('user.user_chat.index')"
                                         :active="route().current('user.user_chat.index')">
-                                        Chat 
+                                        Chat
                                     </NavLink>
                                     <NavLink :href="route('user.wellness.index')"
                                         :active="route().current('user.wellness.index')">
-                                         Wellness
+                                        Wellness
                                     </NavLink>
                                 </template>
                                 <template v-if="authUserHasRole('Admin')">
@@ -121,7 +121,11 @@ import Icon from '@/Pages/Admin/Notifications/Icon.vue';
                                                         clip-rule="evenodd" />
                                                 </svg>
                                             </button>
-                                            <Icon></Icon>
+                                            <button v-if="authUserHasRole('Admin')" type="button"
+                                                @click.stop="handleIconClick"
+                                                class="ms-2 p-2 bg-gray-100 rounded-full hover:bg-gray-200">
+                                                <Icon />
+                                            </button>
                                         </span>
                                     </template>
 

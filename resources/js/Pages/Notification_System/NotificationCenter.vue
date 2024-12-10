@@ -67,6 +67,9 @@ export default {
             window.Echo.private(`admin-channel.${user.id}`).listen('.SupplierOrderError', (event) => {
                 this.addNotification('Error', event.message);
             });
+            window.Echo.channel('discounts').listen('.DiscountApplied', (event) => {
+                this.addNotification('New discount', event.message);
+            });
         }
 
     },

@@ -1,25 +1,29 @@
 <template>
-    <div>
-        <ScheduleXCalendar :calendar-app="calendarApp">
-            <template #eventModal="{ calendarEvent }">
-                <div :style="eventModalStyles">
-                    <div v-if="calendarEvent.type === 'event'">
-                        <CustomEventComponent :calendar-event="calendarEvent" />
+    <AuthenticatedLayout>
+        <div>
+            <ScheduleXCalendar :calendar-app="calendarApp">
+                <template #eventModal="{ calendarEvent }">
+                    <div :style="eventModalStyles">
+                        <div v-if="calendarEvent.type === 'event'">
+                            <CustomEventComponent :calendar-event="calendarEvent" />
+                        </div>
+                        <div v-if="calendarEvent.type === 'discount'">
+                            <DiscountEventComponent :calendar-event="calendarEvent" :categories="props.categories" />
+                        </div>
+                        <div v-if="calendarEvent.type === 'supplier_order'">
+                            <SupplierOrderComponent :calendar-event="calendarEvent" :products="props.products"
+                                :suppliers="props.suppliers" />
+                        </div>
                     </div>
-                    <div v-if="calendarEvent.type === 'discount'">
-                        <DiscountEventComponent :calendar-event="calendarEvent" :categories="props.categories"/>
-                    </div>
-                    <div v-if="calendarEvent.type === 'supplier_order'">
-                        <SupplierOrderComponent :calendar-event="calendarEvent" :products="props.products" :suppliers="props.suppliers"/>
-                    </div>
-                </div>
 
-            </template>
-        </ScheduleXCalendar>
+                </template>
+            </ScheduleXCalendar>
 
-        <AddEventModal v-if="showModal" :selectedDate="selectedDate" :showModal="showModal" :categories="props.categories"
-            @update:showModal="showModal = $event" @submit="handleSubmit" :suppliers="props.suppliers" :products="props.products"/>
-    </div>
+            <AddEventModal v-if="showModal" :selectedDate="selectedDate" :showModal="showModal"
+                :categories="props.categories" @update:showModal="showModal = $event" @submit="handleSubmit"
+                :suppliers="props.suppliers" :products="props.products" />
+        </div>
+    </AuthenticatedLayout>
 </template>
 
 <script setup>
@@ -34,6 +38,7 @@ import { createCalendarControlsPlugin } from '@schedule-x/calendar-controls'
 import CustomEventComponent from './CustomEventComponent.vue'
 import DiscountEventComponent from './DiscountEventComponent.vue'
 import SupplierOrderComponent from './SupplierOrderComponent.vue'
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 
 const eventsServicePlugin = createEventsServicePlugin();
 const eventModal = createEventModalPlugin();
@@ -124,7 +129,7 @@ const calendarApp = createCalendar({
     },
 });
 calendarControls.setView('month-grid');
-onMounted(()=>{
+onMounted(() => {
     console.log(props.events)
 });
 const selectedDate = ref(null)
@@ -148,5 +153,9 @@ function handleSubmit(formData) {
 .sx-vue-calendar-wrapper {
     height: 700px;
     max-height: 90vh;
+    margin-bottom: 7em;
+    margin-left: 10em;
+    margin-right: 10em;
+    margin-top: 4em;
 }
 </style>

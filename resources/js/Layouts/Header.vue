@@ -34,11 +34,13 @@
                             <img v-else src="/images/female.png" alt="User Avatar" class="w-14 h-14 rounded-full" />
                             <span class="font-semibold">{{ user.name }}</span>
                         </button>
+                       <div v-if="authUserHasRole('User')" class="flex gap-2 items-center">
                         <inertia-link :href="route('user.wishlist.index')">
                             <WishlistLogoSVG></WishlistLogoSVG>
                         </inertia-link>
                         <RecomandationLogoSVG></RecomandationLogoSVG>
                         <NotificationComponentIcon></NotificationComponentIcon>
+                       </div>
                     </div>
                     <!-- Dropdown -->
                     <div v-if="dropdownOpen"
