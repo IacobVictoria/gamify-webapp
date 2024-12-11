@@ -72,6 +72,7 @@ class ManageDiscountsCommand extends Command
             $this->info("Event for discount ID {$discountId} already emitted.");
             return;
         }
+        Cache::put("discount_emitted_{$discountId}", true);
 
         // Aplică reducerea pentru produsele dintr-o categorie specifică
         $products = Product::where('category', $category)->get();
@@ -94,7 +95,7 @@ class ManageDiscountsCommand extends Command
             $this->info("Event for discount ID {$discountId} already emitted.");
             return;
         }
-
+        Cache::put("discount_emitted_{$discountId}", true);
         $products = Product::all();
         foreach ($products as $product) {
             $this->applyDiscount($product, $discountPercentage, $discountId);
@@ -116,8 +117,7 @@ class ManageDiscountsCommand extends Command
         if (!$product->old_price) {
             $product->old_price = $product->price;
             $product->price = $product->price * (1 - $discountPercentage / 100);
-            // Aplicăm reducerea
-            Cache::put("discount_emitted_{$discountId}", true, now()->addHours(24));
+
             logger('Product after discount: ' . json_encode($product));
 
             // Salvăm produsul cu prețul actualizat

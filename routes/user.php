@@ -8,6 +8,7 @@ use App\Http\Controllers\NutritionAndWellnessController;
 use App\Http\Controllers\OpenAiController;
 use App\Http\Controllers\ReviewCommentController;
 use App\Http\Controllers\ReviewLikeController;
+use App\Http\Controllers\UserCalendarController;
 use App\Http\Controllers\UserChatController;
 use App\Http\Controllers\UserCheckoutController;
 use App\Http\Controllers\UserController;
@@ -89,4 +90,8 @@ Route::prefix('wellness')->group(function () {
     Route::get('/', [NutritionAndWellnessController::class, 'index'])->name('wellness.index');
     Route::post('/count_calories', [NutritionAndWellnessController::class, 'countCalories'])->name('wellness.count_calories');
     Route::post('/openai/respond-messages', [OpenAiController::class, 'respondMessages']);
+});
+
+Route::prefix('calendar')->group(function () {
+    Route::get('/', [UserCalendarController::class, 'index'])->name('calendar.index');
 });

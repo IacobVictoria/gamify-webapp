@@ -29,7 +29,7 @@
         </div>
       </div>
   
-      <div class="order-actions">
+      <div v-if="editMode" class="order-actions">
         <button @click="editOrder" class="edit-btn">✏️ Edit</button>
         <button @click="deleteOrder" class="delete-btn">❌ Delete</button>
       </div>
@@ -46,7 +46,8 @@
     props: {
       calendarEvent: Object,
       suppliers: Array,
-      products: Array
+      products: Array,
+      editMode: Boolean
     },
     data() {
       return {

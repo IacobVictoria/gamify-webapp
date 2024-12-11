@@ -5,40 +5,28 @@
                 <template #eventModal="{ calendarEvent }">
                     <div :style="eventModalStyles">
                         <div v-if="calendarEvent.type === 'event'">
-                            <CustomEventComponent :calendar-event="calendarEvent" :edit-mode="true"/>
+                            <CustomEventComponent :calendar-event="calendarEvent" :editMode="false" />
                         </div>
                         <div v-if="calendarEvent.type === 'discount'">
-                            <DiscountEventComponent :calendar-event="calendarEvent" :categories="props.categories" :edit-mode="true"/>
-                        </div>
-                        <div v-if="calendarEvent.type === 'supplier_order'">
-                            <SupplierOrderComponent :calendar-event="calendarEvent" :products="props.products" :edit-mode="true"
-                                :suppliers="props.suppliers" />
+                            <DiscountEventComponent :calendar-event="calendarEvent" :categories="props.categories" :editMode="false" />
                         </div>
                     </div>
-
                 </template>
             </ScheduleXCalendar>
-
-            <AddEventModal v-if="showModal" :selectedDate="selectedDate" :showModal="showModal"
-                :categories="props.categories" @update:showModal="showModal = $event" @submit="handleSubmit"
-                :suppliers="props.suppliers" :products="props.products" />
         </div>
     </AuthenticatedLayout>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
 import { ScheduleXCalendar } from '@schedule-x/vue'
 import { createCalendar, createViewDay, createViewWeek, createViewMonthGrid } from '@schedule-x/calendar'
 import '@schedule-x/theme-default/dist/index.css'
-import AddEventModal from './AddEventModal.vue'
 import { createEventsServicePlugin } from '@schedule-x/events-service'
 import { createEventModalPlugin } from '@schedule-x/event-modal'
 import { createCalendarControlsPlugin } from '@schedule-x/calendar-controls'
-import CustomEventComponent from './CustomEventComponent.vue'
-import DiscountEventComponent from './DiscountEventComponent.vue'
-import SupplierOrderComponent from './SupplierOrderComponent.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
+import CustomEventComponent from '@/Pages/Admin/Calendar/CustomEventComponent.vue'
+import DiscountEventComponent from '@/Pages/Admin/Calendar/DiscountEventComponent.vue'
 
 const eventsServicePlugin = createEventsServicePlugin();
 const eventModal = createEventModalPlugin();
@@ -50,8 +38,6 @@ const props = defineProps({
         type: Array,
         required: true
     }, categories: Array,
-    products: Array,
-    suppliers: Array
 })
 
 const calendarApp = createCalendar({
@@ -129,24 +115,7 @@ const calendarApp = createCalendar({
     },
 });
 calendarControls.setView('month-grid');
-onMounted(() => {
-    console.log(props.events)
-});
-const selectedDate = ref(null)
-const showModal = ref(false)
 
-
-const eventModalStyles = {
-    boxShadow: '0 0 2em #123'
-}
-function closeModal() {
-    showModal.value = false
-}
-
-function handleSubmit(formData) {
-    console.log('Form data submitted:', formData)
-    closeModal()
-}
 </script>
 
 <style scoped>

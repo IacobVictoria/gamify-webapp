@@ -35,15 +35,17 @@ class DiscountApplied implements ShouldBroadcastNow
         $users = User::all();
 
         foreach ($users as $user) {
-            Notification::create([
-                'id' => Uuid::uuid(),
-                'user_id' => $user->id,
-                'type' => 'DiscountApplied',
-                'message' => $message,
-                'data' => json_encode($this->discountDetails),
-                'is_read' => false,
-            ]);
-            $this->notificationService->updateNotifications($user);
+            if ($user->hasRole('User')) {
+                Notification::create([
+                    'id' => Uuid::uuid(),
+                    'user_id' => $user->id,
+                    'type' => 'DiscountApplied',
+                    'message' => $message,
+                    'data' => json_encode($this->discountDetails),
+                    'is_read' => false,
+                ]);
+                $this->notificationService->updateNotifications($user);
+            }
         }
 
 
@@ -51,7 +53,7 @@ class DiscountApplied implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('user' . $this->userId),
+            new PrivateChannel('user.' . $this->userId),
         ];
     }
     public function broadcastAs(): string

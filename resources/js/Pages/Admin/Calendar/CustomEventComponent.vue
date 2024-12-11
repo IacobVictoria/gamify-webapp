@@ -14,7 +14,7 @@
             <strong>Start:</strong> {{ calendarEvent.start }} |
             <strong>End:</strong> {{ calendarEvent.end }}
         </p>
-        <div class="event-actions">
+        <div v-if="editMode" class="event-actions">
             <button @click="editEvent" class="edit-btn">✏️ Edit</button>
             <button @click="deleteEvent" class="delete-btn">❌ Delete</button>
         </div>
@@ -29,7 +29,8 @@ import EditEventModal from './EditEventModal.vue';
 
 export default {
     props: {
-        calendarEvent: Object
+        calendarEvent: Object,
+        editMode: Boolean
     },
     data() {
         return {

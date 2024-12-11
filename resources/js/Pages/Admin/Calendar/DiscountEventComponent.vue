@@ -23,7 +23,7 @@
           </div>
       </div>
 
-      <div class="discount-actions">
+      <div v-if="editMode" class="discount-actions">
           <button @click="editEvent" class="edit-btn">✏️ Edit</button>
           <button @click="deleteEvent" class="delete-btn">❌ Delete</button>
       </div>
@@ -38,7 +38,8 @@ import EditEventModal from './EditEventModal.vue';
 export default {
   props: {
       calendarEvent: Object,
-      categories: Array
+      categories: Array,
+      editMode: Boolean
   },
   data() {
       return {

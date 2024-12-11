@@ -62,6 +62,10 @@ import Icon from '@/Pages/Admin/Notifications/Icon.vue';
                                         :active="route().current('user.wellness.index')">
                                         Wellness
                                     </NavLink>
+                                    <NavLink :href="route('user.calendar.index')"
+                                        :active="route().current('user.calendar.index')">
+                                        Calendar
+                                    </NavLink>
                                 </template>
                                 <template v-if="authUserHasRole('Admin')">
                                     <NavLink :href="route('admin.dashboard')"
@@ -96,7 +100,7 @@ import Icon from '@/Pages/Admin/Notifications/Icon.vue';
                                         Badges
                                     </NavLink>
                                     <NavLink :href="route('admin.user_quiz.index')"
-                                        :active="route().current('admin.badges.index')">
+                                        :active="route().current('admin.user_quiz.index')">
                                         UserQuiz
                                     </NavLink>
                                 </template>
