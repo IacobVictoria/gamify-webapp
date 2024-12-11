@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AchievementController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\ExportDataController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ImageController;
@@ -81,7 +82,10 @@ Route::prefix('comparison')->group(function () {
 //Route::post('/send-whatsapp', [WhatsAppController::class, 'sendWhatsAppMessage'])->name('web.send-whatsapp');
 Route::post('/send-promotion', [WhatsappController::class, 'sendPromotion']);
 
-
+Route::prefix('events')->group(function(){
+    Route::get('/',[EventController::class,'index'])->name('events.index');
+    Route::get('/{id}', [EventController::class, 'show'])->name('events.show');
+});
 Broadcast::routes(['middleware' => ['web', 'auth']]);
 
 require __DIR__ . '/auth.php';

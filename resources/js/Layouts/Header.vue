@@ -185,6 +185,7 @@ const navigation = [
     { name: 'Suppliers', href: '#' },
     { name: 'Scan QR', href: '#' },
     { name: 'Company', href: route('home') },
+    {name:'Events', href: route('events.index')},
 ]
 
 const mobileMenuOpen = ref(false)
