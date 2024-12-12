@@ -11,11 +11,16 @@
 
                             <!-- Butonul de participare -->
                             <div v-if="!isLoggedIn()">
-                                <p class="mt-4">Please <inertia-link :href="route('login')" class="text-blue-500">login</inertia-link> to participate.</p>
+                                <p class="mt-4">Please <inertia-link :href="route('login')"
+                                        class="text-blue-500">login</inertia-link> to participate.</p>
                             </div>
                             <div v-else>
-                                <button @click="downloadQRCode" class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-600">
+                                <button  v-if="!isParticipant"  @click="downloadQRCode"
+                                    class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-600">
                                     Participate & Download QR Code
+                                </button>
+                                <button v-else class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-600">
+                                    You are already a participant! Scan to enter the webinar
                                 </button>
                             </div>
                         </div>
@@ -32,25 +37,33 @@ import Layout from '@/Layouts/Layout.vue';
 export default {
     props: {
         event: Object,
-        qrCode: Object
+        qrCode: Object,
+        isParticipant: Boolean
     },
-    components:{
+    components: {
         Layout
     },
     methods: {
-        // Metoda pentru descărcarea QR code-ului
         downloadQRCode() {
-            // Dacă utilizatorul este logat, facem cererea pentru QR code
+            //deschidere tab nou cu qr code ul evenimentului
+            this.makeParticipant();
             if (this.qrCode) {
-                // Triggerăm descărcarea QR code-ului
                 const link = document.createElement('a');
                 link.href = this.qrCode;
                 link.download = `${this.event.title}_QRCode.png`;
+                link.setAttribute('target', '_blank');
+                document.body.appendChild(link);
                 link.click();
+                document.body.removeChild(link);
+
             } else {
                 alert('No QR Code found for this event.');
             }
         },
+        makeParticipant() {
+            this.$inertia.post(route('event.participant.store', { eventId: this.event.id }));
+        }
     },
+
 };
 </script>

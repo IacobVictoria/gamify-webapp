@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Participant;
 use App\Models\QrCodeEvent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class EventController extends Controller
@@ -64,10 +66,15 @@ class EventController extends Controller
         $event = Event::findOrFail($id);
 
         $qrCode = QrCodeEvent::where('event_id', $event->id)->first();
+        $isParticipant = Participant::where('event_id', $event->id)
+        ->where('user_id', Auth::id())
+        ->exists();
+
 
         return Inertia::render('Events/Show', [
             'event' => $event,
-            'qrCode'=>$qrCode
+            'qrCode'=>$qrCode->image_url,
+            'isParticipant'=>$isParticipant,
         ]);
     }
     /**

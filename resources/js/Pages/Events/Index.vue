@@ -24,8 +24,7 @@
                                     v-for="event in activeEvents"
                                     :key="event.id"
                                     :event="event"
-                                />
-                         
+                                />                         
                             </div>
                         </div>
                     </div>

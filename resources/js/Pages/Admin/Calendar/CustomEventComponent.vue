@@ -14,10 +14,18 @@
             <strong>Start:</strong> {{ calendarEvent.start }} |
             <strong>End:</strong> {{ calendarEvent.end }}
         </p>
-        <div v-if="editMode" class="event-actions">
+
+        <!-- Afișează butoanele de edit și delete doar dacă evenimentul nu este closed -->
+        <div v-if="calendarEvent.status !== 'closed'" class="event-actions">
             <button @click="editEvent" class="edit-btn">✏️ Edit</button>
             <button @click="deleteEvent" class="delete-btn">❌ Delete</button>
         </div>
+
+        <!-- Butonul de download participanți, doar dacă evenimentul este closed -->
+        <div v-if="calendarEvent.status === 'closed'" class="event-actions">
+            <button @click="downloadParticipants" class="download-btn">📥 Download Participants</button>
+        </div>
+
     </div>
     <EditEventModal :show-modal="showModal" :selected-type="selectedType" :calendar-event="calendarEvent"
         @close="closeModal">
@@ -60,6 +68,10 @@ export default {
                     console.error("Error deleting event:", error);
                 }
             });
+        },
+        downloadParticipants() {
+            // Trimitere cerere pentru a descărca lista participanților
+            this.$inertia.get(route('admin.event.participants.download', { eventId: this.calendarEvent.id }));
         }
     }
 }
@@ -116,7 +128,8 @@ export default {
 }
 
 .edit-btn,
-.delete-btn {
+.delete-btn,
+.download-btn {
     padding: 8px 15px;
     border: none;
     border-radius: 5px;
@@ -135,11 +148,20 @@ export default {
     color: white;
 }
 
+.download-btn {
+    background-color: #27ae60;
+    color: white;
+}
+
 .edit-btn:hover {
     background-color: #2980b9;
 }
 
 .delete-btn:hover {
     background-color: #c0392b;
+}
+
+.download-btn:hover {
+    background-color: #2ecc71;
 }
 </style>

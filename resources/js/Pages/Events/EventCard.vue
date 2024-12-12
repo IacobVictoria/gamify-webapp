@@ -1,5 +1,5 @@
 <template>
-    <inertia-link  style="text-decoration: none;" :href="route('events.show',event.id)">
+    <inertia-link  style="text-decoration: none;" :href="route('event.show',event.id)">
         <div
             class="bg-green-100 p-6 rounded-lg shadow-lg flex flex-col items-center transition-all transform hover:scale-105 hover:shadow-2xl active:scale-95 active:shadow-xl">
             <div class="text-3xl mb-4">{{ getEventEmoji }}🎉</div>

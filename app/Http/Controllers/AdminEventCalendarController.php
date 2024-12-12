@@ -75,7 +75,7 @@ class AdminEventCalendarController extends Controller
 
         $event->save();
         if ($event->type === 'event') {
-            $qrContent = route('events.show', ['id' => $event->id]);
+            $qrContent = route('event.show', ['id' => $event->id]);
             //url ul evenimentului
             $qrCodeImage = QrCodeGenerator::format('png')
                 ->size(300)
@@ -83,7 +83,9 @@ class AdminEventCalendarController extends Controller
                 ->backgroundColor(255, 255, 255) // Alb
                 ->margin(1)
                 ->generate($qrContent);
+
             $qrFileName = "events/qr_codes_{$event->id}.png";
+            
             Storage::disk('s3')->put($qrFileName, $qrCodeImage, 'public');
             QrCodeEvent::create([
                 'id' => Uuid::uuid(),

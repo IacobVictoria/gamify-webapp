@@ -6,6 +6,7 @@ use App\Http\Controllers\ExportDataController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\OpenAiController;
+use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\ProductComparisonController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -84,7 +85,8 @@ Route::post('/send-promotion', [WhatsappController::class, 'sendPromotion']);
 
 Route::prefix('events')->group(function(){
     Route::get('/',[EventController::class,'index'])->name('events.index');
-    Route::get('/{id}', [EventController::class, 'show'])->name('events.show');
+    Route::get('/{id}', [EventController::class, 'show'])->name('event.show');
+    Route::post('/{eventId}/participant/store',[ParticipantController::class,'store'])->name('event.participant.store');
 });
 Broadcast::routes(['middleware' => ['web', 'auth']]);
 
