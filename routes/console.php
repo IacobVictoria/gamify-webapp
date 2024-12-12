@@ -3,6 +3,7 @@
 use App\Console\Commands\CalculateWeeklyLeaderboard;
 use App\Console\Commands\CheckInactiveUsers;
 use App\Console\Commands\ManageDiscountsCommand;
+use App\Console\Commands\ManageEventsCommand;
 use App\Console\Commands\ProcessSupplierOrders;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -15,3 +16,4 @@ Schedule::command(CalculateWeeklyLeaderboard::class)->weeklyOn(1, '00:00');
 Schedule::command(CheckInactiveUsers::class)->everyMinute();
 Schedule::command(ProcessSupplierOrders::class)->dailyAt('00:00');
 Schedule::command(ManageDiscountsCommand::class)->everyMinute();
+//Schedule::command(ManageEventsCommand::class)->everyMinute();

@@ -61,15 +61,18 @@ export default {
                 .listen('.FriendRequestAccepted', (event) => {
                     this.addNotification('New friend!', event.message);
                 }).listen('.DiscountApplied', (event) => {
-                this.addNotification('New discount', event.message);
-            });
+                    this.addNotification('New discount', event.message)
+                })
+                .listen('.NewEventNotification', (event) => {
+                    this.addNotification('New Event', event.message);
+                });
             window.Echo.private(`friend-requests.${user.id}`).listen('.FriendRequestSent', (event) => {
                 this.addNotification('New friend request', event.message);
             });
             window.Echo.private(`admin-channel.${user.id}`).listen('.SupplierOrderError', (event) => {
                 this.addNotification('Error', event.message);
             });
-           
+
         }
 
     },

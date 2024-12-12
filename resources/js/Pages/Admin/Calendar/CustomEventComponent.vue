@@ -16,13 +16,13 @@
         </p>
 
         <!-- Afișează butoanele de edit și delete doar dacă evenimentul nu este closed -->
-        <div v-if="calendarEvent.status !== 'closed'" class="event-actions">
+        <div v-if="calendarEvent.status !== 'CLOSED'" class="event-actions">
             <button @click="editEvent" class="edit-btn">✏️ Edit</button>
             <button @click="deleteEvent" class="delete-btn">❌ Delete</button>
         </div>
 
         <!-- Butonul de download participanți, doar dacă evenimentul este closed -->
-        <div v-if="calendarEvent.status === 'closed'" class="event-actions">
+        <div v-if="calendarEvent.status === 'CLOSED'" class="event-actions">
             <button @click="downloadParticipants" class="download-btn">📥 Download Participants</button>
         </div>
 
