@@ -71,7 +71,7 @@ export default {
         },
         downloadParticipants() {
             // Trimitere cerere pentru a descărca lista participanților
-            this.$inertia.get(route('admin.event.participants.download', { eventId: this.calendarEvent.id }));
+            this.$inertia.get(route('admin.pdf.participants.download', { eventId: this.calendarEvent.id }));
         }
     }
 }

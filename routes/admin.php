@@ -20,6 +20,7 @@ use App\Http\Controllers\AdminSupplierProductController;
 use App\Http\Controllers\AdminUserQuizRemarkController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\QrCodeController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
 
@@ -141,4 +142,9 @@ Route::prefix('notifications')->group(function () {
 Route::get('/', [AdminNotificationController::class, 'getNotifications'])->name('notifications.getNotifications');
 Route::post('/markAsRead', [AdminNotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
 Route::post('/{id}/handle', [AdminNotificationController::class, 'handleNotification'])->name('notifications.handle');
+});
+
+Route::prefix('pdf')->group(function(){
+    Route::get('participants/{eventId}', [ReportController::class, 'downloadParticipants'])
+    ->name('pdf.participants.download');
 });
