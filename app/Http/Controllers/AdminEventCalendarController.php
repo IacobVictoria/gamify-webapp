@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Product;
 use App\Models\QrCodeEvent;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use SimpleSoftwareIO\QrCode\Facades\QrCode as QrCodeGenerator;
 use App\Models\Supplier;
 use App\Models\SupplierProduct;
@@ -85,7 +87,7 @@ class AdminEventCalendarController extends Controller
                 ->generate($qrContent);
 
             $qrFileName = "events/qr_codes_{$event->id}.png";
-            
+
             Storage::disk('s3')->put($qrFileName, $qrCodeImage, 'public');
             QrCodeEvent::create([
                 'id' => Uuid::uuid(),
@@ -156,7 +158,9 @@ class AdminEventCalendarController extends Controller
     public function destroy(string $id)
     {
         $event = Event::find($id);
-        if ($event->type === 'event') {
+        if ($event->type === 'discount') { //daca stergem un discount sa refacem preturile
+            $this->resetDiscountPricesOnEventDeletion($event);
+        } elseif ($event->type === 'event') {
             $qrCode = QrCodeEvent::where('event_id', $id)->first();
 
             if ($qrCode) {
@@ -168,4 +172,33 @@ class AdminEventCalendarController extends Controller
         $event->delete();
         return redirect()->back();
     }
+    private function resetDiscountPricesOnEventDeletion(Event $event)
+    {
+        $details = json_decode($event->details, true);
+
+        if ($details['applyTo'] === 'all') {
+            $products = Product::all();
+        } elseif ($details['applyTo'] === 'categories') {
+            $category = $details['category'];
+            $products = Product::where('category', $category)->get();
+        } else {
+            $products = collect();
+        }
+
+        foreach ($products as $product) {
+            if ($product->old_price) {
+                $product->price = $product->old_price;
+                $product->old_price = null;
+                $product->save();
+            }
+
+            // Ștergem cache-ul asociat produsului
+            Cache::forget("discount_product_{$product->id}");
+        }
+
+        // Ștergem cache-ul asociat evenimentului
+        $userId = Auth::id();
+        Cache::forget("discount_emitted_{$event->id}_user_{$userId}");
+    }
+
 }

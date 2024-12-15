@@ -35,27 +35,24 @@ class NewEventBroadcast implements ShouldBroadcastNow
         $message = '';
 
         $message = 'Evenimentul ' . $this->event->title . ' este disponibil! Intra pe pagina de Events';
-        $users = User::all();
 
-        foreach ($users as $user) {
-            if ($user->hasRole('User')) {
-                Notification::create([
-                    'id' => Uuid::uuid(),
-                    'user_id' => $user->id,
-                    'type' => 'NewEvent',
-                    'message' => $message,
-                    'is_read' => false,
-                ]);
-                $this->notificationService->updateNotifications($user);
-            }
+        if ($this->user->hasRole('User')) {
+            $notification = Notification::create([
+                'id' => Uuid::uuid(),
+                'user_id' => $this->user->id,
+                'type' => 'NewEvent',
+                'message' => $message,
+                'is_read' => false,
+            ]);
+            $notification->save();
+            $this->notificationService->updateNotifications($this->user);
         }
-
 
     }
 
     public function broadcastOn()
     {
-        return new PrivateChannel('user.' . $this->user->id);
+        return new PrivateChannel('user_newEvent.' . $this->user->id);
     }
 
     public function broadcastAs()

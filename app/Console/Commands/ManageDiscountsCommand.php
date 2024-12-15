@@ -68,11 +68,12 @@ class ManageDiscountsCommand extends Command
 
     private function applyDiscountToCategory($category, $discountPercentage, $discountId)
     {
-        if (Cache::has("discount_emitted_{$discountId}")) {
+        $userId = Auth::id();
+        if (Cache::has("discount_emitted_{$discountId}_user_{$userId}")) {
             $this->info("Event for discount ID {$discountId} already emitted.");
             return;
         }
-        Cache::put("discount_emitted_{$discountId}", true);
+        Cache::put("discount_emitted_{$discountId}_user_{$userId}", true);
 
         // Aplică reducerea pentru produsele dintr-o categorie specifică
         $products = Product::where('category', $category)->get();
@@ -91,11 +92,12 @@ class ManageDiscountsCommand extends Command
 
     private function applyDiscountToAll($discountPercentage, $discountId)
     {
-        if (Cache::has("discount_emitted_{$discountId}")) {
+        $userId = Auth::id();
+        if (Cache::has("discount_emitted_{$discountId}_user_{$userId}")) {
             $this->info("Event for discount ID {$discountId} already emitted.");
             return;
         }
-        Cache::put("discount_emitted_{$discountId}", true);
+        Cache::put("discount_emitted_{$discountId}_user_{$userId}", true);
         $products = Product::all();
         foreach ($products as $product) {
             $this->applyDiscount($product, $discountPercentage, $discountId);
@@ -106,9 +108,6 @@ class ManageDiscountsCommand extends Command
 
         $description = "A discount of {$discountPercentage}% has been applied to all products.";
         broadcast(new DiscountApplied($description, $this->notificationService, Auth::id()));
-
-
-        $this->info("Applied discount of {$discountPercentage}% to all products.");
     }
 
     private function applyDiscount($product, $discountPercentage, $discountId)
@@ -129,10 +128,11 @@ class ManageDiscountsCommand extends Command
 
     private function resetExpiredDiscountsPrices($expiredDiscounts)
     {
+        $userId = Auth::id();
         foreach ($expiredDiscounts as $discount) {
             // Verificăm reducerile din cache pentru produse
             $products = Product::all();
-            Cache::forget("discount_emitted_{$discount->id}");
+            Cache::forget("discount_emitted_{$discount->id}_user_{$userId}");
             foreach ($products as $product) {
                 // Verifică reducerea din cache pe produs
                 $cachedDiscount = Cache::get("discount_product_{$product->id}");
@@ -156,13 +156,14 @@ class ManageDiscountsCommand extends Command
 
     private function clearExpiredDiscountsFromCache()
     {
+        $userId = Auth::id();
         $discountIds = Event::where('type', 'discount')
             ->where('status', 'CLOSED')
             ->pluck('id')
             ->toArray();
 
         foreach ($discountIds as $discountId) {
-            Cache::forget("discount_emitted_{$discountId}");
+            Cache::forget("discount_emitted_{$discountId}_user_{$userId}");
         }
 
         $this->info('Expired discounts cleared from cache.');

@@ -16,4 +16,4 @@ Schedule::command(CalculateWeeklyLeaderboard::class)->weeklyOn(1, '00:00');
 Schedule::command(CheckInactiveUsers::class)->everyMinute();
 Schedule::command(ProcessSupplierOrders::class)->dailyAt('00:00');
 Schedule::command(ManageDiscountsCommand::class)->everyMinute();
-//Schedule::command(ManageEventsCommand::class)->everyMinute();
+Schedule::command(ManageEventsCommand::class)->everyMinute();

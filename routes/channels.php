@@ -57,4 +57,7 @@ Broadcast::channel('admin-channel.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
+Broadcast::channel('user_newEvent.{id}', function ($user, $id) {
 
+    return (int) $user->id === (int) $id;
+});
