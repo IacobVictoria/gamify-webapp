@@ -139,12 +139,17 @@ Route::prefix('calendar')->group(function () {
 });
 
 Route::prefix('notifications')->group(function () {
-Route::get('/', [AdminNotificationController::class, 'getNotifications'])->name('notifications.getNotifications');
-Route::post('/markAsRead', [AdminNotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
-Route::post('/{id}/handle', [AdminNotificationController::class, 'handleNotification'])->name('notifications.handle');
+    Route::get('/', [AdminNotificationController::class, 'getNotifications'])->name('notifications.getNotifications');
+    Route::post('/markAsRead', [AdminNotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::post('/{id}/handle', [AdminNotificationController::class, 'handleNotification'])->name('notifications.handle');
 });
 
-Route::prefix('pdf')->group(function(){
+Route::prefix('pdf')->group(function () {
     Route::get('participants/{eventId}', [ReportController::class, 'downloadParticipants'])
-    ->name('pdf.participants.download');
+        ->name('pdf.participants.download');
+});
+Route::prefix('reports')->group(function () {
+    Route::get('/', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/qr-codes', [ReportController::class, 'showQRCodeReports'])->name('reports.showQRCodeReports');
+    Route::get('/participants-list', [ReportController::class, 'showParticipantsList'])->name('reports.showParticipantsList');
 });

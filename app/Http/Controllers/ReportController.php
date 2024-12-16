@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Interfaces\PdfGeneratorServiceInterface;
 use App\Models\Event;
+use App\Models\QrCodeEvent;
 use App\Models\Report;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class ReportController extends Controller
 {
@@ -16,6 +19,64 @@ class ReportController extends Controller
     {
         $this->pdfGenerator = $pdfGenerator;
     }
+    public function index()
+    {
+
+        $reports = [
+            'qr_codes' => $this->getQRCodeReports(),
+            'list_participants' => Report::where('type', 'participants')->get(),
+        ];
+
+        return Inertia::render('Admin/Reports/Index', [
+            'reports' => $reports,
+        ]);
+    }
+
+    private function getQRCodeReports()
+    {
+        return Event::all()->map(function ($event) {
+            $qrFileName = "events/qr_codes_{$event->id}.png";
+            $qrCodeUrl = Storage::disk('s3')->url($qrFileName);
+            return [
+                'title' => $event->title,
+                'qr_code_url' => $qrCodeUrl,
+            ];
+        });
+    }
+
+    public function showQRCodeReports()
+    {
+
+        $qrCodeReports = QrCodeEvent::with('event') // Include the associated event details
+            ->get()
+            ->map(function ($qrCodeEvent) {
+                return [
+                    'title' => $qrCodeEvent->event->title,  // Event title from the related Event model
+                    'qr_code_url' => $qrCodeEvent->image_url, // Image URL from the `qr_codes_events` table
+                ];
+            });
+
+        // Pass the reports to the Inertia view
+        return Inertia::render('Admin/Reports/ShowQRCodeReports', [
+            'reports' => $qrCodeReports,
+        ]);
+    }
+    public function showParticipantsList()
+    {
+
+        $participantsReports = Report::where('type', 'participants')->get()->map(function ($report) {
+            return [
+                'title' => $report->title,
+                's3_path' => $report->s3_path,
+            ];
+        });
+
+        return Inertia::render('Admin/Reports/ShowParticipantsList', [
+            'reports' => $participantsReports,
+        ]);
+    }
+
+
 
     public function downloadParticipants($eventId)
     {
