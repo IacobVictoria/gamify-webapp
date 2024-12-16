@@ -75,7 +75,9 @@ class ManageDiscountsCommand extends Command
 
         // Broadcast event to all users
         foreach ($users as $user) {
+            if($user->hasRole('User')){
             broadcast(new DiscountApplied($description, $this->notificationService, $user));
+            }
         }
     }
     private function updateExpiredDiscountStatuses($expiredDiscounts)

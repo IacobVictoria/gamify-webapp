@@ -15,13 +15,19 @@
                                         class="text-blue-500">login</inertia-link> to participate.</p>
                             </div>
                             <div v-else>
-                                <button  v-if="!isParticipant"  @click="downloadQRCode"
-                                    class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-600">
-                                    Participate & Download QR Code
-                                </button>
-                                <button v-else class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-600">
-                                    You are already a participant! Scan to enter the webinar
-                                </button>
+                                <!-- Verificăm dacă evenimentul este blocat -->
+                                <div v-if="isEventLocked">
+                                    <p class="mt-4 text-red-500">Event has already started or you cannot register anymore.</p>
+                                </div>
+                                <div v-else>
+                                    <button v-if="!isParticipant" @click="downloadQRCode"
+                                        class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-600">
+                                        Participate & Download QR Code
+                                    </button>
+                                    <button v-else class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-600">
+                                        You are already a participant! Scan to enter the webinar
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -37,15 +43,16 @@ import Layout from '@/Layouts/Layout.vue';
 export default {
     props: {
         event: Object,
-        qrCode: Object,
-        isParticipant: Boolean
+        qrCode: String,
+        isParticipant: Boolean,
+        isEventLocked: Boolean // Adăugăm această proprietate pentru a verifica dacă evenimentul este blocat
     },
     components: {
         Layout
     },
     methods: {
         downloadQRCode() {
-            //deschidere tab nou cu qr code ul evenimentului
+            // Deschidem tab-ul cu QR code-ul evenimentului
             this.makeParticipant();
             if (this.qrCode) {
                 const link = document.createElement('a');
@@ -55,7 +62,6 @@ export default {
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-
             } else {
                 alert('No QR Code found for this event.');
             }
@@ -63,7 +69,6 @@ export default {
         makeParticipant() {
             this.$inertia.post(route('event.participant.store', { eventId: this.event.id }));
         }
-    },
-
+    }
 };
 </script>

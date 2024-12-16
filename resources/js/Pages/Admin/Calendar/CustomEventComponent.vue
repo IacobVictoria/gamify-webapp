@@ -38,11 +38,11 @@ import EditEventModal from './EditEventModal.vue';
 export default {
     props: {
         calendarEvent: Object,
-        editMode: Boolean
+        showModal: Boolean
     },
     data() {
         return {
-            showModal: false,
+            showModal: this.showModal,
             selectedType: this.calendarEvent.type,
             eventDeleted: false 
         };
