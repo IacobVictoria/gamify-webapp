@@ -34,6 +34,10 @@
                         <option value="CLOSED">CLOSED</option>
                     </select>
                 </div>
+                <label for="isPublished">
+                    <input type="checkbox" id="isPublished" v-model="formData.is_published">
+                    Publicat
+                </label>
                 <div class="mt-5 sm:mt-6">
                     <button type="submit"
                         class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
@@ -58,6 +62,7 @@ export default {
                 start: this.toDateTimeLocalFormat(this.calendarEvent.start) || '',
                 end: this.toDateTimeLocalFormat(this.calendarEvent.end) || '',
                 status: this.calendarEvent.status || 'OPEN',
+                is_published: this.calendarEvent.is_published || false,
             }
         };
     },

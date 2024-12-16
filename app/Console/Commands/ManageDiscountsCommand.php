@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Events\DiscountApplied;
 use App\Models\Event;
 use App\Models\Product;
+use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
@@ -25,19 +26,17 @@ class ManageDiscountsCommand extends Command
     public function handle()
     {
         $now = now();
-        logger('Current time: ' . $now);
-
         // Obține reducerile care sunt active
         $discounts = Event::where('type', 'discount')
             ->where('status', 'OPEN')
             ->where('start', '<=', $now)
             ->where('end', '>=', $now)
+            ->where('is_published', true)
             ->get();
 
         // Parcurge reducerile active
         foreach ($discounts as $discount) {
             $details = json_decode($discount->details, true);
-            logger('Discount details: ' . json_encode($details));
 
             // Aplică reducerile în funcție de tipul reducerii
             if ($details['applyTo'] === 'all') {
@@ -47,23 +46,42 @@ class ManageDiscountsCommand extends Command
             }
         }
 
-        // Găsește reducerile care au expirat
-        $expiredDiscounts = Event::where('type', 'discount')
+        //  reducerile care au expirat
+        $allExpiredDiscounts = Event::where('type', 'discount')
             ->where('status', 'OPEN')
             ->where('end', '<', $now)
             ->get();
 
-        // Resetează prețurile produselor care au avut reduceri expirate
-        $this->resetExpiredDiscountsPrices($expiredDiscounts);
+        // reducerile expirate publicate
+        $publishedExpiredDiscounts = $allExpiredDiscounts->filter(function ($discount) {
+            return $discount->is_published;
+        });
 
-        // Marchează reducerile expirate ca fiind închise
-        Event::whereIn('id', $expiredDiscounts->pluck('id')->toArray())
-            ->update(['status' => 'CLOSED']);
+        // Resetează prețurile produselor care au avut reduceri expirate
+        $this->resetExpiredDiscountsPrices($publishedExpiredDiscounts);
+
+        // Marchează toate reducerile expirate ca CLOSED
+        $this->updateExpiredDiscountStatuses($allExpiredDiscounts);
 
         // Șterge reducerile expirate din cache
         $this->clearExpiredDiscountsFromCache();
 
         $this->info('Discounts managed successfully.');
+    }
+    private function broadcastEventToAllUsers($description)
+    {
+        // Get all users with 'User' role
+        $users = User::all();
+
+        // Broadcast event to all users
+        foreach ($users as $user) {
+            broadcast(new DiscountApplied($description, $this->notificationService, $user));
+        }
+    }
+    private function updateExpiredDiscountStatuses($expiredDiscounts)
+    {
+        Event::whereIn('id', $expiredDiscounts->pluck('id')->toArray())
+            ->update(['status' => 'CLOSED']);
     }
 
     private function applyDiscountToCategory($category, $discountPercentage, $discountId)
@@ -85,7 +103,7 @@ class ManageDiscountsCommand extends Command
         }
         $description = "A discount of {$discountPercentage}% has been applied to all products in the '{$category}' category.";
 
-        broadcast(new DiscountApplied($description, $this->notificationService, Auth::id()));
+        $this->broadcastEventToAllUsers($description);
 
         $this->info("Applied discount of {$discountPercentage}% to category: {$category}.");
     }
@@ -107,7 +125,7 @@ class ManageDiscountsCommand extends Command
         }
 
         $description = "A discount of {$discountPercentage}% has been applied to all products.";
-        broadcast(new DiscountApplied($description, $this->notificationService, Auth::id()));
+        $this->broadcastEventToAllUsers($description);
     }
 
     private function applyDiscount($product, $discountPercentage, $discountId)

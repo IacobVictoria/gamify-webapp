@@ -21,7 +21,9 @@ class UserCalendarController extends Controller
             ->where('status', 'OPEN')
             ->where('start', '<=', now())
             ->where('end', '>=', now())
+            ->where('is_published', 1)
             ->get();
+      
         $categories = Product::distinct()->pluck('category');
         return Inertia::render('User/Calendar/Index', [
             'events' => $events,

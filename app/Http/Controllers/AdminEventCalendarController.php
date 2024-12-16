@@ -61,6 +61,7 @@ class AdminEventCalendarController extends Controller
             'type' => 'nullable|string',
             'details' => 'nullable|json',
             'calendarId' => 'string',
+            'is_published' => 'boolean'
         ]);
 
         $event = new Event([
@@ -73,6 +74,7 @@ class AdminEventCalendarController extends Controller
             'type' => $validated['type'] ?? 'event',
             'details' => $validated['details'] ?? null,
             'calendarId' => $validated['calendarId'],
+            'is_published' => $validated['is_published'] ?? false,
         ]);
 
         $event->save();
@@ -129,6 +131,7 @@ class AdminEventCalendarController extends Controller
             'payload.description' => 'required|string|max:500',
             'payload.start' => 'required|date',
             'payload.end' => 'required|date|after:payload.start',
+            'payload.is_published' => 'boolean'
         ]);
         $payload = $request->input('payload');
 
@@ -136,6 +139,7 @@ class AdminEventCalendarController extends Controller
         $event->description = $payload['description'];
         $event->start = $payload['start'];
         $event->end = $payload['end'];
+        $event->is_published = $payload['is_published'] ?? false;
         if (isset($payload['status'])) {
             $event->status = $payload['status'];
         } else {

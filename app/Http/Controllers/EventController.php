@@ -20,13 +20,15 @@ class EventController extends Controller
     $activeDiscounts = Event::where('type', 'discount')
         ->where('status', 'OPEN')
         ->where('start', '<=', now())  // Reduceri care au început deja
-        ->where('end', '>=', now())  // Reduceri care nu au expirat
+        ->where('end', '>=', now())
+        ->where('is_published', true)  // Reduceri care nu au expirat
         ->get();
 
     // Obține evenimentele viitoare (event)
     $activeEvents = Event::where('type', 'event')
         ->where('status', 'OPEN')
-        ->where('start', '>', now())  // Evenimente care vor începe în viitor
+        ->where('start', '>', now())
+        ->where('is_published', true)  // Evenimente care vor începe în viitor
         ->get();
 
     foreach ($activeDiscounts as $event) {
@@ -34,6 +36,7 @@ class EventController extends Controller
             $event->details = json_decode($event->details, true);
         }
     }
+ 
 
     return Inertia::render('Events/Index', [
         'activeDiscounts' => $activeDiscounts,

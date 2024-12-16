@@ -19,11 +19,11 @@ class DiscountApplied implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $discountDetails, $notificationService, $userId;
-    public function __construct($discountDetails, NotificationService $notificationService, $userId)
+    public $discountDetails, $notificationService, $user;
+    public function __construct($discountDetails, NotificationService $notificationService,User $user)
     {
         $this->discountDetails = $discountDetails;
-        $this->userId = $userId;
+        $this->user = $user;
         $this->notificationService = $notificationService;
         $this->makeNotification();
     }
@@ -32,28 +32,25 @@ class DiscountApplied implements ShouldBroadcastNow
         $message = '';
 
         $message = $this->discountDetails;
-        $users = User::all();
+      
+        Notification::create([
+            'id' => Uuid::uuid(),
+            'user_id' => $this->user->id,
+            'type' => 'DiscountApplied',
+            'message' => $message,
+            'data' => json_encode($this->discountDetails),
+            'is_read' => false,
+        ]);
+        $this->notificationService->updateNotifications($this->user);
 
-        foreach ($users as $user) {
-            if ($user->hasRole('User')) {
-                Notification::create([
-                    'id' => Uuid::uuid(),
-                    'user_id' => $user->id,
-                    'type' => 'DiscountApplied',
-                    'message' => $message,
-                    'data' => json_encode($this->discountDetails),
-                    'is_read' => false,
-                ]);
-                $this->notificationService->updateNotifications($user);
-            }
-        }
+
 
 
     }
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('user.' . $this->userId),
+            new PrivateChannel('user_newDiscount.' . $this->user->id),
         ];
     }
     public function broadcastAs(): string

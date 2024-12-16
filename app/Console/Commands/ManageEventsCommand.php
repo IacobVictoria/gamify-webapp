@@ -40,7 +40,7 @@ class ManageEventsCommand extends Command
     }
     protected function closePastEvents()
     {
-        $events = Event::where('start', '<', Carbon::now())->where('status', '!=', 'CLOSED')->get();
+        $events = Event::where('start', '<', Carbon::now())->where('status', '!=', 'CLOSED')->where('type','event')->get();
 
         foreach ($events as $event) {
             $event->status = 'CLOSED';
@@ -62,31 +62,31 @@ class ManageEventsCommand extends Command
     protected function notifyUsersAboutNewEvent()
     {
         // Găsim toate evenimentele viitoare
-        $events = Event::where('start', '>=', Carbon::now())->where('type','event')->orderBy('start')->get();
+        $events = Event::where('start', '>=', Carbon::now())->where('type', 'event')->where('is_published', true)->orderBy('start')->get();
 
         foreach ($events as $event) {
             // Verificăm dacă notificarea pentru acest eveniment a fost deja trimisă
             $users = User::all();
             foreach ($users as $user) {
                 if ($user->hasRole('User')) {
-                $userCacheKey = 'user_' . $user->id . '_new_event_notification_sent_' . $event->id;
-logger($userCacheKey);
-                // Dacă notificarea a fost deja trimisă pentru acest utilizator, o să o sărim
-                if (Cache::has($userCacheKey)) {
-                    logger('exista');
-                    continue;
+                    $userCacheKey = 'user_' . $user->id . '_new_event_notification_sent_' . $event->id;
+                    logger($userCacheKey);
+                    // Dacă notificarea a fost deja trimisă pentru acest utilizator, o să o sărim
+                    if (Cache::has($userCacheKey)) {
+                        logger('exista');
+                        continue;
+                    }
+                    logger('bot good');
+                    // Trimitem notificarea doar dacă nu a fost trimisă deja
+                    broadcast(new NewEventBroadcast($event, $this->notificationService, $user));
+
+                    // Salvăm cache-ul pentru utilizatorul respectiv pentru acest eveniment
+                    Cache::put($userCacheKey, true);
                 }
-logger('bot good');
-                // Trimitem notificarea doar dacă nu a fost trimisă deja
-                broadcast(new NewEventBroadcast($event, $this->notificationService, $user));
-            
-                // Salvăm cache-ul pentru utilizatorul respectiv pentru acest eveniment
-                Cache::put($userCacheKey, true);  
             }
         }
-        }
     }
-  
+
 
     protected function sendEventReminder()
     {
@@ -94,6 +94,7 @@ logger('bot good');
         $events = Event::where('start', '<=', Carbon::now()->addMinutes(10))
             ->where('start', '>=', Carbon::now())
             ->where('status', '!=', 'CLOSED')
+            ->where('is_published', true)
             ->get();
 
         foreach ($events as $event) {

@@ -20,6 +20,10 @@
 
         <input v-model="formData.title" type="text" placeholder="Enter event title" class="input" />
         <textarea v-model="formData.description" placeholder="Enter event description" class="input"></textarea>
+        <div>
+            <label for="isPublished" class="block text-sm font-medium text-gray-700">Publish Event</label>
+            <input type="checkbox" id="isPublished" v-model="formData.is_published" class="input-checkbox" />
+        </div>
 
         <div class="mt-5 sm:mt-6">
             <button type="button"
@@ -48,7 +52,7 @@ function formatDate(dateTime) {
     if (dateTime.includes("T")) {
         return date.toISOString().slice(0, 16).replace('T', ' ');
     } else {
-        return date.toISOString().slice(0, 10); 
+        return date.toISOString().slice(0, 10);
     }
 }
 
@@ -58,12 +62,13 @@ const formData = useForm({
     description: '',
     start: '',
     end: '',
-    calendarId:'work'
+    calendarId: 'work',
+    is_published: false
 })
 
 const emits = defineEmits(['closeForm'])
 const props = defineProps({
-    selectedDate: String  
+    selectedDate: String
 })
 
 function closeForm() {

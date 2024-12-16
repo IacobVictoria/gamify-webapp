@@ -55,7 +55,10 @@
                     <input v-model="formData.discount" type="number" id="discount"
                         placeholder="Enter discount percentage" class="input" min="0" max="100" />
                 </div>
-
+                <label for="isPublished">
+                    <input type="checkbox" id="isPublished" v-model="formData.is_published">
+                    Publicat
+                </label>
                 <div class="mt-5 sm:mt-6">
                     <button type="submit"
                         class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
@@ -84,6 +87,7 @@ export default {
                 applyTo: this.calendarEvent.details ? JSON.parse(this.calendarEvent.details).applyTo : 'all',
                 category: this.calendarEvent.details ? JSON.parse(this.calendarEvent.details).category : '',
                 discount: this.calendarEvent.details ? JSON.parse(this.calendarEvent.details).discount : 0,
+                is_published: this.calendarEvent.is_published || false,
             },
             startTimeMin: new Date().toISOString().split("T")[0] + 'T00:00'
         };

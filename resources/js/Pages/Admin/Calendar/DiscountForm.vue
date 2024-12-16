@@ -12,7 +12,7 @@
         <div>
             <label for="startTime" class="block text-sm font-medium text-gray-700">Start Time</label>
             <input v-model="formData.start" type="datetime-local" id="startTime" class="input"
-                :min="`${props.selectedDate}T00:00`"  />
+                :min="`${props.selectedDate}T00:00`" />
         </div>
 
         <div>
@@ -42,6 +42,10 @@
             <label for="discount" class="block text-sm font-medium text-gray-700">Discount Percentage</label>
             <input v-model="formData.discount" type="number" id="discount" placeholder="Enter Discount Percentage"
                 class="input" min="0" max="100" />
+        </div>
+        <div>
+            <label for="isPublished" class="block text-sm font-medium text-gray-700">Publish Event</label>
+            <input type="checkbox" id="isPublished" v-model="formData.is_published" class="input-checkbox" />
         </div>
 
         <div class="mt-5 sm:mt-6">
@@ -75,10 +79,10 @@ const formData = useForm({
     end: props.selectedDate,
     type: 'discount',
     details: '',
-    category:'',
-    discount:'',
-    applyTo:'',
-
+    category: '',
+    discount: '',
+    applyTo: '',
+    is_published: false,
     calendarId: 'leisure'
 });
 
@@ -95,7 +99,7 @@ function formatDate(dateTime) {
     if (dateTime.includes("T")) {
         return date.toISOString().slice(0, 16).replace('T', ' ');
     } else {
-        return date.toISOString().slice(0, 10); 
+        return date.toISOString().slice(0, 10);
     }
 }
 
