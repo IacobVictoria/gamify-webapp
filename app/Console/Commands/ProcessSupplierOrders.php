@@ -162,6 +162,9 @@ class ProcessSupplierOrders extends Command
             $this->error("Produsul cu ID {$productData['productId']} nu a fost găsit la furnizor.");
             return;
         }
+
+        $wasOutOfStock = $supplierProduct->stock === 0;
+
         // Actualizare stoc la furnizor
         $supplierProduct->stock -= $productData['quantity'];
         $supplierProduct->save();
@@ -176,7 +179,10 @@ class ProcessSupplierOrders extends Command
             $product->stock += $productData['quantity'];
             $product->save();
 
-          
+            if ($wasOutOfStock && $product->stock > 0) {
+                $this->supplierOrderService->notifyUserForRestockedProductWishlist($product);
+            }
+
         } else {
             // Dacă produsul nu există, îl creăm și notificăm utilizatorii
             $newProduct = Product::create([
@@ -202,7 +208,6 @@ class ProcessSupplierOrders extends Command
         }
     }
 
-    
     private function calculateTotal($productQuantities)
     {
         return array_reduce($productQuantities, function ($total, $productData) {

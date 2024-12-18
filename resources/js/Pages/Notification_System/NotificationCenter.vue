@@ -78,6 +78,10 @@ export default {
                 .listen('.NewProductNotification', (event) => {
                     this.addNotification('New Product', event.message);
                 });
+            window.Echo.private(`user_restockProduct.${user.id}`)
+                .listen('.ProductRestockedNotification', (event) => {
+                    this.addNotification('Restock Product', event.message);
+                });
 
         }
 

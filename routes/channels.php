@@ -69,4 +69,8 @@ Broadcast::channel('user_newProduct.{id}', function ($user, $id) {
 
     return (int) $user->id === (int) $id;
 });
+Broadcast::channel('user_restockProduct.{id}', function ($user, $id) {
+
+    return (int) $user->id === (int) $id;
+});
 
