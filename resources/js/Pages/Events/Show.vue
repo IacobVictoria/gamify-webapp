@@ -25,6 +25,10 @@
                                         class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-600">
                                         Participate & Download QR Code
                                     </button>
+                                    <button v-if="isParticipantConfirmed"
+                                        class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-600">
+                                        See webinar
+                                    </button>
                                     <button v-else @click="toggleScanner"
                                         class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-600">
                                         You are already a participant! Scan to enter the webinar
@@ -56,7 +60,9 @@ export default {
         event: Object,
         qrCode: String,
         isParticipant: Boolean,
-        isEventLocked: Boolean // Adăugăm această proprietate pentru a verifica dacă evenimentul este blocat
+        isEventLocked: Boolean, // Adăugăm această proprietate pentru a verifica dacă evenimentul este blocat
+        isParticipantConfirmed: Boolean
+
     },
 
     components: {

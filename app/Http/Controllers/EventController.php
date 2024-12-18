@@ -37,7 +37,7 @@ class EventController extends Controller
             ->where('end', '>=', now())
             ->where('is_published', true)  // Evenimente care vor începe în viitor
             ->get();
-            
+
         foreach ($activeDiscounts as $event) {
             if ($event->type === 'discount' && $event->details) {
                 $event->details = json_decode($event->details, true);
@@ -48,7 +48,7 @@ class EventController extends Controller
         return Inertia::render('Events/Index', [
             'activeDiscounts' => $activeDiscounts,
             'activeEvents' => $activeEvents,
-            'inProgressEvents'=> $inProgressEvents,
+            'inProgressEvents' => $inProgressEvents,
         ]);
     }
 
@@ -94,12 +94,17 @@ class EventController extends Controller
         $isParticipant = Participant::where('event_id', $event->id)
             ->where('user_id', Auth::id())
             ->exists();
+        $isParticipantConfirmed = Participant::where('event_id', $event->id)
+            ->where('user_id', Auth::id())
+            ->where('confirmed', true)
+            ->exists();
 
         return Inertia::render('Events/Show', [
             'event' => $event,
             'qrCode' => $qrCode->image_url,
             'isParticipant' => $isParticipant,
             'isEventLocked' => $isEventLocked,
+            'isParticipantConfirmed'=>$isParticipantConfirmed
         ]);
     }
     /**

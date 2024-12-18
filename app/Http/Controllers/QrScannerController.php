@@ -53,9 +53,9 @@ class QrScannerController extends Controller
     {
         $qrCodeValue = $request->input('qrCode'); // Valoarea QR scanata
         $eventId = $request->input('eventId'); // ID-ul evenimentului curent
-        
-       $qrCode = QrCodeEvent::where('qr_code', $qrCodeValue)->first();
-       
+
+        $qrCode = QrCodeEvent::where('qr_code', $qrCodeValue)->first();
+
         // evenimentul codului QR se potriveste cu cel curent
         if ($qrCode->event_id != $eventId) {
             return redirect()->back()->with('errorMessage', 'Codul QR nu aparține acestui eveniment.');
@@ -76,8 +76,9 @@ class QrScannerController extends Controller
         }
 
         $participant->confirmed = true;
+        $participant->user->score += 50;
         $participant->save();
-        
+
         return redirect()->back()->with('message', 'test! 🎉');
     }
 
