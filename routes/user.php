@@ -6,6 +6,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\NutritionAndWellnessController;
 use App\Http\Controllers\OpenAiController;
+use App\Http\Controllers\QrScannerController;
 use App\Http\Controllers\ReviewCommentController;
 use App\Http\Controllers\ReviewLikeController;
 use App\Http\Controllers\UserCalendarController;
@@ -94,4 +95,8 @@ Route::prefix('wellness')->group(function () {
 
 Route::prefix('calendar')->group(function () {
     Route::get('/', [UserCalendarController::class, 'index'])->name('calendar.index');
+});
+
+Route::prefix('scanEvents')->group(function () {
+    Route::post('/', [QrScannerController::class, 'scanEvent'])->name('scanEvent.post');
 });

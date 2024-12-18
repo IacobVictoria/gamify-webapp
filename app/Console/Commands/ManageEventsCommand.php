@@ -4,11 +4,15 @@ namespace App\Console\Commands;
 
 use App\Events\EventReminderBroadcast;
 use App\Events\NewEventBroadcast;
+use App\Interfaces\PdfGeneratorServiceInterface;
 use App\Models\Event;
 use App\Models\Participant;
+use App\Models\Report;
 use App\Models\User;
+use App\Services\DompdfGeneratorService;
 use App\Services\NotificationService;
 use Carbon\Carbon;
+use Faker\Provider\Uuid;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 
@@ -17,11 +21,14 @@ class ManageEventsCommand extends Command
     protected $signature = 'app:manage-events-command';
     protected $description = 'Manage events - close past events, notify users about new events and send reminders to participants';
     protected $notificationService;
+    protected $pdfGenerator;
 
-    public function __construct(NotificationService $notificationService)
+
+    public function __construct(NotificationService $notificationService, DompdfGeneratorService $pdfGenerator)
     {
         parent::__construct();
         $this->notificationService = $notificationService;
+        $this->pdfGenerator = $pdfGenerator;
     }
 
 
@@ -40,11 +47,14 @@ class ManageEventsCommand extends Command
     }
     protected function closePastEvents()
     {
-        $events = Event::where('start', '<', Carbon::now())->where('status', '!=', 'CLOSED')->where('type','event')->get();
+        //daca a trecut perioada lor , atunci pun CLOSED, ei pot sa scaneze sa intre si in timpul evenimentului
+        $events = Event::where('end', '<', Carbon::now())->where('status', '!=', 'CLOSED')->where('type', 'event')->get();
 
         foreach ($events as $event) {
             $event->status = 'CLOSED';
             $event->save();
+            // Generăm raportul PDF cu lista participanților
+            $this->generateParticipantsListReport($event);
 
             // Ștergem cache-ul pentru notificarea evenimentului nou și reminder
             $participants = Participant::where('event_id', $event->id)->get();
@@ -58,6 +68,47 @@ class ManageEventsCommand extends Command
 
             $this->info("Event '{$event->title}' has been closed and cache has been cleared.");
         }
+    }
+    protected function generateParticipantsListReport($event)
+    {
+        $participants = $event->participants->map(function ($participant) {
+            return [
+                'name' => $participant->user->name,
+                'email' => $participant->user->email,
+                'confirmed' => $participant->confirmed,
+            ];
+        })->toArray();
+
+        $confirmedCount = $event->participants->where('confirmed', 1)->count();
+        $notConfirmedCount = $event->participants->where('confirmed', 0)->count();
+        $totalParticipants = $event->participants->count();
+        $confirmationPercentage = $totalParticipants > 0 ? ($confirmedCount / $totalParticipants) * 100 : 0;
+
+        $filename = "participants_event_{$event->id}.pdf";
+
+        $filePath = $this->pdfGenerator->generateParticipantsListPdf(
+            [
+                'title' => $event->title,
+                'description' => $event->description,
+                'start' => $event->start,
+                'end' => $event->end,
+            ],
+            $participants,
+            $filename,
+            $confirmedCount,
+            $notConfirmedCount,
+            $confirmationPercentage,
+            $totalParticipants
+        );
+
+        Report::create([
+            'id' => Uuid::uuid(),
+            'type' => 'participants',
+            'title' => "Lista Participanților - {$event->title}",
+            's3_path' => $filePath,
+        ]);
+
+        $this->info("PDF report for event '{$event->title}' generated and saved at '{$filePath}'.");
     }
     protected function notifyUsersAboutNewEvent()
     {

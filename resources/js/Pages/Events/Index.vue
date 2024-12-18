@@ -33,6 +33,17 @@
                                 />                         
                             </div>
                         </div>
+                        <!-- Evenimente in progress -->
+                        <div v-if="inProgressEvents.length" class="mt-8">
+                            <h2 class="text-xl font-bold mb-4"> Events in progress</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <EventCard
+                                    v-for="event in inProgressEvents"
+                                    :key="event.id"
+                                    :event="event"
+                                />                         
+                            </div>
+                        </div>
                         <div v-else>
                             <!-- Mesaj de eroare când nu sunt evenimente -->
                             <div class="bg-blue-100 text-blue-800 p-12 mt-32 rounded-lg text-center shadow-md">
@@ -60,6 +71,7 @@ export default {
     props: {
         activeDiscounts: Array,
         activeEvents: Array,
+        inProgressEvents: Array
     },
 };
 </script>

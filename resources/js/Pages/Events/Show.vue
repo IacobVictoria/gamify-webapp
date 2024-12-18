@@ -16,17 +16,25 @@
                             </div>
                             <div v-else>
                                 <!-- Verificăm dacă evenimentul este blocat -->
-                                <div v-if="isEventLocked">
-                                    <p class="mt-4 text-red-500">Event has already started or you cannot register anymore.</p>
+                                <div v-if="isEventLocked && !isParticipant">
+                                    <p class="mt-4 text-red-500">Event has already started or you cannot register
+                                        anymore.</p>
                                 </div>
                                 <div v-else>
                                     <button v-if="!isParticipant" @click="downloadQRCode"
                                         class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-600">
                                         Participate & Download QR Code
                                     </button>
-                                    <button v-else class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-600">
+                                    <button v-else @click="toggleScanner"
+                                        class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-600">
                                         You are already a participant! Scan to enter the webinar
                                     </button>
+
+                                    <div v-if="showScanner" id="qr-reader" style="width: 500px; height: 500px;"></div>
+
+                                    <div v-if="errorMessage" class="text-red-500 mt-4">
+                                        {{ errorMessage }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -39,7 +47,10 @@
 
 <script>
 import Layout from '@/Layouts/Layout.vue';
+import Swal from 'sweetalert2';
 
+import { Html5QrcodeScanner, Html5QrcodeScanType } from 'html5-qrcode';
+import { nextTick } from 'vue';
 export default {
     props: {
         event: Object,
@@ -47,8 +58,18 @@ export default {
         isParticipant: Boolean,
         isEventLocked: Boolean // Adăugăm această proprietate pentru a verifica dacă evenimentul este blocat
     },
+
     components: {
         Layout
+    },
+    data() {
+        return {
+            showScanner: false,
+            scanner: null,
+            scannedData: null, // keep track of scanned data
+            successMessage: this.success,
+            errorMessage: this.error
+        }
     },
     methods: {
         downloadQRCode() {
@@ -68,7 +89,51 @@ export default {
         },
         makeParticipant() {
             this.$inertia.post(route('event.participant.store', { eventId: this.event.id }));
+        },
+        async toggleScanner() {
+            this.showScanner = true;
+            this.errorMessage = null;//restare
+
+            // Wait for the DOM to update and `qr-reader` to be in the document
+            await nextTick();
+
+            const qrReaderElement = document.getElementById('qr-reader');
+            if (qrReaderElement) {
+                const config = {
+                    fps: 10,
+                    qrbox: { width: 250, height: 250 },
+                    supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
+                };
+
+                try {
+                    this.scanner = new Html5QrcodeScanner('qr-reader', config, false);
+                    this.scanner.render(this.onScanSuccess.bind(this));
+                } catch (error) {
+                    console.error('Error initializing the QR code scanner:', error);
+                }
+            } else {
+                console.error('QR Reader element not found');
+            }
+        },
+        async onScanSuccess(decodedText) {
+
+            this.scannedData = decodedText;
+            this.errorMessage = null;
+
+            // Oprește scannerul pentru a evita multiple scanări
+            if (this.scanner) {
+                this.scanner.clear();
+            }
+            await this.$inertia.post('/user/scanEvents', {
+                qrCode: decodedText,
+                eventId: this.event.id,
+            });
+
+
         }
     }
+
+
+
 };
 </script>

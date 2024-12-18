@@ -32,6 +32,12 @@ class EventController extends Controller
             ->where('is_published', true)  // Evenimente care vor începe în viitor
             ->get();
 
+        $inProgressEvents = Event::where('type', 'event')
+            ->where('start', '<=', now())  // Reduceri care au început deja
+            ->where('end', '>=', now())
+            ->where('is_published', true)  // Evenimente care vor începe în viitor
+            ->get();
+            
         foreach ($activeDiscounts as $event) {
             if ($event->type === 'discount' && $event->details) {
                 $event->details = json_decode($event->details, true);
@@ -41,7 +47,8 @@ class EventController extends Controller
 
         return Inertia::render('Events/Index', [
             'activeDiscounts' => $activeDiscounts,
-            'activeEvents' => $activeEvents
+            'activeEvents' => $activeEvents,
+            'inProgressEvents'=> $inProgressEvents,
         ]);
     }
 
@@ -70,24 +77,23 @@ class EventController extends Controller
         $event = Event::findOrFail($id);
 
         $eventStart = Carbon::parse($event->start)->setTimezone('Europe/Bucharest');
-       
-    
+
+
         // Calculăm timpul rămas până la începerea evenimentului
         $now = Carbon::now()->setTimezone('Europe/Bucharest'); // Asigură-te că folosești fusul orar corect
         $timeUntilEvent = $eventStart->diff($now); // Obținem diferența în obiect DateInterval
-  
+
         // Calculăm minutele din diferență
         $timeUntilEventInMinutes = $timeUntilEvent->d * 24 * 60 + $timeUntilEvent->h * 60 + $timeUntilEvent->i;
-    //asa returneaza diff()   cu h, d, i
+        //asa returneaza diff()   cu h, d, i
 
         // Verificăm dacă evenimentul este blocat
         $isEventLocked = $timeUntilEventInMinutes <= 10 || $eventStart <= $now;
-  
+
         $qrCode = QrCodeEvent::where('event_id', $event->id)->first();
         $isParticipant = Participant::where('event_id', $event->id)
             ->where('user_id', Auth::id())
             ->exists();
-         
 
         return Inertia::render('Events/Show', [
             'event' => $event,
