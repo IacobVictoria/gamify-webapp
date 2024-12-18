@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Events\ProductRestockedNotificationEvent;
 use App\Events\SupplierOrderErrorEvent;
 use App\Models\Event;
 use App\Models\Notification;
@@ -10,6 +11,7 @@ use App\Models\SupplierOrder;
 use App\Models\SupplierOrderProduct;
 use App\Models\SupplierProduct;
 use App\Models\User;
+use App\Services\SupplierOrderNotificationService;
 use Carbon\Carbon;
 use Faker\Provider\Uuid;
 use Illuminate\Console\Command;
@@ -19,6 +21,12 @@ class ProcessSupplierOrders extends Command
     protected $signature = 'orders:process-supplier-orders';
 
     protected $description = 'Verifică evenimentele de tip supplier_order din calendar și plasează comenzile corespunzătoare';
+    protected $supplierOrderService;
+    public function __construct(SupplierOrderNotificationService $supplierOrderService)
+    {
+        parent::__construct();
+        $this->supplierOrderService = $supplierOrderService;
+    }
 
     public function handle()
     {
@@ -43,56 +51,92 @@ class ProcessSupplierOrders extends Command
 
     private function processEvent($event)
     {
-        $details = json_decode($event->details, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->error('JSON invalid pentru evenimentul: ' . $event->id);
-            $this->broadcastErrorToAdmin('JSON invalid pentru evenimentul: ' . $event->id, $event->id);
+        $details = $this->parseEventDetails($event);
+        if (!$details) {
             return;
         }
 
-        if (!isset($details['supplier']) || !isset($details['supplierName']) || !isset($details['productQuantities'])) {
-            $this->error('Informațiile sunt incomplete în detaliile evenimentului: ' . $event->id);
-            $this->broadcastErrorToAdmin('Informațiile sunt incomplete în detaliile evenimentului: ' . $event->id, $event->id);
+        $order = $this->createSupplierOrder($details, $event);
+        if (!$order) {
             return;
         }
 
-        $order = SupplierOrder::create([
-            'id' => Uuid::uuid(),
-            'supplier_id' => $details['supplier'],
-            'total_price' => $this->calculateTotal($details['productQuantities']),
-            'status' => 'pending',
-            'company_name' => 'My company',
-            'order_date' => now(),
-            'email' => 'contact@company.com',
-            'first_name' => 'John',
-            'last_name' => 'Doe',
-            'address' => '123 Main Street',
-            'apartment' => 'Apt 4B',
-            'state' => 'Some State',
-            'city' => 'Some City',
-            'country' => 'Some Country',
-            'zip_code' => '12345',
-            'phone' => '0123456789',
-        ]);
-
-        foreach ($details['productQuantities'] as $productData) {
-            $supplierProduct = SupplierProduct::find($productData['productId']);
-            
-            //disponibilitate furnizori
-            if ($supplierProduct->stock < $productData['quantity']) {
-                $errorMessage = "Stoc insuficient pentru produsul {$supplierProduct->name}. Disponibil: {$supplierProduct->stock}, solicitat: {$productData['quantity']}";
-                $this->error($errorMessage);
-                $this->broadcastErrorToAdmin($errorMessage, $event->id);
-                continue;  // Trecem la următorul produs
-            }
-            $this->createSupplierOrderProduct($order, $productData);
-            $this->updateStock($productData);
-        }
+        $this->processProducts($details['productQuantities'], $order, $event);
 
         $this->info('Comanda a fost creată pentru furnizorul ' . $details['supplierName']);
     }
+    private function parseEventDetails($event)
+    {
+        $details = json_decode($event->details, true);
 
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $this->handleError('JSON invalid pentru evenimentul: ' . $event->id, $event->id);
+            return null;
+        }
+
+        if (!isset($details['supplier'], $details['supplierName'], $details['productQuantities'])) {
+            $this->handleError('Informațiile sunt incomplete în detaliile evenimentului: ' . $event->id, $event->id);
+            return null;
+        }
+
+        return $details;
+    }
+    private function createSupplierOrder($details, $event)
+    {
+        try {
+            return SupplierOrder::create([
+                'id' => Uuid::uuid(),
+                'supplier_id' => $details['supplier'],
+                'total_price' => $this->calculateTotal($details['productQuantities']),
+                'status' => 'pending',
+                'company_name' => 'My company',
+                'order_date' => now(),
+                'email' => 'contact@company.com',
+                'first_name' => 'John',
+                'last_name' => 'Doe',
+                'address' => '123 Main Street',
+                'apartment' => 'Apt 4B',
+                'state' => 'Some State',
+                'city' => 'Some City',
+                'country' => 'Some Country',
+                'zip_code' => '12345',
+                'phone' => '0123456789',
+            ]);
+        } catch (\Exception $e) {
+            $this->handleError('Eroare la crearea comenzii: ' . $e->getMessage(), $event->id);
+            return null;
+        }
+    }
+
+    private function processProducts($productQuantities, $order, $event)
+    {
+        foreach ($productQuantities as $productData) {
+            $supplierProduct = SupplierProduct::find($productData['productId']);
+
+            if (!$this->validateStock($supplierProduct, $productData, $event)) {
+                continue;
+            }
+
+            $this->createSupplierOrderProduct($order, $productData);
+            $this->updateStock($productData); // Notificările sunt acum gestionate aici
+        }
+    }
+    private function validateStock($supplierProduct, $productData, $event)
+    {
+        if ($supplierProduct->stock < $productData['quantity']) {
+            $errorMessage = "Stoc insuficient pentru produsul {$supplierProduct->name}. Disponibil: {$supplierProduct->stock}, solicitat: {$productData['quantity']}";
+            $this->handleError($errorMessage, $event->id);
+            return false;
+        }
+
+        return true;
+    }
+
+    private function handleError($message, $eventId)
+    {
+        $this->error($message);
+        $this->broadcastErrorToAdmin($message, $eventId);
+    }
     private function createSupplierOrderProduct($order, $productData)
     {
         $supplierProduct = SupplierProduct::find($productData['productId']);
@@ -110,28 +154,32 @@ class ProcessSupplierOrders extends Command
             'price' => $supplierProduct->price,
         ]);
     }
-
     private function updateStock($productData)
     {
         $supplierProduct = SupplierProduct::find($productData['productId']);
 
-        if ($supplierProduct) {
-            $supplierProduct->stock -= $productData['quantity'];
-            $supplierProduct->save();
-        } else {
+        if (!$supplierProduct) {
             $this->error("Produsul cu ID {$productData['productId']} nu a fost găsit la furnizor.");
+            return;
         }
+        // Actualizare stoc la furnizor
+        $supplierProduct->stock -= $productData['quantity'];
+        $supplierProduct->save();
 
+        // Caut produsul în baza de date locală
         $product = Product::where('name', $supplierProduct->name)
             ->where('category', $supplierProduct->category)
             ->first();
 
         if ($product) {
+            // Dacă produsul există, actualizăm stocul local
             $product->stock += $productData['quantity'];
             $product->save();
-        } else {
 
-            Product::create([
+          
+        } else {
+            // Dacă produsul nu există, îl creăm și notificăm utilizatorii
+            $newProduct = Product::create([
                 'id' => Uuid::uuid(),
                 'name' => $supplierProduct->name,
                 'price' => $supplierProduct->price,
@@ -148,9 +196,13 @@ class ProcessSupplierOrders extends Command
                 'ingredients' => $supplierProduct->ingredients,
                 'allergens' => $supplierProduct->allergens
             ]);
+
+            // Notificare pentru produs nou
+            $this->supplierOrderService->notifyUserForNewProduct($newProduct);
         }
     }
 
+    
     private function calculateTotal($productQuantities)
     {
         return array_reduce($productQuantities, function ($total, $productData) {
