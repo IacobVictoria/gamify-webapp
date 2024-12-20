@@ -10,9 +10,9 @@
                 <!-- Folder QR Codes -->
                 <div v-if="reports.qr_codes.length" class="text-center cursor-pointer">
                     <inertia-link :href="route('admin.reports.showQRCodeReports')" class="no-underline">
-                    <img src="/images/folder_reports.png" alt="QR Codes Folder"
-                        class="w-32 h-32 mx-auto hover:opacity-80">
-                    <h3 class="mt-4 text-xl font-semibold">QR Codes</h3>
+                        <img src="/images/folder_reports.png" alt="QR Codes Folder"
+                            class="w-32 h-32 mx-auto hover:opacity-80">
+                        <h3 class="mt-4 text-xl font-semibold">QR Codes</h3>
                     </inertia-link>
                 </div>
 
@@ -25,6 +25,14 @@
                     </inertia-link>
 
                 </div>
+                <!-- Folder Supplier Invoices List -->
+                <div v-if="reports.supplier_invoices.length" class="text-center cursor-pointer">
+                    <inertia-link :href="route('admin.reports.showSupplierInvoicesList')" class="no-underline">
+                        <img src="/images/folder_reports.png" alt="Participants Folder"
+                            class="w-32 h-32 mx-auto hover:opacity-80">
+                        <h3 class="mt-4 text-xl font-semibold">Supplier Invoices</h3>
+                    </inertia-link>
+                </div>
             </main>
         </AuthenticatedLayout>
     </div>
@@ -33,8 +41,6 @@
 <script>
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { hrefToUrl } from '@inertiajs/inertia';
-
 export default {
     props: {
         reports: Object, // Datele trimise de backend pentru QR Codes și Participants

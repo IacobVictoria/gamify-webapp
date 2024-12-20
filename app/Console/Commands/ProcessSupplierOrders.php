@@ -4,17 +4,21 @@ namespace App\Console\Commands;
 
 use App\Events\ProductRestockedNotificationEvent;
 use App\Events\SupplierOrderErrorEvent;
+use App\Events\SupplierOrderSuccessEvent;
 use App\Models\Event;
 use App\Models\Notification;
 use App\Models\Product;
+use App\Models\Report;
 use App\Models\SupplierOrder;
 use App\Models\SupplierOrderProduct;
 use App\Models\SupplierProduct;
 use App\Models\User;
+use App\Services\DompdfGeneratorService;
 use App\Services\SupplierOrderNotificationService;
 use Carbon\Carbon;
 use Faker\Provider\Uuid;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class ProcessSupplierOrders extends Command
 {
@@ -22,10 +26,12 @@ class ProcessSupplierOrders extends Command
 
     protected $description = 'Verifică evenimentele de tip supplier_order din calendar și plasează comenzile corespunzătoare';
     protected $supplierOrderService;
-    public function __construct(SupplierOrderNotificationService $supplierOrderService)
+    protected $pdfGenerator;
+    public function __construct(SupplierOrderNotificationService $supplierOrderService, DompdfGeneratorService $pdfGenerator)
     {
         parent::__construct();
         $this->supplierOrderService = $supplierOrderService;
+        $this->pdfGenerator = $pdfGenerator;
     }
 
     public function handle()
@@ -84,7 +90,7 @@ class ProcessSupplierOrders extends Command
     private function createSupplierOrder($details, $event)
     {
         try {
-            return SupplierOrder::create([
+            $order = SupplierOrder::create([
                 'id' => Uuid::uuid(),
                 'supplier_id' => $details['supplier'],
                 'total_price' => $this->calculateTotal($details['productQuantities']),
@@ -102,10 +108,56 @@ class ProcessSupplierOrders extends Command
                 'zip_code' => '12345',
                 'phone' => '0123456789',
             ]);
+            // Generăm și salvăm factura
+            $this->generateAndSaveInvoice($order, $details);
+
+            $admin = User::whereHas('roles', function ($query) {
+                $query->where('name', 'Admin');
+            })->first();
+
+            broadcast(new SupplierOrderSuccessEvent($order, $admin->id));
+            return $order;
         } catch (\Exception $e) {
             $this->handleError('Eroare la crearea comenzii: ' . $e->getMessage(), $event->id);
             return null;
         }
+    }
+    private function generateAndSaveInvoice($order, $details)
+    {
+        // Generăm numele fișierului pentru factură
+        $filename = "supplier_invoice_{$order->id}.pdf";
+
+        $products = collect($details['productQuantities'])->map(function ($product) {
+            $productData = SupplierProduct::find($product['productId']);
+
+            if ($productData) {
+                $product['productData'] = $productData;
+            } else {
+                $product['productData'] = null;  // Asigură-te că atribui `null` când produsul nu este găsit
+            }
+
+            return $product;
+        });
+
+        // Creăm datele pentru factură
+
+        $invoiceData = [
+            'order' => $order,
+            'products' => $products, // Lista produselor și cantitățile
+            'supplierName' => $details['supplierName'], // Numele furnizorului
+        ];
+        // Generăm PDF-ul și îl salvăm în S3
+        $filePath = $this->pdfGenerator->generateInvoicePdf($invoiceData, $filename);
+
+        // Salvăm factura în tabelul reports pentru acces
+        Report::create([
+            'id' => Uuid::uuid(),
+            'type' => 'supplier_invoice',
+            'title' => "Factura pentru Comanda {$order->id}",
+            's3_path' => $filePath,
+        ]);
+
+        $this->info("Factura pentru comanda '{$order->id}' a fost generată și salvată la '{$filePath}'.");
     }
 
     private function processProducts($productQuantities, $order, $event)
@@ -223,7 +275,6 @@ class ProcessSupplierOrders extends Command
 
         if ($admin) {
             event(new SupplierOrderErrorEvent($errorMessage, $admin->id));
-
 
             Notification::create([
                 'id' => Uuid::uuid(),

@@ -152,4 +152,5 @@ Route::prefix('reports')->group(function () {
     Route::get('/', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/qr-codes', [ReportController::class, 'showQRCodeReports'])->name('reports.showQRCodeReports');
     Route::get('/participants-list', [ReportController::class, 'showParticipantsList'])->name('reports.showParticipantsList');
+    Route::get('/invoices-list', [ReportController::class, 'showSupplierInvoicesList'])->name('reports.showSupplierInvoicesList');
 });

@@ -25,6 +25,7 @@ class ReportController extends Controller
         $reports = [
             'qr_codes' => $this->getQRCodeReports(),
             'list_participants' => Report::where('type', 'participants')->get(),
+            'supplier_invoices' => Report::where('type', 'supplier_invoice')->get(),
         ];
 
         return Inertia::render('Admin/Reports/Index', [
@@ -46,7 +47,6 @@ class ReportController extends Controller
 
     public function showQRCodeReports()
     {
-
         $qrCodeReports = QrCodeEvent::with('event') // Include the associated event details
             ->get()
             ->map(function ($qrCodeEvent) {
@@ -76,7 +76,19 @@ class ReportController extends Controller
         ]);
     }
 
+    public function showSupplierInvoicesList()
+    {
+        $supplierInvoices = Report::where('type', 'supplier_invoice')->get()->map(function ($report) {
+            return [
+                'title' => $report->title,
+                's3_path' => $report->s3_path,
+            ];
+        });
 
+        return Inertia::render('Admin/Reports/ShowSupplierInvoicesList', [
+            'reports' => $supplierInvoices,
+        ]);
+    }
 
     public function downloadParticipants($eventId)
     {
@@ -122,7 +134,7 @@ class ReportController extends Controller
             'id' => Uuid::uuid(),
             'type' => 'participants',
             'title' => "Lista Participanților - {$event->title}",
-            's3_path' => $filePath, // Calea fișierului PDF pe S3
+            's3_path' => $filePath,
         ]);
 
         return redirect()->back()->with('message', 'PDF generated successfully!');
