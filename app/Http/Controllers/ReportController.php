@@ -6,6 +6,7 @@ use App\Interfaces\PdfGeneratorServiceInterface;
 use App\Models\Event;
 use App\Models\QrCodeEvent;
 use App\Models\Report;
+use Carbon\Carbon;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -45,51 +46,90 @@ class ReportController extends Controller
         });
     }
 
-    public function showQRCodeReports()
+    public function showQRCodeReports(Request $request)
     {
-        $qrCodeReports = QrCodeEvent::with('event') // Include the associated event details
+        $title = $request->get('title', '');
+
+        $qrCodeReports = QrCodeEvent::with('event')
+            ->when($title, function ($query, $title) {
+                // Filtrarea pe titlu
+                return $query->whereHas('event', function ($q) use ($title) {
+                    $q->where('title', 'like', '%' . $title . '%');
+                });
+            })
             ->get()
             ->map(function ($qrCodeEvent) {
                 return [
-                    'title' => $qrCodeEvent->event->title,  // Event title from the related Event model
-                    'qr_code_url' => $qrCodeEvent->image_url, // Image URL from the `qr_codes_events` table
+                    'title' => $qrCodeEvent->event->title,
+                    'qr_code_url' => $qrCodeEvent->image_url,
                 ];
             });
 
-        // Pass the reports to the Inertia view
         return Inertia::render('Admin/Reports/ShowQRCodeReports', [
             'reports' => $qrCodeReports,
+            'filters' => ['title' => $title],
         ]);
     }
-    public function showParticipantsList()
-    {
 
-        $participantsReports = Report::where('type', 'participants')->get()->map(function ($report) {
-            return [
-                'title' => $report->title,
-                's3_path' => $report->s3_path,
-            ];
-        });
+
+    public function showParticipantsList(Request $request)
+    {
+        $year = $request->get('year', Carbon::now()->format('Y'));
+        $month = $request->get('month', Carbon::now()->format('m'));
+
+        $participantsReports = Report::where('type', 'participants')
+            ->whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
+            ->get()
+            ->map(function ($report) {
+                return [
+                    'title' => $report->title,
+                    's3_path' => $report->s3_path,
+                    'week' => Carbon::parse($report->created_at)->format('W'),
+                    'created_at' => $report->created_at->format('Y-m-d'),
+                ];
+            });
+
+        // Gruparea pe săptămâni
+        $groupedReports = $participantsReports->groupBy('week');
 
         return Inertia::render('Admin/Reports/ShowParticipantsList', [
-            'reports' => $participantsReports,
+            'groupedReports' => $groupedReports,
+            'year' => $year,
+            'month' => $month,
         ]);
     }
 
-    public function showSupplierInvoicesList()
+
+
+    public function showSupplierInvoicesList(Request $request)
     {
-        $supplierInvoices = Report::where('type', 'supplier_invoice')->get()->map(function ($report) {
-            return [
-                'title' => $report->title,
-                's3_path' => $report->s3_path,
-            ];
-        });
+        $year = $request->input('year', Carbon::now()->format('Y'));
+        $month = $request->input('month', Carbon::now()->format('m'));
+
+        // Selectarea facturilor pentru anul și luna specificate
+        $supplierInvoices = Report::where('type', 'supplier_invoice')
+            ->whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
+            ->get()
+            ->map(function ($report) {
+                return [
+                    'title' => $report->title,
+                    's3_path' => $report->s3_path,
+                    'week' => Carbon::parse($report->created_at)->format('W'),
+                    'year' => Carbon::parse($report->created_at)->format('Y'),
+                ];
+            });
+
+        // Gruparea pe săptămâni
+        $groupedInvoices = $supplierInvoices->groupBy('week');
 
         return Inertia::render('Admin/Reports/ShowSupplierInvoicesList', [
-            'reports' => $supplierInvoices,
+            'groupedReports' => $groupedInvoices,
+            'year' => $year,
+            'month' => $month,
         ]);
     }
-
     public function downloadParticipants($eventId)
     {
         $event = Event::with('participants')->findOrFail($eventId);
