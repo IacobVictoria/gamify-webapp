@@ -33,4 +33,9 @@ class Event extends Model
     {
         return $this->hasMany(Participant::class);
     }
+    public function qrCode()
+    {
+        return $this->hasOne(QRCodeEvent::class, 'event_id');
+    }
+
 }

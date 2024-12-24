@@ -28,6 +28,7 @@ class UserCalendarController extends Controller
         })
         ->where('status', 'OPEN')  // Evenimentele trebuie să fie deschise
         ->where('is_published', 1) // Evenimentele trebuie să fie publicate
+        ->with('qrCode')
         ->get();
     
         $categories = Product::distinct()->pluck('category');

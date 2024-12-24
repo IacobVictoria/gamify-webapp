@@ -5,7 +5,7 @@
                 <template #eventModal="{ calendarEvent }">
                     <div :style="eventModalStyles">
                         <div v-if="calendarEvent.type === 'event'">
-                            <CustomEventComponent :calendar-event="calendarEvent" :editMode="false" />
+                            <CustomEventComponent :calendar-event="calendarEvent" :editMode="false" :-is-user="true" />
                         </div>
                         <div v-if="calendarEvent.type === 'discount'">
                             <DiscountEventComponent :calendar-event="calendarEvent" :categories="props.categories" :editMode="false" />

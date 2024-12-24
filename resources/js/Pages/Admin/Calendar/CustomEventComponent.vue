@@ -1,5 +1,5 @@
 <template>
-    <div v-if="!showModal && !eventDeleted" class="event"> 
+    <div v-if="!showModal && !eventDeleted" class="event">
         <div class="event-header">
             <img src="/images/event_title.png" alt="">
             <h3>{{ calendarEvent.title }}</h3>
@@ -16,9 +16,12 @@
         </p>
 
         <!-- Afișează butoanele de edit și delete doar dacă evenimentul nu este closed -->
-        <div v-if="calendarEvent.status !== 'CLOSED'" class="event-actions">
+        <div v-if="!IsUser && calendarEvent.status !== 'CLOSED'" class="event-actions">
             <button @click="editEvent" class="edit-btn">✏️ Edit</button>
             <button @click="deleteEvent" class="delete-btn">❌ Delete</button>
+        </div>
+        <div v-if="IsUser && calendarEvent.status !== 'CLOSED'" class="event-actions">
+            <button @click="viewQRCode" class="qr-btn">🔗 See QR Code</button>
         </div>
 
         <!-- Butonul de download participanți, doar dacă evenimentul este closed -->
@@ -38,13 +41,14 @@ import EditEventModal from './EditEventModal.vue';
 export default {
     props: {
         calendarEvent: Object,
-        showModal: Boolean
+        showModal: Boolean,
+        IsUser: Boolean
     },
     data() {
         return {
             showModal: this.showModal,
             selectedType: this.calendarEvent.type,
-            eventDeleted: false 
+            eventDeleted: false
         };
     },
     components: {
@@ -55,14 +59,14 @@ export default {
             this.showModal = true;
         },
         closeModal() {
-            this.showModal = false; 
-            this.selectedType = null; 
+            this.showModal = false;
+            this.selectedType = null;
         },
         deleteEvent() {
             this.$inertia.delete(route('admin.calendar.event.destroy', { id: this.calendarEvent.id }), {
                 onSuccess: () => {
                     this.eventDeleted = true;
-                    this.closeModal(); 
+                    this.closeModal();
                 },
                 onError: (error) => {
                     console.error("Error deleting event:", error);
@@ -72,6 +76,13 @@ export default {
         downloadParticipants() {
             // Trimitere cerere pentru a descărca lista participanților
             this.$inertia.get(route('admin.pdf.participants.download', { eventId: this.calendarEvent.id }));
+        },
+        viewQRCode() {
+            if (this.calendarEvent.qr_code) {
+                window.open(this.calendarEvent.qr_code.image_url, '_blank');
+            } else {
+                alert('QR code not available for this event.');
+            }
         }
     }
 }
@@ -164,4 +175,19 @@ export default {
 .download-btn:hover {
     background-color: #2ecc71;
 }
+.qr-btn {
+    background-color: #8e44ad;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.qr-btn:hover {
+    background-color: #71368a;
+}
+
 </style>
