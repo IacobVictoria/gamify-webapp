@@ -77,7 +77,11 @@ export default {
             window.Echo.private(`admin-channel.${user.id}`).listen('.SupplierOrderSuccess', (event) => {
                 this.addNotification('Success', event.message);
             });
-            
+            window.Echo.private(`user_reminder.${user.id}`)
+                .listen('.EventReminderNotification', (event) => {
+                    this.addNotification('Reminder!', event.message);
+                })
+
             window.Echo.private(`user_newProduct.${user.id}`)
                 .listen('.NewProductNotification', (event) => {
                     this.addNotification('New Product', event.message);

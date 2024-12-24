@@ -54,7 +54,7 @@ class EventReminderBroadcast implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('user.' . $this->user->id),
+            new PrivateChannel('user_reminder.' . $this->user->id),
         ];
     }
     public function broadcastAs()

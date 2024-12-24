@@ -79,7 +79,7 @@ class QrScannerController extends Controller
         $participant->user->score += 50;
         $participant->save();
 
-        return redirect()->back()->with('message', 'test! 🎉');
+        return redirect()->back()->with('message', 'Participation Confirmed! 🎉');
     }
 
 

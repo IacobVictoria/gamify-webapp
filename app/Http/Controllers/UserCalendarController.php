@@ -16,20 +16,28 @@ class UserCalendarController extends Controller
     {
         $events = Event::where(function ($query) {
             $query->where('type', 'discount')
-                ->orWhere('type', 'event');
+                  ->where('start', '<=', now()) // Discount începe înainte de acum
+                  ->where('end', '>=', now()); // Discount trebuie să fie încă activ
         })
-            ->where('status', 'OPEN')
-            ->where('start', '<=', now())
-            ->where('end', '>=', now())
-            ->where('is_published', 1)
-            ->get();
-      
+        ->orWhere(function ($query) {
+            $query->where('type', 'event')
+                  ->where('end', '>=', now()) // Evenimentul trebuie să nu fi expirat
+                  ->whereHas('participants', function ($query) {
+                      $query->where('user_id', auth()->id()); // Verifică dacă utilizatorul este participant
+                  });
+        })
+        ->where('status', 'OPEN')  // Evenimentele trebuie să fie deschise
+        ->where('is_published', 1) // Evenimentele trebuie să fie publicate
+        ->get();
+    
         $categories = Product::distinct()->pluck('category');
+    
         return Inertia::render('User/Calendar/Index', [
             'events' => $events,
             'categories' => $categories
         ]);
     }
+    
 
     /**
      * Show the form for creating a new resource.

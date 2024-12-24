@@ -29,7 +29,7 @@
                                         class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-600">
                                         See webinar
                                     </button>
-                                    <button v-else @click="toggleScanner"
+                                    <button v-else-if="isParticipant && !isParticipantConfirmed" @click="toggleScanner"
                                         class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-blue-600">
                                         You are already a participant! Scan to enter the webinar
                                     </button>
