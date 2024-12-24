@@ -274,7 +274,7 @@ class ProcessSupplierOrders extends Command
         })->first();
 
         if ($admin) {
-            event(new SupplierOrderErrorEvent($errorMessage, $admin->id));
+            broadcast(new SupplierOrderErrorEvent($errorMessage, $admin->id));
 
             Notification::create([
                 'id' => Uuid::uuid(),

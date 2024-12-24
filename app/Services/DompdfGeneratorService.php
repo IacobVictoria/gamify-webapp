@@ -41,8 +41,7 @@ class DompdfGeneratorService implements PdfGeneratorServiceInterface
         return Storage::disk('s3')->url($path);
     }
     public function generateInvoicePdf(array $invoiceData, string $filename): string
-    {logger('hh');
-        // Configurăm Dompdf
+    {   // Configurăm Dompdf
         $options = new Options();
         $options->set('defaultFont', 'Arial');
         $dompdf = new Dompdf($options);

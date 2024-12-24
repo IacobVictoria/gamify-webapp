@@ -127,7 +127,6 @@ class ManageEventsCommand extends Command
                         logger('exista');
                         continue;
                     }
-                    logger('bot good');
                     // Trimitem notificarea doar dacă nu a fost trimisă deja
                     broadcast(new NewEventBroadcast($event, $this->notificationService, $user));
 
