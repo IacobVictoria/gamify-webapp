@@ -18,6 +18,7 @@ use App\Http\Controllers\AdminSupplierController;
 use App\Http\Controllers\AdminSupplierOrderController;
 use App\Http\Controllers\AdminSupplierProductController;
 use App\Http\Controllers\AdminUserQuizRemarkController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\ReportController;
@@ -143,11 +144,8 @@ Route::prefix('notifications')->group(function () {
     Route::post('/markAsRead', [AdminNotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::post('/{id}/handle', [AdminNotificationController::class, 'handleNotification'])->name('notifications.handle');
 });
+Route::get('/events/{id}/participants-pdf-preview', [EventController::class, 'generateParticipantsPdfPreview'])->name('events.generateParticipantsPdfPreview');
 
-Route::prefix('pdf')->group(function () {
-    Route::get('participants/{eventId}', [ReportController::class, 'downloadParticipants'])
-        ->name('pdf.participants.download');
-});
 Route::prefix('reports')->group(function () {
     Route::get('/', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/qr-codes', [ReportController::class, 'showQRCodeReports'])->name('reports.showQRCodeReports');

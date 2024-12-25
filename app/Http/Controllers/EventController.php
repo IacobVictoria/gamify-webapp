@@ -5,16 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Participant;
 use App\Models\QrCodeEvent;
+use App\Models\Report;
+use App\Services\DompdfGeneratorService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class EventController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $pdfService;
+    public function __construct(DompdfGeneratorService $pdfService)
+    {
+        $this->pdfService = $pdfService;
+    }
     public function index()
     {
         // Obține reducerile active (discounts)
@@ -52,26 +57,29 @@ class EventController extends Controller
         ]);
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function generateParticipantsPdfPreview($eventId)
     {
-        //
+        $event = Event::findOrFail($eventId);
+
+        // Construim titlul raportului așa cum a fost salvat în baza de date
+        $reportTitle = "Lista Participanților - {$event->title}";
+    
+        // Căutăm raportul în baza de date după titlu
+        $report = Report::where('type', 'participants')
+            ->where('title', $reportTitle)
+            ->first();
+
+        if ($report) {
+            // Dacă raportul există, returnăm URL-ul din s3_path
+            $pdfUrl = $report->s3_path;
+    
+            return response()->json(['pdf_url' => $pdfUrl]);
+        } else {
+            // Dacă raportul nu există, returnăm un mesaj de eroare
+            return response()->json(['message' => 'The event has not ended yet, or the participant list is unavailable.'], 200);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show($id)
     {
         $event = Event::findOrFail($id);
@@ -104,7 +112,7 @@ class EventController extends Controller
             'qrCode' => $qrCode->image_url,
             'isParticipant' => $isParticipant,
             'isEventLocked' => $isEventLocked,
-            'isParticipantConfirmed'=>$isParticipantConfirmed
+            'isParticipantConfirmed' => $isParticipantConfirmed
         ]);
     }
     /**

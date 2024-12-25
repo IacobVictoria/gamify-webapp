@@ -25,8 +25,8 @@
         </div>
 
         <!-- Butonul de download participanți, doar dacă evenimentul este closed -->
-        <div v-if="calendarEvent.status === 'CLOSED'" class="event-actions">
-            <button @click="downloadParticipants" class="download-btn">📥 Download Participants</button>
+        <div v-if="!IsUser && calendarEvent.status === 'CLOSED'" class="event-actions">
+            <button @click="viewParticipantsPreview" class="download-btn">📥 Preview Participants</button>
         </div>
 
     </div>
@@ -73,9 +73,15 @@ export default {
                 }
             });
         },
-        downloadParticipants() {
-            // Trimitere cerere pentru a descărca lista participanților
-            this.$inertia.get(route('admin.pdf.participants.download', { eventId: this.calendarEvent.id }));
+       async viewParticipantsPreview() {
+            const response=  await  axios.get(route('admin.events.generateParticipantsPdfPreview', { id: this.calendarEvent.id }));
+           
+           if(response.data.pdf_url){
+            window.open(response.data.pdf_url, '_blank');
+           }
+           else{
+            alert('No list available for this event.');
+           }
         },
         viewQRCode() {
             if (this.calendarEvent.qr_code) {
@@ -175,6 +181,7 @@ export default {
 .download-btn:hover {
     background-color: #2ecc71;
 }
+
 .qr-btn {
     background-color: #8e44ad;
     color: white;
@@ -189,5 +196,4 @@ export default {
 .qr-btn:hover {
     background-color: #71368a;
 }
-
 </style>
