@@ -121,10 +121,8 @@ class ManageEventsCommand extends Command
             foreach ($users as $user) {
                 if ($user->hasRole('User')) {
                     $userCacheKey = 'user_' . $user->id . '_new_event_notification_sent_' . $event->id;
-                    logger($userCacheKey);
                     // Dacă notificarea a fost deja trimisă pentru acest utilizator, o să o sărim
                     if (Cache::has($userCacheKey)) {
-                        logger('exista');
                         continue;
                     }
                     // Trimitem notificarea doar dacă nu a fost trimisă deja
