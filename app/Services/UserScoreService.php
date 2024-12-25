@@ -14,9 +14,10 @@ class UserScoreService implements UserScoreInterface
         $this->notificationService = $notificationService;
     }
     public function addScore(User $user, $score)
-    {logger($score)
-;        $user->score += $score;
+    {
+        $user->score += $score;
         $user->save();
+        broadcast(new UserScoreUpdatedEvent($user, $score, "Ai primit ".$score ." !" , $this->notificationService));
     }
 
     public function updateScore(User $user, $score)
@@ -40,5 +41,29 @@ class UserScoreService implements UserScoreInterface
 
         broadcast(new UserScoreUpdatedEvent($user, $final_score, "Quiz ul completat ti-a adus puncte!", $this->notificationService));
 
+    }
+
+    public function awardPointsBasedOnRank(User $user, int $rank)
+    {
+        $points = $this->getPointsForRank($rank);
+
+        // Award points based on rank
+        $this->addScore($user, $points);
+
+        // Broadcast the event for score update
+        broadcast(new UserScoreUpdatedEvent($user, $points, "Ai primit puncte pentru locul #$rank pe leaderboard!", $this->notificationService));
+    }
+    protected function getPointsForRank(int $rank): int
+    {
+        switch ($rank) {
+            case 1:
+                return 50; // Rank 1 gets 50 points
+            case 2:
+                return 30; // Rank 2 gets 30 points
+            case 3:
+                return 15; // Rank 3 gets 15 points
+            default:
+                return 0; 
+        }
     }
 }

@@ -118,12 +118,5 @@ export default {
             }
         }
     },
-    methods: {
-        // showResults(quizId) {
-        //     Inertia.visit(`/quizzes/${quizId}`, {
-        //         data: { isLocked: true } // Trimite date suplimentare
-        //     });
-        // }
-    }
 }
 </script>

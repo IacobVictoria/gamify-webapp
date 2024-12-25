@@ -61,6 +61,16 @@ class BadgeService implements BadgeServiceInterface
         $this->awardThreeEventsParticipationBadge($user);
     }
 
+    public function quizLeaderboardBadges(?User $user)
+    {
+        if (!$user) {
+            return;
+        }
+        $this->firstTimeFirstRankQuizTop($user);
+        $this->awardEachRankInQuizTop($user);
+        $this->awardSecondTimeAsFirstQuizTop($user);
+    }
+
     public function awardTopReviewerBadge(User $user)
     {
         $badge = Badge::where('name', 'Top Reviewer')->first();
@@ -187,7 +197,7 @@ class BadgeService implements BadgeServiceInterface
         $badge = Badge::where('name', $badgeName)->first();
 
         $user->badges()->attach($badge, ['id' => Uuid::uuid(), 'awarded_at' => now()]);
-        
+
         $this->userScoreService->addScore($user, $badge->score);
 
         broadcast(new ObtainBadge($user, $badge, $this->notificationService));
@@ -281,7 +291,40 @@ class BadgeService implements BadgeServiceInterface
         if ($confirmedParticipationCount === 3 && !$user->badges()->where('name', 'Three Events Participation')->exists()) {
             $this->assignBadge($user, 'Three Events Participation');
         }
-   
+
+    }
+
+    public function awardSecondTimeAsFirstQuizTop(User $user)
+    {
+        $rankCount = $user->quizLeaderboardHistory()->where('rank', 1)->count();
+
+        if ($rankCount === 2 && !$user->badges()->where('name', 'Second Time First Rank in Quiz Top')->exists()) {
+            // Award the badge
+            $this->assignBadge($user, 'Second Time First Rank in Quiz Top');
+        }
+
+    }
+
+    public function awardEachRankInQuizTop(User $user)
+    {
+        $maxRank = 3; 
+        $userRanks = $user->quizLeaderboardHistory()->pluck('rank')->unique();
+
+        // Check if the user has reached all ranks
+        if ($userRanks->count() === $maxRank && !$user->badges()->where('name', 'Each Rank in Quiz Top')->exists()) {
+            $this->assignBadge($user, 'Each Rank in Quiz Top');
+        }
+
+    }
+
+    public function firstTimeFirstRankQuizTop(User $user)
+    {
+        // Check if the user has ever been first in any quiz leaderboard
+        $firstTime = $user->quizLeaderboardHistory()->where('rank', 1)->count() === 1;
+
+        if ($firstTime && !$user->badges()->where('name', 'First Rank in Quiz Top')->exists()) {
+            $this->assignBadge($user, 'First Rank in Quiz Top');
+        }
 
     }
 

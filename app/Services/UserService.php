@@ -102,11 +102,11 @@ class UserService implements UserServiceInterface
         }
 
         if (!$this->hasLikedProduct($user, $product)) {
-            
+
             $user->wishlists()->create([
                 'product_id' => $product->id
             ]);
-          
+
         }
 
     }
@@ -132,4 +132,10 @@ class UserService implements UserServiceInterface
         return $user->wishlists()->where('product_id', $product->id)->exists();
 
     }
+    public function showQuizLeaderboardHistory(User $user)
+    {
+        $leaderboardHistory = $user->quizLeaderboardHistory()->orderBy('date', 'desc')->get();
+        return $leaderboardHistory;
+    }
+
 }

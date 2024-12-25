@@ -7,13 +7,15 @@
             <div class="text-white">
                 <h2 class="text-2xl font-bold">Active Discounts</h2>
                 <ul class="mt-4 space-y-2">
-                    <li v-for="discount in activeDiscounts" key="discount.id" class="text-lg">
-                        <span class="font-semibold">{{ discount.title }}</span>: Save {{ discount.details.percentage }}%!
-                        Valid until <span class="font-semibold">{{ formatDate(discount.end) }}</span>.
+                    <li v-for="discount in activeDiscounts" :key="discount.id" class="text-lg">
+                        <span class="font-semibold">{{ discount.title }}</span>:
+                        Save {{ discount.details.discount }}% la
+                        {{ discount.details.category === null ? discount.applyTo : discount.details.category }}!
+                        <div> Valid until <span class="font-semibold">{{ formatDate(discount.end) }}</span>.
+                        </div>
                     </li>
                 </ul>
             </div>
-
             <img src="/images/percentage.png" alt="Percentage Icon" class="h-16 w-16 ml-auto hidden sm:block" />
         </div>
     </div>
@@ -29,7 +31,9 @@ export default {
             required: true,
         },
     },
-
+    mounted() {
+        console.log(this.activeDiscounts);
+    },
     methods: {
         formatDate(date) {
             return new Date(date).toLocaleDateString('en-US', {
@@ -43,7 +47,6 @@ export default {
 </script>
 
 <style scoped>
-/* Custom styles for the banner */
 .bg-gradient-to-r {
     background-image: linear-gradient(to right, #f59e0b, #f97316);
 }

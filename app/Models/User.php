@@ -143,4 +143,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Participant::class);
     }
+
+    public function quizLeaderboardHistory()
+    {
+        return $this->hasMany(QuizLeaderboardHistory::class);
+    }
+
 }
