@@ -21,4 +21,6 @@ interface BadgeServiceInterface
     public function assignBadge(User $user, string $badgeName);
     public function awardActiveShoppingBadge(User $user);
     public function awardMonthlyShoppingBadge(User $user);
+    public function awardFirstEventParticipationBadge(User $user);
+    public function awardThreeEventsParticipationBadge(User $user);
 }

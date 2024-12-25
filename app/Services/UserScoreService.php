@@ -14,14 +14,14 @@ class UserScoreService implements UserScoreInterface
         $this->notificationService = $notificationService;
     }
     public function addScore(User $user, $score)
-    {
-        $user->score += $score;
+    {logger($score)
+;        $user->score += $score;
         $user->save();
     }
 
     public function updateScore(User $user, $score)
     {
-        $user->score += $score;
+        $user->score = $score;
         $user->save();
     }
 

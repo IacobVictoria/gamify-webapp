@@ -51,6 +51,16 @@ class BadgeService implements BadgeServiceInterface
         $this->awardQuizExplorerBadge($user);
     }
 
+    public function eventBadges(?User $user)
+    {
+        if (!$user) {
+            return;
+        }
+        $this->awardFirstEventParticipationBadge($user);
+
+        $this->awardThreeEventsParticipationBadge($user);
+    }
+
     public function awardTopReviewerBadge(User $user)
     {
         $badge = Badge::where('name', 'Top Reviewer')->first();
@@ -58,8 +68,6 @@ class BadgeService implements BadgeServiceInterface
         if ($user->reviews()->count() >= 2 && !$user->badges()->where('name', 'Top Reviewer')->exists()) {
             $this->assignBadge($user, 'Top Reviewer');
         }
-
-        $this->userScoreService->addScore($user, $badge->score);
 
     }
 
@@ -72,8 +80,6 @@ class BadgeService implements BadgeServiceInterface
         if ($commentCount >= 2 && !$user->badges()->where('name', 'Active Commenter')->exists()) {
             $this->assignBadge($user, 'Active Commenter');
         }
-
-        $this->userScoreService->addScore($user, $badge->score);
     }
 
     public function awardTrustedCommenterBadge(?User $user)
@@ -85,8 +91,6 @@ class BadgeService implements BadgeServiceInterface
         if ($commentCount >= 10 && !$user->badges()->where('name', 'Trusted Commenter')->exists()) {
             $this->assignBadge($user, 'Trusted Commenter');
         }
-
-        $this->userScoreService->addScore($user, $badge->score);
     }
 
     public function awardProductExpertBadge(User $user)
@@ -102,7 +106,6 @@ class BadgeService implements BadgeServiceInterface
         if ($reviewsLong->count() > 20 && !$user->badges()->where('name', 'Product Expert')->exists()) {
             $this->assignBadge($user, 'Product Expert');
         }
-        $this->userScoreService->addScore($user, $badge->score);
     }
 
     public function awardTrustedReviewerBadge(User $user)
@@ -113,7 +116,6 @@ class BadgeService implements BadgeServiceInterface
         if ($user->reviewlikes()->count() > 10 && !$user->badges()->where('name', 'Trusted Reviewer')->exists()) {
             $this->assignBadge($user, 'Trusted Reviewer');
         }
-        $this->userScoreService->addScore($user, $badge->score);
     }
 
     public function awardActiveReviewerBadge(User $user)
@@ -130,8 +132,6 @@ class BadgeService implements BadgeServiceInterface
         if ($reviewCount >= 5 && !$user->badges()->where('name', 'Active Reviewer')->exists()) {
             $this->assignBadge($user, 'Active Reviewer');
         }
-
-        $this->userScoreService->addScore($user, $badge->score);
     }
 
     public function awardPioneerBadge(User $user)
@@ -152,8 +152,6 @@ class BadgeService implements BadgeServiceInterface
         if ($userFirstReviewCount > 5 && !$user->badges()->where('name', 'Pioneer')->exists()) {
             $this->assignBadge($user, 'Pioneer');
         }
-
-        $this->userScoreService->addScore($user, $badge->score);
     }
 
     public function awardActiveShoppingBadge(User $user)
@@ -163,8 +161,6 @@ class BadgeService implements BadgeServiceInterface
         if ($user->orders()->count() > 10 && !$user->badges()->where('name', 'Active Shopper')->exists()) {
             $this->assignBadge($user, 'Active Shopper');
         }
-
-        $this->userScoreService->addScore($user, $badge->score);
     }
 
     public function awardMonthlyShoppingBadge(User $user)
@@ -181,9 +177,9 @@ class BadgeService implements BadgeServiceInterface
 
         if ($activeMonthsCount > 0 && !$user->badges()->where('name', 'Monthly Shopper')->exists()) {
             $this->assignBadge($user, 'Monthly Shopper');
+
         }
 
-        $this->userScoreService->addScore($user, $badge->score);
     }
 
     public function assignBadge(User $user, string $badgeName)
@@ -191,6 +187,8 @@ class BadgeService implements BadgeServiceInterface
         $badge = Badge::where('name', $badgeName)->first();
 
         $user->badges()->attach($badge, ['id' => Uuid::uuid(), 'awarded_at' => now()]);
+        
+        $this->userScoreService->addScore($user, $badge->score);
 
         broadcast(new ObtainBadge($user, $badge, $this->notificationService));
 
@@ -211,7 +209,6 @@ class BadgeService implements BadgeServiceInterface
         }
 
 
-        $this->userScoreService->addScore($user, $badge->score);
 
     }
 
@@ -225,8 +222,6 @@ class BadgeService implements BadgeServiceInterface
             $this->assignBadge($user, 'Quiz Novice');
         }
 
-
-        $this->userScoreService->addScore($user, $badge->score);
 
     }
 
@@ -246,8 +241,6 @@ class BadgeService implements BadgeServiceInterface
         }
 
 
-        $this->userScoreService->addScore($user, $badge->score);
-
     }
 
     public function awardQuizPerfectScore(User $user)
@@ -265,10 +258,31 @@ class BadgeService implements BadgeServiceInterface
         }
 
 
-        $this->userScoreService->addScore($user, $badge->score);
+    }
+    public function awardFirstEventParticipationBadge(User $user)
+    {
+        $badge = Badge::where('name', 'First Event Participation')->first();
 
+        $confirmedParticipationCount = $user->participants()->where('confirmed', true)->count();
 
+        if ($confirmedParticipationCount === 1 && !$user->badges()->where('name', 'First Event Participation')->exists()) {
+            $this->assignBadge($user, 'First Event Participation');
+        }
     }
 
+    public function awardThreeEventsParticipationBadge(User $user)
+    {
+        $badge = Badge::where('name', 'Three Events Participation')->first();
+
+        // Obține numărul de participări confirmate ale utilizatorului
+        $confirmedParticipationCount = $user->participants()->where('confirmed', true)->count();
+
+        // Verifică dacă utilizatorul are exact 3 participări confirmate și nu are deja insigna de "Three Events Participation"
+        if ($confirmedParticipationCount === 3 && !$user->badges()->where('name', 'Three Events Participation')->exists()) {
+            $this->assignBadge($user, 'Three Events Participation');
+        }
+   
+
+    }
 
 }

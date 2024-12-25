@@ -4,41 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Participant;
+use App\Services\UserScoreService;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ParticipantController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected $userScoreService;
+    public function __construct(UserScoreService $userScoreService)
     {
-        //
+        $this->userScoreService = $userScoreService;
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request, $eventId)
     {
         $event = Event::findOrFail($eventId);
 
         $participant = new Participant();
-        $participant->id= Uuid::uuid();
+        $participant->id = Uuid::uuid();
         $participant->event_id = $event->id;
         $participant->user_id = Auth::id();
-        $participant->confirmed = false; 
+        $participant->confirmed = false;
         $participant->save();
+        
+        $this->userScoreService->addScore($participant->user, 10);
 
         return redirect()->back();
 
