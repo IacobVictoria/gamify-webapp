@@ -6,11 +6,19 @@ use App\Models\Permission;
 use App\Models\Product;
 use App\Models\QrCodeScan;
 use App\Models\Role;
+use App\Models\Survey;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardService
 {
+    protected $npsService;
+
+    public function __construct(NpsService $npsService)
+    {
+        $this->npsService = $npsService;
+    }
+
     public function getUserDashboardData()
     {
         $user = Auth::user();
@@ -73,6 +81,11 @@ class DashboardService
 
     public function getAdminDashboardData()
     {
+        $survey = Survey::where('is_published', true)->first();
+
+        // Verifică dacă există un survey publicat
+        $nps = $survey ? $this->npsService->calculateNps($survey->id) : null;
+
         return [
             'accounts' => User::orderBy('created_at', 'desc')->take(5)->get(),
             'accountsNumber' => User::all()->count(),
@@ -84,6 +97,7 @@ class DashboardService
             'productsNumber' => Product::all()->count(),
             'badges' => Badge::all(),
             'badgesNumber' => Badge::all()->count(),
+            'nps' => $nps, 
         ];
     }
 }

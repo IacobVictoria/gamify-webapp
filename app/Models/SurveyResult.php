@@ -11,10 +11,8 @@ class SurveyResult extends Model
 
     protected $fillable = [
         'id',
-        'question_id',
-        'choice_id',
-        'scale',
-        'answer',
+        'survey_id',
+        'responses',
     ];
   
     protected $table = 'survey_results';
@@ -24,14 +22,4 @@ class SurveyResult extends Model
     protected $keyType = 'string';
 
     public $incrementing = false;
-
-    public function question()
-    {
-        return $this->belongsTo(SurveyQuestion::class);
-    }
-
-    public function choice()
-    {
-        return $this->belongsTo(SurveyChoice::class);
-    }
 }

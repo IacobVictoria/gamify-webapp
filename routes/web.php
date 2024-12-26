@@ -19,6 +19,7 @@ use App\Http\Controllers\ReviewCommentLikeController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReviewLikeController;
 use App\Http\Controllers\ReviewMediaController;
+use App\Http\Controllers\UserSurveyController;
 use App\Http\Controllers\UserWishlistController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\WhatsAppController;
@@ -85,6 +86,11 @@ Route::prefix('events')->group(function () {
     Route::get('/', [EventController::class, 'index'])->name('events.index');
     Route::get('/{id}', [EventController::class, 'show'])->name('event.show');
     Route::post('/{eventId}/participant/store', [ParticipantController::class, 'store'])->name('event.participant.store');
+});
+
+Route::prefix('nps')->group(function () {
+    Route::get('/form', [UserSurveyController::class, 'index'])->name('nps.form.index');
+    Route::post('/form/store', [UserSurveyController::class, 'store'])->name('nps.form.store');
 });
 Broadcast::routes(['middleware' => ['web', 'auth']]);
 
