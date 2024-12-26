@@ -25,7 +25,7 @@ export default {
     components: {
         GenericCreateForm,
         Head,
-        AuthenticatedLayout
+        AuthenticatedLayout,
 
     },
     props: {

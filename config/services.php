@@ -40,4 +40,8 @@ return [
         'whatsapp_number' => env('TWILIO_WHATSAPP_NUMBER'),
     ],
 
+    'discord' => [
+        'webhook_url' => env('DISCORD_WEBHOOK_URL'),
+    ],
+
 ];

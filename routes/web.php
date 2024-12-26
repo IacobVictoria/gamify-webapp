@@ -3,6 +3,7 @@
 use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ExportDataController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\OpenAiController;
@@ -27,6 +28,8 @@ use Inertia\Inertia;
 
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
+Route::post('/feedback', [FeedbackController::class, 'sendFeedback']);
+Route::get('/feedback/get', [FeedbackController::class, 'index']);
 
 Route::group(['prefix' => 'products'], function () {
     Route::get('/', [ProductController::class, 'index'])->name('products.index');
@@ -78,10 +81,10 @@ Route::prefix('comparison')->group(function () {
 //Route::post('/send-whatsapp', [WhatsAppController::class, 'sendWhatsAppMessage'])->name('web.send-whatsapp');
 Route::post('/send-promotion', [WhatsappController::class, 'sendPromotion']);
 
-Route::prefix('events')->group(function(){
-    Route::get('/',[EventController::class,'index'])->name('events.index');
+Route::prefix('events')->group(function () {
+    Route::get('/', [EventController::class, 'index'])->name('events.index');
     Route::get('/{id}', [EventController::class, 'show'])->name('event.show');
-    Route::post('/{eventId}/participant/store',[ParticipantController::class,'store'])->name('event.participant.store');
+    Route::post('/{eventId}/participant/store', [ParticipantController::class, 'store'])->name('event.participant.store');
 });
 Broadcast::routes(['middleware' => ['web', 'auth']]);
 

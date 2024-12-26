@@ -192,6 +192,7 @@
                         </dl>
                     </div>
                 </div>
+                <NpsPopUp />
             </main>
         </Layout>
     </div>
@@ -201,6 +202,7 @@
 import Layout from '../Layouts/Layout.vue'
 import QrScannerProduct from './QrCodes/QrScannerProduct.vue';
 import EventDiscountBanner from '@/Components/EventDiscountBanner.vue';
+import NpsPopUp from './NPS/NpsPopUp.vue';
 
 export default {
     name: 'Landing',
@@ -208,7 +210,8 @@ export default {
     components: {
         Layout,
         EventDiscountBanner,
-        QrScannerProduct
+        QrScannerProduct,
+        NpsPopUp
     },
     props: {
         activeDiscounts: Array

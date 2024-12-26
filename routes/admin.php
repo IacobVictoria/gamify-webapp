@@ -23,6 +23,7 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\SurveyController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('dashboard')->group(function () {
@@ -151,4 +152,10 @@ Route::prefix('reports')->group(function () {
     Route::get('/qr-codes', [ReportController::class, 'showQRCodeReports'])->name('reports.showQRCodeReports');
     Route::get('/participants-list', [ReportController::class, 'showParticipantsList'])->name('reports.showParticipantsList');
     Route::get('/invoices-list', [ReportController::class, 'showSupplierInvoicesList'])->name('reports.showSupplierInvoicesList');
+});
+
+Route::prefix('nps')->group(function () {
+    Route::get('/create', [SurveyController::class, 'index'])->name('nps.survey.create');
+    Route::post('/questions/store', [SurveyController::class, 'storeQuestion'])->name('nps.questions.store');
+    Route::post('/survey/store',[SurveyController::class,'storeSurvey'])->name('nps.survey.store');
 });
