@@ -85,6 +85,7 @@ class DashboardService
 
         // Verifică dacă există un survey publicat
         $nps = $survey ? $this->npsService->calculateNps($survey->id) : null;
+        $monthlyNpsData = $survey ? $this->npsService->calculateMonthlyNps($survey->id) : [];
 
         return [
             'accounts' => User::orderBy('created_at', 'desc')->take(5)->get(),
@@ -98,6 +99,7 @@ class DashboardService
             'badges' => Badge::all(),
             'badgesNumber' => Badge::all()->count(),
             'nps' => $nps, 
+            'monthlyNpsData' => $monthlyNpsData,
         ];
     }
 }

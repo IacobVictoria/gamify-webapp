@@ -1,6 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
+import NpsChart from './NPS_Admin/NpsChart.vue';
 </script>
 
 <template>
@@ -30,6 +31,7 @@ import { Head } from '@inertiajs/vue3';
             </div>
             <!-- Alte carduri -->
           </div>
+          <NpsChart :monthly-nps-data="monthlyNpsData"></NpsChart>
 
           <div class="flex flex-col gap-5 w-full max-w-7xl mx-auto">
             <div class="w-full">
@@ -207,8 +209,12 @@ export default {
     badgesNumber: Number,
     badges: Array,
     nps: Number,
+    monthlyNpsData: Array
 
 
+  },
+  components: {
+    NpsChart
   }
 }
 

@@ -18,6 +18,7 @@ use App\Http\Controllers\AdminSupplierController;
 use App\Http\Controllers\AdminSupplierOrderController;
 use App\Http\Controllers\AdminSupplierProductController;
 use App\Http\Controllers\AdminUserQuizRemarkController;
+use App\Http\Controllers\ChartController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\QrCodeController;
@@ -157,5 +158,8 @@ Route::prefix('reports')->group(function () {
 Route::prefix('nps')->group(function () {
     Route::get('/create', [SurveyController::class, 'index'])->name('nps.survey.create');
     Route::post('/questions/store', [SurveyController::class, 'storeQuestion'])->name('nps.questions.store');
-    Route::post('/survey/store',[SurveyController::class,'storeSurvey'])->name('nps.survey.store');
+    Route::post('/survey/store', [SurveyController::class, 'storeSurvey'])->name('nps.survey.store');
+});
+Route::prefix('chart')->group(function () {
+    Route::get('/nps/monthly', [ChartController::class, 'getMonthlyNps'])->name('chart.nps.monthly');
 });
