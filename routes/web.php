@@ -3,7 +3,6 @@
 use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ExportDataController;
-use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\OpenAiController;
@@ -29,8 +28,7 @@ use Inertia\Inertia;
 
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
-Route::post('/feedback', [FeedbackController::class, 'sendFeedback']);
-Route::get('/feedback/get', [FeedbackController::class, 'index']);
+
 
 Route::group(['prefix' => 'products'], function () {
     Route::get('/', [ProductController::class, 'index'])->name('products.index');
@@ -90,7 +88,7 @@ Route::prefix('events')->group(function () {
 
 Route::prefix('nps')->group(function () {
     Route::get('/form', [UserSurveyController::class, 'index'])->name('nps.form.index');
-    Route::post('/form/store', [UserSurveyController::class, 'store'])->name('nps.form.store');
+    Route::post('/form/store', [UserSurveyController::class, 'storeResults'])->name('nps.form.storeResults');
 });
 Broadcast::routes(['middleware' => ['web', 'auth']]);
 

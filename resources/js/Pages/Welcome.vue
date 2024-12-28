@@ -8,7 +8,7 @@
                             <div class="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
 
                                 <div class="relative w-full max-w-xl lg:shrink-0 xl:max-w-2xl">
-                                    <template v-if="activeDiscounts">
+                                    <template v-if="activeDiscounts.length>0">
                                         <div>
                                             <EventDiscountBanner :activeDiscounts="activeDiscounts" />
                                         </div>
