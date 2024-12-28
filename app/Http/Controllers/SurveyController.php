@@ -13,6 +13,52 @@ class SurveyController extends Controller
 {
     public function index()
     {
+        $surveys = Survey::with('questions')->get();
+
+        return Inertia::render('Admin/NPS_Admin/Index', [
+            'surveys' => $surveys,
+        ]);
+    }
+    public function showSurvey($id)
+    {
+        $survey = Survey::with('questions.choices')->findOrFail($id);
+
+        return Inertia::render('Admin/NPS_Admin/SurveyDetail', [
+            'survey' => $survey,
+        ]);
+    }
+    public function deleteSurvey($id)
+    {
+        $survey = Survey::findOrFail($id);
+        $survey->delete();
+
+        return response()->json(['message' => 'Survey deleted successfully']);
+    }
+    public function updateSurvey(Request $request, $surveyId)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'is_published' => 'boolean',
+        ]);
+
+        $survey = Survey::findOrFail($surveyId);
+
+        $survey->title = $validated['title'];
+        $survey->description = $validated['description'] ?? $survey->description;
+        $survey->is_published = $validated['is_published'] ?? false;
+
+        $survey->save();
+
+        return response()->json([
+            'message' => 'Survey updated successfully!',
+            'survey' => $survey,
+        ]);
+    }
+
+
+    public function createSurvey()
+    {
         $questions = SurveyQuestion::with('choices')
             ->whereNull('survey_id')
             ->get();
@@ -115,9 +161,9 @@ class SurveyController extends Controller
     public function deleteQuestion($questionId)
     {
         $question = SurveyQuestion::findOrFail($questionId);
-        
+
         $question->delete();
-    
+
         return response()->json(['message' => 'Question deleted successfully!']);
     }
 

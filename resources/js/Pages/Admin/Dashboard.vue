@@ -21,6 +21,7 @@ import NpsChart from './NPS_Admin/NpsChart.vue';
             <div class="flex flex-col">
               <inertia-link :href="route('admin.calendar.index')">Check your calendar</inertia-link>
               <inertia-link :href="route('admin.reports.index')">Check your reports</inertia-link>
+              <inertia-link :href="route('admin.nps.survey.index')">Manage NPS</inertia-link>
             </div>
           </div>
           <div class="flex flex-col md:flex-row gap-5">

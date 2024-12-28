@@ -156,11 +156,15 @@ Route::prefix('reports')->group(function () {
 });
 
 Route::prefix('nps')->group(function () {
-    Route::get('/create', [SurveyController::class, 'index'])->name('nps.survey.create');
+    Route::get('/index', [SurveyController::class, 'index'])->name('nps.survey.index');
+    Route::get('/create', [SurveyController::class, 'createSurvey'])->name('nps.survey.create');
     Route::post('/questions/store', [SurveyController::class, 'storeQuestion'])->name('nps.questions.store');
     Route::post('/survey/store', [SurveyController::class, 'storeSurvey'])->name('nps.survey.store');
     Route::put('/questions/update/{questionId}', [SurveyController::class, 'updateQuestion'])->name('nps.question.update');
     Route::delete('/questions/delete/{questionId}', [SurveyController::class, 'deleteQuestion'])->name('nps.question.delete');
+    Route::get('/show/survey/{surveyId}', [SurveyController::class, 'showSurvey'])->name('nps.show.survey');
+    Route::delete('/delete/{surveyId}', [SurveyController::class, 'deleteSurvey'])->name('nps.delete.survey');
+    Route::put('/surveys/update/{surveyId}', [SurveyController::class, 'updateSurvey'])->name('nps.update.survey');
 
 });
 Route::prefix('chart')->group(function () {
