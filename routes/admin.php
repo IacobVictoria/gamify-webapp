@@ -159,6 +159,9 @@ Route::prefix('nps')->group(function () {
     Route::get('/create', [SurveyController::class, 'index'])->name('nps.survey.create');
     Route::post('/questions/store', [SurveyController::class, 'storeQuestion'])->name('nps.questions.store');
     Route::post('/survey/store', [SurveyController::class, 'storeSurvey'])->name('nps.survey.store');
+    Route::put('/questions/update/{questionId}', [SurveyController::class, 'updateQuestion'])->name('nps.question.update');
+    Route::delete('/questions/delete/{questionId}', [SurveyController::class, 'deleteQuestion'])->name('nps.question.delete');
+
 });
 Route::prefix('chart')->group(function () {
     Route::get('/nps/monthly', [ChartController::class, 'getMonthlyNps'])->name('chart.nps.monthly');

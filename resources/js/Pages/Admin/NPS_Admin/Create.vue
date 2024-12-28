@@ -13,6 +13,14 @@
           draggable="true" @dragstart="startDrag(question)">
           <p class="font-medium">{{ question.text }}</p>
           <p class="text-sm text-gray-500">{{ question.type }}</p>
+          <div class="flex space-x-2 mt-2">
+            <button @click="openQuestionEditor(question)" class="bg-yellow-500 text-white py-1 px-3 rounded text-sm">
+              Edit
+            </button>
+            <button @click="deleteQuestion(question.id)" class="bg-red-500 text-white py-1 px-3 rounded text-sm">
+              Delete
+            </button>
+          </div>
 
           <button @click="viewChoices(question)" v-if="question.type === 'multiple_choice'"
             class="text-blue-500 text-sm mt-2">
@@ -61,6 +69,8 @@
     </div>
 
     <QuestionCreator v-if="showQuestionCreator" @close="showQuestionCreator = false" @questionAdded="addQuestion" />
+    <QuestionEdit v-if="showQuestionEditor" :questionData="editingQuestion" @close="closeQuestionEditor"
+      @questionUpdated="updateQuestion" />
   </AuthenticatedLayout>
 </template>
 
@@ -68,6 +78,7 @@
 import axios from "axios";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import QuestionCreator from "./QuestionCreator.vue";
+import QuestionEdit from "./QuestionEdit.vue";
 
 export default {
   props: {
@@ -85,12 +96,15 @@ export default {
       },
       showQuestionCreator: false,
       draggedQuestion: null,
+      showQuestionEditor: false,
+      editingQuestion: null,
       activeQuestion: null,  // Variabilă pentru a ține evidența întrebării curente pentru care afișezi alegerile
     };
   },
   components: {
     AuthenticatedLayout,
     QuestionCreator,
+    QuestionEdit
   },
   methods: {
     startDrag(question) {
@@ -134,6 +148,28 @@ export default {
     },
     viewChoices(question) {
       this.activeQuestion = this.activeQuestion && this.activeQuestion.id === question.id ? null : question;
+    },
+    openQuestionEditor(question) {
+      this.editingQuestion = { ...question };
+      this.showQuestionEditor = true;
+      console.log(this.editingQuestion.choices);
+    },
+    closeQuestionEditor() {
+      this.showQuestionEditor = false;
+      this.editingQuestion = null;
+    },
+    async deleteQuestion(questionId) {
+      if (confirm("Are you sure you want to delete this question?")) {
+        axios
+            .delete(`/admin/nps/questions/delete/${questionId}`)
+            .then((response) => {
+                alert(response.data.message);
+            })
+            .catch((error) => {
+                console.error("Error deleting question:", error);
+                alert("Failed to delete question.");
+            });
+    }
     },
   },
 };
