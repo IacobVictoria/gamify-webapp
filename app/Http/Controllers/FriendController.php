@@ -41,9 +41,9 @@ class FriendController extends Controller
 
     public function searchUsers(Request $request)
     {
-        $email = $request->input('email');      
+        $email = $request->input('email');
         $user = Auth::user();
-         // id  friends
+        // id  friends
         $friendIds = Friend::where('user_id', $user->id)
             ->orWhere('friend_id', $user->id)
             ->get()
@@ -51,7 +51,7 @@ class FriendController extends Controller
                 // returnează ID-ul prietenului în funcție de dacă 'user_id' sau 'friend_id' este userul logat
                 return $friend->user_id == $user->id ? $friend->friend_id : $friend->user_id;
             })
-            ->unique() 
+            ->unique()
             ->toArray();
 
         $users = User::where('email', 'like', "%{$email}%")
@@ -61,6 +61,33 @@ class FriendController extends Controller
 
         return response()->json($users);
     }
+
+    public function searchFriendsHangMan(Request $request)
+    {
+        $search = $request->input('email', '');
+
+        if (empty($search)) {
+            return response()->json([]);
+        }
+
+        $user = Auth::user();
+        
+        $friends = $user->allFriendsQuery()
+            ->where(function ($query) use ($search) {
+                $query->whereHas('user', function ($q) use ($search) {
+                    $q->where('email', 'like', '%' . $search . '%');
+                })->orWhereHas('friend', function ($q) use ($search) {
+                    $q->where('email', 'like', '%' . $search . '%');
+                });
+            })
+            ->get()
+            ->map(function ($friend) use ($user) {
+                return $friend->user_id === $user->id ? $friend->friend : $friend->user;
+            });
+
+        return response()->json($friends);
+    }
+
 
 
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\HangmanSession;
 use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 
@@ -76,4 +77,13 @@ Broadcast::channel('user_restockProduct.{id}', function ($user, $id) {
 Broadcast::channel('user_reminder.{id}', function ($user, $id) {
 
     return (int) $user->id === (int) $id;
+});
+
+Broadcast::channel('hangman-session.{id}', function ($user, $id) {
+    $session = HangmanSession::find($id);
+    if (!$session) {
+        return false; 
+    }
+    // Permite accesul doar dacă utilizatorul este creator sau oponent
+    return $user->id === $session->creator_id || $user->id === $session->opponent_id;
 });

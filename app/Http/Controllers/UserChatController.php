@@ -102,7 +102,7 @@ class UserChatController extends Controller
                 $query->where('sender_id', $friend->id)
                     ->where('receiver_id', $currentUser->id);
             })
-            ->orderBy('created_at', 'asc')
+            ->orderBy('created_at', 'desc')
             ->offset($offset) // Offset-ul pentru paginare
             ->limit($limit)
             ->get()

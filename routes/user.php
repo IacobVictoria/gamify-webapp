@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\FriendController;
+use App\Http\Controllers\HangmanGameController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\NutritionAndWellnessController;
@@ -99,4 +100,15 @@ Route::prefix('calendar')->group(function () {
 
 Route::prefix('scanEvents')->group(function () {
     Route::post('/', [QrScannerController::class, 'scanEvent'])->name('scanEvent.post');
+});
+
+Route::prefix('hangmanGame')->group(function () {
+    Route::get('/', [HangmanGameController::class, 'index'])->name('hangman.index');
+    Route::get('/search_friends', [FriendController::class, 'searchFriendsHangMan'])->name('hangman.searchFriends');
+    Route::post('/generate_session', [HangmanGameController::class, 'generateGameSession'])->name('generateGameSession');
+    Route::get('/game/{sessionId}', [HangmanGameController::class, 'show'])->name('hangman.game.show');
+    Route::post('/{sessionId}/join', [HangmanGameController::class, 'joinSession'])->name('hangman.game.join');
+    Route::post('/{sessionId}/start', [HangmanGameController::class, 'startGame'])->name('hangman.game.start');
+    Route::post('/{sessionId}/submitWord', [HangmanGameController::class, 'submitWord'])->name('hangman.game.submitWord');
+
 });

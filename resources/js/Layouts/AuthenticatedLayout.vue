@@ -66,6 +66,10 @@ import Icon from '@/Pages/Admin/Notifications/Icon.vue';
                                         :active="route().current('user.calendar.index')">
                                         Calendar
                                     </NavLink>
+                                    <NavLink :href="route('user.hangman.index')"
+                                        :active="route().current('user.hangman.index')">
+                                        Hangman
+                                    </NavLink>
                                 </template>
                                 <template v-if="authUserHasRole('Admin')">
                                     <NavLink :href="route('admin.dashboard')"

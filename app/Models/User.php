@@ -148,5 +148,25 @@ class User extends Authenticatable
     {
         return $this->hasMany(QuizLeaderboardHistory::class);
     }
+    public function allFriends()
+    {
+        return Friend::where('user_id', $this->id)
+            ->orWhere('friend_id', $this->id)
+            ->with('user', 'friend')
+            ->get()
+            ->map(function ($friend) {
+                return $friend->user_id === $this->id ? $friend->friend : $friend->user;
+            });
+    }
+    public function allFriendsQuery()
+{
+    return Friend::query()
+        ->where(function ($query) {
+            $query->where('user_id', $this->id)
+                ->orWhere('friend_id', $this->id);
+        })
+        ->with(['user', 'friend']);
+}
+
 
 }
