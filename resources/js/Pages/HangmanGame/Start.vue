@@ -7,7 +7,7 @@
                 <p><strong>Opponent:</strong> {{ opponentName }}</p>
                 <p>
                     <strong>Current Turn:</strong>
-                    <span v-if="turn === creatorId">Your turn</span>
+                    <span v-if="$page.props.user.id === turnData">Your turn</span>
                     <span v-else>Opponent's turn</span>
                 </p>
                 <button v-if="$page.props.user.id === creatorId" @click="startGame" class="btn btn-primary mt-3">
@@ -18,7 +18,11 @@
                 <h3>Waiting for Opponent...</h3>
                 <p>Session ID: {{ sessionId }}</p>
             </div>
-            <div v-if="gameStart"></div>
+            <div v-if="gameStart">
+                <GameBoard :isMyTurn="$page.props.user.id === turnData" :hint="currentHint" :word="currentWord"
+                    :usedLetters="usedLetters" :correctLetters="correctLetters" :wrongLetters="wrongLetters"
+                    :errors="errors" @guess="handleGuess" />
+            </div>
             <div v-if="!bothConnected" class="friend-search mt-5">
                 <h3>Invite a Friend</h3>
                 <input type="text" v-model="search" @input="searchFriends" placeholder="Search friends by email..."
@@ -41,10 +45,12 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import debounce from "lodash/debounce";
 import Swal from "sweetalert2";
+import GameBoard from "./GameBoard.vue";
 
 export default {
     components: {
         AuthenticatedLayout,
+        GameBoard
     },
     props: {
         sessionId: String,
@@ -53,13 +59,24 @@ export default {
     },
     data() {
         return {
+            turnData: this.$props.turn,
             search: "",
             friends: [],
             gameStart: false,
             gameUrl: window.location.href,
             creatorName: null,
             opponentName: null,
-            bothConnected: false, // Starea conexiunii ambilor jucători
+            bothConnected: false,
+            creatorWord: "",
+            creatorHint: "",
+            opponentWord: "",
+            opponentHint: "",
+            currentWord: "",
+            currentHint: "",
+            usedLetters: [],
+            correctLetters: [],
+            wrongLetters: [],
+            errors: 0,
         };
     },
     methods: {
@@ -110,41 +127,76 @@ export default {
             }
         },
         showEnterWordPopup() {
-        Swal.fire({
-            title: "Enter your word and hint",
-            html: `
+            Swal.fire({
+                title: "Enter your word and hint",
+                html: `
                 <input id="swal-input-word" class="swal2-input" placeholder="Enter a word">
                 <input id="swal-input-hint" class="swal2-input" placeholder="Enter a hint">
             `,
-            showCancelButton: false,
-            confirmButtonText: "Submit",
-            preConfirm: () => {
-                const word = document.getElementById("swal-input-word").value;
-                const hint = document.getElementById("swal-input-hint").value;
+                showCancelButton: false,
+                confirmButtonText: "Submit",
+                preConfirm: () => {
+                    const word = document.getElementById("swal-input-word").value;
+                    const hint = document.getElementById("swal-input-hint").value;
 
-                if (!word || !hint) {
-                    Swal.showValidationMessage("Please enter both a word and a hint!");
+                    if (!word || !hint) {
+                        Swal.showValidationMessage("Please enter both a word and a hint!");
+                    }
+                    return { word, hint };
+                },
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submitWord(result.value.word, result.value.hint);
                 }
-                return { word, hint };
-            },
-        }).then((result) => {
-            if (result.isConfirmed) {
-                this.submitWord(result.value.word, result.value.hint);
-            }
-        });
-    },
-    async submitWord(word, hint) {
-        try {
-            await axios.post(`/user/hangmanGame/${this.sessionId}/submitWord`, {
-                word,
-                hint,
             });
-            alert("Word and hint submitted successfully!");
-        } catch (error) {
-            console.error("Error submitting word and hint:", error);
-            alert("Failed to submit the word and hint.");
-        }
-    },
+        },
+        async submitWord(word, hint) {
+            try {
+                await axios.post(`/user/hangmanGame/${this.sessionId}/submitWord`, {
+                    word,
+                    hint,
+                });
+                alert("Word and hint submitted successfully!");
+            } catch (error) {
+                console.error("Error submitting word and hint:", error);
+                alert("Failed to submit the word and hint.");
+            }
+        },
+        async handleGuess(letter) {
+            try {
+                const response = await axios.post(`/user/hangmanGame/${this.sessionId}/guess`, { letter });
+
+                const { correct, finished, nextTurn } = response.data;
+
+                if (correct) {
+                    this.correctLetters.push(letter);
+                } else {
+                    this.wrongLetters.push(letter);
+                    this.errors++;
+                }
+
+                this.usedLetters.push(letter);
+
+                if (finished) {
+                    this.turnData = nextTurn;
+                    this.errors = 0;
+                    this.correctLetters = [];
+                    this.wrongLetters = [];
+                    this.usedLetters = [];
+                }
+            } catch (error) {
+                console.error("Error handling guess:", error);
+            }
+        },
+        updateCurrentWordAndHint() {
+            if (this.turnData === this.creatorId) {
+                this.currentWord = this.creatorWord;
+                this.currentHint = this.creatorHint;
+            } else {
+                this.currentWord = this.opponentWord;
+                this.currentHint = this.opponentHint;
+            }
+        },
     },
     mounted() {
         this.joinSession();
@@ -159,7 +211,36 @@ export default {
             .listen(".GameStarted", () => {
                 this.showEnterWordPopup();
             });
+        window.Echo.private(`hangman-session.${this.sessionId}`)
+            .listen(".GameReady", (event) => {
+                this.creatorWord = event.wordForCreator;
+                this.creatorHint = event.hintForCreator;
+                this.opponentWord = event.wordForOpponent;
+                this.opponentHint = event.hintForOpponent;
 
+                this.updateCurrentWordAndHint();
+
+                this.gameStart = true;
+            });
+
+        window.Echo.private(`hangman-session.${this.sessionId}`).listen(".GameUpdated", (event) => {
+            this.turnData = event.turn;
+            this.correctLetters = event.correctLetters;
+            this.wrongLetters = event.wrongLetters;
+            this.usedLetters = event.usedLetters;
+
+            if (this.turnData === this.creatorId) {
+                this.errors = event.creatorErrors;
+            } else {
+                this.errors = event.opponentErrors;
+            }
+            this.updateCurrentWordAndHint();
+        });
+        window.Echo.private(`hangman-session.${this.sessionId}`)
+            .listen(".GameEnded", (event) => {
+                alert(event.message); 
+                this.gameStart = false; 
+            });
     }
 };
 </script>

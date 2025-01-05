@@ -110,5 +110,5 @@ Route::prefix('hangmanGame')->group(function () {
     Route::post('/{sessionId}/join', [HangmanGameController::class, 'joinSession'])->name('hangman.game.join');
     Route::post('/{sessionId}/start', [HangmanGameController::class, 'startGame'])->name('hangman.game.start');
     Route::post('/{sessionId}/submitWord', [HangmanGameController::class, 'submitWord'])->name('hangman.game.submitWord');
-
+    Route::post('/{sessionId}/guess', [HangmanGameController::class, 'handleGuess'])->name('hangman.game.handleGuess');
 });
