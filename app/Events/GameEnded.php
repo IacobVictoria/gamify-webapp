@@ -16,10 +16,12 @@ class GameEnded implements ShouldBroadcastNow
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $sessionId;
+    public $scores;
 
-    public function __construct($sessionId)
+    public function __construct($sessionId, $scores)
     {
         $this->sessionId = $sessionId;
+        $this->scores = $scores;
     }
 
     public function broadcastOn()
@@ -34,6 +36,9 @@ class GameEnded implements ShouldBroadcastNow
 
     public function broadcastWith()
     {
-        return ['message' => 'The game has ended!'];
+        return [
+            'message' => 'The game has ended!',
+            'scores' => $this->scores
+        ];
     }
 }

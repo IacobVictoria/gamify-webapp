@@ -1,6 +1,6 @@
 <template>
     <AuthenticatedLayout>
-        <div class="game-session">
+        <div v-if="!gameEnd" class="game-session">
             <h2>Hangman Game Session</h2>
             <div v-if="bothConnected" class="game-info">
                 <p><strong>Creator:</strong> {{ creatorName }}</p>
@@ -39,6 +39,10 @@
                 <p v-else class="text-muted mt-3">No friends found.</p>
             </div>
         </div>
+        <div v-if="gameEnd">
+            <EndGame :scores="scores" />
+        </div>
+
     </AuthenticatedLayout>
 </template>
 <script>
@@ -46,11 +50,13 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import debounce from "lodash/debounce";
 import Swal from "sweetalert2";
 import GameBoard from "./GameBoard.vue";
+import EndGame from "./EndGame.vue";
 
 export default {
     components: {
         AuthenticatedLayout,
-        GameBoard
+        GameBoard,
+        EndGame
     },
     props: {
         sessionId: String,
@@ -63,6 +69,8 @@ export default {
             search: "",
             friends: [],
             gameStart: false,
+            gameEnd: false,
+            scores: null,
             gameUrl: window.location.href,
             creatorName: null,
             opponentName: null,
@@ -248,6 +256,8 @@ export default {
             .listen(".GameEnded", (event) => {
                 alert(event.message);
                 this.gameStart = false;
+                this.gameEnd = true;
+                this.scores = event.scores;
             });
     }
 };
