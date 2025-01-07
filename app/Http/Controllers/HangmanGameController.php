@@ -157,28 +157,41 @@ class HangmanGameController extends Controller
         // Verificăm dacă toate literele au fost ghicite
         $allLettersGuessed = $this->areAllLettersGuessed($currentWord, $guessedLetters);
 
-        if ($allLettersGuessed || $mistakes >= ceil(strlen($currentWord) / 2)) {
+        $finished = $allLettersGuessed || $mistakes >= ceil(strlen($currentWord) / 2);
+
+        if ($finished) {
             $this->handleRoundCompletion($session, $isCreator, $allLettersGuessed);
+
+            // Transmitem evenimentul către clienți cu valori goale
+            broadcast(new GameUpdated(
+                $session->id,
+                $session->turn,
+                [], // Litere corecte goale
+                [], // Litere greșite goale
+                [], // Litere utilizate goale
+                0,  // Erori creator
+                0   // Erori oponent
+            ))->toOthers();
+        } else {
+            // Pregătim literele corecte și greșite pentru jucătorul curent
+            $correctLetters = $this->getCorrectLetters($currentWord, $guessedLetters);
+            $wrongLetters = $this->getWrongLetters($currentWord, $guessedLetters);
+
+            // Transmitem evenimentul către clienți
+            broadcast(new GameUpdated(
+                $session->id,
+                $session->turn,
+                $correctLetters,
+                $wrongLetters,
+                $guessedLetters,
+                $session->mistakes_creator,
+                $session->mistakes_opponent
+            ))->toOthers();
         }
-
-        // Pregătim literele corecte și greșite pentru jucătorul curent
-        $correctLetters = $this->getCorrectLetters($currentWord, $guessedLetters);
-        $wrongLetters = $this->getWrongLetters($currentWord, $guessedLetters);
-
-        // Transmitem evenimentul către clienți
-        broadcast(new GameUpdated(
-            $session->id,
-            $session->turn,
-            $correctLetters,
-            $wrongLetters,
-            $guessedLetters,
-            $session->mistakes_creator,
-            $session->mistakes_opponent
-        ))->toOthers();
 
         return response()->json([
             'correct' => $isCorrect,
-            'finished' => $allLettersGuessed || $mistakes >= ceil(strlen($currentWord) / 2),
+            'finished' => $finished,
             'nextTurn' => $session->turn,
             'errors' => $mistakes,
         ]);
