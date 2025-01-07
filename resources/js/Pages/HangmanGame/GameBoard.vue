@@ -8,14 +8,12 @@
                 {{ char }}
             </span>
         </div>
-
         <div class="keyboard">
-            <button 
-                v-for="letter in alphabet" 
-                :key="letter" 
-                :disabled="!isMyTurn || usedLetters.includes(letter)" 
-                @click="guessLetter(letter)" 
-                :class="{ correct: correctLetters.includes(letter), wrong: wrongLetters.includes(letter) }">
+            <button v-for="letter in alphabet" :key="letter" :disabled="!isMyTurn || usedLetters.includes(letter)"
+                :class="{
+                    correct: correctLetters.includes(letter),
+                    wrong: displayedWrongLetters.includes(letter),
+                }" @click="guessLetter(letter)">
                 {{ letter }}
             </button>
         </div>
@@ -42,10 +40,15 @@ export default {
         alphabet() {
             return "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
         },
+        displayedWrongLetters() {
+            return this.wrongLetters;
+        },
+
     },
     methods: {
         guessLetter(letter) {
-            if (this.isMyTurn && !this.usedLetters.includes(letter)) {
+            if (!this.usedLetters.includes(letter)) {
+                this.usedLetters.push(letter);
                 this.$emit("guess", letter); // Emite litera ghicită către componenta părinte
             }
         },

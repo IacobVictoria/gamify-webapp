@@ -169,13 +169,13 @@ export default {
                 const { correct, finished, nextTurn } = response.data;
 
                 if (correct) {
-                    this.correctLetters.push(letter);
+                    this.correctLetters.push(letter); // Adaugă litera corectă
                 } else {
-                    this.wrongLetters.push(letter);
-                    this.errors++;
+                    this.wrongLetters.push(letter); // Adaugă litera greșită
                 }
 
-                this.usedLetters.push(letter);
+                this.errors = response.data.errors; // Actualizează numărul de greșeli
+                this.usedLetters.push(letter); // Adaugă litera la utilizate
 
                 if (finished) {
                     this.turnData = nextTurn;
@@ -218,6 +218,11 @@ export default {
                 this.opponentWord = event.wordForOpponent;
                 this.opponentHint = event.hintForOpponent;
 
+                this.correctLetters = [];
+                this.wrongLetters = [];
+                this.usedLetters = [];
+                this.errors = 0;
+
                 this.updateCurrentWordAndHint();
 
                 this.gameStart = true;
@@ -225,21 +230,24 @@ export default {
 
         window.Echo.private(`hangman-session.${this.sessionId}`).listen(".GameUpdated", (event) => {
             this.turnData = event.turn;
-            this.correctLetters = event.correctLetters;
-            this.wrongLetters = event.wrongLetters;
-            this.usedLetters = event.usedLetters;
+            this.correctLetters = event.correctLetters || [];
+            this.wrongLetters = event.wrongLetters || [];
+            this.usedLetters = event.usedLetters || [];
+            this.errors = this.turnData === this.creatorId ? event.creatorErrors : event.opponentErrors;
 
-            if (this.turnData === this.creatorId) {
-                this.errors = event.creatorErrors;
-            } else {
-                this.errors = event.opponentErrors;
+
+            if (event.correctLetters.length === 0 && event.wrongLetters.length === 0) {
+                this.correctLetters = [];
+                this.wrongLetters = [];
+                this.usedLetters = [];
+                this.errors = 0;
             }
             this.updateCurrentWordAndHint();
         });
         window.Echo.private(`hangman-session.${this.sessionId}`)
             .listen(".GameEnded", (event) => {
-                alert(event.message); 
-                this.gameStart = false; 
+                alert(event.message);
+                this.gameStart = false;
             });
     }
 };

@@ -123,127 +123,140 @@ class HangmanGameController extends Controller
         $session = HangmanSession::findOrFail($sessionId);
         $user = Auth::user();
 
-        $letter = $request->input('letter');
+        $letter = strtoupper($request->input('letter'));
         $isCorrect = false;
 
-        $currentWord = ($user->id === $session->creator_id)
-            ? $session->word_for_creator
-            : $session->word_for_opponent;
+        // Determinăm dacă jucătorul curent este creator sau oponent
+        $isCreator = $user->id === $session->creator_id;
+        $currentWord = strtoupper($isCreator ? $session->word_for_creator : $session->word_for_opponent);
 
-        $guessedLettersKey = ($user->id === $session->creator_id)
-            ? 'guessed_letters_creator'
-            : 'guessed_letters_opponent';
-
-        $mistakesKey = ($user->id === $session->creator_id)
-            ? 'mistakes_creator'
-            : 'mistakes_opponent';
+        $guessedLettersKey = $isCreator ? 'guessed_letters_creator' : 'guessed_letters_opponent';
+        $mistakesKey = $isCreator ? 'mistakes_creator' : 'mistakes_opponent';
 
         $guessedLetters = json_decode($session->$guessedLettersKey, true) ?? [];
         $mistakes = $session->$mistakesKey;
 
         if (strpos($currentWord, $letter) !== false) {
             $isCorrect = true;
-            $guessedLetters[] = $letter;
-
-            $allLettersGuessed = true;
-            foreach (str_split($currentWord) as $char) {
-                if (!in_array($char, $guessedLetters)) {
-                    $allLettersGuessed = false;
-                    break;
-                }
-            }
-
-            if ($allLettersGuessed) {
-                $session->$guessedLettersKey = json_encode($guessedLetters);
-                $session->save();
-
-                if ($session->turn === $session->creator_id) {
-                    $session->completed = true; // Marchează sesiunea ca finalizată
-                    $session->save();
-                    broadcast(new GameEnded($session->id));
-                    return response()->json(['message' => 'Game Ended']);
-                }
-
-                broadcast(new GameUpdated(
-                    $session->id,
-                    $session->turn,
-                    json_decode($session->guessed_letters_creator, true) ?? [],
-                    json_decode($session->guessed_letters_opponent, true) ?? [],
-                    array_unique(array_merge(
-                        json_decode($session->guessed_letters_creator, true) ?? [],
-                        json_decode($session->guessed_letters_opponent, true) ?? []
-                    )),
-                    $session->mistakes_creator,
-                    $session->mistakes_opponents
-                ))->toOthers();
-
-                return response()->json([
-                    'correct' => $isCorrect,
-                    'finished' => true,
-                    'nextTurn' => $session->turn,
-                ]);
+            if (!in_array($letter, $guessedLetters)) {
+                $guessedLetters[] = $letter; // Adăugăm doar literele corecte
             }
         } else {
-            $mistakes++;
-            $session->$mistakesKey = $mistakes;
-
-            if ($mistakes >= ceil(strlen($currentWord) / 2)) {
-                $session->turn = ($user->id === $session->creator_id)
-                    ? $session->opponent_id
-                    : $session->creator_id;
-
-                $session->save();
-
-                if ($session->turn === $session->creator_id) {
-                    $session->completed = true; // Marchează sesiunea ca finalizată
-                    $session->save();
-                    broadcast(new GameEnded($session->id));
-                    return response()->json(['message' => 'Game Ended']);
-                }
-
-
-                broadcast(new GameUpdated(
-                    $session->id,
-                    $session->turn,
-                    json_decode($session->guessed_letters_creator, true) ?? [],
-                    json_decode($session->guessed_letters_opponent, true) ?? [],
-                    array_unique(array_merge(
-                        json_decode($session->guessed_letters_creator, true) ?? [],
-                        json_decode($session->guessed_letters_opponent, true) ?? []
-                    )),
-                    $session->mistakes_creator,
-                    $session->mistakes_opponent
-                ))->toOthers();
-
-                return response()->json([
-                    'correct' => $isCorrect,
-                    'finished' => true,
-                    'nextTurn' => $session->turn,
-                ]);
+            if (!in_array($letter, $guessedLetters)) {
+                $guessedLetters[] = $letter; // Adăugăm literele greșite
             }
+            $mistakes++;
         }
 
+        $guessedLetters = array_unique($guessedLetters);
+
         $session->$guessedLettersKey = json_encode($guessedLetters);
+        $session->$mistakesKey = $mistakes;
         $session->save();
 
+        // Verificăm dacă toate literele au fost ghicite
+        $allLettersGuessed = $this->areAllLettersGuessed($currentWord, $guessedLetters);
+
+        if ($allLettersGuessed || $mistakes >= ceil(strlen($currentWord) / 2)) {
+            $this->handleRoundCompletion($session, $isCreator, $allLettersGuessed);
+        }
+
+        // Pregătim literele corecte și greșite pentru jucătorul curent
+        $correctLetters = $this->getCorrectLetters($currentWord, $guessedLetters);
+        $wrongLetters = $this->getWrongLetters($currentWord, $guessedLetters);
+
+        // Transmitem evenimentul către clienți
         broadcast(new GameUpdated(
             $session->id,
             $session->turn,
-            json_decode($session->guessed_letters_creator, true) ?? [],
-            json_decode($session->guessed_letters_opponent, true) ?? [],
-            array_unique(array_merge(
-                json_decode($session->guessed_letters_creator, true) ?? [],
-                json_decode($session->guessed_letters_opponent, true) ?? []
-            )),
+            $correctLetters,
+            $wrongLetters,
+            $guessedLetters,
             $session->mistakes_creator,
             $session->mistakes_opponent
         ))->toOthers();
 
         return response()->json([
             'correct' => $isCorrect,
-            'finished' => false,
+            'finished' => $allLettersGuessed || $mistakes >= ceil(strlen($currentWord) / 2),
             'nextTurn' => $session->turn,
+            'errors' => $mistakes,
         ]);
     }
+
+    private function getCorrectLetters(string $word, array $guessedLetters): array
+    {
+        $correctLetters = [];
+        foreach ($guessedLetters as $letter) {
+            // Verificăm dacă litera există în cuvânt
+            if (strpos($word, $letter) !== false) { // `!== false` e corect
+                $correctLetters[] = $letter;
+            }
+        }
+        return $correctLetters;
+    }
+
+
+    /**
+     * Verifică dacă toate literele au fost ghicite.
+     */
+    private function areAllLettersGuessed(string $word, array $guessedLetters): bool
+    {
+        foreach (str_split($word) as $char) {
+            if (ctype_alpha($char) && !in_array($char, $guessedLetters)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Determină literele greșite ghicite de jucător.
+     */
+    private function getWrongLetters(string $word, array $guessedLetters): array
+    {
+        $wrongLetters = [];
+        foreach ($guessedLetters as $letter) {
+            if (strpos($word, $letter) === false) {
+                $wrongLetters[] = $letter;
+            }
+        }
+        return $wrongLetters;
+    }
+
+    /**
+     * Gestionează finalizarea rundei.
+     */
+    private function handleRoundCompletion($session, bool $isCreator, bool $allLettersGuessed): void
+    {
+        // Verificăm dacă runda curentă s-a terminat
+        if ($allLettersGuessed || $session->mistakes_creator >= ceil(strlen($session->word_for_creator) / 2) || $session->mistakes_opponent >= ceil(strlen($session->word_for_opponent) / 2)) {
+            // Dacă este rândul creatorului și ghicește corect sau face prea multe greșeli
+            if ($isCreator) {
+                // Schimbăm turul la oponent
+                $session->turn = $session->opponent_id;
+            } else {
+                // Dacă este rândul oponentului, jocul se încheie
+                $session->completed = true;
+            }
+
+            // Resetăm literele și greșelile doar dacă jocul nu s-a terminat
+            if (!$session->completed) {
+                $session->guessed_letters_creator = json_encode([]);
+                $session->guessed_letters_opponent = json_encode([]);
+                $session->mistakes_creator = 0;
+                $session->mistakes_opponent = 0;
+            }
+
+            // Salvăm starea sesiunii
+            $session->save();
+
+            // Declanșăm evenimentul `GameEnded` dacă jocul s-a încheiat
+            if ($session->completed) {
+                broadcast(new GameEnded($session->id));
+            }
+        }
+    }
+
 
 }
