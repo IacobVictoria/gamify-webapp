@@ -3,6 +3,7 @@
         <h3>{{ isMyTurn ? "Your Turn" : "Opponent's Turn" }}</h3>
         <p><strong>Hint:</strong> {{ hint }}</p>
 
+
         <div class="word-container">
             <span v-for="(char, index) in displayedWord" :key="index" class="word-char">
                 {{ char }}
@@ -10,8 +11,8 @@
         </div>
         <div class="keyboard">
             <button v-for="letter in alphabet" :key="letter" :disabled="!isMyTurn || usedLetters.includes(letter)"
-                :class="{
-                    correct: correctLetters.includes(letter),
+                class="key" :class="{
+                    correct: displayCorrectLetters.includes(letter),
                     wrong: displayedWrongLetters.includes(letter),
                 }" @click="guessLetter(letter)">
                 {{ letter }}
@@ -35,7 +36,9 @@ export default {
     },
     computed: {
         displayedWord() {
-            return this.word.split("").map((char) => (this.correctLetters.includes(char) ? char : "_"));
+            return this.word.split("").map((char) =>
+                this.correctLetters.includes(char.toUpperCase()) ? char : "_"
+            );
         },
         alphabet() {
             return "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -43,6 +46,9 @@ export default {
         displayedWrongLetters() {
             return this.wrongLetters;
         },
+        displayCorrectLetters() {
+            return this.correctLetters;
+        }
 
     },
     methods: {
@@ -62,33 +68,57 @@ export default {
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
+    color: #333;
 }
 
 .word-char {
     border-bottom: 2px solid black;
     width: 20px;
     text-align: center;
+    color: black;
 }
 
 .keyboard {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 10px;
+    margin-top: 20px;
 }
 
-.keyboard button {
-    padding: 10px;
-    font-size: 16px;
+.key {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: black;
+    background: url('http://localhost:8000/images/cloud.png');
+    background-size: cover;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.keyboard button.correct {
-    background-color: green;
-    color: white;
+.key:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
 }
 
-.keyboard button.wrong {
-    background-color: red;
-    color: white;
+.key.correct {
+    color: #7bc043;
+    ;
+}
+
+.key.wrong {
+    color: #ff6f61;
+}
+
+.key.disabled {
+    cursor: not-allowed;
 }
 </style>

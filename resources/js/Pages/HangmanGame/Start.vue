@@ -1,48 +1,49 @@
 <template>
     <AuthenticatedLayout>
-        <div v-if="!gameEnd" class="game-session">
-            <h2>Hangman Game Session</h2>
-            <div v-if="bothConnected" class="game-info">
-                <p><strong>Creator:</strong> {{ creatorName }}</p>
-                <p><strong>Opponent:</strong> {{ opponentName }}</p>
-                <p>
-                    <strong>Current Turn:</strong>
-                    <span v-if="$page.props.user.id === turnData">Your turn</span>
-                    <span v-else>Opponent's turn</span>
-                </p>
-                <button v-if="$page.props.user.id === creatorId" @click="startGame" class="btn btn-primary mt-3">
-                    Start Game
-                </button>
+        <div class="game-session-container">
+            <div v-if="!gameEnd" class="game-session">
+                <h2>Hangman Game Session</h2>
+                <div v-if="bothConnected" class="game-info">
+                    <p><strong>Creator:</strong> {{ creatorName }}</p>
+                    <p><strong>Opponent:</strong> {{ opponentName }}</p>
+                    <p>
+                        <strong>Current Turn:</strong>
+                        <span v-if="$page.props.user.id === turnData">Your turn</span>
+                        <span v-else>Opponent's turn</span>
+                    </p>
+                    <button v-if="$page.props.user.id === creatorId && !gameStart" @click="startGame" class="btn btn-primary mt-3">
+                        Start Game
+                    </button>
+                </div>
+                <div v-else class="waiting-for-opponent">
+                    <h3>Waiting for Opponent...</h3>
+                </div>
+                <div v-if="gameStart">
+                    <HangmanDrawing :mistakes="errors" :maxMistakes="Math.ceil(currentWord.length / 2)" />
+                    <GameBoard :isMyTurn="$page.props.user.id === turnData" :hint="currentHint" :word="currentWord"
+                        :usedLetters="usedLetters" :correctLetters="correctLetters" :wrongLetters="wrongLetters"
+                        :errors="errors" @guess="handleGuess" />
+                </div>
+                <div v-if="!bothConnected" class="friend-search mt-5">
+                    <h3>Invite a Friend</h3>
+                    <input type="text" v-model="search" @input="searchFriends" placeholder="Search friends by email..."
+                        class="form-control" />
+                    <ul v-if="friends.length > 0" class="friend-list mt-3 list-group">
+                        <li v-for="friend in friends" :key="friend.id"
+                            class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ friend.name }} ({{ friend.email }})</span>
+                            <button @click="sendGameInvite(friend.id)" class="btn btn-sm btn-success">
+                                Invite
+                            </button>
+                        </li>
+                    </ul>
+                    <p v-else class="text-muted mt-3">No friends found.</p>
+                </div>
             </div>
-            <div v-else class="waiting-for-opponent">
-                <h3>Waiting for Opponent...</h3>
-                <p>Session ID: {{ sessionId }}</p>
-            </div>
-            <div v-if="gameStart">
-                <GameBoard :isMyTurn="$page.props.user.id === turnData" :hint="currentHint" :word="currentWord"
-                    :usedLetters="usedLetters" :correctLetters="correctLetters" :wrongLetters="wrongLetters"
-                    :errors="errors" @guess="handleGuess" />
-            </div>
-            <div v-if="!bothConnected" class="friend-search mt-5">
-                <h3>Invite a Friend</h3>
-                <input type="text" v-model="search" @input="searchFriends" placeholder="Search friends by email..."
-                    class="form-control" />
-                <ul v-if="friends.length > 0" class="friend-list mt-3 list-group">
-                    <li v-for="friend in friends" :key="friend.id"
-                        class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>{{ friend.name }} ({{ friend.email }})</span>
-                        <button @click="sendGameInvite(friend.id)" class="btn btn-sm btn-success">
-                            Invite
-                        </button>
-                    </li>
-                </ul>
-                <p v-else class="text-muted mt-3">No friends found.</p>
+            <div v-if="gameEnd">
+                <EndGame :scores="scores" />
             </div>
         </div>
-        <div v-if="gameEnd">
-            <EndGame :scores="scores" />
-        </div>
-
     </AuthenticatedLayout>
 </template>
 <script>
@@ -51,12 +52,14 @@ import debounce from "lodash/debounce";
 import Swal from "sweetalert2";
 import GameBoard from "./GameBoard.vue";
 import EndGame from "./EndGame.vue";
+import HangmanDrawing from "./HangmanDrawing.vue";
 
 export default {
     components: {
         AuthenticatedLayout,
         GameBoard,
-        EndGame
+        EndGame,
+        HangmanDrawing
     },
     props: {
         sessionId: String,
@@ -111,7 +114,18 @@ export default {
                     message: this.gameUrl,
                 };
 
-                await axios.post(`/user/user_chat/messages/${friendId}`, payload);
+                await axios.post(`/user/user_chat/messages/${friendId}`, payload)
+                    .then(() => {
+                        this.friends = [];
+                        this.search = "";
+                        alert('Invitatie trimisa cu succes!');
+                    })
+                    .catch((error) => {
+                        console.error('Error sending invitation:', error);
+                        alert('A apărut o eroare la trimiterea invitației.');
+                    });
+
+
             }
         },
 
@@ -143,6 +157,7 @@ export default {
             `,
                 showCancelButton: false,
                 confirmButtonText: "Submit",
+                confirmButtonColor: "#2e7d32",
                 preConfirm: () => {
                     const word = document.getElementById("swal-input-word").value;
                     const hint = document.getElementById("swal-input-hint").value;
@@ -254,7 +269,6 @@ export default {
         });
         window.Echo.private(`hangman-session.${this.sessionId}`)
             .listen(".GameEnded", (event) => {
-                alert(event.message);
                 this.gameStart = false;
                 this.gameEnd = true;
                 this.scores = event.scores;
@@ -262,3 +276,111 @@ export default {
     }
 };
 </script>
+<style scoped>
+.game-session-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #f5fff5;
+    padding: 20px;
+    color: #2c3e50;
+    font-family: 'Arial', sans-serif;
+}
+
+.game-session {
+    width: 80%;
+    max-width: 900px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    text-align: center;
+    border: 1px solid #dfe6ee;
+}
+
+.waiting-for-opponent h3 {
+    color: #4caf50;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.waiting-for-opponent p {
+    font-size: 16px;
+    color: #6b8e23;
+}
+
+.friend-search {
+    margin-top: 40px;
+}
+
+.friend-search h3 {
+    font-size: 20px;
+    color: #2e7d32;
+    margin-bottom: 10px;
+}
+
+.friend-search input {
+    max-width: 400px;
+    margin: 0 auto;
+    border-radius: 8px;
+    border: 1px solid #a5d6a7;
+    padding: 12px;
+    font-size: 16px;
+    color: #2c3e50;
+}
+
+.friend-list {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.friend-list .list-group-item {
+    font-size: 14px;
+    padding: 10px;
+    background: #e8f5e9;
+    color: #2c3e50;
+    border: 1px solid #c8e6c9;
+    border-radius: 8px;
+}
+
+.friend-list .list-group-item:hover {
+    background: #d0f0d0;
+}
+
+.btn-primary {
+    background-color: #66bb6a;
+    border: none;
+    padding: 12px 25px;
+    font-size: 16px;
+    border-radius: 8px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #43a047;
+}
+
+.btn-success {
+    background-color: #81c784;
+    color: #ffffff;
+    border: none;
+    padding: 8px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    background-color: #388e3c;
+}
+
+.game-session h2 {
+    color: #2e7d32;
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+</style>
