@@ -17,7 +17,7 @@ class UserScoreService implements UserScoreInterface
     {
         $user->score += $score;
         $user->save();
-        broadcast(new UserScoreUpdatedEvent($user, $score, "Ai primit ".$score ." !" , $this->notificationService));
+        broadcast(new UserScoreUpdatedEvent($user, $score, "Ai primit " . $score . " !", $this->notificationService));
     }
 
     public function updateScore(User $user, $score)
@@ -63,7 +63,22 @@ class UserScoreService implements UserScoreInterface
             case 3:
                 return 15; // Rank 3 gets 15 points
             default:
-                return 0; 
+                return 0;
         }
     }
+
+    public function awardPointsBasedOnHangmanScore(?User $user, int $finalScore)
+    {
+        $points = match (true) {
+            $finalScore >= 90 => 50,
+            $finalScore >= 80 => 40,
+            $finalScore >= 70 => 30,
+            $finalScore >= 60 => 20,
+            $finalScore >= 50 => 10,
+            default => 5,
+        };
+
+        $this->addScore($user, $points);
+    }
+
 }

@@ -8,6 +8,9 @@ use App\Events\GameStarted;
 use App\Events\GameUpdated;
 use App\Events\OpponentJoined;
 use App\Models\HangmanSession;
+use App\Models\User;
+use App\Services\BadgeService;
+use App\Services\UserScoreService;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +18,12 @@ use Inertia\Inertia;
 
 class HangmanGameController extends Controller
 {
+    public $userScoreService, $badgeService;
+    public function __construct(UserScoreService $userScoreService, BadgeService $badgeService)
+    {
+        $this->userScoreService = $userScoreService;
+        $this->badgeService = $badgeService;
+    }
     public function index()
     {
         return Inertia::render('HangmanGame/Index');
@@ -253,7 +262,8 @@ class HangmanGameController extends Controller
                     $session->mistakes_opponent,
                     $maxMistakes
                 );
-
+                $creator = User::find($session->creator_id);
+                $opponent = User::find($session->opponent_id);
                 // Save scores in the session
                 $session->scores = json_encode([
                     'creator' => [
@@ -266,6 +276,10 @@ class HangmanGameController extends Controller
                     ]
                 ]);
                 broadcast(new GameEnded($session->id, json_decode($session->scores, true)));
+                    $this->userScoreService->awardPointsBasedOnHangmanScore($creator, $scores['creator']);
+                    $this->badgeService->hangmanGameBadges($creator);   
+                    $this->badgeService->hangmanGameBadges($opponent);
+                    $this->userScoreService->awardPointsBasedOnHangmanScore($opponent, $scores['opponent']);
             }
 
             $session->save();

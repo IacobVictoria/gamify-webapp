@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Survey;
 use App\Models\SurveyChoice;
 use App\Models\SurveyQuestion;
+use App\Models\SurveyResult;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -162,6 +163,18 @@ class SurveyController extends Controller
     {
         $question = SurveyQuestion::findOrFail($questionId);
 
+        $survey_id = $question->survey_id;
+        $survey_results = SurveyResult::where('survey_id', $survey_id)->get();
+        foreach ($survey_results as $result) {
+            // stergere din json ul "responses" din surveyResults 
+            $responses = json_decode($result->responses, true);
+            if (isset($responses[$questionId])) {
+                unset($responses[$questionId]);
+            }
+            $result->responses = json_encode($responses);
+            $result->save();
+
+        }
         $question->delete();
 
         return response()->json(['message' => 'Question deleted successfully!']);

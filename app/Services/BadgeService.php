@@ -5,9 +5,11 @@ use App\Enums\UserQuizDifficulty;
 use App\Events\ObtainBadge;
 use App\Interfaces\BadgeServiceInterface;
 use App\Models\Badge;
+use App\Models\HangmanSession;
 use App\Models\Review;
 use App\Models\User;
 use App\Models\UserBadge;
+use Carbon\Carbon;
 use Faker\Provider\Uuid;
 
 class BadgeService implements BadgeServiceInterface
@@ -70,15 +72,23 @@ class BadgeService implements BadgeServiceInterface
         $this->awardEachRankInQuizTop($user);
         $this->awardSecondTimeAsFirstQuizTop($user);
     }
+    public function hangmanGameBadges(?User $user)
+    {
+        if (!$user) {
+            return;
+        }
+        $this->dailyPlayerHangmanGameFor7Days($user);
+        $this->game10PlayedHangman($user);
+        $this->firstGamePlayedHangman($user);
+        $this->perfectGuesserHangmanGame($user);
+        $this->nearPerfectGuesserHangmanGame($user);
+    }
 
     public function awardTopReviewerBadge(User $user)
     {
-        $badge = Badge::where('name', 'Top Reviewer')->first();
-
         if ($user->reviews()->count() >= 2 && !$user->badges()->where('name', 'Top Reviewer')->exists()) {
             $this->assignBadge($user, 'Top Reviewer');
         }
-
     }
 
     public function awardActiveCommenterBadge(?User $user)
@@ -307,7 +317,7 @@ class BadgeService implements BadgeServiceInterface
 
     public function awardEachRankInQuizTop(User $user)
     {
-        $maxRank = 3; 
+        $maxRank = 3;
         $userRanks = $user->quizLeaderboardHistory()->pluck('rank')->unique();
 
         // Check if the user has reached all ranks
@@ -325,6 +335,92 @@ class BadgeService implements BadgeServiceInterface
         if ($firstTime && !$user->badges()->where('name', 'First Rank in Quiz Top')->exists()) {
             $this->assignBadge($user, 'First Rank in Quiz Top');
         }
+
+    }
+
+    public function perfectGuesserHangmanGame(User $user)
+    {
+        $mistakes = HangmanSession::where('creator_id', $user->id)
+            ->orWhere('opponent_id', $user->id)
+            ->get()
+            ->every(function ($session) use ($user) {
+                return $session->creator_id === $user->id
+                    ? $session->mistakes_creator === 0
+                    : $session->mistakes_opponent === 0;
+            });
+
+        if ($mistakes && !$user->badges()->where('name', 'Perfect Guesser')->exists()) {
+            $this->assignBadge($user, 'Perfect Guesser');
+        }
+    }
+
+    public function nearPerfectGuesserHangmanGame(User $user)
+    {
+        $mistakes = HangmanSession::where('creator_id', $user->id)
+            ->orWhere('opponent_id', $user->id)
+            ->get()
+            ->every(function ($session) use ($user) {
+                return $session->creator_id === $user->id
+                    ? $session->mistakes_creator <= 1
+                    : $session->mistakes_opponent <= 1;
+            });
+
+        if ($mistakes && !$user->badges()->where('name', 'Near-Perfect Guesser')->exists()) {
+            $this->assignBadge($user, 'Near-Perfect Guesser');
+        }
+    }
+
+    public function firstGamePlayedHangman(User $user)
+    {
+        if (
+            HangmanSession::where('creator_id', $user->id)
+                ->orWhere('opponent_id', $user->id)
+                ->exists() &&
+            !$user->badges()->where('name', 'First Game Played')->exists()
+        ) {
+            $this->assignBadge($user, 'First Game Played');
+        }
+    }
+
+    public function game10PlayedHangman(User $user)
+    {
+        $count = HangmanSession::where('creator_id', $user->id)
+            ->orWhere('opponent_id', $user->id)
+            ->count();
+
+        if ($count >= 10 && !$user->badges()->where('name', '10 Games Played')->exists()) {
+            $this->assignBadge($user, '10 Games Played');
+        }
+    }
+
+    public function dailyPlayerHangmanGameFor7Days(User $user)
+    {
+        $sessionsDates = HangmanSession::where('creator_id', $user->id)
+            ->orWhere('opponent_id', $user->id)
+            ->pluck('created_at')
+            ->map(function ($date) {
+                return $date->toDateString();
+            })
+            ->unique()->sort()->values();
+
+        $consecutiveDays = 0;
+        $previousDate = null;
+        foreach ($sessionsDates as $date) {
+            if ($date && Carbon::parse($date)->diffInDays($previousDate) == 1) {
+                $consecutiveDays++;
+            } else {
+                $consecutiveDays = 1;
+            }
+            $previousDate = Carbon::parse($date);
+
+            if ($consecutiveDays === 7) {
+                if (!$user->badges()->where('name', 'Daily Player')->exists()) {
+                    $this->assignBadge($user, 'Daily Player');
+                }
+                return;
+            }
+        }
+
 
     }
 
