@@ -67,6 +67,7 @@ Route::prefix('reviews')->group(function () {
 
 
 Route::get('/recommendations/{userId}', [RecommandationPythonController::class, 'index']);
+Route::post('/export-data', [RecommandationPythonController::class, 'exportData']);
 
 Route::prefix('comparison')->group(function () {
     Route::post('/add', [ProductComparisonController::class, 'addToComparison']);
