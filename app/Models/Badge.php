@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Badge extends Model
 {
     use HasFactory;
-    protected $fillable = ['id', 'name', 'description'];
+    protected $fillable = ['id', 'name', 'description', 'image_path'];
     protected $table = 'badges';
 
     protected $primaryKey = 'id';
@@ -19,6 +19,6 @@ class Badge extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'user_badges')->withPivot('awarded_at') ;
+        return $this->belongsToMany(User::class, 'user_badges')->withPivot('awarded_at');
     }
 }

@@ -8,6 +8,14 @@
                     <FormInput v-for="(field, index) in fields" :key="index" :field="field" v-model="form[field.name]"
                         :error="errors[field.name]" />
                 </div>
+                <div v-if="includeFile">
+                    <label for="image" class="block text-sm font-medium text-gray-700">Upload Image</label>
+                    <input id="image" type="file" @change="handleImageUpload" accept="image/*"
+                        class="mt-1 block w-full border-gray-300 shadow-sm rounded-md" />
+                    <p v-if="imagePreview" class="mt-2 text-sm text-gray-500">Preview:</p>
+                    <img v-if="imagePreview" :src="imagePreview" alt="Image preview"
+                        class="mt-2 max-h-32 rounded-lg shadow" />
+                </div>
                 <div class="flex items-center justify-end mt-6 gap-x-4">
                 
                     <button type="submit"
@@ -30,7 +38,6 @@ export default {
     components: {
         FormInput
     },
-
     props: {
         createRoute: {
             type: String,
@@ -46,6 +53,10 @@ export default {
         },
         objectId: {
             type: String,
+        },
+        isFile: {
+            type: Boolean,
+
         }
     },
 
@@ -53,6 +64,9 @@ export default {
         return {
             form: this.createForm(),
             errors: {},
+            imagePreview: null,
+            includeFile:this.isFile,
+            imageFile:null
         };
     },
 
@@ -67,16 +81,36 @@ export default {
         },
 
         submit() {
-            this.form.post(this.createRoute, {
+            const formData = new FormData();
+
+            for (const [key, value] of Object.entries(this.form.data())) {
+                formData.append(key, value);
+            }
+
+            if (this.imageFile) {
+                formData.append('image', this.imageFile);
+            }
+            console.log(formData.image)
+            this.$inertia.post(this.createRoute, formData, {
                 onError: (errors) => {
-                    console.log('NOT submitted successfully:');
+                    console.log('Form not submitted successfully:', errors);
                     this.errors = errors;
                 },
                 onSuccess: () => {
-                    console.log('Form submitted successfully:');
+                    console.log('Form submitted successfully');
                     this.form.reset();
                 },
-            })
+                headers: {
+                    'Content-Type': 'multipart/form-data',  
+                }
+            });
+        },
+        handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                this.imageFile = file;
+                this.imagePreview = URL.createObjectURL(file);
+            }
         }
     },
 

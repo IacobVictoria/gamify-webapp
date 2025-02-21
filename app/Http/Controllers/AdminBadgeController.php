@@ -6,6 +6,7 @@ use App\Http\Requests\BadgeRequest;
 use App\Models\Badge;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class AdminBadgeController extends Controller
@@ -56,15 +57,19 @@ class AdminBadgeController extends Controller
     {
         $validatedData = $request->validated();
 
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('badges_images', 's3');
+
+            $imageUrl = Storage::disk('s3')->url($imagePath);
+        }
         $badge = new Badge();
         $badge->id = Uuid::uuid();
         $badge->name = $validatedData['name'];
         $badge->score = $validatedData['score'];
         $badge->description = $validatedData['description'];
+        $badge->image_path = $imageUrl;
         $badge->save();
-
         return redirect()->route('admin.badges.index')->with('success', 'Badge created successfully!');
-
 
     }
 
@@ -100,10 +105,22 @@ class AdminBadgeController extends Controller
         $badge->name = $validatedData['name'];
         $badge->score = $validatedData['score'];
         $badge->description = $validatedData['description'];
+        if ($request->hasFile('image')) {
+            // Șterge imaginea veche de pe S3
+            if ($badge->image_path) {
+                // Extrage calea fișierului din URL
+                $parsedUrl = parse_url($badge->image_path);
+                $imagePath = ltrim($parsedUrl['path'], '/');
+                Storage::disk('s3')->delete($imagePath);
+            }
+
+            // Salvează imaginea noua
+            $imagePath = $request->file('image')->store('badges_images', 's3');
+            $badge->image_path = Storage::disk('s3')->url($imagePath);
+        }
         $badge->save();
 
         return redirect()->route('admin.badges.index')->with('success', 'Badge updated successfully!');
-        ;
     }
 
     /**
@@ -112,7 +129,13 @@ class AdminBadgeController extends Controller
     public function destroy(string $badgeId)
     {
         $badge = Badge::find($badgeId);
+        if ($badge->image_path) {
+            // Extrage calea fișierului din URL
+            $parsedUrl = parse_url($badge->image_path);
+            $imagePath = ltrim($parsedUrl['path'], '/');
 
+            Storage::disk('s3')->delete($imagePath);
+        }
         $badge->delete();
 
         return redirect()->route('admin.badges.index')->with('success', 'Badge deleted successfully!');

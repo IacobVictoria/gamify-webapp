@@ -25,6 +25,7 @@ class BadgeRequest extends FormRequest
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'score' => 'required|integer|min:0|max:200',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif',
         ];
     }
 }

@@ -7,7 +7,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create Badges</h2>
         </template>
 
-        <GenericCreateForm :fields="fields" :createRoute="createRoute" :title="'Create Badge'"></GenericCreateForm>
+        <GenericCreateForm :fields="fields" :createRoute="createRoute" :title="'Create Badge'" :isFile="true"></GenericCreateForm>
     </AuthenticatedLayout>
 </template>
 

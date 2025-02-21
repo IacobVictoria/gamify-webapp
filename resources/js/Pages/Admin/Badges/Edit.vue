@@ -7,7 +7,8 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Update Badge</h2>
         </template>
 
-        <GenericEditForm :title="'Update badge'" :fields="fields" :initial-data="badge" :update-route="getUpdateRoute">
+        <GenericEditForm :title="'Update badge'" :fields="fields" :initial-data="badge" :update-route="getUpdateRoute"
+            :isFile="true" :aditionalData="imageField">
 
         </GenericEditForm>
 
@@ -64,7 +65,13 @@ export default {
                     colSpan: 'sm:col-span-6'
                 },
             ]
-
+            , imageField: {
+                name: 'image',
+                label: 'Image',
+                type: 'file',
+                inputType: 'file',
+                colSpan: 'sm:col-span-6'
+            },
 
         }
     },
