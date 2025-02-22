@@ -8,7 +8,7 @@
                 </inertia-link>
 
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <GenericExpandedList :items="badges" :title="'Badges for users'"
+                    <GenericExpandedList :items="badges" :title="'Badges for users'" 
                         :description="'Show all Badges available'" :columns="columns" :getRoute="'admin.badges.index'"
                         :extraLabel="detailsLabel" :filters="filters" :prevFilters="prevFilters"
                         :updateRoute="'admin.badges.edit'" :deleteRoute="'admin.badges.destroy'" class="p-4">

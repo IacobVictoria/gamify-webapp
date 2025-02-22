@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\BadgeCategory;
+use App\Models\Badge;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +17,18 @@ class UserGameCenterController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $badges = $user->badges()->get();
+        // Obține toate badge-urile disponibile
+        $allBadges = Badge::all();
+
+        // Obține badge-urile deținute de utilizator
+        $userBadges = $user->badges()->get()->pluck('id')->toArray();
+
+        // Marchează badge-urile deținute
+        $badgesWithOwnership = $allBadges->map(function ($badge) use ($userBadges) {
+            // Adaugă un atribut pentru a marca dacă utilizatorul deține badge-ul
+            $badge->owned = in_array($badge->id, $userBadges);
+            return $badge;
+        });
 
         $medals = $user->medals()->get();
 
@@ -31,11 +44,21 @@ class UserGameCenterController extends Controller
                 ->count() + 1;
         }
 
+        $categories = BadgeCategory::cases();
+
+        $categories = array_map(function ($category) {
+            return [
+                'value' => $category->value,
+                'label' => ucfirst(str_replace('_', ' ', $category->value)) // Convertim enum-ul în format prietenos (ex. 'reviewer' => 'Reviewer')
+            ];
+        }, $categories);
+
         return Inertia::render('User/UserDashboard/GameCenter/Index', [
-            'badges' => $badges,
+            'badges' => $badgesWithOwnership,
             'medals' => $medals,
             'top10Players' => $top10Players,
             'yourPositionInTop' => $yourPositionInTop,
+            'categories' => $categories
         ]);
     }
 

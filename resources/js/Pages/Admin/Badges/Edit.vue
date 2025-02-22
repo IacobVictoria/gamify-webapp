@@ -31,6 +31,10 @@ export default {
         badge: {
             type: Object,
             required: true
+        },
+        categories: {
+            type: Array,
+            required: true
         }
     },
 
@@ -62,6 +66,15 @@ export default {
                     inputType: 'number',
                     autocomplete: 'score',
                     placeholder: 'Enter score',
+                    colSpan: 'sm:col-span-6'
+                },
+                {
+                    name: 'category',
+                    label: 'Categories',
+                    type: 'select',
+                    options: this.categories,
+                    autocomplete: 'categories',
+                    placeholder: 'Categories',
                     colSpan: 'sm:col-span-6'
                 },
             ]

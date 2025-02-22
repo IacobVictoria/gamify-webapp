@@ -7,7 +7,8 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create Badges</h2>
         </template>
 
-        <GenericCreateForm :fields="fields" :createRoute="createRoute" :title="'Create Badge'" :isFile="true"></GenericCreateForm>
+        <GenericCreateForm :fields="fields" :createRoute="createRoute" :title="'Create Badge'" :isFile="true">
+        </GenericCreateForm>
     </AuthenticatedLayout>
 </template>
 
@@ -22,7 +23,14 @@ export default {
         GenericCreateForm,
         Head
     },
-
+    props:
+    {
+        categories: {
+            type: Array,
+            required: true
+        }
+    }
+    ,
     data() {
         return {
             createRoute: route('admin.badges.store'),
@@ -52,6 +60,15 @@ export default {
                     inputType: 'number',
                     autocomplete: 'score',
                     placeholder: 'Enter score',
+                    colSpan: 'sm:col-span-6'
+                },
+                {
+                    name: 'category',
+                    label: 'Categories',
+                    type: 'select',
+                    options: this.categories,
+                    autocomplete: 'categories',
+                    placeholder: 'Categories',
                     colSpan: 'sm:col-span-6'
                 },
             ],

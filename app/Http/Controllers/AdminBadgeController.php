@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\BadgeCategory;
 use App\Http\Requests\BadgeRequest;
 use App\Models\Badge;
 use Faker\Provider\Uuid;
@@ -47,7 +48,18 @@ class AdminBadgeController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Admin/Badges/Create');
+        $categories = BadgeCategory::cases();
+
+        $categories = array_map(function ($category) {
+            return [
+                'value' => $category->value,
+                'label' => ucfirst(str_replace('_', ' ', $category->value)) // Convertim enum-ul în format prietenos (ex. 'reviewer' => 'Reviewer')
+            ];
+        }, $categories);
+
+        return Inertia::render('Admin/Badges/Create', [
+            'categories' => $categories
+        ]);
     }
 
     /**
@@ -67,6 +79,7 @@ class AdminBadgeController extends Controller
         $badge->name = $validatedData['name'];
         $badge->score = $validatedData['score'];
         $badge->description = $validatedData['description'];
+        $badge->category = $validatedData['category'];
         $badge->image_path = $imageUrl;
         $badge->save();
         return redirect()->route('admin.badges.index')->with('success', 'Badge created successfully!');
@@ -87,9 +100,19 @@ class AdminBadgeController extends Controller
     public function edit(string $badgeId)
     {
         $badge = Badge::find($badgeId);
+        $categories = BadgeCategory::cases();
+
+        $categories = array_map(function ($category) {
+            return [
+                'value' => $category->value,
+                'label' => ucfirst(str_replace('_', ' ', $category->value)) // Convertim enum-ul în format prietenos (ex. 'reviewer' => 'Reviewer')
+            ];
+        }, $categories);
+
 
         return Inertia::render('Admin/Badges/Edit', [
             'badge' => $badge,
+            'categories' => $categories
         ]);
     }
 
@@ -105,6 +128,7 @@ class AdminBadgeController extends Controller
         $badge->name = $validatedData['name'];
         $badge->score = $validatedData['score'];
         $badge->description = $validatedData['description'];
+        $badge->category = $validatedData['category'];
         if ($request->hasFile('image')) {
             // Șterge imaginea veche de pe S3
             if ($badge->image_path) {

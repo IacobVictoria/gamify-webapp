@@ -81,7 +81,7 @@
                                     <div v-for="information in extraLabel" :key="information.name"
                                         class="flex flex-col justify-between">
                                         <span class="text-gray-600 font-medium">{{ information.label
-                                            }}:</span>
+                                        }}:</span>
                                         <span class="text-gray-800 font-semibold">{{
                                             item.extra[information.name] }}</span>
                                     </div>
@@ -94,9 +94,9 @@
                                             <template v-for="label in detailsLabel" :key="label.name">
                                                 <div class="flex justify-between">
                                                     <strong class="text-gray-600">{{ label.label
-                                                        }}:</strong>
+                                                    }}:</strong>
                                                     <span class="text-gray-800">{{ detail[label.name]
-                                                        }}</span>
+                                                    }}</span>
                                                 </div>
                                             </template>
                                         </div>

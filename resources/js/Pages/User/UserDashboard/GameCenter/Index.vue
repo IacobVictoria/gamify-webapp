@@ -9,7 +9,7 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="flex flex-col gap-5 px-4 m-12">
                         <PlayersTopSection :top10Players="top10Players"></PlayersTopSection>
-                        <BadgeSection :badges="badges"></BadgeSection>
+                        <BadgeSection :badges="badges" :categories="categories"></BadgeSection>
                         <MedalsSection :medals="medals"></MedalsSection>
                         <div>Your poz {{ position }}</div>
                         <inertia-link :href="route('user.calendar.index')">Check events or discounts in ypur
@@ -45,10 +45,15 @@ export default {
             type: Array,
             default: []
         },
+        categories: {
+            type: Array,
+            default: []
+        },
         yourPositionInTop: {
             type: Number,
 
-        }
+        },
+
     },
     data() {
         return {

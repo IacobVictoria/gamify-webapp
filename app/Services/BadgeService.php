@@ -21,7 +21,7 @@ class BadgeService implements BadgeServiceInterface
         $this->userScoreService = $service;
         $this->notificationService = $notificationService;
     }
-
+//reviewer
     public function reviewerBadges(?User $user)
     {
         if (!$user) {
@@ -34,17 +34,18 @@ class BadgeService implements BadgeServiceInterface
         $this->awardTrustedReviewerBadge($user);
         $this->awardPioneerBadge($user);
     }
-
+//commenter
     public function commenterBadges(?User $user)
     {
         $this->awardActiveCommenterBadge($user);
     }
+//shopping
     public function shoopingBadges(?User $user)
     {
         $this->awardActiveShoppingBadge($user);
         $this->awardMonthlyShoppingBadge($user);
     }
-
+//quiz
     public function quizBadges(?User $user)
     {
         $this->awardQuizPerfectScore($user);
@@ -52,7 +53,7 @@ class BadgeService implements BadgeServiceInterface
         $this->awardQuizEnthusiastBadge($user);
         $this->awardQuizExplorerBadge($user);
     }
-
+//event
     public function eventBadges(?User $user)
     {
         if (!$user) {
@@ -62,7 +63,7 @@ class BadgeService implements BadgeServiceInterface
 
         $this->awardThreeEventsParticipationBadge($user);
     }
-
+//quiz-leaderboard
     public function quizLeaderboardBadges(?User $user)
     {
         if (!$user) {
@@ -72,6 +73,7 @@ class BadgeService implements BadgeServiceInterface
         $this->awardEachRankInQuizTop($user);
         $this->awardSecondTimeAsFirstQuizTop($user);
     }
+    //hangman
     public function hangmanGameBadges(?User $user)
     {
         if (!$user) {
