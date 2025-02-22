@@ -8,12 +8,25 @@
             <div class="max-w-[90%] mx-auto sm:px-6">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="flex flex-col gap-5 px-4 m-12">
-                        <PlayersTopSection :top10Players="top10Players"></PlayersTopSection>
                         <BadgeSection :badges="badges" :categories="categories"></BadgeSection>
                         <MedalsSection :medals="medals"></MedalsSection>
                         <div>Your poz {{ position }}</div>
-                        <inertia-link :href="route('user.calendar.index')">Check events or discounts in ypur
-                            calendar!</inertia-link>
+                        <PlayersTopSection :top10Players="top10Players"></PlayersTopSection>
+                        <inertia-link :href="route('user.calendar.index')">
+                            <div
+                                class="flex flex-row justify-between items-center shadow-lg rounded-xl bg-blue-200 p-6">
+                                <img :src="imagePath('/user_dashboard/event.png')" class="h-[10em] w-[10em]" />
+                                <div class="flex flex-col items-center justify-center gap-2">
+                                    <span class="text-2xl font-semibold text-blue-500">Explorăm Evenimentele Tale</span>
+                                    <p class="text-sm text-black font-light leading-tight mt-2">Detalii despre
+                                        evenimentele
+                                        selectate
+                                        și
+                                        reducerile de sezon.</p>
+                                    <img :src="imagePath('/user_dashboard/right-arrow.png')" class="w-12 mt-2" />
+                                </div>
+                            </div>
+                        </inertia-link>
                     </div>
                 </div>
             </div>

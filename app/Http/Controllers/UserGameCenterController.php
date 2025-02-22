@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\BadgeCategory;
 use App\Models\Badge;
+use App\Models\Medal;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,7 +31,18 @@ class UserGameCenterController extends Controller
             return $badge;
         });
 
-        $medals = $user->medals()->get();
+        // Obține toate medaliile deținute de utilizator
+        $userMedals = $user->medals()->get()->pluck('id')->toArray();
+
+        // Obține toate medaliile disponibile
+        $allMedals = Medal::all();
+
+        // Marchează medaliile deținute
+        $medalsWithOwnership = $allMedals->map(function ($medal) use ($userMedals) {
+            $medal->owned = in_array($medal->id, $userMedals);
+            return $medal;
+        });
+
 
         $top10Players = User::orderBy('score', 'desc')
             ->limit(10)
@@ -55,7 +67,7 @@ class UserGameCenterController extends Controller
 
         return Inertia::render('User/UserDashboard/GameCenter/Index', [
             'badges' => $badgesWithOwnership,
-            'medals' => $medals,
+            'medals' => $medalsWithOwnership,
             'top10Players' => $top10Players,
             'yourPositionInTop' => $yourPositionInTop,
             'categories' => $categories
