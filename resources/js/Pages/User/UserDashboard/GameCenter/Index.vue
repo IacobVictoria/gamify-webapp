@@ -10,7 +10,15 @@
                     <div class="flex flex-col gap-5 px-4 m-12">
                         <BadgeSection :badges="badges" :categories="categories"></BadgeSection>
                         <MedalsSection :medals="medals"></MedalsSection>
-                        <div>Your poz {{ position }}</div>
+                        <div
+                            class="your-position-container bg-gradient-to-r from-blue-500 to-teal-500 text-white p-4 rounded-xl shadow-md">
+                            <div class="flex justify-between items-center">
+                                <span class="text-lg font-semibold">Your Position</span>
+                                <span class="text-3xl font-extrabold">{{ position }}</span>
+                            </div>
+                            <p class="mt-2 text-sm font-light">Your rank in the top players leaderboard</p>
+                        </div>
+
                         <PlayersTopSection :top10Players="top10Players"></PlayersTopSection>
                         <inertia-link :href="route('user.calendar.index')">
                             <div
@@ -75,3 +83,18 @@ export default {
     },
 }
 </script>
+<style>
+.your-position-container {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+</style>

@@ -26,7 +26,9 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('dashboard')->group(function () {
     Route::get('/', [UserController::class, 'dashboard'])
         ->name('dashboard');
-    Route::get('/game-center',[UserGameCenterController::class,'index'])->name('dashboard.game_center.index');
+    Route::get('/game-center', [UserGameCenterController::class, 'index'])->name('dashboard.game_center.index');
+    Route::get('/game-center/badges', [UserGameCenterController::class, 'index_badges'])->name('dashboard.game_center.badges.index');
+
 });
 
 Route::prefix('shopping-cart')->group(function () {

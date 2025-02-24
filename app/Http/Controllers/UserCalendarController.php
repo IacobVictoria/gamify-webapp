@@ -14,6 +14,24 @@ class UserCalendarController extends Controller
      */
     public function index()
     {
+        // $events = Event::where(function ($query) {
+        //     $query->where('type', 'discount')
+        //           ->where('start', '<=', now()) // Discount începe înainte de acum
+        //           ->where('end', '>=', now()); // Discount trebuie să fie încă activ
+        // })
+        // ->orWhere(function ($query) {
+        //     $query->where('type', 'event')
+        //           ->where('end', '>=', now()) // Evenimentul trebuie să nu fi expirat
+        //           ->whereHas('participants', function ($query) {
+        //               $query->where('user_id', auth()->id()); // Verifică dacă utilizatorul este participant
+        //           });
+        // })
+        // ->where('status', 'OPEN')  // Evenimentele trebuie să fie deschise
+        // ->where('is_published', 1) // Evenimentele trebuie să fie publicate
+        // ->with('qrCode')
+        // ->get();
+
+
         $events = Event::where(function ($query) {
             $query->where('type', 'discount')
                   ->where('start', '<=', now()) // Discount începe înainte de acum
@@ -21,12 +39,10 @@ class UserCalendarController extends Controller
         })
         ->orWhere(function ($query) {
             $query->where('type', 'event')
-                  ->where('end', '>=', now()) // Evenimentul trebuie să nu fi expirat
                   ->whereHas('participants', function ($query) {
                       $query->where('user_id', auth()->id()); // Verifică dacă utilizatorul este participant
                   });
         })
-        ->where('status', 'OPEN')  // Evenimentele trebuie să fie deschise
         ->where('is_published', 1) // Evenimentele trebuie să fie publicate
         ->with('qrCode')
         ->get();

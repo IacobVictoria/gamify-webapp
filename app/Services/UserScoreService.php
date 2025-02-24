@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Services;
+use App\Events\UserMedalAwardedEvent;
 use App\Events\UserScoreUpdatedEvent;
 use App\Interfaces\UserScoreInterface;
+use App\Models\Medal;
 use App\Models\User;
 
 class UserScoreService implements UserScoreInterface
@@ -17,7 +19,39 @@ class UserScoreService implements UserScoreInterface
     {
         $user->score += $score;
         $user->save();
+        // Verificăm dacă utilizatorul este eligibil pentru medalie
+        //fac un broadcast pentru ca punctele se primesc si din badges si atunci ar fi bine sa emitem partea asta nu sa o rendaruim la o pagina anume
+        //el primeste puncte si daca nu face nimic cum ar fi la badge urile de "like uri" el doar primeste like uri 
+        $this->checkAndAwardMedal($user);
         broadcast(new UserScoreUpdatedEvent($user, $score, "Ai primit " . $score . " !", $this->notificationService));
+
+    }
+    protected function checkAndAwardMedal(User $user)
+    {
+        $score = $user->score;
+        $existingMedals = $user->medals->pluck('tier')->toArray();
+
+        // Lista medaliilor pe care le poate primi
+        $medals = [
+            'bronze' => 50,
+            'silver' => 100,
+            'gold' => 300
+        ];
+        //să primească toate medaliile pentru care devine eligibil, chiar dacă sare peste anumite praguri
+
+        foreach ($medals as $tier => $threshold) {
+            if ($score >= $threshold && !in_array($tier, $existingMedals)) {
+                $this->awardMedal($user, $tier);
+            }
+        }
+    }
+    protected function awardMedal(User $user, string $tier)
+    {
+        $medal = Medal::where('tier', $tier)->first();
+        if ($medal) {
+            $user->medals()->attach($medal->id);
+        }
+        broadcast(new UserMedalAwardedEvent($user, $medal, $this->notificationService));
     }
 
     public function updateScore(User $user, $score)
@@ -36,10 +70,11 @@ class UserScoreService implements UserScoreInterface
 
         $final_score = $obtained_score * $multiplier;
 
-        $user->score += $final_score;
-        $user->save();
+        $this->addScore($user, $final_score);
+        // $user->score += $final_score;
+        // $user->save();
 
-        broadcast(new UserScoreUpdatedEvent($user, $final_score, "Quiz ul completat ti-a adus puncte!", $this->notificationService));
+        // broadcast(new UserScoreUpdatedEvent($user, $final_score, "Quiz ul completat ti-a adus puncte!", $this->notificationService));
 
     }
 

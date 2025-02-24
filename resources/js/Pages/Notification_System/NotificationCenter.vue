@@ -61,6 +61,10 @@ export default {
                 .listen('.FriendRequestAccepted', (event) => {
                     this.addNotification('New friend!', event.message);
                 });
+            window.Echo.private(`user.${user.id}`)
+                .listen('.UserMedalAwarded', (event) => {
+                    this.addNotification('New medal!', event.message);
+                });
             window.Echo.private(`user_newDiscount.${user.id}`).listen('.DiscountApplied', (event) => {
                 this.addNotification('New discount', event.message)
             });

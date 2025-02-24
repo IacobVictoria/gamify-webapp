@@ -77,6 +77,13 @@ class UserGameCenterController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+    public function badges_index()
+    {
+        $allBadges = Badge::all();
+        return Inertia::render('User/UserDashboard/GameCenter/BadgeList', [
+            'badges' => $allBadges
+        ]);
+    }
     public function create()
     {
         //

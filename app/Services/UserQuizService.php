@@ -166,7 +166,7 @@ class UserQuizService implements UserQuizInterface
         $user = User::find($userId);
         $this->userScoreService->quizAttemptScore($user, $quizResult->attempt_number, $quizResult->total_score);
 
-        broadcast(new UserScoreUpdatedEvent($user, $quizResult->total_score, "Quiz completat cu succes! ", $this->notificationService));
+       // broadcast(new UserScoreUpdatedEvent($user, $quizResult->total_score, "Quiz completat cu succes! ", $this->notificationService));
         // return redirect()->route('user.quizzes.index');
     }
 
