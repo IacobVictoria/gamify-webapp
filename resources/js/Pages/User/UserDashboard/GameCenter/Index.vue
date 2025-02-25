@@ -1,7 +1,7 @@
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Your achievements</h2>
         </template>
 
         <div class="py-12">
@@ -20,7 +20,7 @@
                         </div>
 
                         <PlayersTopSection :top10Players="top10Players"></PlayersTopSection>
-                        <inertia-link :href="route('user.calendar.index')">
+                        <!-- <inertia-link :href="route('user.calendar.index')">
                             <div
                                 class="flex flex-row justify-between items-center shadow-lg rounded-xl bg-blue-200 p-6">
                                 <img :src="imagePath('/user_dashboard/event.png')" class="h-[10em] w-[10em]" />
@@ -34,7 +34,7 @@
                                     <img :src="imagePath('/user_dashboard/right-arrow.png')" class="w-12 mt-2" />
                                 </div>
                             </div>
-                        </inertia-link>
+                        </inertia-link> -->
                     </div>
                 </div>
             </div>

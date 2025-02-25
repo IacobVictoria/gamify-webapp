@@ -1,44 +1,18 @@
 <template>
   <div>
-    <h2>Your Medals</h2>
-    <div class="grid grid-cols-4 gap-4"> <!-- Grid pentru a aranja medaliile pe linie -->
-      <!-- Afișăm medaliile owned mai întâi -->
-      <div
-        v-for="(medal, medalIndex) in ownedMedals"
-        :key="medalIndex"
-        class="badge-container"
-      >
-        <img
-          :src="imagePath(`/medals/${medal.tier}-medal.png`)"
-          alt="Medal"
-          :class="['w-20 h-20', medal.owned ? '' : 'grayscale']"
-          class="badge-image"
-        />
+    <h2 class="section-title">Your Medals</h2>
+    <div class="grid grid-cols-4 gap-4">
+      <!-- Afișăm toate medaliile în ordinea corectă -->
+      <div v-for="(medal, medalIndex) in sortedMedals" :key="medalIndex" class="medal-container" :class="{ 'non-owned': !medal.owned }">
+        <img :src="imagePath(`/medals/${medal.tier}-medal.png`)" alt="Medal" class="medal-image" :class="{ 'grayscale': !medal.owned }" />
         <div class="text-center">
-          <p class="badge-name">{{ medal.tier }}</p>
-        </div>
-      </div>
-
-      <!-- Afișăm medaliile non-owned ulterior -->
-      <div
-        v-for="(medal, medalIndex) in nonOwnedMedals"
-        :key="medalIndex"
-        class="badge-container"
-      >
-        <img
-          :src="imagePath(`/medals/${medal.tier}-medal.png`)"
-          alt="Medal"
-          :class="['w-20 h-20', medal.owned ? '' : 'grayscale']"
-          class="badge-image"
-        />
-        <div class="text-center">
-          <p class="badge-name">{{ medal.tier }}</p>
+          <p class="medal-name">{{ capitalizeFirstLetter(medal.tier) }}</p>
+          <p class="medal-description">{{ medal.description }}</p>
         </div>
       </div>
     </div>
   </div>
 </template>
-
 <script>
 export default {
   props: {
@@ -48,50 +22,72 @@ export default {
     },
   },
   computed: {
-    // Calculăm medaliile deținute și non-deținute
-    ownedMedals() {
-      return this.medals.filter((medal) => medal.owned);
-    },
-    nonOwnedMedals() {
-      return this.medals.filter((medal) => !medal.owned);
-    },
+    sortedMedals() {
+      const order = { bronze: 1, silver: 2, gold: 3 }; // Ordinea medaliilor
+      return [...this.medals].sort((a, b) => order[a.tier] - order[b.tier]); // Sortare după tier
+    }
   },
-
+  methods: {
+    capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+  }
 };
 </script>
-
 <style scoped>
 .grayscale {
   filter: grayscale(100%);
 }
 
-.badge-container {
+/* Container pentru medalii */
+.medal-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 140px;
+  height: 180px;
 }
 
-.badge-image {
-  width: 80px;
-  height: 80px;
+/* Imaginea medaliei */
+.medal-image {
+  width: 100px;
+  height: 100px;
   object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+/* Numele medaliei */
+.medal-name {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #333;
   margin-bottom: 5px;
 }
 
-.badge-name {
-  font-weight: bold;
+/* Descrierea medaliei */
+.medal-description {
+  font-size: 0.85rem;
+  color: #666;
+  text-align: center;
+  max-width: 120px;
 }
 
-.badge-score {
-  font-size: 0.875rem;
-  color: #555;
-}
-
+/* Grid */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 16px;
+}
+
+/* Medaliile non-owned au un efect de transparență */
+.non-owned {
+  opacity: 0.6;
 }
 </style>

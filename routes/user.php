@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AchievementController;
+use App\Http\Controllers\ExploreGamesController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\HangmanGameController;
 use App\Http\Controllers\InvoiceController;
@@ -28,7 +29,10 @@ Route::prefix('dashboard')->group(function () {
         ->name('dashboard');
     Route::get('/game-center', [UserGameCenterController::class, 'index'])->name('dashboard.game_center.index');
     Route::get('/game-center/badges', [UserGameCenterController::class, 'index_badges'])->name('dashboard.game_center.badges.index');
-
+    Route::get('/explore-games', [ExploreGamesController::class, 'index'])->name('dashboard.explore-games.index');
+    Route::get('/explore-games/history-quizzes', [ExploreGamesController::class, 'historyQuiz'])->name('dashboard.explore-games.historyQuiz');
+    Route::get('/explore-games/quiz-results/{quizId}', [ExploreGamesController::class, 'show'])
+        ->name('dashboard.explore-games.show');
 });
 
 Route::prefix('shopping-cart')->group(function () {

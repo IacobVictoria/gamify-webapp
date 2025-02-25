@@ -1,11 +1,16 @@
 <template>
   <div class="badge-section-container">
     <h2 class="section-title">Your Badges</h2>
+
     <div v-for="(category, index) in categorizedBadges" :key="index" class="badge-category">
-      <h3 class="category-title">{{ category.label }}</h3>
+      <h3 class="category-title" :style="{ background: getCategoryColor(index) }">
+        {{ category.label }}
+      </h3>
+
       <div class="grid grid-cols-4 gap-4">
-        <!-- Afișăm badge-urile owned mai întâi -->
-        <div v-for="(badge, badgeIndex) in category.ownedBadges" :key="badgeIndex" class="badge-container owned">
+        <!-- Afișăm badge-urile owned -->
+        <div v-for="(badge, badgeIndex) in category.ownedBadges" :key="badgeIndex" class="badge-container owned"
+          @click="openBadgePopup(badge)">
           <img :src="badge.image_path" alt="Badge" class="badge-image" />
           <div class="text-center">
             <p class="badge-name">{{ badge.name }}</p>
@@ -13,8 +18,9 @@
           </div>
         </div>
 
-        <!-- Afișăm badge-urile non-owned ulterior -->
-        <div v-for="(badge, badgeIndex) in category.nonOwnedBadges" :key="badgeIndex" class="badge-container non-owned">
+        <!-- Afișăm badge-urile non-owned -->
+        <div v-for="(badge, badgeIndex) in category.nonOwnedBadges" :key="badgeIndex" class="badge-container non-owned"
+          @click="openBadgePopup(badge)">
           <img :src="badge.image_path" alt="Badge" class="badge-image grayscale" />
           <div class="text-center">
             <p class="badge-name">{{ badge.name }}</p>
@@ -22,21 +28,19 @@
           </div>
         </div>
       </div>
-      
-      <!-- Secțiunea de instrucțiuni pentru obținerea insignelor -->
-      <div class="instructions" :style="{ backgroundColor: getPastelColor(index) }">
-        <h4 class="instructions-title">Cum poți obține aceste insigne?</h4>
-        <img :src="imagePath('/user_dashboard/user-guide.png')" class="w-24" />
-        <ul class="instructions-list">
-          <li v-for="(badge, badgeIndex) in category.allBadges" :key="badgeIndex" class="instruction-item">
-            <strong>{{ badge.name }}:</strong> {{ badge.description }}
-          </li>
-        </ul>
+    </div>
+
+    <!-- Popup pentru detalii badge -->
+    <div v-if="selectedBadge" class="popup-overlay" @click="closePopup">
+      <div class="popup-content" @click.stop>
+        <button class="close-btn" @click="closePopup">&times;</button>
+        <h3 class="popup-title">{{ selectedBadge.name }}</h3>
+        <img :src="imagePath('/user_dashboard/user-guide.png')" class="user-guide-img" />
+        <p class="popup-description">{{ selectedBadge.description }}</p>
       </div>
     </div>
   </div>
 </template>
-
 <script>
 export default {
   props: {
@@ -48,6 +52,11 @@ export default {
       type: Array,
       required: true,
     },
+  },
+  data() {
+    return {
+      selectedBadge: null,
+    };
   },
   computed: {
     categorizedBadges() {
@@ -78,67 +87,66 @@ export default {
     },
   },
   methods: {
-    getPastelColor(index) {
-      const pastelColors = ["#FFDDC1", "#FFABAB", "#FFC3A0", "#D5AAFF", "#85E3FF", "#B9FBC0"];
-      return pastelColors[index % pastelColors.length];
-    }
+    openBadgePopup(badge) {
+      this.selectedBadge = badge;
+    },
+    closePopup() {
+      this.selectedBadge = null;
+    },
+    getCategoryColor(index) {
+      const colors = [
+        "linear-gradient(90deg, #4F46E5, #00C6FF)", // Albastru
+        "linear-gradient(90deg, #FF6B6B, #FFA502)", // Roșu - Portocaliu
+        "linear-gradient(90deg, #1DD1A1, #10AC84)", // Verde
+        "linear-gradient(90deg, #EE82EE, #C71585)", // Mov
+      ];
+      return colors[index % colors.length];
+    },
   }
 };
 </script>
-
-<style scoped>
-.grayscale {
-  filter: grayscale(100%);
-}
-
+<style>
+/* 🌟 Secțiunea principală */
 .badge-section-container {
   text-align: center;
   padding: 20px;
 }
 
+/* 🌟 Titlul principal */
 .section-title {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: bold;
-  color: #333;
-  margin-bottom: 20px;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #4F46E5, #00C6FF);
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 1.5px;
+  margin-bottom: 30px;
+  display: inline-block;
+  padding-bottom: 5px;
 }
 
-.badge-category {
-  margin-bottom: 40px;
-}
-
+/* 🌟 Titlurile categoriilor */
 .category-title {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: bold;
-  color: #444;
-  margin-bottom: 10px;
-}
-
-.instructions {
-  margin-top: 20px;
-  padding: 15px;
+  text-align: left;
+  letter-spacing: 1px;
+  padding: 10px 15px;
+  color: white;
   border-radius: 8px;
-  transition: background-color 0.3s ease;
+  margin-bottom: 2em;
+  margin-top: 2em;
+ width: 10em;
 }
 
-.instructions-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #555;
-  margin-bottom: 10px;
+/* 🌟 Efect de hover pe titlurile categoriilor */
+.category-title:hover {
+  opacity: 0.85;
+  transform: scale(1.02);
+  transition: all 0.3s ease-in-out;
 }
 
-.instructions-list {
-  list-style-type: none;
-  padding: 0;
-}
-
-.instruction-item {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 5px;
-}
-
+/* 🌟 Container pentru insigne */
 .badge-container {
   display: flex;
   flex-direction: column;
@@ -146,10 +154,11 @@ export default {
   justify-content: center;
   text-align: center;
   padding: 15px;
-  border-radius: 10px;
+  border-radius: 12px;
   background-color: #f8f9fa;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease-in-out;
+  cursor: pointer;
 }
 
 .badge-container:hover {
@@ -157,6 +166,7 @@ export default {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* 🌟 Imagine insigne */
 .badge-image {
   width: 80px;
   height: 80px;
@@ -165,6 +175,7 @@ export default {
   border-radius: 50%;
 }
 
+/* 🌟 Stilurile pentru nume și scor */
 .badge-name {
   font-weight: bold;
   color: #333;
@@ -175,9 +186,59 @@ export default {
   color: #555;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 16px;
+/* 🌟 POPUP DESIGN */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  position: relative;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* 🌟 Animație popup */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* 🌟 Stiluri pentru imaginea de user guide */
+.user-guide-img {
+  width: 100px;
+  margin: 10px auto;
+  display: block;
 }
 </style>

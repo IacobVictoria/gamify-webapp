@@ -38,9 +38,9 @@ class EventController extends Controller
             ->get();
 
         $inProgressEvents = Event::where('type', 'event')
-            ->where('start', '<=', now())  // Reduceri care au început deja
+            ->where('start', '<=', now())  
             ->where('end', '>=', now())
-            ->where('is_published', true)  // Evenimente care vor începe în viitor
+            ->where('is_published', true)  
             ->get();
 
         foreach ($activeDiscounts as $event) {
@@ -96,7 +96,9 @@ class EventController extends Controller
         //asa returneaza diff()   cu h, d, i
 
         // Verificăm dacă evenimentul este blocat
-        $isEventLocked = $timeUntilEventInMinutes <= 10 || $eventStart <= $now;
+       $isEventLocked = $timeUntilEventInMinutes <= 10 || $eventStart <= $now;
+      //  $isEventLocked =$eventStart <= $now;
+
 
         $qrCode = QrCodeEvent::where('event_id', $event->id)->first();
         $isParticipant = Participant::where('event_id', $event->id)
