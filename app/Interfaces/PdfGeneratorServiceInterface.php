@@ -13,6 +13,7 @@ interface PdfGeneratorServiceInterface
      */
     public function generateParticipantsListPdf(array $event, array $participants, string $filenameint, int $confirmedCount, int $notConfirmedCount, float $confirmationPercentage,int $totalParticipants): string;
     public function generateInvoicePdf(array $invoiceData, string $filename): string;
+    public function generateClientInvoicePdf(array $invoiceData, string $filename): string;
 
     /**
      * Generează un PDF cu raportul zilnic.

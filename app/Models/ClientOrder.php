@@ -24,6 +24,13 @@ class ClientOrder extends Model
         'country',
         'zip_code',
         'phone',
+        'placed_at',
+        'expedited_at',
+        'delivered_at',
+        'archived_at',
+        'is_archived',
+        'invoice_url'
+
     ];
     protected $table = 'client_orders';
 

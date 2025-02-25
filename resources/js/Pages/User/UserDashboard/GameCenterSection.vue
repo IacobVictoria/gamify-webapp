@@ -49,21 +49,23 @@ export default {
                     image: '/user_dashboard/badges.png',
                     bgColor: 'bg-[#FEE9D5]',
                     textColor: 'text-[#F45D3A]',
-                    route: 'user.calendar.index'
+                    
+                    route: 'user.dashboard.game_center.index'
                 },
                 {
                     name: 'Topul jucătorilor',
                     image: '/user_dashboard/top_players.png',
                     bgColor: 'bg-[#CDEDE5]',
                     textColor: 'text-[#06A77D]',
-                    route: 'user.calendar.index'
+                    route: 'user.dashboard.game_center.index'
                 },
                 {
                     name: 'Medaliile mele',
                     image: '/user_dashboard/medals_banner.png',
                     bgColor: 'bg-[#FAD0D2]',  // roz pastel
                     textColor: 'text-[#F28D8C]',
-                    route: 'user.calendar.index'
+                  
+                    route: 'user.dashboard.game_center.index'
                 },
                 {
                     name: 'Evenimentele mele',

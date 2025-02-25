@@ -8,8 +8,12 @@
             <div class="max-w-[90%] mx-auto sm:px-6">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="flex flex-col gap-5 px-4 m-12">
-                        <BadgeSection :badges="badges" :categories="categories"></BadgeSection>
-                        <MedalsSection :medals="medals"></MedalsSection>
+                        <div id="badges">
+                            <BadgeSection :badges="badges" :categories="categories"></BadgeSection>
+                        </div>
+                        <div id="medals">
+                            <MedalsSection :medals="medals"></MedalsSection>
+                        </div>
                         <div
                             class="your-position-container bg-gradient-to-r from-blue-500 to-teal-500 text-white p-4 rounded-xl shadow-md">
                             <div class="flex justify-between items-center">
@@ -18,23 +22,9 @@
                             </div>
                             <p class="mt-2 text-sm font-light">Your rank in the top players leaderboard</p>
                         </div>
-
-                        <PlayersTopSection :top10Players="top10Players"></PlayersTopSection>
-                        <!-- <inertia-link :href="route('user.calendar.index')">
-                            <div
-                                class="flex flex-row justify-between items-center shadow-lg rounded-xl bg-blue-200 p-6">
-                                <img :src="imagePath('/user_dashboard/event.png')" class="h-[10em] w-[10em]" />
-                                <div class="flex flex-col items-center justify-center gap-2">
-                                    <span class="text-2xl font-semibold text-blue-500">Explorăm Evenimentele Tale</span>
-                                    <p class="text-sm text-black font-light leading-tight mt-2">Detalii despre
-                                        evenimentele
-                                        selectate
-                                        și
-                                        reducerile de sezon.</p>
-                                    <img :src="imagePath('/user_dashboard/right-arrow.png')" class="w-12 mt-2" />
-                                </div>
-                            </div>
-                        </inertia-link> -->
+                        <div id="leaderboard">
+                            <PlayersTopSection :top10Players="top10Players"></PlayersTopSection>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -81,6 +71,22 @@ export default {
             position: this.yourPositionInTop,
         };
     },
+    mounted() {
+        this.scrollToSection();
+    },
+    methods: {
+        scrollToSection() {
+            const hash = window.location.hash; 
+            if (hash) {
+                this.$nextTick(() => {
+                    const section = document.querySelector(hash);
+                    if (section) {
+                        section.scrollIntoView({ behavior: "smooth" });
+                    }
+                });
+            }
+        }
+    }
 }
 </script>
 <style>

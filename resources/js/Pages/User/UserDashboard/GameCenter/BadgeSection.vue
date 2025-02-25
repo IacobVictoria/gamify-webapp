@@ -118,6 +118,7 @@ export default {
   font-weight: bold;
   text-transform: uppercase;
   background: linear-gradient(90deg, #4F46E5, #00C6FF);
+  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: 1.5px;
   margin-bottom: 30px;

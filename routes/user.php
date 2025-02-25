@@ -49,7 +49,6 @@ Route::prefix('checkout')->group(function () {
     Route::get('/', [UserCheckoutController::class, 'index'])
         ->name('checkout.index');
     Route::post('/order/store', [UserCheckoutController::class, 'store'])->name('checkout.order.store');
-    Route::get('/invoice/{orderId}', [InvoiceController::class, 'generateInvoice'])->name('checkout.invoice');
 });
 
 Route::prefix('achievements')->group(function () {

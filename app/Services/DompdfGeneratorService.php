@@ -64,5 +64,29 @@ class DompdfGeneratorService implements PdfGeneratorServiceInterface
         // Returnăm URL-ul fișierului din S3
         return Storage::disk('s3')->url($path);
     }
+    public function generateClientInvoicePdf(array $invoiceData, string $filename): string
+    {
+        $options = new Options();
+        $options->set('defaultFont', 'Arial');
+        $dompdf = new Dompdf($options);
+        $order = $invoiceData['order'];
+    
+        $html = view('invoices.client_invoice', compact('order'))->render();
+    
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        $pdfContent = $dompdf->output();
+    
+        //Salvează PDF-ul în Amazon S3
+        $clientId = $invoiceData['order']->user_id;
+        $path = "clients_invoices/{$clientId}/{$filename}";
+    
+        Storage::disk('s3')->put($path, $pdfContent, 'public');
+    
+        return Storage::disk('s3')->url($path);
+    }
+    
+
 
 }
