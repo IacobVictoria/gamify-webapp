@@ -110,17 +110,19 @@ class UserCheckoutController extends Controller
         // Lansăm job-urile pentru expediere și livrare automată
         
         //FACTURA AMAZON 
-        $filename = "invoice_{$order->id}.pdf";
-        $pdfUrl = $this->pdfGenerator->generateClientInvoicePdf(['order' => $order], $filename);
+        // $filename = "invoice_{$order->id}.pdf";
+        // $pdfUrl = $this->pdfGenerator->generateClientInvoicePdf(['order' => $order], $filename);
 
-        // ✅ Salvează URL-ul facturii în baza de date
-        $order->update(['invoice_url' => $pdfUrl]);
+        // // Salvează URL-ul facturii în baza de date
+        // $order->update(['invoice_url' => $pdfUrl]);
 
 
-        ExpediteOrderJob::dispatch($order)->delay(now()->addMinutes(1));
+        // ExpediteOrderJob::dispatch($order)->delay(now()->addMinutes(1));
 
-        $this->badgeService->shoopingBadges($user);
+        // $this->badgeService->shoopingBadges($user);
 
+        //redirect catre Plata Stripe
+        return redirect()->route('stripe.index', ['order_id' => $order->id]);
     }
     private function calculateTotal($cartItems)
     {

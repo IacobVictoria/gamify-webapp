@@ -16,7 +16,7 @@
             </td>
             <td class="width-30">
                 <h2>Invoice #{{ $order->id }}</h2>
-                <p><em>Issued on: {{ $order->placed_at->format('d-m-Y') }}</em></p>
+                <p><em>Issued on: {{ $order->placed_at}}</em></p>
             </td>
         </tr>
     </table>

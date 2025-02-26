@@ -26,7 +26,7 @@ class ExpediteOrderJob implements ShouldQueue
      */
     public function handle(): void
     {
-        if ($this->order && $this->order->status === OrderStatus::Placed->value) {
+        if ($this->order && $this->order->status === OrderStatus::Authorized->value) {
 
             $this->order->update([
                 'status' => OrderStatus::Expedited->value,

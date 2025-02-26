@@ -16,12 +16,15 @@
     @routes
     @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
     @inertiaHead
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>var stripe = Stripe('pk_test_TYooMQauvdEDq54NiTphI7jx');</script>
 </head>
 <script>
     window.settings = {
         images: "<?php echo asset('/images'); ?>",
     }
-    
+
 </script>
 
 <body class="font-sans antialiased">

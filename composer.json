@@ -9,6 +9,7 @@
         "barryvdh/laravel-dompdf": "*",
         "guzzlehttp/guzzle": "^7.9",
         "inertiajs/inertia-laravel": "^1.0",
+        "laravel/cashier": "^15.6",
         "laravel/framework": "^11.9",
         "laravel/reverb": "^1.0",
         "laravel/sanctum": "^4.0",

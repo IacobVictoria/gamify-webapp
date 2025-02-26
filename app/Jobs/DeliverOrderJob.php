@@ -37,6 +37,6 @@ class DeliverOrderJob implements ShouldQueue
             ]);
         }
         // Lansăm job pentru arhivare după 1 zi
-        ArchiveOrderJob::dispatch($this->order)->delay(now()->addMinutes(1));
+        ArchiveOrderJob::dispatch($this->order)->delay(now()->addDay());
     }
 }

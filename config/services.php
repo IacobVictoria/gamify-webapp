@@ -43,5 +43,11 @@ return [
     'discord' => [
         'webhook_url' => env('DISCORD_WEBHOOK_URL'),
     ],
+    
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+    ],
+
 
 ];

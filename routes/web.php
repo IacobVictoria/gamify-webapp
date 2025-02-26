@@ -18,6 +18,8 @@ use App\Http\Controllers\ReviewCommentLikeController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReviewLikeController;
 use App\Http\Controllers\ReviewMediaController;
+use App\Http\Controllers\StripeController;
+use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\UserSurveyController;
 use App\Http\Controllers\UserWishlistController;
 use App\Http\Controllers\WelcomeController;
@@ -92,5 +94,11 @@ Route::prefix('nps')->group(function () {
     Route::post('/form/store', [UserSurveyController::class, 'storeResults'])->name('nps.form.storeResults');
 });
 Broadcast::routes(['middleware' => ['web', 'auth']]);
+
+//STRIPE CASHIER
+Route::get('stripe',[StripeController::class,'index'])->name('stripe.index');
+Route::post('/create-payment-intent', [StripeController::class, 'createPaymentIntent'])->name('stripe.payment');
+Route::post('/confirm-payment', [StripeController::class, 'confirmPayment'])->name('stripe.confirm');
+Route::post('/cancel-payment', [StripeController::class, 'cancelPayment'])->name('stripe.cancel');
 
 require __DIR__ . '/auth.php';
