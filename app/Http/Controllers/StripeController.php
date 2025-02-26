@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderCanceledEvent;
 use App\Jobs\ExpediteOrderJob;
 use App\Models\ClientOrder;
 use App\Services\BadgeService;
 use App\Services\DompdfGeneratorService;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -14,12 +16,13 @@ use Stripe\Stripe;
 
 class StripeController extends Controller
 {
-    protected $badgeService, $pdfGenerator;
+    protected $badgeService, $pdfGenerator, $notificationService;
 
-    public function __construct(BadgeService $badgeService, DompdfGeneratorService $pdfGenerator)
+    public function __construct(BadgeService $badgeService, DompdfGeneratorService $pdfGenerator, NotificationService $notificationService)
     {
         $this->badgeService = $badgeService;
         $this->pdfGenerator = $pdfGenerator;
+        $this->notificationService = $notificationService;
     }
     public function index(Request $request)
     {
@@ -47,6 +50,7 @@ class StripeController extends Controller
     }
     public function confirmPayment(Request $request)
     {
+        $user = Auth()->user();
         $order = ClientOrder::findOrFail($request->order_id);
 
         if ($order) {
@@ -60,7 +64,7 @@ class StripeController extends Controller
             $order->update(['invoice_url' => $pdfUrl]);
 
             // Lansăm job-ul pentru expediere
-            ExpediteOrderJob::dispatch($order)->delay(now()->addMinutes(1));
+            ExpediteOrderJob::dispatch($order, $user)->delay(now()->addMinutes(1));
 
             $this->badgeService->shoopingBadges($order->user);
 
@@ -71,9 +75,11 @@ class StripeController extends Controller
     }
     public function cancelPayment(Request $request)
     {
+        $user = Auth()->user();
         $order = ClientOrder::findOrFail($request->order_id);
         $order->update(['status' => 'Canceled']); //Marcăm comanda ca anulată
 
+        broadcast(new OrderCanceledEvent($user, $order, $this->notificationService));
         return response()->json(['message' => 'Payment canceled']);
     }
 

@@ -65,6 +65,16 @@ export default {
                 .listen('.UserMedalAwarded', (event) => {
                     this.addNotification('New medal!', event.message);
                 });
+            window.Echo.private(`user.${user.id}`).listen('.OrderDelivered', (event) => {
+                this.addNotification('Order Delivered!', event.message);
+            });
+            window.Echo.private(`user.${user.id}`).listen('.OrderCanceled', (event) => {
+                this.addNotification('Order Canceled!', event.message);
+            });
+            window.Echo.private(`user.${user.id}`).listen('.OrderExpedited', (event) => {
+                this.addNotification('Order Expedited!', event.message);
+            });
+
             window.Echo.private(`user_newDiscount.${user.id}`).listen('.DiscountApplied', (event) => {
                 this.addNotification('New discount', event.message)
             });

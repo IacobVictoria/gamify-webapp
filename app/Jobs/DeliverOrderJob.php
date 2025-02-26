@@ -3,7 +3,10 @@
 namespace App\Jobs;
 
 use App\Enums\OrderStatus;
+use App\Events\OrderDeliveredEvent;
 use App\Models\ClientOrder;
+use App\Models\User;
+use App\Services\NotificationService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
@@ -14,14 +17,15 @@ class DeliverOrderJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $order;
+    protected $order, $user;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(ClientOrder $order)
+    public function __construct(ClientOrder $order, User $user)
     {
         $this->order = $order;
+        $this->user = $user;
     }
 
     /**
@@ -35,8 +39,13 @@ class DeliverOrderJob implements ShouldQueue
                 'status' => OrderStatus::Delivered,
                 'delivered_at' => now(),
             ]);
+
+            $notificationService = app(NotificationService::class);
+
+            broadcast(new OrderDeliveredEvent($this->user, $this->order, $notificationService));
+            // Lansăm job pentru arhivare după 1 zi
+            ArchiveOrderJob::dispatch($this->order)->delay(now()->addDay());
         }
-        // Lansăm job pentru arhivare după 1 zi
-        ArchiveOrderJob::dispatch($this->order)->delay(now()->addDay());
+
     }
 }
