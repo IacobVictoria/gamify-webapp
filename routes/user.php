@@ -11,6 +11,7 @@ use App\Http\Controllers\OpenAiController;
 use App\Http\Controllers\QrScannerController;
 use App\Http\Controllers\ReviewCommentController;
 use App\Http\Controllers\ReviewLikeController;
+use App\Http\Controllers\ShoppingCenterController;
 use App\Http\Controllers\UserCalendarController;
 use App\Http\Controllers\UserChatController;
 use App\Http\Controllers\UserCheckoutController;
@@ -119,3 +120,6 @@ Route::prefix('hangmanGame')->group(function () {
     Route::post('/{sessionId}/submitWord', [HangmanGameController::class, 'submitWord'])->name('hangman.game.submitWord');
     Route::post('/{sessionId}/guess', [HangmanGameController::class, 'handleGuess'])->name('hangman.game.handleGuess');
 });
+
+//Shopping Center
+Route::get('shopping-center',[ShoppingCenterController::class,'index'])->name('shopping-center.index');

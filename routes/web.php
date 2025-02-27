@@ -18,6 +18,7 @@ use App\Http\Controllers\ReviewCommentLikeController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReviewLikeController;
 use App\Http\Controllers\ReviewMediaController;
+use App\Http\Controllers\ShoppingCenterController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\UserSurveyController;

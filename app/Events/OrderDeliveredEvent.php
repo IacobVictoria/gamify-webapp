@@ -63,6 +63,8 @@ class OrderDeliveredEvent implements ShouldBroadcastNow
     {
         return [
             'message' => "Comanda ta (#{$this->order->id}) a fost livrată cu succes! 🎉",
+            'order_id' => $this->order->id,
+             'order_status'=>'Delivered'
         ];
     }
 }

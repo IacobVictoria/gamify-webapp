@@ -51,6 +51,14 @@
                                     class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
                                     {{ showDetails[index] ? 'Ascunde' : 'Afișează' }} detalii
                                 </button>
+                                <div v-if="authUserHasRole('User')" class="mt-2">
+                                    <template v-if="invoice === 'client'">
+                                        <button v-if="item.invoice_url" @click="viewInvoice(item.invoice_url)"
+                                            class="mt-2 bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition">
+                                            Vezi Factura
+                                        </button>
+                                    </template>
+                                </div>
                     </div>
 
                     <div v-if="authUserHasRole('Admin')" class="mt-2">
@@ -81,7 +89,7 @@
                                     <div v-for="information in extraLabel" :key="information.name"
                                         class="flex flex-col justify-between">
                                         <span class="text-gray-600 font-medium">{{ information.label
-                                        }}:</span>
+                                            }}:</span>
                                         <span class="text-gray-800 font-semibold">{{
                                             item.extra[information.name] }}</span>
                                     </div>
@@ -94,9 +102,9 @@
                                             <template v-for="label in detailsLabel" :key="label.name">
                                                 <div class="flex justify-between">
                                                     <strong class="text-gray-600">{{ label.label
-                                                    }}:</strong>
+                                                        }}:</strong>
                                                     <span class="text-gray-800">{{ detail[label.name]
-                                                    }}</span>
+                                                        }}</span>
                                                 </div>
                                             </template>
                                         </div>
@@ -204,7 +212,10 @@ export default {
         openDialog(item) {
             this.isDeleteDialogOpen = !this.isDeleteDialogOpen;
             this.itemToDelete = item.id;
-        }
+        },
+        viewInvoice(url) {
+            window.open(url, '_blank'); 
+        },
 
     }
 };

@@ -64,6 +64,8 @@ class OrderExpeditedEvent implements ShouldBroadcastNow
     {
         return [
             'message' => "Comanda ta (#{$this->order->id}) a fost expediată și este în drum spre tine! 🚚",
+            'order_id' => $this->order->id,
+            'order_status' => 'Expedited'
         ];
     }
 }
