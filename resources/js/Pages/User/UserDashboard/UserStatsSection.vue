@@ -18,23 +18,28 @@
 
 export default {
     name: 'UserStatsSection',
-
+    props: {
+        user: {
+            type: Object,
+            required: true
+        }
+    },
     data() {
         return {
             stats: [
                 {
                     name: 'Puncte',
-                    value: 255,
+                    value: this.user.score,
                     image: '/user_dashboard/points.png'
                 },
                 {
                     name: 'Loc',
-                    value: '#5',
+                    value: this.user.position_leaderboard,
                     image: '/user_dashboard/podium.png'
                 },
                 {
                     name: 'Insigne',
-                    value: 12,
+                    value: this.user.nr_badges,
                     image: '/user_dashboard/small_badge.png'
                 }
             ]

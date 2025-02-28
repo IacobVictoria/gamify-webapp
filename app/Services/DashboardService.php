@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\Survey;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use function Aws\map;
 
 class DashboardService
 {
@@ -22,60 +23,18 @@ class DashboardService
     public function getUserDashboardData()
     {
         $user = Auth::user();
-
-        $numberOfOrders = $user->orders()->count();
-
-        $orderProducts = $user->orders()
-            ->with('products')
-            ->get();
-
-        $topProducts = $orderProducts
-            ->flatMap(function ($order) {
-                return $order->products;
-            })
-            ->groupBy('id')
-            ->map(function ($group) {
-                return [
-                    'name' => $group->first()->name,
-                    'quantity' => $group->sum('pivot.quantity'),
-                ];
-            })
-            ->sortByDesc('quantity')
-            ->take(3)
-            ->values();
-
-        $chartData = [
-            'labels' => $topProducts->pluck('name')->toArray(),
-            'data' => $topProducts->pluck('quantity')->toArray(),
-        ];
-
-        //evolution with scores and scans
-
-        $scans = QrCodeScan::where('user_id', $user->id)
-            ->with('product')
-            ->get();
-        $scores = $scans->groupBy(function ($scan) {
-            return \Carbon\Carbon::parse($scan->scanned_at)->format('Y-m-d');
-        })
-            ->map(function ($scans) {
-                return $scans->sum(function ($scan) {
-                    return $scan->product->score;
-                });
-            });
-
-        $scoreEvolution = $scores->map(function ($score, $date) {
-            return [
-                'date' => $date,
-                'score' => $score,
-            ];
-        })->values();
+        $userScore = $user->score;
+        $yourPositionInTop = User::where('score', '>', $userScore)->count() + 1;
 
         return [
-            'numberOfOrders' => $numberOfOrders,
-            'topProducts' => $topProducts,
-            'chartData' => $chartData,
-            'scoreEvolution' => $scoreEvolution
-
+            'account' => [
+                'name' => $user->name,
+                'score' => $userScore,
+                'nr_badges' => $user->badges()->count(),
+                'position_leaderboard' => $yourPositionInTop,
+               
+                'gender' => $user->gender
+            ]
         ];
     }
 
@@ -98,7 +57,7 @@ class DashboardService
             'productsNumber' => Product::all()->count(),
             'badges' => Badge::all(),
             'badgesNumber' => Badge::all()->count(),
-            'nps' => $nps, 
+            'nps' => $nps,
             'monthlyNpsData' => $monthlyNpsData,
         ];
     }
