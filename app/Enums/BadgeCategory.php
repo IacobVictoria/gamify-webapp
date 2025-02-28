@@ -11,4 +11,5 @@ enum BadgeCategory: string
     case EVENT = 'event';
     case QUIZ_LEADERBOARD = 'quiz-leaderboard';
     case HANGMAN = 'hangman';
+    case LEADERBOARD = 'leaderboard';
 }

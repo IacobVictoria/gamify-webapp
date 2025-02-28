@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Events\UserMadeLeaderboardEvent;
+use App\Events\UserMadeLeaderboardQuizEvent;
 use App\Models\QuizLeaderboardHistory;
 use App\Models\User;
 use App\Services\BadgeService;
@@ -64,7 +64,7 @@ class CalculateWeeklyLeaderboard extends Command
                     'points' => $this->getPointsForRank($rank),
                 ]);
                 $this->badgeService->quizLeaderboardBadges($user);
-                broadcast(new UserMadeLeaderboardEvent($user, $this->notificationService));
+                broadcast(new UserMadeLeaderboardQuizEvent($user, $this->notificationService));
             }
         }
     }

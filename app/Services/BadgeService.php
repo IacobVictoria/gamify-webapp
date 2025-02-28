@@ -21,7 +21,7 @@ class BadgeService implements BadgeServiceInterface
         $this->userScoreService = $service;
         $this->notificationService = $notificationService;
     }
-//reviewer
+    //reviewer
     public function reviewerBadges(?User $user)
     {
         if (!$user) {
@@ -34,18 +34,18 @@ class BadgeService implements BadgeServiceInterface
         $this->awardTrustedReviewerBadge($user);
         $this->awardPioneerBadge($user);
     }
-//commenter
+    //commenter
     public function commenterBadges(?User $user)
     {
         $this->awardActiveCommenterBadge($user);
     }
-//shopping
+    //shopping
     public function shoopingBadges(?User $user)
     {
         $this->awardActiveShoppingBadge($user);
         $this->awardMonthlyShoppingBadge($user);
     }
-//quiz
+    //quiz
     public function quizBadges(?User $user)
     {
         $this->awardQuizPerfectScore($user);
@@ -53,7 +53,7 @@ class BadgeService implements BadgeServiceInterface
         $this->awardQuizEnthusiastBadge($user);
         $this->awardQuizExplorerBadge($user);
     }
-//event
+    //event
     public function eventBadges(?User $user)
     {
         if (!$user) {
@@ -63,7 +63,7 @@ class BadgeService implements BadgeServiceInterface
 
         $this->awardThreeEventsParticipationBadge($user);
     }
-//quiz-leaderboard
+    //quiz-leaderboard
     public function quizLeaderboardBadges(?User $user)
     {
         if (!$user) {
@@ -85,6 +85,43 @@ class BadgeService implements BadgeServiceInterface
         $this->perfectGuesserHangmanGame($user);
         $this->nearPerfectGuesserHangmanGame($user);
     }
+    public function leaderboardBadges(?User $user)
+    {
+        if (!$user) {
+            return;
+        }
+
+        $userPosition = User::where('score', '>', $user->score)->count() + 1;
+
+        $this->awardPodiumWinnerBadge($user, $userPosition);
+        $this->awardTop10Badge($user, $userPosition);
+        $this->awardElitePlayerBadge($user);
+    }
+
+    // Insignă pentru podium (Top 3)
+    private function awardPodiumWinnerBadge(User $user, int $userPosition)
+    {
+        if ($userPosition <= 3 && !$user->badges()->where('name', 'Podium Winner')->exists()) {
+            $this->assignBadge($user, 'Podium Winner');
+        }
+    }
+
+    // Insignă pentru Top 10
+    private function awardTop10Badge(User $user, int $userPosition)
+    {
+        if ($userPosition <= 10 && !$user->badges()->where('name', 'Rising Star')->exists()) {
+            $this->assignBadge($user, 'Rising Star');
+        }
+    }
+
+    //Insignă pentru Elite Player (scor mare)
+    private function awardElitePlayerBadge(User $user)
+    {
+        if ($user->score >= 1000 && !$user->badges()->where('name', 'Elite Player')->exists()) {
+            $this->assignBadge($user, 'Elite Player');
+        }
+    }
+
 
     public function awardTopReviewerBadge(User $user)
     {

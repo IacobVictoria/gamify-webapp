@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+use App\Events\LeaderboardTop10Event;
 use App\Events\UserMedalAwardedEvent;
 use App\Events\UserScoreUpdatedEvent;
 use App\Interfaces\UserScoreInterface;
@@ -22,9 +23,25 @@ class UserScoreService implements UserScoreInterface
         // Verificăm dacă utilizatorul este eligibil pentru medalie
         //fac un broadcast pentru ca punctele se primesc si din badges si atunci ar fi bine sa emitem partea asta nu sa o rendaruim la o pagina anume
         //el primeste puncte si daca nu face nimic cum ar fi la badge urile de "like uri" el doar primeste like uri 
+
+        // Poziția înainte de actualizarea scorului
+        $previousPosition = User::where('score', '>', $user->score)->count() + 1;
+
+        // Verificăm dacă a intrat în Top 10 și notificăm
+        $this->checkAndNotifyLeaderboardEntry($user, $previousPosition);
+        
         $this->checkAndAwardMedal($user);
         broadcast(new UserScoreUpdatedEvent($user, $score, "Ai primit " . $score . " !", $this->notificationService));
 
+    }
+    protected function checkAndNotifyLeaderboardEntry(User $user, int $previousPosition)
+    {
+        $newPosition = User::where('score', '>', $user->score)->count() + 1;
+
+        // Dacă noua poziție este mai mică decât cea anterioară și este în Top 10, emitem evenimentul
+        if ($newPosition < $previousPosition && $newPosition <= 10) {
+            broadcast(new LeaderboardTop10Event($user, $newPosition, $this->notificationService));
+        }
     }
     protected function checkAndAwardMedal(User $user)
     {
