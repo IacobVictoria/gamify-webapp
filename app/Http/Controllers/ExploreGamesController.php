@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HangmanSession;
 use App\Models\UserQuizResponse;
 use App\Models\UserQuizResult;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ class ExploreGamesController extends Controller
     public function index()
     {
         return Inertia::render('User/UserDashboard/ExploreGames/Index', [
-         
+
         ]);
     }
 
@@ -78,6 +79,37 @@ class ExploreGamesController extends Controller
         ]);
     }
 
+    public function historyHangman()
+    {
+        $user = Auth()->user();
+        $userResults = HangmanSession::where('creator_id', $user->id)
+            ->orWhere('opponent_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($session) use ($user) {
+                return [
+                    'id' => $session->id,
+                    'is_creator' => $session->creator_id == $user->id,
+                    'is_opponent' => $session->opponent_id == $user->id,
+                    'creator_id' => $session->creator_id,
+                    'opponent_id' => $session->opponent_id,
+                    'creator_name' => $session->creator->name,
+                    'opponent_name' => $session->opponent->name,
+                    'word_for_creator' => $session->word_for_creator,
+                    'word_for_opponent' => $session->word_for_opponent,
+                    'hint_for_creator' => $session->hint_for_creator,
+                    'hint_for_opponent' => $session->hint_for_opponent,
+                    'mistakes_creator' => $session->mistakes_creator,
+                    'mistakes_opponent' => $session->mistakes_opponent,
+                    'scores' => json_decode($session->scores, true),
+                    'updated_at' => $session->updated_at
+                ];
+            });
+
+        return Inertia::render('User/UserDashboard/ExploreGames/HangmanHistory', [
+            'userResults' => $userResults
+        ]);
+    }
     /**
      * Update the specified resource in storage.
      */

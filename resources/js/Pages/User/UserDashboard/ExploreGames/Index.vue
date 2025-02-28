@@ -58,7 +58,7 @@
                                 class="archive-link">
                                 📊 Check your Quiz scores
                             </inertia-link>
-                            <inertia-link :href="route('user.dashboard.explore-games.historyQuiz')"
+                            <inertia-link :href="route('user.dashboard.explore-games.historyHangman')"
                                 class="archive-link">
                                 🎯 Check your Hangman scores
                             </inertia-link>

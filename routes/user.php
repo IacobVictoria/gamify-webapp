@@ -34,6 +34,9 @@ Route::prefix('dashboard')->group(function () {
     Route::get('/explore-games/history-quizzes', [ExploreGamesController::class, 'historyQuiz'])->name('dashboard.explore-games.historyQuiz');
     Route::get('/explore-games/quiz-results/{quizId}', [ExploreGamesController::class, 'show'])
         ->name('dashboard.explore-games.show');
+
+    Route::get('/explore-games/history-hangman', [ExploreGamesController::class, 'historyHangman'])->name('dashboard.explore-games.historyHangman');
+
 });
 
 Route::prefix('shopping-cart')->group(function () {
@@ -119,7 +122,8 @@ Route::prefix('hangmanGame')->group(function () {
     Route::post('/{sessionId}/start', [HangmanGameController::class, 'startGame'])->name('hangman.game.start');
     Route::post('/{sessionId}/submitWord', [HangmanGameController::class, 'submitWord'])->name('hangman.game.submitWord');
     Route::post('/{sessionId}/guess', [HangmanGameController::class, 'handleGuess'])->name('hangman.game.handleGuess');
+    Route::get('/word-options', [HangmanGameController::class, 'getWordOptions'])->name('hangman.game.getWordOptions');
 });
 
 //Shopping Center
-Route::get('shopping-center',[ShoppingCenterController::class,'index'])->name('shopping-center.index');
+Route::get('shopping-center', [ShoppingCenterController::class, 'index'])->name('shopping-center.index');

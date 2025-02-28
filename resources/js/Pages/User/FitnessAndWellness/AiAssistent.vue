@@ -1,6 +1,6 @@
 <template>
-    <div class="min-h-screen flex items-center justify-center bg-gray-100 py-10">
-        <div class="w-full m-40 ai-assistant-container shadow rounded-lg p-6">
+    <div class="min-h-screen flex items-center justify-center py-10">
+        <div class="w-full ml-40 mr-40 ai-assistant-container shadow rounded-lg p-6">
             <div class="chat-section">
 
                 <div class="robot-container">

@@ -11,14 +11,25 @@
                         <span v-if="$page.props.user.id === turnData">Your turn</span>
                         <span v-else>Opponent's turn</span>
                     </p>
-                    <button v-if="$page.props.user.id === creatorId && !gameStart" @click="startGame" class="btn btn-primary mt-3">
+                    <button v-if="$page.props.user.id === creatorId && !gameStart" @click="startGame"
+                        class="btn btn-primary mt-3">
                         Start Game
                     </button>
                 </div>
                 <div v-else class="waiting-for-opponent">
                     <h3>Waiting for Opponent...</h3>
                 </div>
-                <div v-if="gameStart">
+                <!-- Alegerea cuvântului -->
+                <div v-if="!wordSelected && gameStart" class="word-selection">
+                    <h3>Select a Word for Your Opponent</h3>
+                    <div class="word-options">
+                        <button v-for="(option, index) in wordOptions" :key="index" @click="submitWord(option)"
+                            class="word-button">
+                            {{ option.word }}
+                        </button>
+                    </div>
+                </div>
+                <div v-if="gameStart && wordSelected">
                     <HangmanDrawing :mistakes="errors" :maxMistakes="Math.ceil(currentWord.length / 2)" />
                     <GameBoard :isMyTurn="$page.props.user.id === turnData" :hint="currentHint" :word="currentWord"
                         :usedLetters="usedLetters" :correctLetters="correctLetters" :wrongLetters="wrongLetters"
@@ -88,6 +99,8 @@ export default {
             correctLetters: [],
             wrongLetters: [],
             errors: 0,
+            wordOptions: [], // Cele 3 opțiuni de cuvinte
+            wordSelected: false
         };
     },
     methods: {
@@ -148,37 +161,28 @@ export default {
                 alert("Failed to start the game.");
             }
         },
-        showEnterWordPopup() {
-            Swal.fire({
-                title: "Enter your word and hint",
-                html: `
-                <input id="swal-input-word" class="swal2-input" placeholder="Enter a word">
-                <input id="swal-input-hint" class="swal2-input" placeholder="Enter a hint">
-            `,
-                showCancelButton: false,
-                confirmButtonText: "Submit",
-                confirmButtonColor: "#2e7d32",
-                preConfirm: () => {
-                    const word = document.getElementById("swal-input-word").value;
-                    const hint = document.getElementById("swal-input-hint").value;
+        async loadWordOptions() {
+            try {
+                const response = await axios.get(`/user/hangmanGame/word-options`);
 
-                    if (!word || !hint) {
-                        Swal.showValidationMessage("Please enter both a word and a hint!");
-                    }
-                    return { word, hint };
-                },
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.submitWord(result.value.word, result.value.hint);
+                // Verifică dacă userul curent este creatorul
+                if (this.$page.props.user.id === this.creatorId) {
+                    this.wordOptions = response.data.creatorWords;
+                } else {
+                    this.wordOptions = response.data.opponentWords;
                 }
-            });
-        },
-        async submitWord(word, hint) {
+            } catch (error) {
+                console.error("Error loading words:", error);
+            }
+        }
+        ,
+
+        async submitWord(word) {
             try {
                 await axios.post(`/user/hangmanGame/${this.sessionId}/submitWord`, {
                     word,
-                    hint,
                 });
+                this.wordSelected = true;
                 alert("Word and hint submitted successfully!");
             } catch (error) {
                 console.error("Error submitting word and hint:", error);
@@ -211,6 +215,32 @@ export default {
                 console.error("Error handling guess:", error);
             }
         },
+        showEnterWordPopup() {
+            Swal.fire({
+                title: "Choose a Word",
+                html: `
+                <p>Select a word for your opponent:</p>
+                <div id="swal-word-options"></div>
+            `,
+                showCancelButton: false,
+                confirmButtonText: "OK",
+                confirmButtonColor: "#2e7d32",
+                didOpen: () => {
+                    const wordOptionsContainer = document.getElementById("swal-word-options");
+                    this.wordOptions.forEach((word, index) => {
+                        const button = document.createElement("button");
+                        button.innerText = word.word;
+                        button.className = "swal2-confirm swal2-styled";
+                        button.style.margin = "5px";
+                        button.onclick = () => {
+                            this.submitWord(word.word);
+                            Swal.close();
+                        };
+                        wordOptionsContainer.appendChild(button);
+                    });
+                },
+            });
+        },
         updateCurrentWordAndHint() {
             if (this.turnData === this.creatorId) {
                 this.currentWord = this.creatorWord;
@@ -231,7 +261,8 @@ export default {
                 this.bothConnected = true;
             });
         window.Echo.private(`hangman-session.${this.sessionId}`)
-            .listen(".GameStarted", () => {
+            .listen(".GameStarted", async () => {
+                await this.loadWordOptions();
                 this.showEnterWordPopup();
             });
         window.Echo.private(`hangman-session.${this.sessionId}`)
@@ -382,5 +413,4 @@ export default {
     margin-bottom: 20px;
     font-size: 28px;
 }
-
 </style>

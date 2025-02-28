@@ -14,6 +14,7 @@ use App\Services\UserScoreService;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class HangmanGameController extends Controller
@@ -99,7 +100,13 @@ class HangmanGameController extends Controller
         $user = Auth::user();
 
         $word = $request->input('word');
-        $hint = $request->input('hint');
+
+        // Citim JSON-ul pentru a găsi hint-ul asociat
+        $wordData = Storage::disk('s3')->get('hangman/word_options.json');
+        $words = json_decode($wordData, true);
+
+        // Căutăm hint-ul pentru cuvântul selectat
+        $hint = collect($words)->firstWhere('word', $word)['hint'] ?? "No hint available";
 
         if ($user->id === $session->creator_id) {
             $session->word_for_opponent = $word;
@@ -276,10 +283,10 @@ class HangmanGameController extends Controller
                     ]
                 ]);
                 broadcast(new GameEnded($session->id, json_decode($session->scores, true)));
-                    $this->userScoreService->awardPointsBasedOnHangmanScore($creator, $scores['creator']);
-                    $this->badgeService->hangmanGameBadges($creator);   
-                    $this->badgeService->hangmanGameBadges($opponent);
-                    $this->userScoreService->awardPointsBasedOnHangmanScore($opponent, $scores['opponent']);
+                $this->userScoreService->awardPointsBasedOnHangmanScore($creator, $scores['creator']);
+                $this->badgeService->hangmanGameBadges($creator);
+                $this->badgeService->hangmanGameBadges($opponent);
+                $this->userScoreService->awardPointsBasedOnHangmanScore($opponent, $scores['opponent']);
             }
 
             $session->save();
@@ -306,6 +313,24 @@ class HangmanGameController extends Controller
         ];
     }
 
+    public function getWordOptions()
+    {
+        // În AWS S3 ai un JSON cu cuvinte și hint-uri
+        $wordData = Storage::disk('s3')->get('hangman/word_options.json');
+        $words = json_decode($wordData, true);
+
+        // Amestecă lista de cuvinte
+        shuffle($words);
+
+        // Selectează primele 6 cuvinte și împarte-le între jucători
+        $creatorWords = array_slice($words, 0, 3);
+        $opponentWords = array_slice($words, 4, 3);
+
+        return response()->json([
+            'creatorWords' => $creatorWords,
+            'opponentWords' => $opponentWords,
+        ]);
+    }
 
 
 }

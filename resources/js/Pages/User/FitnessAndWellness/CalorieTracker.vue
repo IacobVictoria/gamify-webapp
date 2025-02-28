@@ -1,6 +1,6 @@
 <template>
-    <div class="min-h-screen flex items-center justify-center bg-gray-100 py-10">
-        <div class="w-full m-40 bg-white shadow rounded-lg p-6">
+    <div class="min-h-screen flex items-center justify-center py-10">
+        <div class="w-full mr-40 ml-40 bg-white shadow rounded-lg p-6">
 
             <h1 class="text-center text-2xl font-bold mb-8">Calorie Calculator</h1>
 
