@@ -75,6 +75,10 @@ export default {
                 this.addNotification('Order Expedited!', event.message);
             });
 
+            window.Echo.private(`user.${user.id}`).listen('.UserEligibleForDiscount', (event) => {
+                this.addNotification('Ready for bonus!', event.message);
+            });
+
             window.Echo.private(`user_newDiscount.${user.id}`).listen('.DiscountApplied', (event) => {
                 this.addNotification('New discount', event.message)
             });

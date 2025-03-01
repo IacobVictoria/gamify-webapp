@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\DiscountService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ShoppingCenterController extends Controller
 {
+    protected $discountService;
+
+    public function __construct(DiscountService $discountService)
+    {
+        $this->discountService = $discountService;
+    }
+
     public function index(Request $request)
     {
         $user = Auth::user();
@@ -60,10 +68,12 @@ class ShoppingCenterController extends Controller
             ];
         })->toArray();
 
+        $discounts= $this->discountService->getAvailableDiscounts($user);
         return Inertia::render('User/UserDashboard/ShoppingCenter/Index', [
             'orders' => $archivedOrders,
             'activeOrders' => $activeOrders,
             'prevFilters' => $filters,
+            'discounts'=>$discounts
         ]);
     }
 }

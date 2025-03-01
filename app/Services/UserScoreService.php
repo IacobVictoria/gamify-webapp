@@ -11,10 +11,14 @@ use App\Models\User;
 class UserScoreService implements UserScoreInterface
 {
     protected $notificationService;
+    protected $discountService, $medalService, $leaderboardService;
 
-    public function __construct(NotificationService $notificationService)
+    public function __construct(NotificationService $notificationService, DiscountService $discountService, MedalService $medalService, LeaderboardService $leaderboardService)
     {
         $this->notificationService = $notificationService;
+        $this->discountService = $discountService;
+        $this->medalService = $medalService;
+        $this->leaderboardService = $leaderboardService;
     }
     public function addScore(User $user, $score)
     {
@@ -27,48 +31,17 @@ class UserScoreService implements UserScoreInterface
         // Poziția înainte de actualizarea scorului
         $previousPosition = User::where('score', '>', $user->score)->count() + 1;
 
-        // Verificăm dacă a intrat în Top 10 și notificăm
-        $this->checkAndNotifyLeaderboardEntry($user, $previousPosition);
-        
-        $this->checkAndAwardMedal($user);
+        // verificare leaderboard
+        $this->leaderboardService->checkAndNotifyLeaderboardEntry($user, $previousPosition);
+
+        // verificare discounturi
+        $this->discountService->checkAndNotifyBonusAvailability($user);
+
+        // acordare medalii
+        $this->medalService->checkAndAwardMedal($user);
+
         broadcast(new UserScoreUpdatedEvent($user, $score, "Ai primit " . $score . " !", $this->notificationService));
 
-    }
-    protected function checkAndNotifyLeaderboardEntry(User $user, int $previousPosition)
-    {
-        $newPosition = User::where('score', '>', $user->score)->count() + 1;
-
-        // Dacă noua poziție este mai mică decât cea anterioară și este în Top 10, emitem evenimentul
-        if ($newPosition < $previousPosition && $newPosition <= 10) {
-            broadcast(new LeaderboardTop10Event($user, $newPosition, $this->notificationService));
-        }
-    }
-    protected function checkAndAwardMedal(User $user)
-    {
-        $score = $user->score;
-        $existingMedals = $user->medals->pluck('tier')->toArray();
-
-        // Lista medaliilor pe care le poate primi
-        $medals = [
-            'bronze' => 50,
-            'silver' => 100,
-            'gold' => 300
-        ];
-        //să primească toate medaliile pentru care devine eligibil, chiar dacă sare peste anumite praguri
-
-        foreach ($medals as $tier => $threshold) {
-            if ($score >= $threshold && !in_array($tier, $existingMedals)) {
-                $this->awardMedal($user, $tier);
-            }
-        }
-    }
-    protected function awardMedal(User $user, string $tier)
-    {
-        $medal = Medal::where('tier', $tier)->first();
-        if ($medal) {
-            $user->medals()->attach($medal->id);
-        }
-        broadcast(new UserMedalAwardedEvent($user, $medal, $this->notificationService));
     }
 
     public function updateScore(User $user, $score)

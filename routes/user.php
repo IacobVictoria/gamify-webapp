@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AchievementController;
+use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\ExploreGamesController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\HangmanGameController;
@@ -127,3 +128,7 @@ Route::prefix('hangmanGame')->group(function () {
 
 //Shopping Center
 Route::get('shopping-center', [ShoppingCenterController::class, 'index'])->name('shopping-center.index');
+
+//Discount Center
+Route::post('/redeem-discount', [DiscountController::class, 'redeemDiscount']);
+Route::get('/discounts', [DiscountController::class, 'getUserDiscounts']);

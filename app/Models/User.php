@@ -29,6 +29,8 @@ class User extends Authenticatable
         'score',
         'location',
         'birthdate',
+        'used_discounts'
+
     ];
 
     /**

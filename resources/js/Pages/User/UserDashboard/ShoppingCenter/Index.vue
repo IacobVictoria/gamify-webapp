@@ -7,6 +7,8 @@
         <div class="py-12">
             <div class="max-w-[90%] mx-auto sm:px-6">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <!-- Noua secțiune Bonus -->
+                    <BonusSection :discounts="discounts"></BonusSection>
                     <IngoingOrdersSection :activeOrders="activeOrders"></IngoingOrdersSection>
                     <OrdersArchive :orders="orders" :prev-filters="prevFilters"></OrdersArchive>
                 </div>
@@ -18,11 +20,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import OrdersArchive from './OrdersArchive.vue';
 import IngoingOrdersSection from './IngoingOrdersSection.vue'
+import BonusSection from './BonusSection.vue';
 export default {
     components: {
         AuthenticatedLayout,
         OrdersArchive,
-        IngoingOrdersSection
+        IngoingOrdersSection,
+        BonusSection
     },
     props: {
         orders: {
@@ -34,6 +38,10 @@ export default {
             required: true
         },
         activeOrders:{
+            type: Array,
+            required: true,
+        },
+        discounts:{
             type: Array,
             required: true,
         }
