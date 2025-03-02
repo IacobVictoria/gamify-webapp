@@ -130,5 +130,6 @@ Route::prefix('hangmanGame')->group(function () {
 Route::get('shopping-center', [ShoppingCenterController::class, 'index'])->name('shopping-center.index');
 
 //Discount Center
-Route::post('/redeem-discount', [DiscountController::class, 'redeemDiscount']);
 Route::get('/discounts', [DiscountController::class, 'getUserDiscounts']);
+Route::post('/validate-discount', [DiscountController::class, 'validatePromo']);
+

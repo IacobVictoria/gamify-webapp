@@ -8,6 +8,7 @@ use App\Jobs\ExpediteOrderJob;
 use App\Models\ClientOrder;
 use App\Models\OrderProduct;
 use App\Models\Product;
+use App\Models\User;
 use App\Services\BadgeService;
 use App\Services\DompdfGeneratorService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -69,7 +70,7 @@ class UserCheckoutController extends Controller
         $order = ClientOrder::create([
             'id' => Uuid::uuid(),
             'user_id' => $user->id,
-            'total_price' => $this->calculateTotal($validatedData['cartItems']),
+            'total_price' => $this->calculateTotal($validatedData['cartItems'], $validatedData['discountAmount'] ?? 0),
             'status' => $status,
             'email' => $validatedData['email'],
             'first_name' => $validatedData['firstName'],
@@ -82,6 +83,8 @@ class UserCheckoutController extends Controller
             'zip_code' => $validatedData['code'],
             'phone' => $validatedData['phone'],
             'placed_at' => null,
+            'promo_code' => $validatedData['promoCode'] ?? null, // Salvează codul promoțional
+            'discount_amount' => $validatedData['discountAmount'] ?? 0,
         ]);
 
         if ($status === OrderStatus::Pending) {
@@ -105,36 +108,28 @@ class UserCheckoutController extends Controller
             'status' => OrderStatus::Placed,
             'placed_at' => now(),
         ]);
-        //este pending cat timp pun produse in ea 
-        //aici sa fac comanda placed
-        // Lansăm job-urile pentru expediere și livrare automată
-        
-        //FACTURA AMAZON 
-        // $filename = "invoice_{$order->id}.pdf";
-        // $pdfUrl = $this->pdfGenerator->generateClientInvoicePdf(['order' => $order], $filename);
-
-        // // Salvează URL-ul facturii în baza de date
-        // $order->update(['invoice_url' => $pdfUrl]);
-
-
-        // ExpediteOrderJob::dispatch($order)->delay(now()->addMinutes(1));
-
-        // $this->badgeService->shoopingBadges($user);
 
         //redirect catre Plata Stripe
         return redirect()->route('stripe.index', ['order_id' => $order->id]);
     }
-    private function calculateTotal($cartItems)
+    private function calculateTotal($cartItems, $discountAmount = 0)
     {
         $total = 0;
         foreach ($cartItems as $item) {
-            $product = Product::findOrFail($item['product']['id']); // Găsim produsul
-            $total += $product->price * $item['quantity']; // Calculăm prețul total
+            $product = Product::findOrFail($item['product']['id']);
+            $total += $product->price * $item['quantity'];
         }
         $total += 5; //taxes
         $total += 10; //shipping fee
-        return $total;
+
+        // Aplicăm reducerea dacă există
+        if ($discountAmount > 0) {
+            $total -= ($total * $discountAmount) / 100;
+        }
+
+        return max(0, $total); // Ne asigurăm că totalul nu devine negativ
     }
+
 
 
     //ORDER INVOICE PDF

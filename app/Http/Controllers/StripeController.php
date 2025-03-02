@@ -6,6 +6,7 @@ use App\Events\OrderCanceledEvent;
 use App\Jobs\ExpediteOrderJob;
 use App\Models\ClientOrder;
 use App\Services\BadgeService;
+use App\Services\DiscountService;
 use App\Services\DompdfGeneratorService;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
@@ -16,13 +17,14 @@ use Stripe\Stripe;
 
 class StripeController extends Controller
 {
-    protected $badgeService, $pdfGenerator, $notificationService;
+    protected $badgeService, $pdfGenerator, $notificationService, $discountService;
 
-    public function __construct(BadgeService $badgeService, DompdfGeneratorService $pdfGenerator, NotificationService $notificationService)
+    public function __construct(BadgeService $badgeService, DompdfGeneratorService $pdfGenerator, NotificationService $notificationService, DiscountService $discountService)
     {
         $this->badgeService = $badgeService;
         $this->pdfGenerator = $pdfGenerator;
         $this->notificationService = $notificationService;
+        $this->discountService = $discountService;
     }
     public function index(Request $request)
     {
@@ -67,6 +69,10 @@ class StripeController extends Controller
             ExpediteOrderJob::dispatch($order, $user)->delay(now()->addMinutes(1));
 
             $this->badgeService->shoopingBadges($order->user);
+
+            if ($order->promo_code) {
+                $this->discountService->markPromoCodeAsUsed($user, $order->promo_code);
+            }
 
             return response()->json(['status' => 'success', 'invoice_url' => $pdfUrl]);
         }

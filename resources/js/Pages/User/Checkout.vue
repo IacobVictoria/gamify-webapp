@@ -115,58 +115,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- <div class="mt-10 border-t border-gray-200 pt-10">
-                            <fieldset>
-                                <legend class="text-lg font-medium text-gray-900">Delivery method</legend>
-                                <RadioGroup v-model="selectedDeliveryMethod"
-                                    class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
-                                    <RadioGroupOption as="template" v-for="deliveryMethod in deliveryMethods"
-                                        :key="deliveryMethod.id" :value="deliveryMethod"
-                                        :aria-label="deliveryMethod.title"
-                                        :aria-description="`${deliveryMethod.turnaround} for ${deliveryMethod.price}`"
-                                        v-slot="{ active, checked }">
-                                        <div
-                                            :class="[checked ? 'border-transparent' : 'border-gray-300', active ? 'ring-2 ring-indigo-500' : '', 'relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none']">
-                                            <span class="flex flex-1">
-                                                <span class="flex flex-col">
-                                                    <span class="block text-sm font-medium text-gray-900">{{
-                                                        deliveryMethod.title }}</span>
-                                                    <span class="mt-1 flex items-center text-sm text-gray-500">{{
-                                                        deliveryMethod.turnaround }}</span>
-                                                    <span class="mt-6 text-sm font-medium text-gray-900">{{
-                                                        deliveryMethod.price }}</span>
-                                                </span>
-                                            </span>
-                                            <CheckCircleIcon v-if="checked" class="h-5 w-5 text-indigo-600"
-                                                aria-hidden="true" />
-                                            <span
-                                                :class="[active ? 'border' : 'border-2', checked ? 'border-indigo-500' : 'border-transparent', 'pointer-events-none absolute -inset-px rounded-lg']"
-                                                aria-hidden="true" />
-                                        </div>
-                                    </RadioGroupOption>
-                                </RadioGroup>
-                            </fieldset>
-                        </div> -->
-
-                        <!-- Payment -->
-                        <div class="mt-10 border-t border-gray-200 pt-10">
-                            <!-- <h2 class="text-lg font-medium text-gray-900">Payment</h2>
-  
-              <fieldset class="mt-4">
-                <legend class="sr-only">Payment type</legend>
-                <div class="space-y-4 sm:flex sm:items-center sm:space-x-10 sm:space-y-0">
-                  <div v-for="(paymentMethod, paymentMethodIdx) in paymentMethods" :key="paymentMethod.id" class="flex items-center">
-                    <input v-if="paymentMethodIdx === 0" :id="paymentMethod.id" name="payment-type" type="radio" checked="" class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                    <input v-else :id="paymentMethod.id" name="payment-type" type="radio" class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                    <label :for="paymentMethod.id" class="ml-3 block text-sm font-medium text-gray-700">{{ paymentMethod.title }}</label>
-                  </div>
-                </div>
-              </fieldset>
-   -->
-
-
-                        </div>
                     </div>
 
                     <!-- Order summary -->
@@ -221,17 +169,43 @@
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <dt class="text-sm">Shipping</dt>
-                                    <dd class="text-sm font-medium text-gray-900">$5.00</dd>
+                                    <dd class="text-sm font-medium text-gray-900">$10.00</dd>
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <dt class="text-sm">Taxes</dt>
-                                    <dd class="text-sm font-medium text-gray-900">$5.52</dd>
+                                    <dd class="text-sm font-medium text-gray-900">$5.00</dd>
                                 </div>
                                 <div class="flex items-center justify-between border-t border-gray-200 pt-6">
                                     <dt class="text-base font-medium">Total</dt>
-                                    <dd class="text-base font-medium text-gray-900">{{ calculateTotal() }}</dd>
+                                    <dd class="text-base font-medium text-gray-900">
+                                        <span v-if="calculateTotal().oldTotal" class="text-red-500 line-through mr-2">
+                                            {{ calculateTotal().oldTotal }} RON
+                                        </span>
+                                        <span :class="{ 'text-green-600': calculateTotal().oldTotal }">
+                                            {{ calculateTotal().newTotal }} RON
+                                        </span>
+                                    </dd>
+
                                 </div>
+
                             </dl>
+                            <!-- Promo Code -->
+                            <div class="mt-6">
+                                <label for="promo-code" class="block text-sm font-medium text-gray-700">Promo
+                                    Code</label>
+                                <div class="mt-1 flex">
+                                    <input type="text" id="promo-code" v-model="promoCode"
+                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                        placeholder="Enter promo code" />
+                                    <button @click.prevent="applyPromoCode"
+                                        class="ml-2 bg-indigo-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                        Apply
+                                    </button>
+                                </div>
+                                <p v-if="discountApplied" class="mt-2 text-green-600">Discount applied: {{
+                                    discountAmount }}%</p>
+                                <p v-if="promoError" class="mt-2 text-red-600">{{ promoError }}</p>
+                            </div>
 
                             <div class="border-t border-gray-200 px-4 py-6 sm:px-6">
                                 <button type="submit"
@@ -282,10 +256,28 @@ export default {
                 cartItems: this.cartItems,
             }),
             errors: {},
+            promoCode: '',
+            discountAmount: 0,
+            discountApplied: false,
+            promoError: '',
         }
     },
 
     methods: {
+        async applyPromoCode() {
+            this.promoError = '';
+            try {
+                const response = await axios.post('/user/validate-discount', { code: this.promoCode });
+                if (response.data.valid) {
+                    this.discountAmount = response.data.discount;
+                    this.discountApplied = true;
+                } else {
+                    this.promoError = 'Invalid promo code';
+                }
+            } catch {
+                this.promoError = 'Error checking promo code';
+            }
+        },
         calculateSubtotal() {
             if (this.cartItems.length === 0) {
                 return 0;
@@ -298,28 +290,32 @@ export default {
             return parseFloat(total.toFixed(2));
 
         },
-
-
         calculateTotal() {
             const subtotal = this.calculateSubtotal();
             const shipping = 5.00;
-            const tax = 8.32;
-            return (subtotal + shipping + tax).toFixed(2);
-        },
+            const tax = 10.00;
+            const totalBeforeDiscount = subtotal + shipping + tax;
 
+            if (this.discountApplied && this.discountAmount > 0) {
+                const discountValue = totalBeforeDiscount * (this.discountAmount / 100);
+                return {
+                    oldTotal: totalBeforeDiscount.toFixed(2),
+                    newTotal: (totalBeforeDiscount - discountValue).toFixed(2)
+                };
+            }
+
+            return {
+                oldTotal: null,
+                newTotal: totalBeforeDiscount.toFixed(2)
+            };
+        },
         submit() {
-            this.form.post(route('user.checkout.order.store'), {
-                onError: (errors) => {
-                    console.log('NOT submitted successfully:',errors);
-                    this.errors = errors;
-                },
-                onSuccess: () => {
-                    console.log('Form submitted successfully:');
-                    this.form.reset();
-                },
+            this.$inertia.post(route('user.checkout.order.store'), {
+                ...this.form,
+                promoCode: this.promoCode,
+                discountAmount: this.discountAmount
             });
         }
-
     }
 }
 </script>

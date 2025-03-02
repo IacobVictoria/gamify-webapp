@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClientOrder;
 use App\Services\DiscountService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,10 +21,25 @@ class DiscountController extends Controller
         $user = Auth::user();
         return response()->json($this->discountService->getAvailableDiscounts($user));
     }
-
-   public function redeemDiscount(Request $request)
+    
+    public function validatePromo(Request $request)
     {
         $user = Auth::user();
-        return $this->discountService->redeemDiscount($user, $request->code);
+        $code = strtoupper($request->code);
+
+        $userDiscounts = json_decode($user->used_discounts, true) ?? [];
+
+        foreach ($userDiscounts as $discount) {
+            if ($discount['code'] === $code && !$discount['used']) {
+                return response()->json([
+                    'valid' => true,
+                    'discount' => $discount['discount']
+                ]);
+            }
+        }
+
+        return response()->json(['valid' => false, 'error' => 'Invalid or already used promo code'], 400);
     }
+
+
 }

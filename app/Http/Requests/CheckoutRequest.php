@@ -35,6 +35,8 @@ class CheckoutRequest extends FormRequest
             'cartItems' => 'required|array',
             'cartItems.*.product.id' => 'required|string|exists:products,id',
             'cartItems.*.quantity' => 'required|integer|min:1',
+            'discountAmount' => 'nullable|numeric|min:0|max:100',
+            'promoCode' => 'nullable|string|max:255',
         ];
     }
 }

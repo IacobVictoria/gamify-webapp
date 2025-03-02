@@ -20,33 +20,23 @@ class DiscountService
      */
     public function getAvailableDiscounts(User $user)
     {
-        // Pragurile discounturilor
-        $discountLevels = [
-            200 => 20,
-            500 => 25,
-            1000 => 30
-        ];
-    
         $usedDiscounts = json_decode($user->used_discounts, true) ?? [];
+
         $availableDiscounts = [];
-    
-        foreach ($discountLevels as $points => $discount) {
-            if ($user->score >= $points) {
-                // Verificăm dacă utilizatorul a folosit deja acest discount
-                $isUsed = in_array($discount, $usedDiscounts);
-                $code = strtoupper(substr(md5($user->id . $discount . time()), 0, 8)); // Generăm un cod unic
-    
-                $availableDiscounts[] = [
-                    'discount' => $discount,
-                    'used' => $isUsed,
-                    'code' => $isUsed ? 'Utilizat' : $code
-                ];
-            }
+
+        foreach ($usedDiscounts as $points => $discountData) {
+            // Verificăm dacă discount-ul există în baza de date și dacă nu a fost folosit
+            $availableDiscounts[] = [
+                'discount' => $discountData['discount'],
+                'used' => $discountData['used'],
+                'code' => $discountData['used'] ? 'Utilizat' : $discountData['code']
+            ];
         }
-    
+
         return $availableDiscounts;
     }
-    
+
+
     /**
      * Verifică dacă utilizatorul a atins un prag de discount și notifică
      */
@@ -57,7 +47,7 @@ class DiscountService
             500 => 25,
             1000 => 30
         ];
-    
+
         $usedDiscounts = json_decode($user->used_discounts, true) ?? [];
 
         foreach ($discountLevels as $points => $discount) {
@@ -84,23 +74,22 @@ class DiscountService
     /**
      * Marchează un discount ca folosit
      */
-    public function redeemDiscount(User $user, string $code)
+    public function markPromoCodeAsUsed($user, $promoCode)
     {
-        $userDiscounts = json_decode($user->used_discounts, true) ?? [];
+        // Obține lista de discount-uri folosite de utilizator
+        $usedDiscounts = json_decode($user->used_discounts, true) ?? [];
 
-        foreach ($userDiscounts as $key => $discount) {
-            if ($discount['code'] === $code && !$discount['used']) {
-                $userDiscounts[$key]['used'] = true;
-                $user->used_discounts = json_encode($userDiscounts);
-                $user->save();
-
-                return response()->json([
-                    'message' => "Ai folosit codul {$code} pentru {$discount['discount']}% reducere!",
-                    'discount' => $discount['discount']
-                ]);
+        // Parcurge discount-urile și caută promo code-ul
+        foreach ($usedDiscounts as $key => &$discount) {
+            if ($discount['code'] === $promoCode && !$discount['used']) {
+                $discount['used'] = true; // Marcare ca folosit
             }
         }
 
-        return response()->json(['error' => 'Cod invalid sau deja folosit'], 400);
+        // Salvează noul JSON în baza de date
+        $user->update([
+            'used_discounts' => json_encode($usedDiscounts),
+        ]);
     }
+
 }
