@@ -34,13 +34,13 @@
                             <img v-else src="/images/female.png" alt="User Avatar" class="w-14 h-14 rounded-full" />
                             <span class="font-semibold">{{ user.name }}</span>
                         </button>
-                       <div v-if="authUserHasRole('User')" class="flex gap-2 items-center">
-                        <inertia-link :href="route('user.wishlist.index')">
-                            <WishlistLogoSVG></WishlistLogoSVG>
-                        </inertia-link>
-                        <RecomandationLogoSVG></RecomandationLogoSVG>
-                        <NotificationComponentIcon></NotificationComponentIcon>
-                       </div>
+                        <div v-if="authUserHasRole('User')" class="flex gap-2 items-center">
+                            <inertia-link :href="route('user.wishlist.index')">
+                                <WishlistLogoSVG></WishlistLogoSVG>
+                            </inertia-link>
+                            <RecomandationLogoSVG></RecomandationLogoSVG>
+                            <NotificationComponentIcon></NotificationComponentIcon>
+                        </div>
                     </div>
                     <!-- Dropdown -->
                     <div v-if="dropdownOpen"
@@ -153,7 +153,7 @@ export default {
         user() {
             return this.$page.props.user;
         },
-        
+
     },
 
     methods: {
@@ -181,11 +181,10 @@ import RecomandationLogoSVG from '@/Components/RecomandationLogoSVG.vue';
 import NotificationComponentIcon from '@/Pages/Notification_System/NotificationComponentIcon.vue';
 
 const navigation = [
-    { name: 'Products', href: route('products.index') },
-    { name: 'Suppliers', href: '#' },
-    { name: 'Scan QR', href: '#' },
     { name: 'Company', href: route('home') },
-    {name:'Events', href: route('events.index')},
+    { name: 'Products', href: route('products.index') },
+    { name: 'Suppliers', href: route('suppliers.web_view') },
+    { name: 'Events', href: route('events.index') },
 ]
 
 const mobileMenuOpen = ref(false)

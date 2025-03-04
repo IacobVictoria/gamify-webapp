@@ -30,18 +30,19 @@ class EventController extends Controller
             ->where('is_published', true)  // Reduceri care nu au expirat
             ->get();
 
-        // Obține evenimentele viitoare (event)
-        $activeEvents = Event::where('type', 'event')
-            ->where('status', 'OPEN')
-            ->where('start', '>', now())
-            ->where('is_published', true)  // Evenimente care vor începe în viitor
+        $events = Event::where('type', 'event')
+            ->where('is_published', true)
+            ->where(function ($query) {
+                $query->where('status', 'OPEN')  // Evenimente viitoare
+                    ->where('start', '>', now())
+                    ->orWhere(function ($subQuery) {
+                        $subQuery->where('start', '<=', now())  // Evenimente în desfășurare
+                            ->where('end', '>=', now());
+                    });
+            })
+            ->orderBy('start', 'asc')  // Sortează după data de start
             ->get();
 
-        $inProgressEvents = Event::where('type', 'event')
-            ->where('start', '<=', now())  
-            ->where('end', '>=', now())
-            ->where('is_published', true)  
-            ->get();
 
         foreach ($activeDiscounts as $event) {
             if ($event->type === 'discount' && $event->details) {
@@ -52,8 +53,7 @@ class EventController extends Controller
 
         return Inertia::render('Events/Index', [
             'activeDiscounts' => $activeDiscounts,
-            'activeEvents' => $activeEvents,
-            'inProgressEvents' => $inProgressEvents,
+            'events' => $events
         ]);
     }
 
@@ -63,7 +63,7 @@ class EventController extends Controller
 
         // Construim titlul raportului așa cum a fost salvat în baza de date
         $reportTitle = "Lista Participanților - {$event->title}";
-    
+
         // Căutăm raportul în baza de date după titlu
         $report = Report::where('type', 'participants')
             ->where('title', $reportTitle)
@@ -72,7 +72,7 @@ class EventController extends Controller
         if ($report) {
             // Dacă raportul există, returnăm URL-ul din s3_path
             $pdfUrl = $report->s3_path;
-    
+
             return response()->json(['pdf_url' => $pdfUrl]);
         } else {
             // Dacă raportul nu există, returnăm un mesaj de eroare
@@ -96,8 +96,8 @@ class EventController extends Controller
         //asa returneaza diff()   cu h, d, i
 
         // Verificăm dacă evenimentul este blocat
-       $isEventLocked = $timeUntilEventInMinutes <= 10 || $eventStart <= $now;
-      //  $isEventLocked =$eventStart <= $now;
+        $isEventLocked = $timeUntilEventInMinutes <= 10 || $eventStart <= $now;
+        //  $isEventLocked =$eventStart <= $now;
 
 
         $qrCode = QrCodeEvent::where('event_id', $event->id)->first();

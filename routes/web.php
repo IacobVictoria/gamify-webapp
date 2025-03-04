@@ -21,6 +21,7 @@ use App\Http\Controllers\ReviewMediaController;
 use App\Http\Controllers\ShoppingCenterController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserSurveyController;
 use App\Http\Controllers\UserWishlistController;
 use App\Http\Controllers\WelcomeController;
@@ -102,4 +103,6 @@ Route::post('/create-payment-intent', [StripeController::class, 'createPaymentIn
 Route::post('/confirm-payment', [StripeController::class, 'confirmPayment'])->name('stripe.confirm');
 Route::post('/cancel-payment', [StripeController::class, 'cancelPayment'])->name('stripe.cancel');
 
+//Suppliers
+Route::get('/suppliers',[SupplierController::class,'web_view'])->name('suppliers.web_view');
 require __DIR__ . '/auth.php';

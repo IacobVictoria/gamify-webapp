@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white p-8">
+    <div class="bg-white">
         <Layout>
             <main class="mt-32 mb-20">
                 <div class="bg-white">

@@ -20,6 +20,14 @@ class SupplierController extends Controller
         ]);
     }
 
+    public function web_view()
+    {
+        $suppliers = Supplier::all();
+
+        return Inertia::render('Suppliers/Index', [
+            'suppliers' => $suppliers
+        ]);
+    }
     /**
      * Show the form for creating a new resource.
      */
