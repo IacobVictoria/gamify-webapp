@@ -24,7 +24,8 @@ class Product extends Model
         'fiber',
         'sugar',
         'ingredients',
-        'allergens'
+        'allergens',
+        'old_price'
     ];
 
     protected $table = 'products';

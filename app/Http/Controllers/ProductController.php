@@ -29,23 +29,30 @@ class ProductController extends Controller
         $products = Product::where('name', 'like', "%{$searchQuery}%")->get();
 
         $products = $products->map(function ($product) use ($user) {
-            // Verifică dacă există reduceri active pentru acest produs
-            $discountDetails = Cache::get("discount_product_{$product->id}");
-            $discount = null;
-    
-            // Dacă există reduceri în cache, le obținem
-            if ($discountDetails && isset($discountDetails['discount'])) {
-                $discount = $discountDetails['discount'];
 
-            }
-            
+            $discounts = Cache::get("discount_product_{$product->id}", []);
+
+            // Extragem doar reducerile din array-ul asociativ
+            $discountValues = array_map(fn($discount) => $discount['discount'], $discounts);
+
+            // Dacă nu există `old_price`, îl setăm la prețul original (prima dată când se aplică reduceri)
+            $oldPrice = $product->old_price ?? $product->price;
+
+            // Aplicăm reducerile cumulate
+            $totalDiscount = array_reduce($discountValues, function ($carry, $discount) {
+                return $carry * (1 - $discount / 100);
+            }, 1);
+
+            // Dacă nu există reduceri, `finalPrice` rămâne `price`
+            $finalPrice = !empty($discountValues) ? round($oldPrice * $totalDiscount, 2) : $product->price;
+
             return [
                 'id' => $product->id,
                 'name' => $product->name,
-                'price' => $product->price,
-                'old_price'=>$product->old_price,
+                'price' => $finalPrice,
+                'old_price' => !empty($discounts) ? $oldPrice : null,
                 'isFavorite' => $this->userService->hasLikedProduct($user, $product),
-                'discount' => $discount
+                'discounts' => $discountValues
             ];
         });
 
@@ -55,25 +62,6 @@ class ProductController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Request $request, string $id)
     {
         $user = Auth()->user();
@@ -84,16 +72,24 @@ class ProductController extends Controller
         $buyers = $request->input('buyers', "");
         $comparison = session('comparison', []);
         $comparisonChecked = in_array($id, $comparison);
-        $discountDetails = Cache::get("discount_product_{$product->id}");
-        $discount = null;
 
-        // Dacă există reduceri în cache, le obținem
-        if ($discountDetails && isset($discountDetails['discount'])) {
-            $discount = $discountDetails['discount'];
+        $discounts = Cache::get("discount_product_{$product->id}", []);
 
-        }
+        // Extragem doar reducerile din array-ul asociativ
+        $discountValues = array_map(fn($discount) => $discount['discount'], $discounts);
+
+        // Dacă `old_price` este null, îl setăm la `price`
+        $oldPrice = $product->old_price ?? $product->price;
+
+        // Aplicăm reducerile cumulate
+        $totalDiscount = array_reduce($discountValues, function ($carry, $discount) {
+            return $carry * (1 - $discount / 100);
+        }, 1);
+
+        // Dacă există reduceri, aplicăm discount-ul la preț
+        $finalPrice = !empty($discountValues) ? round($oldPrice * $totalDiscount, 2) : $product->price;
+        
         //Sorting and filter 
-
         $orderColumn = 'updated_at';
         $orderDirection = 'desc';
 
@@ -175,8 +171,14 @@ class ProductController extends Controller
         });
 
         return Inertia::render('Products/Show', [
-            'product' => $product,
-            'discount'=>$discount,
+            'product' => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => $finalPrice,
+                'old_price' => !empty($discounts) ? $oldPrice : null,
+                'discounts' => $discountValues,
+                'category' => $product->category
+            ],
             'isFavorite' => $isFavorite,
             'reviews' => $reviews,
             'noBuyersMessage' => $noBuyersMessage,
@@ -185,29 +187,5 @@ class ProductController extends Controller
             'noStatistics' => $noStatistics,
             'comparisonChecked' => $comparisonChecked
         ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

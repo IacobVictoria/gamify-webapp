@@ -26,6 +26,8 @@
                                 <div class="mt-4">
                                     <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">{{
                                         product.name }}</h1>
+                                         <h2 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Category: {{
+                                        product.category }}</h2>
                                     <button @click="isFavorite ? dislikeProduct(product) : likeProduct(product)">
                                         <AddHeartSVG :svg-class="isFavorite ? 'text-red-400' : 'text-gray-400'">
                                         </AddHeartSVG>
@@ -36,9 +38,17 @@
                             </div>
 
                             <p class="mt-6 text-gray-500">{{ product.description }}</p>
-                            <p class="mt-6 text-gray-500">{{ product.price }}</p>
+                            <div class="mt-6 text-lg font-medium">
+                                <span v-if="product.old_price" class="text-red-500 line-through mr-2">
+                                    {{ product.old_price }} RON
+                                </span>
+                                <span :class="{ 'text-green-600': product.old_price }">
+                                    {{ product.price }} RON
+                                </span>
+                            </div>
+
                             <!---Comparison  -->
-                        <ComparisonDropdown :product="product" :isChecked="comparisonChecked"></ComparisonDropdown>
+                            <ComparisonDropdown :product="product" :isChecked="comparisonChecked"></ComparisonDropdown>
 
                             <div class="mt-6">
                                 <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>

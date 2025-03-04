@@ -86,7 +86,7 @@ class AdminEventCalendarController extends Controller
                 ->color(0, 0, 0) // Negru
                 ->backgroundColor(255, 255, 255) // Alb
                 ->margin(1)
-                ->generate($qrFileName);         
+                ->generate($qrFileName);
 
             Storage::disk('s3')->put($qrFileName, $qrCodeImage, 'public');
             QrCodeEvent::create([
@@ -176,31 +176,56 @@ class AdminEventCalendarController extends Controller
     }
     private function resetDiscountPricesOnEventDeletion(Event $event)
     {
-        $details = json_decode($event->details, true);
+        $details = json_decode($event->details, true); // Convertim JSON-ul într-un array asociativ
 
-        if ($details['applyTo'] === 'all') {
-            $products = Product::all();
-        } elseif ($details['applyTo'] === 'categories') {
-            $category = $details['category'];
-            $products = Product::where('category', $category)->get();
-        } else {
-            $products = collect();
+        $productsQuery = match ($details['applyTo'] ?? '') { // Verificăm dacă 'applyTo' există
+            'all' => Product::all(),
+            'categories' => Product::where('category', $details['category'] ?? '')->get(),
+            default => collect(),
+        };
+
+        // Iterăm direct prin colecția de produse
+        foreach ($productsQuery as $product) {
+            $this->removeDiscountAndRecalculate($product, $event->id);
         }
 
-        foreach ($products as $product) {
-            if ($product->old_price) {
-                $product->price = $product->old_price;
-                $product->old_price = null;
-                $product->save();
+        // Eliminăm cache-ul specific acestui eveniment
+        Cache::forget("discount_emitted_{$event->id}");
+    }
+
+    private function removeDiscountAndRecalculate(Product $product, $eventId)
+    {
+        // Obținem reducerile existente
+        $discounts = Cache::get("discount_product_{$product->id}", []);
+
+        // Filtrăm discount-ul care trebuie eliminat
+        $remainingDiscounts = array_filter($discounts, fn($d) => $d['event_id'] !== $eventId);
+
+        if (count($remainingDiscounts) < count($discounts)) {
+            // Recalculăm prețul după eliminarea reducerii
+            $product->price = $product->old_price ?? $product->price;
+
+            foreach ($remainingDiscounts as $discount) {
+                $product->price *= (1 - $discount['discount'] / 100);
             }
 
-            // Ștergem cache-ul asociat produsului
-            Cache::forget("discount_product_{$product->id}");
-        }
+            $product->price = round($product->price, 2);
 
-        // Ștergem cache-ul asociat evenimentului
-        $userId = Auth::id();
-        Cache::forget("discount_emitted_{$event->id}_user_{$userId}");
+            // Actualizăm cache-ul
+            if (!empty($remainingDiscounts)) {
+                Cache::put("discount_product_{$product->id}", array_values($remainingDiscounts));
+            } else {
+                // Dacă nu mai sunt reduceri, resetăm complet produsul
+                $product->price = $product->old_price;
+                $product->old_price = null;
+                Cache::forget("discount_product_{$product->id}");
+            }
+
+            $product->save();
+        }
     }
+
+
+
 
 }

@@ -139,20 +139,18 @@
                                                 </h4>
                                                 <p class="mt-1 text-sm text-gray-500">{{ item.product.category }}</p>
                                             </div>
-
-                                            <div class="ml-4 flow-root flex-shrink-0">
-                                                <button type="button"
-                                                    class="-m-2.5 flex items-center justify-center bg-white p-2.5 text-gray-400 hover:text-gray-500">
-                                                    <span class="sr-only">Remove</span>
-                                                    <TrashIcon class="h-5 w-5" aria-hidden="true" />
-                                                </button>
-                                            </div>
                                         </div>
 
                                         <div class="flex flex-1 items-end justify-between pt-2">
-                                            <p class="mt-1 text-sm font-medium text-gray-900">{{ item.product.price }}
-                                            </p>
-
+                                            <div class="mt-1 text-sm">
+                                                <span v-if="item.product.old_price"
+                                                    class="text-red-500 line-through mr-2">
+                                                    {{ item.product.old_price }} RON
+                                                </span>
+                                                <span class="font-medium text-gray-900">
+                                                    {{ item.product.price }} RON
+                                                </span>
+                                            </div>
                                             <div>
                                                 <label for="quantity-{{ item.product.id }}"
                                                     class="block text-sm font-medium text-gray-700">Cantitate:</label>

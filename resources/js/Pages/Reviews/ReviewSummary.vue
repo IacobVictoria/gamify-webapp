@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-row justify-between mx-auto p-5 bg-gray-100 rounded-lg shadow-md mt-16 mb-16">
+    <div v-if="statistics.length!=0" class="flex flex-row justify-between mx-auto p-5 bg-gray-100 rounded-lg shadow-md mt-16 mb-16">
         <div class="flex flex-col space-y-3 w-2/3">
             <div v-for="(value, key) in statistics" :key="key" class="flex items-center">
                 <div class="progress-label font-bold text-sm w-1/4">{{ key }} ({{ value.toFixed(2) }}%)</div>

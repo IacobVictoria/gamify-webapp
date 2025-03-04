@@ -44,17 +44,25 @@
 
                                             {{ product.name }}
                                         </h3>
-                                        <div v-if="product.discount">
-                                            <p class="mt-4 text-base font-medium text-red-500 line-through">
-                                                {{ product.old_price }} Lei</p>
-                                            <p class="mt-4 text-base font-medium text-gray-900">
+                                        <div v-if="product.old_price">
+                                            <p class="mt-2 text-sm font-semibold text-red-500">
+                                                Reduceri aplicate:
+                                                <span v-for="(discount, index) in product.discounts" :key="index">
+                                                    -{{ discount }}% <span v-if="index < product.discounts.length - 1">,
+                                                    </span>
+                                                </span>
+                                            </p>
+
+                                            <p class="mt-2 text-base font-medium text-gray-500 line-through">
+                                                {{ product.old_price }} Lei
+                                            </p>
+                                            <p class="mt-2 text-lg font-bold text-gray-900">
                                                 {{ product.price }} Lei
                                             </p>
-                                            <p class="mt-2 text-xs text-green-500">
-                                                Reducere: {{ product.discount }}%
-                                            </p>
                                         </div>
-                                        <div v-else class="mt-4 text-base font-medium text-gray-900">
+
+                                        <!-- Dacă nu există reduceri, afișăm doar prețul normal -->
+                                        <div v-else class="mt-4 text-lg font-medium text-gray-900">
                                             {{ product.price }} Lei
                                         </div>
 

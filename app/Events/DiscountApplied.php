@@ -42,10 +42,6 @@ class DiscountApplied implements ShouldBroadcastNow
             'is_read' => false,
         ]);
         $this->notificationService->updateNotifications($this->user);
-
-
-
-
     }
     public function broadcastOn(): array
     {

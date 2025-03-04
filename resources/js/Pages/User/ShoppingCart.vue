@@ -67,11 +67,11 @@
                 </div>
                 <div class="flex items-center justify-between py-4">
                   <dt class="text-gray-600">Shipping</dt>
-                  <dd class="font-medium text-gray-900">$5.00</dd>
+                  <dd class="font-medium text-gray-900">$10.00</dd>
                 </div>
                 <div class="flex items-center justify-between py-4">
                   <dt class="text-gray-600">Tax</dt>
-                  <dd class="font-medium text-gray-900">$8.32</dd>
+                  <dd class="font-medium text-gray-900">$5.00</dd>
                 </div>
                 <div class="flex items-center justify-between py-4">
                   <dt class="base font-medium text-gray-900">Order total</dt>
@@ -171,8 +171,8 @@ export default {
 
     calculateTotal() {
       const subtotal = this.calculateSubtotal();
-      const shipping = 5.00;
-      const tax = 8.32;
+      const shipping = 10.00;
+      const tax = 5.00;
       return (subtotal + shipping + tax);
     },
 
