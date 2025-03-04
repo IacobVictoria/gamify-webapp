@@ -1,7 +1,10 @@
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Your achievements</h2>
+            <h2
+                class="font-semibold text-xl text-white leading-tight text-center bg-gradient-to-r from-yellow-400 to-orange-600 p-4 rounded-lg shadow-lg">
+                🏆 Your Achievements - Keep Winning! 🔥
+            </h2>
         </template>
 
         <div class="py-12">
@@ -76,7 +79,7 @@ export default {
     },
     methods: {
         scrollToSection() {
-            const hash = window.location.hash; 
+            const hash = window.location.hash;
             if (hash) {
                 this.$nextTick(() => {
                     const section = document.querySelector(hash);

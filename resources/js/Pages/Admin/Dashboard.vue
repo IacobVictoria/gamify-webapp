@@ -10,7 +10,9 @@ import NpsChart from './NPS_Admin/NpsChart.vue';
 
   <AuthenticatedLayout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
+      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        📊 Admin Dashboard - Control Panel 🔧
+      </h2>
     </template>
 
     <div class="py-8">

@@ -3,15 +3,18 @@
   <Head title="Dashboard" />
   <AuthenticatedLayout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
+      <h2
+        class="font-semibold text-xl text-white leading-tight text-center bg-gradient-to-r from-purple-500 to-pink-500 p-4 rounded-lg shadow-lg">
+        🎮 Gaming Dashboard - Level Up! 🚀
+      </h2>
     </template>
+
 
     <div class="py-12">
       <div class="max-w-[90%] mx-auto sm:px-6">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
           <div class="flex flex-row gap-5 px-4 m-12">
-            <div
-              class="rounded-full p-2 w-24 h-24 justify-center items-center inline-flex overflow-hidden">
+            <div class="rounded-full p-2 w-24 h-24 justify-center items-center inline-flex overflow-hidden">
 
               <img v-if="account.gender === 'Male'" src="/images/male.png" alt="User Avatar"
                 class="w-20 h-20 rounded-full shadow-md cursor-pointer" />

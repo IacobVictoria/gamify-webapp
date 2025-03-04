@@ -15,7 +15,11 @@ import Icon from '@/Pages/Admin/Notifications/Icon.vue';
 
 <template>
     <div>
-        <div class="min-h-screen bg-gray-100">
+        <div :class="{
+            'min-h-screen bg-blue-100': authUserHasRole('User') && !route().current('user.user_chat.index'),
+            'min-h-screen bg-gray-100': authUserHasRole('User') && route().current('user.user_chat.index'),
+            'min-h-screen bg-gray-100': authUserHasRole('Admin')
+        }">
             <nav class="bg-white border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -36,40 +40,31 @@ import Icon from '@/Pages/Admin/Notifications/Icon.vue';
                             </div>
 
                             <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex ">
                                 <template v-if="authUserHasRole('User')">
-                                    <NavLink :href="route('user.dashboard')"
-                                        :active="route().current('user.dashboard')">
-                                        Dashboard
-                                    </NavLink>
-                                    <NavLink :href="route('user.achievements.index')"
-                                        :active="route().current('user.achievements.index')">
-                                        Achievements
-                                    </NavLink>
-                                    <NavLink :href="route('user.order_history.index')"
-                                        :active="route().current('user.order_history.index')">
-                                        Orders History
-                                    </NavLink>
-                                    <NavLink :href="route('user.quizzes.index')"
-                                        :active="route().current('user.quizzes.index')">
-                                        Quizzes
+                                    <NavLink :href="route('user.dashboard')" :active="route().current('user.dashboard')"
+                                        class="no-underline">
+                                        🏠 Dashboard
                                     </NavLink>
                                     <NavLink :href="route('user.user_chat.index')"
-                                        :active="route().current('user.user_chat.index')">
-                                        Chat
+                                        :active="route().current('user.user_chat.index')" class="no-underline">
+                                        💬 Social Club
                                     </NavLink>
-                                    <NavLink :href="route('user.wellness.index')"
-                                        :active="route().current('user.wellness.index')">
-                                        Wellness
+                                    <NavLink :href="route('user.dashboard.game_center.index')"
+                                        :active="route().current('user.dashboard.game_center.index')"
+                                        class="no-underline">
+                                        🏆 Achievements
                                     </NavLink>
-                                    <NavLink :href="route('user.calendar.index')"
-                                        :active="route().current('user.calendar.index')">
-                                        Calendar
+                                    <NavLink :href="route('user.shopping-center.index')"
+                                        :active="route().current('user.shopping-center.index')" class="no-underline">
+                                        🛒 Shopping Center
                                     </NavLink>
-                                    <NavLink :href="route('user.hangman.index')"
-                                        :active="route().current('user.hangman.index')">
-                                        Hangman
+                                    <NavLink :href="route('user.dashboard.explore-games.index')"
+                                        :active="route().current('user.dashboard.explore-games.index')"
+                                        class="no-underline">
+                                        🎮 Explore Games
                                     </NavLink>
+
                                 </template>
                                 <template v-if="authUserHasRole('Admin')">
                                     <NavLink :href="route('admin.dashboard')"

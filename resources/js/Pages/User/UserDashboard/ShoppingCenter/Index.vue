@@ -1,7 +1,10 @@
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Your Orders</h2>
+            <h2
+                class="font-semibold text-xl text-white leading-tight text-center bg-gradient-to-r from-orange-500 to-red-500 p-4 rounded-lg shadow-lg">
+                🛒 Your Orders - Ready for Delivery! 📦
+            </h2>
         </template>
 
         <div class="py-12">
@@ -37,11 +40,11 @@ export default {
             type: Object,
             required: true
         },
-        activeOrders:{
+        activeOrders: {
             type: Array,
             required: true,
         },
-        discounts:{
+        discounts: {
             type: Array,
             required: true,
         }
