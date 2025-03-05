@@ -47,7 +47,6 @@
                                     class="h-24  w-24  rounded-full border-2 border-green-500" alt="Supplier 2">
                                 <img :src="imagePath('/landing/logo3.png')"
                                     class="h-24 object-cover w-24 rounded-full border-2 border-green-500" alt="Supplier 3">
-
                             </div>
                         </section>
                     </div>

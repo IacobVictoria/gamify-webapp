@@ -181,7 +181,7 @@ import RecomandationLogoSVG from '@/Components/RecomandationLogoSVG.vue';
 import NotificationComponentIcon from '@/Pages/Notification_System/NotificationComponentIcon.vue';
 
 const navigation = [
-    { name: 'Company', href: route('home') },
+    { name: 'Home', href: route('home') },
     { name: 'Products', href: route('products.index') },
     { name: 'Suppliers', href: route('suppliers.web_view') },
     { name: 'Events', href: route('events.index') },
