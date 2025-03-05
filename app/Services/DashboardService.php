@@ -32,7 +32,6 @@ class DashboardService
                 'score' => $userScore,
                 'nr_badges' => $user->badges()->count(),
                 'position_leaderboard' => $yourPositionInTop,
-               
                 'gender' => $user->gender
             ]
         ];

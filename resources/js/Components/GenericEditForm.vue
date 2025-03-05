@@ -70,7 +70,7 @@ export default {
             includeFile: this.isFile,
             form: this.createForm(),
             errors: {},
-            imagePreview: this.initialData.image_path ? this.initialData.image_path : null,
+            imagePreview: this.initialData.image_path || this.initialData.image_url || null,
             imageFile: null
 
         };
@@ -78,7 +78,9 @@ export default {
     methods: {
         createForm() {
             let formFields = {};
-            formFields[this.aditionalData.name] = null;
+            if (this.aditionalData) {
+                formFields[this.aditionalData.name] = null;
+            }
             this.fields.forEach((field) => {
                 formFields[field.name] = this.initialData[field.name] || '';
             });
@@ -87,7 +89,7 @@ export default {
         },
 
         submit() {
-            router.post(route('admin.badges.update', { badgeId: this.initialData.id }), {
+            router.post(this.updateRoute, {
                 ...this.form.data(),
                 _method: 'put'
             })
@@ -96,6 +98,7 @@ export default {
             const file = event.target.files[0];
             if (file) {
                 this.imagePreview = URL.createObjectURL(file);
+                this.imageFile = file; 
             }
         }
     },

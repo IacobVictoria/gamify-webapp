@@ -8,9 +8,7 @@ use Inertia\Inertia;
 
 class UserShoppingCartController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $cartItems = session()->get('cart', []);
@@ -31,37 +29,12 @@ class UserShoppingCartController extends Controller
 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    // public function addToCart(Request $request)
-    // {
-    //     $product = $request->input('product');
-
-    //     $cart = session()->get('cart', []);
-
-    //     $cart[$product['id']] = $product;
-
-    //     session()->put('cart', $cart); // Actualizăm coșul în sesiune
-
-    //     return redirect()->route('user.shopping-cart.index')
-    //         ->withCookie(cookie('cart_' . auth()->id(), json_encode($cart), 60 * 24 * 30));
-    // }
-
     public function addToCart(Request $request)
     {
        
         $product = $request->input('product'); // Get the product details
         $quantity = $request->input('quantity'); // Get the quantity
-      
+
         // Ensure that product details and quantity are correctly set
         if (!$product || !$quantity) {
             return redirect()->back()->withErrors(['msg' => 'Product or quantity is missing.']);
@@ -93,26 +66,6 @@ class UserShoppingCartController extends Controller
             ->withCookie(cookie('cart_' . auth()->id(), json_encode($cart), 60 * 24 * 30));
     }
 
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $productId)
     {
         $cart = session()->get('cart', []);

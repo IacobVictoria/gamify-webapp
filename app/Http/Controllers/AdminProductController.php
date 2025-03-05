@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ProductCategory;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class AdminProductController extends Controller
@@ -91,8 +93,16 @@ class AdminProductController extends Controller
     {
         $product = Product::find($productid);
 
+        $categories = array_map(function ($category) {
+            return [
+                'value' => $category->value,
+                'label' => ucfirst(str_replace('_', ' ', $category->value)),
+            ];
+        }, ProductCategory::cases());
+
         return Inertia::render('Admin/Products/Edit', [
             'product' => $product,
+            'categories' => $categories,
         ]);
     }
 
@@ -104,15 +114,26 @@ class AdminProductController extends Controller
         $product = Product::findOrFail($productId);
         $validated = $request->validated();
 
-        $product->name = $validated['name'];
         $product->category = $validated['category'];
-        $product->description = $validated['description'] ?? '';  
+        $product->description = $validated['description'] ?? '';
         $product->score = $validated['score'];
         $product->price = $validated['price'];
-        $product->stock = $validated['stock'];
-    
+        if ($request->hasFile('image')) {
+            // Șterge imaginea veche de pe S3
+            if ($product->image_url) {
+                // Extrage calea fișierului din URL
+                $parsedUrl = parse_url($product->image_url);
+                $imagePath = ltrim($parsedUrl['path'], '/');
+                Storage::disk('s3')->delete($imagePath);
+            }
+
+            // Salvează imaginea noua
+            $imagePath = $request->file('image')->store('products_images', 's3');
+            $product->image_url = Storage::disk('s3')->url($imagePath);
+        }
+
         $product->save();
-    
+
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully!');
     }
 

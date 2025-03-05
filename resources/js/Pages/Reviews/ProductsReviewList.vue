@@ -1,6 +1,6 @@
 <template>
-   
-    <div v-if="isLoggedIn()" class="mt-10">
+   <div class="mb-24">
+    <div v-if="isLoggedIn()" class="mt-10 ">
         <div v-if="authUserHasRole('User')">
             <button @click="toggleReviewForm"
                 class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -35,7 +35,7 @@
                 <div :class="[reviewIdx === 0 ? '' : 'border-t border-gray-200', 'py-10']">
 
                     <div class="flex items-start gap-32 border p-6 rounded-lg shadow-md bg-white">
-                        <inertia-link class="flex flex-col items-center"
+                        <inertia-link class="flex flex-col items-center no-underline"
                             :href="route('user.profile.show', { userId: review.user.id })">
                             <img v-if="review.user.gender === 'Male'" src="/images/male.png" alt="User Avatar"
                                 class="w-14 h-14 rounded-full border-2 border-indigo-500 shadow-sm" />
@@ -141,6 +141,7 @@
             class="bg-yellow-100 mt-16 border border-yellow-300 text-yellow-700 text-center py-4 px-6 rounded-lg mb-6">
             Nu exista review uri la acest produs momentan! Fii primul care da un review!</div>
     </div>
+</div>
 </template>
 
 <script>
@@ -196,7 +197,6 @@ export default {
             isLiked: false,
             editMode: false,
             reviewStates: [],
-            userId: this.$page.props.user.id,
 
         }
     },

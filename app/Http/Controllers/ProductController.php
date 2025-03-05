@@ -52,7 +52,8 @@ class ProductController extends Controller
                 'price' => $finalPrice,
                 'old_price' => !empty($discounts) ? $oldPrice : null,
                 'isFavorite' => $this->userService->hasLikedProduct($user, $product),
-                'discounts' => $discountValues
+                'discounts' => $discountValues,
+                'image' => $product->image_url
             ];
         });
 
@@ -88,7 +89,7 @@ class ProductController extends Controller
 
         // Dacă există reduceri, aplicăm discount-ul la preț
         $finalPrice = !empty($discountValues) ? round($oldPrice * $totalDiscount, 2) : $product->price;
-        
+
         //Sorting and filter 
         $orderColumn = 'updated_at';
         $orderDirection = 'desc';
@@ -177,7 +178,18 @@ class ProductController extends Controller
                 'price' => $finalPrice,
                 'old_price' => !empty($discounts) ? $oldPrice : null,
                 'discounts' => $discountValues,
-                'category' => $product->category
+                'category' => $product->category,
+                'image' => $product->image_url,
+                'description' => $product->description,
+                'stock'=>$product->stock,
+                'calories' => $product->calories,
+                'protein' => $product->protein,
+                'carbs' => $product->carbs,
+                'fats' => $product->fats,
+                'fiber' => $product->fiber,
+                'sugar' => $product->sugar,
+                'ingredients' => explode(',', $product->ingredients),
+                'allergens' => explode(',', $product->allergens),
             ],
             'isFavorite' => $isFavorite,
             'reviews' => $reviews,

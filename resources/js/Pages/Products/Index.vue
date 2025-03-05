@@ -4,10 +4,6 @@
             <main class="mt-32 mb-20">
                 <div class="bg-white">
                     <div class="mx-auto max-w-7xl overflow-hidden sm:px-6 lg:px-8">
-                        <!-- <button @click="sendPromoMessage"
-                            class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600">
-                            Trimite Promoție
-                        </button> -->
                         <!-- Search Bar -->
                         <div class="relative mb-8">
                             <label for="search" class="sr-only">Search</label>
@@ -27,25 +23,22 @@
                         </div>
 
                         <!-- Products Grid -->
-                        <div
-                            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 border-t border-l border-gray-200">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
 
                             <div v-for="product in products" :key="product.id"
-                                class="group relative border-b border-r border-gray-200 p-4 sm:p-6">
-                                <inertia-link :href="route('products.show', product.id)">
+                                class="group relative bg-white shadow-lg rounded-lg p-4 flex flex-col items-center h-full">
+                                <inertia-link :href="route('products.show', product.id)" class="no-underline">
                                     <div
-                                        class="aspect-w-3 aspect-h-2 overflow-hidden rounded-lg bg-gray-200 group-hover:opacity-75">
-                                        <img src="/images/pic1.jpg" alt="imageAlt"
-                                            class="h-full w-full object-cover object-center" />
+                                        class="relative w-full h-64 flex items-center justify-center overflow-hidden rounded-lg">
+                                        <img :src="product.image" alt="imageAlt"
+                                            class="max-h-full max-w-full object-cover" />
                                     </div>
-                                    <div class="pb-4 pt-10 text-center flex flex-col">
+                                    <div class="w-full text-center mt-4 flex flex-col flex-grow">
                                         <h3 class="text-sm font-medium text-gray-900">
-                                            <!-- Link to product page -->
-
                                             {{ product.name }}
                                         </h3>
-                                        <div v-if="product.old_price">
-                                            <p class="mt-2 text-sm font-semibold text-red-500">
+                                        <div v-if="product.old_price" class="mt-2">
+                                            <p class="text-sm font-semibold text-red-500">
                                                 Reduceri aplicate:
                                                 <span v-for="(discount, index) in product.discounts" :key="index">
                                                     -{{ discount }}% <span v-if="index < product.discounts.length - 1">,
@@ -68,10 +61,14 @@
 
                                     </div>
                                 </inertia-link>
-                                <button @click="product.isFavorite ? dislikeProduct(product) : likeProduct(product)">
-                                    <AddHeartSVG :svg-class="product.isFavorite ? 'text-red-400' : 'text-gray-400'">
-                                    </AddHeartSVG>
-                                </button>
+                                <!-- Bottom Section: Like button -->
+                                <div v-if="isLoggedIn()" class="w-full mt-auto flex justify-between items-center pt-4">
+                                    <button @click="product.isFavorite ? dislikeProduct(product) : likeProduct(product)"
+                                        class="text-2xl">
+                                        <AddHeartSVG
+                                            :svg-class="product.isFavorite ? 'text-red-400' : 'text-gray-400'" />
+                                    </button>
+                                </div>
                             </div>
 
                         </div>
@@ -103,7 +100,6 @@ export default {
     },
     methods: {
         fetchProducts() {
-            // console.log(this.searchQuery);
             this.$inertia.get(route('products.index', { search: this.searchQuery },
                 {
                     preserveState: true, // Menține starea actuală a paginii
@@ -111,6 +107,7 @@ export default {
                 }
             ))
         },
+
         async likeProduct(product) {
             await this.$inertia.post(route('wishlist.products.like', product.id), {}, {
                 onSuccess: (page) => {
@@ -125,22 +122,7 @@ export default {
 
                 }
             });
-        },
-
-        // sendPromoMessage() {
-        //     axios.post('/send-promotion', {
-        //         phone: '+40727142462',
-        //         name: 'John Doe',
-        //         link: 'https://siteulmeu.ro'
-        //     })
-        //         .then(response => {
-        //             console.log('Mesaj trimis cu succes:', response.data);
-        //         })
-        //         .catch(error => {
-        //             console.error('Eroare la trimitere:', error);
-        //         });
-        // }
-
+        }
 
     },
 }

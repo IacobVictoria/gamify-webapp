@@ -7,7 +7,8 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Update Product</h2>
         </template>
 
-        <GenericEditForm :updateRoute="getUpdateRoute" :fields="fields" :initialData="product" :title="'Update Product'" />
+        <GenericEditForm :updateRoute="getUpdateRoute" :fields="fields" :initialData="product" :title="'Update Product'"
+            :isFile="true" :aditionalData="imageField" />
     </AuthenticatedLayout>
 
 </template>
@@ -29,26 +30,21 @@ export default {
             type: Object,
             required: true,
         },
+        categories: {
+            type: Array,
+            required: true
+        }
     },
     data() {
         return {
             fields: [
                 {
-                    name: 'name',
-                    label: 'Name',
-                    type: 'input',
-                    inputType: 'text',
-                    autocomplete: 'name',
-                    placeholder: 'Enter name',
-                    colSpan: 'sm:col-span-6'
-                },
-                {
                     name: 'category',
-                    label: 'Category',
-                    type: 'input',
-                    inputType: 'text',
-                    autocomplete: 'category',
-                    placeholder: 'Enter category',
+                    label: 'Categories',
+                    type: 'select',
+                    options: this.categories,
+                    autocomplete: 'categories',
+                    placeholder: 'Categories',
                     colSpan: 'sm:col-span-6'
                 },
                 {
@@ -77,21 +73,20 @@ export default {
                     colSpan: 'sm:col-span-6',
                     step: '0.01'
                 },
-                {
-                    name: 'stock',
-                    label: 'Stock',
-                    type: 'input',
-                    inputType: 'number',
-                    autocomplete: 'stock',
-                    placeholder: 'Enter stock',
-                    colSpan: 'sm:col-span-6'
-                }
             ]
+            , imageField: {
+                name: 'image',
+                label: 'Image',
+                type: 'file',
+                inputType: 'file',
+                colSpan: 'sm:col-span-6'
+            },
+
         };
     },
     computed: {
         getUpdateRoute() {
-            return route('admin.products.update', { productId: this.product.id }); 
+            return route('admin.products.update', { productId: this.product.id });
         },
     },
 };

@@ -38,35 +38,31 @@ class UserProfileController extends Controller
      */
     public function show(string $id)
     {
-        $user = User::find($id);
+        $account = User::with('roles')->find($id);
 
-        $medals = $user->medals()->get();
+        $medals = $account->medals()->get();
         $medals = $medals->map(function ($medal) {
             return [
                 'tier' => $medal->tier,
                 'created_at' => $medal->created_at->format('Y-m-d'),
             ];
-        });
+        })->toArray();
 
-        $badges = $user->badges()->get();
+        $badges = $account->badges()->get();
 
         $badges = $badges->map(function ($badge) {
 
             return [
                 'name' => $badge->name,
+                'image' => $badge->image_path,
                 'awarded_at' => Carbon::parse($badge->pivot->awarded_at)->format('Y-m-d'),
             ];
-        });
-
-        $user = [
-            'medals' => $medals,
-            'badges' => $badges,
-            'name' => $user->name,
-            'created_at' => $user->created_at->format('Y-m-d'),
-        ];
+        })->toArray();
 
         return Inertia::render('User/UserProfile', [
-            'user' => $user,
+            'account' => $account,
+            'medals' => $medals,
+            'badges' => $badges
         ]);
     }
 
