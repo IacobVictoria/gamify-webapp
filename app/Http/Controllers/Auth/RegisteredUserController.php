@@ -34,26 +34,17 @@ class RegisteredUserController extends Controller
     public function create(): Response
     {
         return Inertia::render('Auth/Register', [
-            'locations' => CityRomania::getAllCities(), // Send cities to the frontend
             'genders' => Gender::getAllGenders()
         ]);
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function store(Request $request): RedirectResponse
     {
-        $locations = array_column(CityRomania::getAllCities(), 'value');
         $genders = Gender::getAllGenders();
 
         $request->validate([
             'name' => 'required|string|max:255',
             'gender' => ['required', 'in:' . implode(',', $genders)],
-            'birthdate' => 'required|date',
-            'location' => ['nullable', 'in:' . implode(',', $locations)],
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
@@ -61,8 +52,6 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'gender' => $request->gender,
-            'birthdate' => $request->birthdate,
-            'location' => $request->location,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);

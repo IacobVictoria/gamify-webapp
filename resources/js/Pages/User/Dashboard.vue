@@ -98,12 +98,15 @@ export default {
       }
     },
     userRank() {
-      if (this.account.score < 100) {
+      if (this.account.score >= 50 && this.account.score < 100) {
         return "Bronze Player";
-      } else if (this.account.score < 300) {
+      } else if (this.account.score >= 100 && this.account.score < 300) {
         return "Silver Player";
-      } else {
+      } else if (this.account.score > 300) {
         return "Golden Champion";
+      }
+      else {
+        return "New Player";
       }
     }
   }

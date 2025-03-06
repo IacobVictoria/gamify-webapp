@@ -1,132 +1,72 @@
-<!-- <script setup>
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import VueDatePicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css';
-import { ref } from 'vue';
-import DropdownInput from '@/Components/DropdownInput.vue';
-
-const form = useForm({
-    name: '',
-    gender: null,
-    city: null,
-    birthdate: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
-});
-
-const props = defineProps({
-    cities: {
-        type: Array,
-        required: true,
-        default: () => [],
-    },
-    genders: {
-        type: Array,
-        required: true,
-        default: () => [],
-    },
-});
-
-const calculateMinDate = () => {
-    const today = new Date();
-    const minDate = new Date(today.getFullYear() - 16, today.getMonth(), today.getDate());
-    return minDate;
-};
-
-const minDate = ref(calculateMinDate());
-
-const submit = () => {
-    form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
-    });
-};
-</script> -->
-
 <template>
     <GuestLayout>
+        <div class="flex flex-col justify-center">
+            <h1 class="text-3xl font-bold text-center text-gray-900 mb-6">🎉 Join the Fun!</h1>
+            <p class="text-center text-gray-700 mb-6">Sign up to explore new adventures! 🚀</p>
+            <div class="space-y-5">
+                <!-- Name Input -->
+                <div>
+                    <InputLabel for="name" value="🌟 Name" />
+                    <TextInput id="name" type="text" class="input-field" v-model="form.name" required autofocus
+                        autocomplete="name" />
+                    <InputError class="mt-2" :message="form.errors.name" />
+                </div>
 
-        <Head title="Register" />
 
-   
-            <div>
-                <InputLabel for="name" value="Name" />
-
-                <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" required autofocus
-                    autocomplete="name" />
-
-                <InputError class="mt-2" :message="form.errors.name" />
-            </div>
-            <div>
-                <label for="gender">Gender</label>
-                <div v-for="gender in genders" :key="gender">
-                    <div class="flex items-center">
-                        <input type="radio" :id="gender" :value="gender" v-model="form.gender"
-                            class="h-4 w-4 border-gray-300" />
-                        <label :for="gender" class="ml-3 block text-sm leading-6 text-gray-900">
-                            {{ gender }}
+                <!-- Gender Selection -->
+                <div>
+                    <InputLabel for="gender" value="🎭 Select Gender" />
+                    <div class="flex space-x-6">
+                        <label v-for="gender in genders" :key="gender"
+                            class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" :id="gender" :value="gender" v-model="form.gender" class="hidden" />
+                            <div class="w-3 h-3 border-2 rounded-full"
+                                :class="{ 'bg-blue-400': form.gender === gender }">
+                            </div>
+                            <span class="text-gray-900 font-medium">{{ gender }}</span>
                         </label>
                     </div>
+                    <InputError class="mt-2" :message="form.errors.gender" />
+                </div>
+
+                <div class="mt-4">
+                    <InputLabel for="email" value="📧 Email" />
+
+                    <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required
+                        autocomplete="username" />
+
+                    <InputError class="mt-2" :message="form.errors.email" />
+                </div>
+
+                <div class="mt-4">
+                    <InputLabel for="password" value="🔑 Password" />
+
+                    <TextInput id="password" type="password" class="mt-1 block w-full" v-model="form.password" required
+                        autocomplete="new-password" />
+
+                    <InputError class="mt-2" :message="form.errors.password" />
+                </div>
+
+                <div class="mt-4">
+                    <InputLabel for="password_confirmation" value="✅ Confirm Password" />
+
+                    <TextInput id="password_confirmation" type="password" class="mt-1 block w-full"
+                        v-model="form.password_confirmation" required autocomplete="new-password" />
+
+                    <InputError class="mt-2" :message="form.errors.password_confirmation" />
                 </div>
             </div>
-
-            <div class="datepicker-container">
-                <InputLabel for="birthdate" value="Birthdate" />
-                <VueDatePicker v-model="form.birthdate" :min-date="minDate" format="yyyy-mm-dd"/>
-                <InputError class="mt-2" :message="form.errors.birthdate" />
-            </div>
-            <div>
-                <DropdownInput class="sm:col-span-6" :options="locations" label="Location" :error="form.errors.location"
-                    v-model="form.location" />
-            </div>
-
-            <InputError class="mt-2" :message="form.errors.gender" />
-
-            <div class="mt-4">
-                <InputLabel for="email" value="Email" />
-
-                <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required
-                    autocomplete="username" />
-
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput id="password" type="password" class="mt-1 block w-full" v-model="form.password" required
-                    autocomplete="new-password" />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
-
-                <TextInput id="password_confirmation" type="password" class="mt-1 block w-full"
-                    v-model="form.password_confirmation" required autocomplete="new-password" />
-
-                <InputError class="mt-2" :message="form.errors.password_confirmation" />
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <Link :href="route('login')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Already registered?
+            <div class="flex items-center justify-between mt-6">
+                <Link :href="route('login')" class="text-sm text-gray-700 hover:text-blue-600">
+                🔄 Already registered?
                 </Link>
 
-                <PrimaryButton
-                @click="submit"
-                    class="ms-4 w-32 flex justify-center rounded-md px-3.5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-lightBlue to-darkBlue transition transform hover:-translate-y-2 hover:shadow-lg hover:shadow-gray-400 motion-reduce:transition-none motion-reduce:hover:transform-none"
-                    :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Register
+                <PrimaryButton @click="submit" class="cta-button" :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing">
+                    🎈 Register
                 </PrimaryButton>
             </div>
+        </div>
     </GuestLayout>
 </template>
 <script>
@@ -158,7 +98,6 @@ export default {
 
     props: {
         genders: Array,
-        locations: Array
     },
 
     data() {
@@ -166,33 +105,14 @@ export default {
             form: useForm({
                 name: '',
                 gender: null,
-                location: null,
-                birthdate: '',
                 email: '',
                 password: '',
                 password_confirmation: '',
             }),
-            minDate: this.calculateMinDate(),
-            // errors: {},
-            // formFields: [
-            //     { name: 'name', label: 'Name', model: 'name', type: 'input', inputType: 'text', autocomplete: 'given-name', colSpan: 'sm:col-span-6' },
-            //     { name: 'email', label: 'Email', model: 'email', type: 'input', inputType: 'text', autocomplete: 'given-name', colSpan: 'sm:col-span-6' },
-            // ],
-            // passwordFields: [
-            //     { name: 'password', label: 'Password', model: 'password', type: 'input', inputType: 'password', autocomplete: 'given-name', colSpan: 'sm:col-span-6' },
-            //     { name: 'password_confirmation', label: 'Confirm Password', model: 'password_confirmation', type: 'input', inputType: 'password', autocomplete: 'given-name', colSpan: 'sm:col-span-6' },
-            // ],
-        
-       
 
         }
     },
     methods: {
-        calculateMinDate() {
-            const today = new Date();
-            return new Date(today.getFullYear() - 16, today.getMonth(), today.getDate());
-        },
-
         submit() {
             this.form.post(route('register'), {
                 onFinish: () => this.form.reset('password', 'password_confirmation')
