@@ -76,9 +76,9 @@ class UserScoreService implements UserScoreInterface
         $this->addScore($user, $points);
 
         // Broadcast the event for score update
-        broadcast(new UserScoreUpdatedEvent($user, $points, "Ai primit puncte pentru locul #$rank pe leaderboard!", $this->notificationService));
+       // broadcast(new UserScoreUpdatedEvent($user, $points, "Ai primit puncte pentru locul #$rank pe leaderboard!", $this->notificationService));
     }
-    protected function getPointsForRank(int $rank): int
+    public function getPointsForRank(int $rank): int
     {
         switch ($rank) {
             case 1:

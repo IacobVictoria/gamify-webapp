@@ -162,14 +162,14 @@ class User extends Authenticatable
             });
     }
     public function allFriendsQuery()
-{
-    return Friend::query()
-        ->where(function ($query) {
-            $query->where('user_id', $this->id)
-                ->orWhere('friend_id', $this->id);
-        })
-        ->with(['user', 'friend']);
-}
+    {
+        return Friend::query()
+            ->where(function ($query) {
+                $query->where('user_id', $this->id)
+                    ->orWhere('friend_id', $this->id);
+            })
+            ->with(['user', 'friend']);
+    }
 
 
 }

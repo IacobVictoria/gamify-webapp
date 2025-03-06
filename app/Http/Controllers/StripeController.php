@@ -37,7 +37,7 @@ class StripeController extends Controller
     }
     public function createPaymentIntent(Request $request)
     {
-        Stripe::setApiKey(env('STRIPE_SECRET'));
+        Stripe::setApiKey(config('services.stripe.secret'));
 
         $order = ClientOrder::findOrFail($request->order_id);
 
