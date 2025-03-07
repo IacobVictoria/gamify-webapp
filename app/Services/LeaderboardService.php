@@ -4,14 +4,16 @@ namespace App\Services;
 
 use App\Events\LeaderboardTop10Event;
 use App\Models\User;
+use App\Services\Badges\LeaderboardBadgeService;
 
 class LeaderboardService
 {
-    protected $notificationService;
+    protected $notificationService, $leaderboardBadgeService;
 
-    public function __construct(NotificationService $notificationService)
+    public function __construct(NotificationService $notificationService, LeaderboardBadgeService $leaderboardBadgeService)
     {
         $this->notificationService = $notificationService;
+        $this->leaderboardBadgeService = $leaderboardBadgeService;
     }
 
     public function checkAndNotifyLeaderboardEntry(User $user, int $previousPosition)
@@ -22,5 +24,8 @@ class LeaderboardService
         if ($newPosition < $previousPosition && $newPosition <= 10) {
             broadcast(new LeaderboardTop10Event($user, $newPosition, $this->notificationService));
         }
+
+        // Verificăm și atribuim badge-uri leaderboard
+        $this->leaderboardBadgeService->checkAndAssignBadges($user);
     }
 }

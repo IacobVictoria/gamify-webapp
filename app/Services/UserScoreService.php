@@ -11,14 +11,13 @@ use App\Models\User;
 class UserScoreService implements UserScoreInterface
 {
     protected $notificationService;
-    protected $discountService, $medalService, $leaderboardService;
+    protected $discountService, $medalService;
 
-    public function __construct(NotificationService $notificationService, DiscountService $discountService, MedalService $medalService, LeaderboardService $leaderboardService)
+    public function __construct(NotificationService $notificationService, DiscountService $discountService, MedalService $medalService)
     {
         $this->notificationService = $notificationService;
         $this->discountService = $discountService;
         $this->medalService = $medalService;
-        $this->leaderboardService = $leaderboardService;
     }
     public function addScore(User $user, $score)
     {
@@ -32,7 +31,7 @@ class UserScoreService implements UserScoreInterface
         $previousPosition = User::where('score', '>', $user->score)->count() + 1;
 
         // verificare leaderboard
-        $this->leaderboardService->checkAndNotifyLeaderboardEntry($user, $previousPosition);
+        app(LeaderboardService::class)->checkAndNotifyLeaderboardEntry($user, $previousPosition);
 
         // verificare discounturi
         $this->discountService->checkAndNotifyBonusAvailability($user);
@@ -76,7 +75,7 @@ class UserScoreService implements UserScoreInterface
         $this->addScore($user, $points);
 
         // Broadcast the event for score update
-       // broadcast(new UserScoreUpdatedEvent($user, $points, "Ai primit puncte pentru locul #$rank pe leaderboard!", $this->notificationService));
+        // broadcast(new UserScoreUpdatedEvent($user, $points, "Ai primit puncte pentru locul #$rank pe leaderboard!", $this->notificationService));
     }
     public function getPointsForRank(int $rank): int
     {

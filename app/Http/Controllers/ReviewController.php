@@ -6,7 +6,7 @@ use App\Http\Requests\ReviewRequest;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\ReviewMedia;
-use App\Services\BadgeService;
+use App\Services\Badges\ReviewerBadgeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -16,7 +16,7 @@ class ReviewController extends Controller
 {
     protected $badgeService;
 
-    public function __construct(BadgeService $badgeService)
+    public function __construct(ReviewerBadgeService $badgeService)
     {
         $this->badgeService = $badgeService;
     }
@@ -89,7 +89,7 @@ class ReviewController extends Controller
 
         $user = Auth()->user();
 
-        $this->badgeService->reviewerBadges($user);
+        $this->badgeService->checkAndAssignBadges($user);
 
         return redirect()->back()
             ->with('success', 'Review updated successfully!');
@@ -152,7 +152,7 @@ class ReviewController extends Controller
         }
         $user = Auth()->user();
 
-        $this->badgeService->reviewerBadges($user);
+        $this->badgeService->checkAndAssignBadges($user);
 
         return redirect()->back()
             ->with('success', 'Review updated successfully!');

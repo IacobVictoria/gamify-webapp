@@ -9,7 +9,6 @@ use App\Models\ClientOrder;
 use App\Models\OrderProduct;
 use App\Models\Product;
 use App\Models\User;
-use App\Services\BadgeService;
 use App\Services\DompdfGeneratorService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Faker\Provider\Uuid;
@@ -20,11 +19,10 @@ use Illuminate\Support\Facades\Storage;
 
 class UserCheckoutController extends Controller
 {
-    protected $badgeService, $pdfGenerator;
+    protected $pdfGenerator;
 
-    public function __construct(BadgeService $badgeService, DompdfGeneratorService $pdfGenerator)
+    public function __construct(DompdfGeneratorService $pdfGenerator)
     {
-        $this->badgeService = $badgeService;
         $this->pdfGenerator = $pdfGenerator;
     }
 
@@ -47,17 +45,6 @@ class UserCheckoutController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(CheckoutRequest $request)
     {
 
@@ -134,36 +121,4 @@ class UserCheckoutController extends Controller
 
     //ORDER INVOICE PDF
 
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

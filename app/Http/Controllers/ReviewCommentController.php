@@ -6,37 +6,20 @@ use App\Events\CommentEvent;
 use App\Http\Requests\ReviewCommentRequest;
 use App\Models\Review;
 use App\Models\ReviewComment;
-use App\Services\BadgeService;
+use App\Services\Badges\CommenterBadgeService;
 use App\Services\NotificationService;
 use Faker\Provider\Uuid;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ReviewCommentController extends Controller
 {
     protected $badgeService, $notificationService;
 
-    public function __construct(BadgeService $badgeService, NotificationService $notificationService)
+    public function __construct(CommenterBadgeService $badgeService, NotificationService $notificationService)
     {
         $this->badgeService = $badgeService;
         $this->notificationService = $notificationService;
     }
-    public function index()
-    {
-        //
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(ReviewCommentRequest $request, string $reviewId)
     {
 
@@ -52,7 +35,7 @@ class ReviewCommentController extends Controller
         $comment->description = $validatedData['description'];
         $comment->save();
 
-        $this->badgeService->awardActiveCommenterBadge($user);
+        $this->badgeService->checkAndAssignBadges($user);
 
         broadcast(new CommentEvent($comment, $user, $reviewer, $this->notificationService));
 
@@ -61,25 +44,6 @@ class ReviewCommentController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(ReviewCommentRequest $request, string $commentId)
     {
         $comment = ReviewComment::find($commentId);

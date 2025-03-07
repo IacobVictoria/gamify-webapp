@@ -6,6 +6,7 @@ use App\Models\UserQuizResult;
 use App\Models\UserQuizResponse;
 use App\Models\UserQuizAnswer;
 use App\Models\User;
+use App\Services\Badges\QuizBadgeService;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,7 @@ class UserQuizService implements UserQuizInterface
     protected $badgeService;
     protected $userScoreService, $notificationService;
 
-    public function __construct(BadgeService $badgeService, UserScoreService $userScoreService, NotificationService $notificationService)
+    public function __construct(QuizBadgeService $badgeService, UserScoreService $userScoreService, NotificationService $notificationService)
     {
         $this->badgeService = $badgeService;
         $this->userScoreService = $userScoreService;
@@ -91,7 +92,7 @@ class UserQuizService implements UserQuizInterface
             }
         }
 
-        $this->badgeService->quizBadges($user);
+        $this->badgeService->checkAndAssignBadges($user);
     }
 
     public function lockQuiz(Request $request)
@@ -160,13 +161,13 @@ class UserQuizService implements UserQuizInterface
         }
 
 
-        $this->badgeService->quizBadges($user);
+        $this->badgeService->checkAndAssignBadges($user);
 
         //UserScoreService -> multiplier score for quizzes
         $user = User::find($userId);
         $this->userScoreService->quizAttemptScore($user, $quizResult->attempt_number, $quizResult->total_score);
 
-       // broadcast(new UserScoreUpdatedEvent($user, $quizResult->total_score, "Quiz completat cu succes! ", $this->notificationService));
+        // broadcast(new UserScoreUpdatedEvent($user, $quizResult->total_score, "Quiz completat cu succes! ", $this->notificationService));
         // return redirect()->route('user.quizzes.index');
     }
 

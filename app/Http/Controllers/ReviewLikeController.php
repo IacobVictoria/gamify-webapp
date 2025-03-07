@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\ReviewLikedEvent;
 use App\Models\Review;
-use App\Services\BadgeService;
+use App\Services\Badges\ReviewerBadgeService;
 use App\Services\NotificationService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -13,7 +13,7 @@ class ReviewLikeController extends Controller
 {
     protected $badgeService, $userService, $notificationService;
 
-    public function __construct(BadgeService $badgeService, UserService $userService, NotificationService $notificationService)
+    public function __construct(ReviewerBadgeService $badgeService, UserService $userService, NotificationService $notificationService)
     {
         $this->badgeService = $badgeService;
         $this->userService = $userService;
@@ -38,7 +38,7 @@ class ReviewLikeController extends Controller
 
         broadcast(new ReviewLikedEvent($user, $review, $this->notificationService));
 
-        $this->badgeService->reviewerBadges($user);
+        $this->badgeService->checkAndAssignBadges($user);
     }
 
     public function unlike(string $reviewId)

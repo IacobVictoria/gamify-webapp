@@ -9,7 +9,7 @@ use App\Models\Product;
 use App\Models\QrCode;
 use App\Models\QrCodeEvent;
 use App\Models\QrCodeScan;
-use App\Services\BadgeService;
+use App\Services\Badges\EventBadgeService;
 use App\Services\UserScoreService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +21,7 @@ class QrScannerController extends Controller
     protected $userScoreService, $badgeService;
     private $achievementInterface;
 
-    public function __construct(UserAchievementInterface $achievementInterface, UserScoreService $userScoreService, BadgeService $badgeService)
+    public function __construct(UserAchievementInterface $achievementInterface, UserScoreService $userScoreService, EventBadgeService $badgeService)
     {
         $this->achievementInterface = $achievementInterface;
         $this->userScoreService = $userScoreService;
@@ -83,7 +83,7 @@ class QrScannerController extends Controller
         $participant->confirmed = true;
         $participant->save();
         $this->userScoreService->addScore($participant->user, 20);
-        $this->badgeService->eventBadges($participant->user);
+        $this->badgeService->checkAndAssignBadges($participant->user);
 
         return redirect()->back()->with('message', 'Participation Confirmed! 🎉');
     }

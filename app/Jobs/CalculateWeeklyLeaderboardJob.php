@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\Events\UserMadeLeaderboardQuizEvent;
 use App\Models\QuizLeaderboardHistory;
 use App\Models\User;
-use App\Services\BadgeService;
+use App\Services\Badges\QuizLeaderboardBadgeService;
 use App\Services\NotificationService;
 use App\Services\UserScoreService;
 use Faker\Provider\Uuid;
@@ -20,11 +20,11 @@ class CalculateWeeklyLeaderboardJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected NotificationService $notificationService;
-    protected UserScoreService $userScoreService;
-    protected BadgeService $badgeService;
+    protected $notificationService;
+    protected $userScoreService;
+    protected $badgeService;
 
-    public function __construct(NotificationService $notificationService, UserScoreService $userScoreService, BadgeService $badgeService)
+    public function __construct(NotificationService $notificationService, UserScoreService $userScoreService, QuizLeaderboardBadgeService $badgeService)
     {
         $this->notificationService = $notificationService;
         $this->userScoreService = $userScoreService;
@@ -54,7 +54,7 @@ class CalculateWeeklyLeaderboardJob implements ShouldQueue
             ];
         })->sortByDesc('total_score')->take(3)->values()->toArray();
     }
-    
+
     /**
      * Procesează fiecare utilizator de pe leaderboard.
      */
@@ -73,7 +73,7 @@ class CalculateWeeklyLeaderboardJob implements ShouldQueue
                 'points' => $this->userScoreService->getPointsForRank($rank),
             ]);
 
-            $this->badgeService->quizLeaderboardBadges($user);
+            $this->badgeService->checkAndAssignBadges($user);
             broadcast(new UserMadeLeaderboardQuizEvent($user, $this->notificationService));
         }
     }

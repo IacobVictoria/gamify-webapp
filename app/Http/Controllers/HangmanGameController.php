@@ -9,7 +9,7 @@ use App\Events\GameUpdated;
 use App\Events\OpponentJoined;
 use App\Models\HangmanSession;
 use App\Models\User;
-use App\Services\BadgeService;
+use App\Services\Badges\HangmanBadgeService;
 use App\Services\UserScoreService;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
@@ -20,7 +20,7 @@ use Inertia\Inertia;
 class HangmanGameController extends Controller
 {
     public $userScoreService, $badgeService;
-    public function __construct(UserScoreService $userScoreService, BadgeService $badgeService)
+    public function __construct(UserScoreService $userScoreService, HangmanBadgeService $badgeService)
     {
         $this->userScoreService = $userScoreService;
         $this->badgeService = $badgeService;
@@ -284,8 +284,8 @@ class HangmanGameController extends Controller
                 ]);
                 broadcast(new GameEnded($session->id, json_decode($session->scores, true)));
                 $this->userScoreService->awardPointsBasedOnHangmanScore($creator, $scores['creator']);
-                $this->badgeService->hangmanGameBadges($creator);
-                $this->badgeService->hangmanGameBadges($opponent);
+                $this->badgeService->checkAndAssignBadges($creator);
+                $this->badgeService->checkAndAssignBadges($opponent);
                 $this->userScoreService->awardPointsBasedOnHangmanScore($opponent, $scores['opponent']);
             }
 

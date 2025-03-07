@@ -7,7 +7,6 @@ use App\Models\UserQuiz;
 use App\Models\UserQuizAnswer;
 use App\Models\UserQuizResponse;
 use App\Models\UserQuizResult;
-use App\Services\BadgeService;
 use App\Services\NotificationService;
 use App\Services\UserQuizService;
 use App\Services\UserScoreService;
@@ -21,13 +20,11 @@ use Inertia\Inertia;
 class UserQuizController extends Controller
 {
     protected $userScoreService;
-    protected $badgeService;
     protected $quizService, $notificationService;
 
-    public function __construct(UserScoreService $userScoreService, BadgeService $badgeService, UserQuizService $quizService, NotificationService $notificationService)
+    public function __construct(UserScoreService $userScoreService,UserQuizService $quizService, NotificationService $notificationService)
     {
         $this->userScoreService = $userScoreService;
-        $this->badgeService = $badgeService;
         $this->quizService = $quizService;
         $this->notificationService = $notificationService;
     }
@@ -58,25 +55,6 @@ class UserQuizController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $quizId)
     {
         $user = Auth::user();
@@ -108,27 +86,4 @@ class UserQuizController extends Controller
         $this->quizService->lockQuiz($request);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

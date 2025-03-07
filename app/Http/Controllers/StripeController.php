@@ -5,23 +5,22 @@ namespace App\Http\Controllers;
 use App\Events\OrderCanceledEvent;
 use App\Jobs\ExpediteOrderJob;
 use App\Models\ClientOrder;
-use App\Services\BadgeService;
+use App\Services\Badges\ShoppingBadgeService;
 use App\Services\DiscountService;
 use App\Services\DompdfGeneratorService;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
 
 class StripeController extends Controller
 {
-    protected $badgeService, $pdfGenerator, $notificationService, $discountService;
+    protected $shoppingBadgeService, $pdfGenerator, $notificationService, $discountService;
 
-    public function __construct(BadgeService $badgeService, DompdfGeneratorService $pdfGenerator, NotificationService $notificationService, DiscountService $discountService)
+    public function __construct(ShoppingBadgeService $shoppingBadgeService, DompdfGeneratorService $pdfGenerator, NotificationService $notificationService, DiscountService $discountService)
     {
-        $this->badgeService = $badgeService;
+        $this->shoppingBadgeService = $shoppingBadgeService;
         $this->pdfGenerator = $pdfGenerator;
         $this->notificationService = $notificationService;
         $this->discountService = $discountService;
@@ -68,7 +67,7 @@ class StripeController extends Controller
             // Lansăm job-ul pentru expediere
             ExpediteOrderJob::dispatch($order, $user)->delay(now()->addMinutes(1));
 
-            $this->badgeService->shoopingBadges($order->user);
+            $this->shoppingBadgeService->checkAndAssignBadges($order->user);
 
             if ($order->promo_code) {
                 $this->discountService->markPromoCodeAsUsed($user, $order->promo_code);
