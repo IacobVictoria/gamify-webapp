@@ -30,10 +30,12 @@
       </div>
     </div>
   </div>
+  <NotificationCenter/>
 </template>
 
 <script>
 import axios from 'axios';
+import NotificationCenter from './Notification_System/NotificationCenter.vue';
 
 export default {
   props: {
@@ -50,6 +52,9 @@ export default {
       processing: false,
       successMessage: "",
     };
+  },
+  components:{
+    NotificationCenter
   },
   mounted() {
     this.stripe = Stripe(this.stripeKey);

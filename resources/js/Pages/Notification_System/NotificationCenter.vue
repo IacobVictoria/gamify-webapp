@@ -68,8 +68,8 @@ export default {
             window.Echo.private(`user.${user.id}`).listen('.OrderDelivered', (event) => {
                 this.addNotification('Order Delivered!', event.message);
             });
-            window.Echo.private(`user.${user.id}`).listen('.OrderCanceled', (event) => {
-                this.addNotification('Order Canceled!', event.message);
+            window.Echo.private(`user.${user.id}`).listen('.OrderFailed', (event) => {
+                this.addNotification('Order Failed!', event.message);
             });
             window.Echo.private(`user.${user.id}`).listen('.OrderExpedited', (event) => {
                 this.addNotification('Order Expedited!', event.message);

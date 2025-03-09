@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Factories\OrderHandlerFactory;
+use App\Factories\PaymentHandlerFactory;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\QrScannerController;
 use App\Interfaces\BadgeAssignerInterface;
@@ -20,6 +22,11 @@ use App\Services\DiscountService;
 use App\Services\DompdfGeneratorService;
 use App\Services\MedalService;
 use App\Services\NotificationService;
+use App\Services\OrderHandlers\CreateOrderHandler;
+use App\Services\OrderHandlers\OrderHandlerInterface;
+use App\Services\OrderHandlers\PlaceOrderHandler;
+use App\Services\OrderHandlers\UpdateStockHandler;
+use App\Services\PaymentHandlers\PaymentHandlerInterface;
 use App\Services\UserAchievementService;
 use App\Services\UserScoreService;
 use Illuminate\Support\ServiceProvider;
@@ -49,8 +56,14 @@ class AppServiceProvider extends ServiceProvider
                 $app->make(MedalService::class),
             );
         });
-        //$this->app->bind(NotificationServiceInterface::class, NotificationService::class);
+        
+        $this->app->bind(OrderHandlerInterface::class, function ($app) {
+            return OrderHandlerFactory::create();
+        });
       
+        $this->app->bind(PaymentHandlerInterface::class, function ($app) {
+            return PaymentHandlerFactory::create($app);
+        });
     }
 
     /**

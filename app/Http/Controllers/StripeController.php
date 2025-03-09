@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\OrderCanceledEvent;
 use App\Jobs\ExpediteOrderJob;
 use App\Models\ClientOrder;
 use App\Services\Badges\ShoppingBadgeService;
 use App\Services\DiscountService;
 use App\Services\DompdfGeneratorService;
 use App\Services\NotificationService;
+use App\Services\PaymentHandlers\PaymentHandlerInterface;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Stripe\PaymentIntent;
@@ -16,14 +16,12 @@ use Stripe\Stripe;
 
 class StripeController extends Controller
 {
-    protected $shoppingBadgeService, $pdfGenerator, $notificationService, $discountService;
+    protected $paymentHandler, $notificationService;
 
-    public function __construct(ShoppingBadgeService $shoppingBadgeService, DompdfGeneratorService $pdfGenerator, NotificationService $notificationService, DiscountService $discountService)
+    public function __construct(PaymentHandlerInterface $paymentHandler, NotificationService $notificationService)
     {
-        $this->shoppingBadgeService = $shoppingBadgeService;
-        $this->pdfGenerator = $pdfGenerator;
+        $this->paymentHandler = $paymentHandler;
         $this->notificationService = $notificationService;
-        $this->discountService = $discountService;
     }
     public function index(Request $request)
     {
@@ -51,29 +49,14 @@ class StripeController extends Controller
     }
     public function confirmPayment(Request $request)
     {
-        $user = Auth()->user();
         $order = ClientOrder::findOrFail($request->order_id);
 
         if ($order) {
-            // Marchează comanda ca plătită
-            $order->update(['status' => 'Authorized']);
 
-            $filename = "invoice_{$order->id}.pdf";
-            $pdfUrl = $this->pdfGenerator->generateClientInvoicePdf(['order' => $order], $filename);
+            // Rulează Chain of Responsibility pentru confirmarea plății
+            $this->paymentHandler->handle($order, []);
 
-            // Salveaza URL-ul facturii în baza de date
-            $order->update(['invoice_url' => $pdfUrl]);
-
-            // Lansăm job-ul pentru expediere
-            ExpediteOrderJob::dispatch($order, $user)->delay(now()->addMinutes(1));
-
-            $this->shoppingBadgeService->checkAndAssignBadges($order->user);
-
-            if ($order->promo_code) {
-                $this->discountService->markPromoCodeAsUsed($user, $order->promo_code);
-            }
-
-            return response()->json(['status' => 'success', 'invoice_url' => $pdfUrl]);
+            return response()->json(['status' => 'success', 'invoice_url' => $order->invoice_url]);
         }
 
         return response()->json(['status' => 'error', 'message' => 'Order not found'], 404);
@@ -84,7 +67,6 @@ class StripeController extends Controller
         $order = ClientOrder::findOrFail($request->order_id);
         $order->update(['status' => 'Canceled']); //Marcăm comanda ca anulată
 
-        broadcast(new OrderCanceledEvent($user, $order, $this->notificationService));
         return response()->json(['message' => 'Payment canceled']);
     }
 
