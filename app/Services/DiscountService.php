@@ -2,7 +2,8 @@
 
 namespace App\Services;
 
-use App\Events\UserEligibleForDiscountEvent;
+use App\Events\UserEligibleForPromoCodeEvent;
+use App\Jobs\SendMailPromoCodeGrantedJob;
 use App\Models\User;
 use Illuminate\Support\Str;
 
@@ -65,8 +66,11 @@ class DiscountService
                 $user->used_discounts = json_encode($usedDiscounts);
                 $user->save();
 
+                // Trimitem email cu promo code și punctele câștigate
+                dispatch(new SendMailPromoCodeGrantedJob($user, $code, $discount, $points));
+
                 // Notificare despre noul discount
-                broadcast(new UserEligibleForDiscountEvent($user, $discount, $this->notificationService));
+                broadcast(new UserEligibleForPromoCodeEvent($user, $discount, $this->notificationService));
             }
         }
     }
