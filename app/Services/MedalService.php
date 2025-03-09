@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Events\UserMedalAwardedEvent;
+use App\Jobs\SendMedalAwardedMailJob;
 use App\Models\Medal;
 use App\Models\User;
 
@@ -38,6 +39,9 @@ class MedalService
         $medal = Medal::where('tier', $tier)->first();
         if ($medal) {
             $user->medals()->attach($medal->id);
+
+            // Trimitere email prin job
+            SendMedalAwardedMailJob::dispatch($user, $tier);
         }
         broadcast(new UserMedalAwardedEvent($user, $medal, $this->notificationService));
     }
