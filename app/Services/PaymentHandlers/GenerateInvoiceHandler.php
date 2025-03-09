@@ -1,7 +1,9 @@
 <?php
 namespace App\Services\PaymentHandlers;
 
+use App\Jobs\SendMailInvoiceJob;
 use App\Models\ClientOrder;
+use App\Models\User;
 use App\Services\DompdfGeneratorService;
 
 class GenerateInvoiceHandler extends AbstractPaymentHandler
@@ -19,6 +21,9 @@ class GenerateInvoiceHandler extends AbstractPaymentHandler
         $pdfUrl = $this->pdfGenerator->generateClientInvoicePdf(['order' => $order], $filename);
 
         $order->update(['invoice_url' => $pdfUrl]);
+
+        $user = User::findOrFail($order->user_id);
+        dispatch(new SendMailInvoiceJob($user, $order, $pdfUrl));
 
         parent::handle($order, $paymentData);
     }
