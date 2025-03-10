@@ -25,7 +25,6 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserSurveyController;
 use App\Http\Controllers\UserWishlistController;
 use App\Http\Controllers\WelcomeController;
-use App\Http\Controllers\WhatsAppController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -82,8 +81,6 @@ Route::prefix('comparison')->group(function () {
     Route::post('/reset', [ProductComparisonController::class, 'resetComparison']);
 
 });
-//Route::post('/send-whatsapp', [WhatsAppController::class, 'sendWhatsAppMessage'])->name('web.send-whatsapp');
-Route::post('/send-promotion', [WhatsappController::class, 'sendPromotion']);
 
 Route::prefix('events')->group(function () {
     Route::get('/', [EventController::class, 'index'])->name('events.index');

@@ -41,6 +41,7 @@ class DeliverOrderJob implements ShouldQueue
             ]);
 
             $notificationService = app(NotificationService::class);
+            SendWhatsappMessageJob::dispatch( 'order_delivered', ['name' => $this->order->user->name,'order_id'=>$this->order->id]);
 
             broadcast(new OrderDeliveredEvent($this->user, $this->order, $notificationService));
             // Lansăm job pentru arhivare după 1 zi

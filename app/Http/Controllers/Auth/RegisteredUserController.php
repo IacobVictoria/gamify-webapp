@@ -6,6 +6,7 @@ use App\Enums\CityRomania;
 use App\Enums\Gender;
 use App\Events\UserRegistration;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendWhatsappMessageJob;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserRole;
@@ -21,12 +22,6 @@ use Inertia\Response;
 
 class RegisteredUserController extends Controller
 {
-    protected $whatsappService;
-
-    public function __construct(WhatsappService $whatsappService)
-    {
-        $this->whatsappService = $whatsappService;
-    }
 
     /**
      * Display the registration view.
@@ -60,10 +55,12 @@ class RegisteredUserController extends Controller
             'user_id' => $user->id,
             'role_id' => Role::query()->where('name', 'user')->first()->id,
         ]);
-        event(new Registered($user));
-        event(new UserRegistration($user));
+        // event(new Registered($user));
+        // event(new UserRegistration($user));
 
-      //  $this->whatsappService->sendWhatsappMessage($user->name);
+        // Trimitere mesaj WhatsApp pentru utilizator nou
+        SendWhatsappMessageJob::dispatch( 'new_user', ['name' => $user->name]);
+
         Auth::login($user);
 
         return redirect(route('user.dashboard'));

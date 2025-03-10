@@ -39,6 +39,7 @@ class ExpediteOrderJob implements ShouldQueue
 
             // Instanțiem NotificationService direct în metodă, nu merge in constructor
             $notificationService = app(NotificationService::class);
+            SendWhatsappMessageJob::dispatch( 'order_expedited', ['name' => $this->order->user->name,'order_id'=>$this->order->id]);
 
             broadcast(new OrderExpeditedEvent($this->user, $this->order, $notificationService));
             // Lansăm job-ul de livrare

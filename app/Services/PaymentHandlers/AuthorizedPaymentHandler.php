@@ -2,6 +2,7 @@
 namespace App\Services\PaymentHandlers;
 
 use App\Events\OrderFailedEvent;
+use App\Jobs\SendWhatsappMessageJob;
 use App\Models\ClientOrder;
 use App\Enums\OrderStatus;
 use App\Services\NotificationService;
@@ -14,6 +15,7 @@ class AuthorizedPaymentHandler extends AbstractPaymentHandler
         try {
             DB::beginTransaction();
             $order->update(['status' => OrderStatus::Authorized]);
+            SendWhatsappMessageJob::dispatch( 'order_confirmed', ['name' => $order->user->name,'order_id'=>$order->id]);
 
             parent::handle($order, $paymentData);
 
