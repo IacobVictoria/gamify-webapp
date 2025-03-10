@@ -3,41 +3,55 @@
         <div class="text-2xl font-bold mb-4">Comments</div>
         <div class="max-h-screen overflow-y-auto border border-gray-200 rounded-lg p-4">
             <div v-for="(comment, commentIdx) in comments" :key="comment.id" class="text-sm text-gray-500">
-                <div :class="[commentIdx === 0 ? '' : 'border-t border-gray-200', 'py-10']">
-                    <div class="flex items-start gap-16">
-                        <inertia-link class="flex flex-col items-center"
+                <div :class="[commentIdx === 0 ? '' : 'border-t border-gray-300', 'py-2']">
+                    <div class="flex items-start gap-3 p-3">
+                        <!-- Profil utilizator -->
+                        <inertia-link class="flex flex-col items-center text-center no-underline"
                             :href="route('user.profile.show', { userId: comment.user.id })">
-                            <img v-if="comment.user.gender === 'Male'" src="/images/male.png" alt="User Avatar"
-                                class="w-14 h-14 rounded-full border-2 border-indigo-500 shadow-sm" />
-                            <img v-else src="/images/female.png" alt="User Avatar"
-                                class="w-14 h-14 rounded-full border-2 border-indigo-500 shadow-sm" />
-                            <span class="font-medium text-gray-900 mt-2 ">{{ comment.user.name }}</span>
-                            <p class="text-sm text-gray-600">{{ comment.updated_at }}</p>
-                            <div v-if="comment.user.role.name === 'Admin'" class="text-red-600">Admin</div>
-                        </inertia-link>
-                        <div class="flex-1 items-center">
-                            <div class="flex gap-2 mt-2">
-                                <label for="description"
-                                    class=" text-base font-semibold text-gray-800">Description:</label>
-                                <div class=" text-base text-gray-800">{{ comment.description }}</div>
+                            <img :src="comment.user.gender === 'Male' ? '/images/male.png' : '/images/female.png'"
+                                alt="User Avatar" class="w-12 h-12 rounded-full border-2 border-indigo-500 shadow-md" />
+
+                            <span class="font-semibold text-gray-900 text-sm mt-1">{{ comment.user.name }}</span>
+                            <p class="text-xs text-gray-500">{{ comment.updated_at }}</p>
+
+                            <div v-if="comment.user.role.name === 'Admin'"
+                                class="text-red-600 text-xs font-bold mt-1 bg-red-100 px-2 py-1 rounded-full">
+                                👑 Admin
                             </div>
-                            <div class="flex items-center gap-2">
-                                <i class="fa fa-thumbs-up fa-3x"
+                        </inertia-link>
+
+                        <!-- Conținut Comentariu -->
+                        <div class="flex-1">
+                            <div class="mt-1 text-sm">
+                                <p class="font-semibold text-gray-900 flex items-center">
+                                    💬 {{ comment.description }}
+                                </p>
+                            </div>
+
+                            <!-- Like Button -->
+                            <div class="flex items-center gap-3 mt-2">
+                                <i class="fa fa-thumbs-up fa-2x"
                                     @click="comment.isLiked ? dislikeComment(comment) : likeComment(comment)"
-                                    :style="{ color: comment.isLiked ? '#74C0FC' : 'gray' }" aria-hidden="true"></i>
-                                <div>{{ comment.likes }}</div>
+                                    :class="comment.isLiked ? 'text-blue-500' : 'text-gray-500'"></i>
+                                <span class="text-base text-gray-800 font-semibold">{{ comment.likes }}</span>
                             </div>
                         </div>
-                        <div v-if="isLoggedIn() && comment.user.id === $page.props.user.id" class="mt-4">
-                            <button @click="editComment(commentIdx)" class="text-indigo-600 hover:underline">
-                                {{ commentStates[commentIdx].editCommentForm ? 'Cancel Edit' : 'Edit' }}
+
+                        <!-- Butoane Edit/Delete -->
+                        <div v-if="isLoggedIn() && comment.user.id === $page.props.user.id"
+                            class="flex flex-col items-end text-xs mt-1">
+                            <button @click="editComment(commentIdx)"
+                                class="text-indigo-600 text-sm hover:text-indigo-800 transition">
+                                ✏️ {{ commentStates[commentIdx].editCommentForm ? 'Anulează' : 'Editează' }}
                             </button>
-                            <button @click="deleteComment(commentIdx)" class="text-red-600 hover:underline ml-2">
-                                Delete
+                            <button @click="deleteComment(commentIdx)"
+                                class="text-red-600 text-sm hover:text-red-800 transition mt-1">
+                                🗑️ Șterge
                             </button>
                         </div>
                     </div>
                 </div>
+
                 <GenericDeleteNotification :open="commentStates[commentIdx].isDeleteDialogOpen"
                     @update:open="commentStates[commentIdx].isDeleteDialogOpen = $event" title="Remove Comment!"
                     message="Are you sure you want to delete this comment?" :objectId="comment.id"
@@ -105,7 +119,7 @@ export default {
         async likeComment(comment) {
             await this.$inertia.post(route('review_comment.like', comment.id), {}, {
                 onSuccess: (page) => {
-           
+
                 }
             });
         }
