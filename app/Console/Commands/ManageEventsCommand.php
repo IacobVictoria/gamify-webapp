@@ -4,12 +4,13 @@ namespace App\Console\Commands;
 
 use App\Events\EventReminderBroadcast;
 use App\Events\NewEventBroadcast;
+use App\Factories\PdfGeneratorFactory;
+use App\Factories\StorageStrategyFactory;
 use App\Interfaces\PdfGeneratorServiceInterface;
 use App\Models\Event;
 use App\Models\Participant;
 use App\Models\Report;
 use App\Models\User;
-use App\Services\DompdfGeneratorService;
 use App\Services\NotificationService;
 use Carbon\Carbon;
 use Faker\Provider\Uuid;
@@ -24,11 +25,10 @@ class ManageEventsCommand extends Command
     protected $pdfGenerator;
 
 
-    public function __construct(NotificationService $notificationService, DompdfGeneratorService $pdfGenerator)
+    public function __construct(NotificationService $notificationService, )
     {
         parent::__construct();
         $this->notificationService = $notificationService;
-        $this->pdfGenerator = $pdfGenerator;
     }
 
 
@@ -71,6 +71,12 @@ class ManageEventsCommand extends Command
     }
     protected function generateParticipantsListReport($event)
     {
+        $filename = "participants_event_{$event->id}.pdf";
+
+        $storageStrategy = StorageStrategyFactory::create('s3');
+
+        $generator = PdfGeneratorFactory::create('participants', $storageStrategy);
+        
         $participants = $event->participants->map(function ($participant) {
             return [
                 'name' => $participant->user->name,
@@ -84,22 +90,22 @@ class ManageEventsCommand extends Command
         $totalParticipants = $event->participants->count();
         $confirmationPercentage = $totalParticipants > 0 ? ($confirmedCount / $totalParticipants) * 100 : 0;
 
-        $filename = "participants_event_{$event->id}.pdf";
 
-        $filePath = $this->pdfGenerator->generateParticipantsListPdf(
-            [
+        $filePath = $generator->generatePdf([
+            'event' => [
                 'title' => $event->title,
                 'description' => $event->description,
                 'start' => $event->start,
                 'end' => $event->end,
             ],
-            $participants,
-            $filename,
-            $confirmedCount,
-            $notConfirmedCount,
-            $confirmationPercentage,
-            $totalParticipants
-        );
+            'participants' => $participants,
+            'filename' => $filename,
+            'confirmedCount' => $confirmedCount,
+            'notConfirmedCount' => $notConfirmedCount,
+            'confirmationPercentage' => $confirmationPercentage,
+            'totalParticipants' => $totalParticipants
+        ]);
+        
 
         Report::create([
             'id' => Uuid::uuid(),

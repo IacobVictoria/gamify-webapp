@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Interfaces\PdfGeneratorServiceInterface;
 use App\Models\Event;
 use App\Models\QrCodeEvent;
 use App\Models\Report;
@@ -14,12 +13,6 @@ use Inertia\Inertia;
 
 class ReportController extends Controller
 {
-    protected $pdfGenerator;
-
-    public function __construct(PdfGeneratorServiceInterface $pdfGenerator)
-    {
-        $this->pdfGenerator = $pdfGenerator;
-    }
     public function index()
     {
 

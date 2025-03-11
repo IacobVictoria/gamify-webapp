@@ -1,24 +1,25 @@
 <?php
 namespace App\Services\PaymentHandlers;
 
+use App\Factories\PdfGeneratorFactory;
+use App\Factories\StorageStrategyFactory;
 use App\Jobs\SendMailInvoiceJob;
 use App\Models\ClientOrder;
 use App\Models\User;
-use App\Services\DompdfGeneratorService;
 
 class GenerateInvoiceHandler extends AbstractPaymentHandler
 {
-    protected $pdfGenerator;
-
-    public function __construct(DompdfGeneratorService $pdfGenerator)
-    {
-        $this->pdfGenerator = $pdfGenerator;
-    }
-
     public function handle(ClientOrder $order, array $paymentData): void
     {
+        $storageStrategy = StorageStrategyFactory::create('s3');
+
+        $generator = PdfGeneratorFactory::create('client_invoice', $storageStrategy);
+
         $filename = "invoice_{$order->id}.pdf";
-        $pdfUrl = $this->pdfGenerator->generateClientInvoicePdf(['order' => $order], $filename);
+        $pdfUrl = $generator->generatePdf([
+            'order' => $order,
+            'filename' => $filename
+        ]);
 
         $order->update(['invoice_url' => $pdfUrl]);
 

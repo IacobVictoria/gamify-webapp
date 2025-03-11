@@ -11,9 +11,9 @@ interface PdfGeneratorServiceInterface
      * @param string $filename Numele fișierului generat.
      * @return string Calea către fișierul PDF generat.
      */
-    public function generateParticipantsListPdf(array $event, array $participants, string $filenameint, int $confirmedCount, int $notConfirmedCount, float $confirmationPercentage,int $totalParticipants): string;
-    public function generateInvoicePdf(array $invoiceData, string $filename): string;
-    public function generateClientInvoicePdf(array $invoiceData, string $filename): string;
+    // public function generateParticipantsListPdf(array $event, array $participants, string $filenameint, int $confirmedCount, int $notConfirmedCount, float $confirmationPercentage,int $totalParticipants): string;
+    // public function generateInvoicePdf(array $invoiceData, string $filename): string;
+    // public function generateClientInvoicePdf(array $invoiceData, string $filename): string;
 
     /**
      * Generează un PDF cu raportul zilnic.
@@ -32,4 +32,6 @@ interface PdfGeneratorServiceInterface
      * @return string Calea către fișierul PDF generat.
      */
     // public function generateWeeklyReportPdf(array $reportData, string $filename): string;
+
+    public function generatePdf(array $data): string;
 }

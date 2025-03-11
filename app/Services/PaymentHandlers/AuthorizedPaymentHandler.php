@@ -23,6 +23,7 @@ class AuthorizedPaymentHandler extends AbstractPaymentHandler
         } catch (\Exception $e) {
             DB::rollBack();
             event(new OrderFailedEvent($order->user, $order, app(NotificationService::class), 'Plata nu a fost autorizată.'));
+            $order->update(['status' => OrderStatus::Canceled]);
             throw $e;
         }
     }

@@ -2,17 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Events\SupplierOrderErrorEvent;
-use App\Events\SupplierOrderSuccessEvent;
 use App\Jobs\ProcessLowStockOrdersJob;
-use App\Models\Notification;
-use App\Models\Product;
-use App\Models\Report;
-use App\Models\SupplierOrder;
-use App\Models\SupplierOrderProduct;
-use App\Models\SupplierProduct;
-use App\Models\User;
-use App\Services\DompdfGeneratorService;
 use App\Services\OrderProcessingService;
 use Faker\Provider\Uuid;
 use Illuminate\Console\Command;
@@ -30,7 +20,7 @@ class ProcessLowStockOrders extends Command
     public function handle()
     {
         dispatch(new ProcessLowStockOrdersJob($this->orderProcessingService));
-        $this->info('✅ Job-ul de procesare a comenzilor pentru stocuri scăzute a fost lansat.');
+        $this->info('Job-ul de procesare a comenzilor pentru stocuri scăzute a fost lansat.');
     }
 
 }

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Factories\PdfGeneratorFactory;
+use App\Factories\StorageStrategyFactory;
 use App\Http\Requests\AdminCheckoutRequest;
 use App\Models\Product;
+use App\Models\Report;
 use App\Models\SupplierOrder;
 use App\Models\SupplierOrderProduct;
 use App\Models\SupplierProduct;
@@ -14,9 +17,6 @@ use Inertia\Inertia;
 
 class AdminCheckoutController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $cartItems = session()->get('cart', []);
@@ -36,17 +36,6 @@ class AdminCheckoutController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(AdminCheckoutRequest $request)
     {
         $validatedData = $request->validated();
@@ -117,7 +106,40 @@ class AdminCheckoutController extends Controller
             }
         }
 
+        $this->generateAndSaveInvoice($order, $validatedData['products']);
+
     }
+    private function generateAndSaveInvoice($order, $products)
+    {
+        $storageStrategy = StorageStrategyFactory::create('s3');
+        $generator = PdfGeneratorFactory::create('supplier_invoice', $storageStrategy);
+
+        $filename = "supplier_invoice_{$order->id}.pdf";
+
+        $invoiceData = [
+            'order' => $order,
+            'products' => collect($products)->map(function ($product) {
+                $productData = SupplierProduct::find($product['product']['id']);
+                return [
+                    'productData' => $productData,
+                    'quantity' => $product['quantity'],
+                    'price' => $productData->price,
+                ];
+            }),
+            'supplierName' => $order->supplier->name,
+            'filename' => $filename
+        ];
+
+        $filePath = $generator->generatePdf($invoiceData);
+
+        Report::create([
+            'id' => Uuid::uuid(),
+            'type' => 'supplier_invoice',
+            'title' => "Factura pentru Comanda {$order->id}",
+            's3_path' => $filePath,
+        ]);
+    }
+
     private function calculateTotal($products)
     {
         $total = 0;
@@ -129,35 +151,5 @@ class AdminCheckoutController extends Controller
         $total += 10; //shipping fee
         return $total;
     }
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

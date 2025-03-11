@@ -45,6 +45,7 @@ class CreateOrderHandler extends AbstractOrderHandler
     } catch (\Exception $e) {
         DB::rollBack();
         event(new OrderFailedEvent($validatedData['user_id'], $order, app(NotificationService::class), 'Eroare la crearea comenzii'));
+        $order->update(['status' => OrderStatus::Canceled]);
         throw $e;
     }
     }

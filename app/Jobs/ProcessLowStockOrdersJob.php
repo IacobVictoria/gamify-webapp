@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Services\OrderProcessingService;
+use Illuminate\Support\Facades\Log;
 
 
 class ProcessLowStockOrdersJob implements ShouldQueue
@@ -22,7 +23,7 @@ class ProcessLowStockOrdersJob implements ShouldQueue
     }
 
     public function handle()
-    {
+    {     Log::info("a intrat in job!");
         $this->orderProcessingService->processLowStockProducts();
     }
 }

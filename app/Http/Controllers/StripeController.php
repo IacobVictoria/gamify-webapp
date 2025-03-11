@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\ExpediteOrderJob;
 use App\Models\ClientOrder;
-use App\Services\Badges\ShoppingBadgeService;
-use App\Services\DiscountService;
-use App\Services\DompdfGeneratorService;
 use App\Services\NotificationService;
 use App\Services\PaymentHandlers\PaymentHandlerInterface;
 use Illuminate\Http\Request;

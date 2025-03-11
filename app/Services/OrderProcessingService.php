@@ -3,6 +3,8 @@ namespace App\Services;
 
 use App\Events\SupplierOrderErrorEvent;
 use App\Events\SupplierOrderSuccessEvent;
+use App\Factories\PdfGeneratorFactory;
+use App\Factories\StorageStrategyFactory;
 use App\Models\Notification;
 use App\Models\Product;
 use App\Models\Report;
@@ -11,14 +13,10 @@ use App\Models\SupplierOrderProduct;
 use App\Models\SupplierProduct;
 use App\Models\User;
 use Faker\Provider\Uuid;
+use Illuminate\Support\Facades\Log;
 
 class OrderProcessingService
 {
-    protected $pdfGenerator;
-    public function __construct(DompdfGeneratorService $pdfGenerator)
-    {
-        $this->pdfGenerator = $pdfGenerator;
-    }
     public function processLowStockProducts()
     {
         $threshold = 5; // Prag minim pentru stocuri
@@ -128,6 +126,10 @@ class OrderProcessingService
     }
     private function generateAndSaveInvoice($order, $details)
     {
+        $storageStrategy = StorageStrategyFactory::create('s3');
+
+        $generator = PdfGeneratorFactory::create('supplier_invoice', $storageStrategy);
+    
         // Generăm numele fișierului pentru factură
         $filename = "supplier_invoice_{$order->id}.pdf";
 
@@ -148,11 +150,15 @@ class OrderProcessingService
         $invoiceData = [
             'order' => $order,
             'products' => $products, // Lista produselor și cantitățile
-            'supplierName' => $details['supplierName'], // Numele furnizorului
+            'supplierName' => $details['supplierName'],
+            // Numele furnizorului
+            'filename' => $filename
         ];
-        // Generăm PDF-ul și îl salvăm în S3
-        $filePath = $this->pdfGenerator->generateInvoicePdf($invoiceData, $filename);
 
+
+        // Generăm PDF-ul și îl salvăm în S3
+        $filePath = $generator->generatePdf($invoiceData);
+    
         // Salvăm factura în tabelul reports pentru acces
         Report::create([
             'id' => Uuid::uuid(),

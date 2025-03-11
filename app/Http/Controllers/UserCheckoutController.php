@@ -2,21 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\OrderStatus;
 use App\Http\Requests\CheckoutRequest;
-use App\Jobs\ExpediteOrderJob;
 use App\Models\ClientOrder;
-use App\Models\OrderProduct;
-use App\Models\Product;
-use App\Models\User;
-use App\Services\DompdfGeneratorService;
 use App\Services\OrderHandlers\OrderHandlerInterface;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Faker\Provider\Uuid;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Storage;
 
 class UserCheckoutController extends Controller
 {

@@ -6,7 +6,6 @@ use App\Models\Event;
 use App\Models\Participant;
 use App\Models\QrCodeEvent;
 use App\Models\Report;
-use App\Services\DompdfGeneratorService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,11 +14,7 @@ use Inertia\Inertia;
 
 class EventController extends Controller
 {
-    protected $pdfService;
-    public function __construct(DompdfGeneratorService $pdfService)
-    {
-        $this->pdfService = $pdfService;
-    }
+
     public function index()
     {
         // Obține reducerile active (discounts)

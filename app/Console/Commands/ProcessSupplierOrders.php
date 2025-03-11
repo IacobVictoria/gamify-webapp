@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use App\Events\ProductRestockedNotificationEvent;
 use App\Events\SupplierOrderErrorEvent;
 use App\Events\SupplierOrderSuccessEvent;
+use App\Factories\PdfGeneratorFactory;
+use App\Factories\StorageStrategyFactory;
 use App\Models\Event;
 use App\Models\Notification;
 use App\Models\Product;
@@ -13,12 +15,10 @@ use App\Models\SupplierOrder;
 use App\Models\SupplierOrderProduct;
 use App\Models\SupplierProduct;
 use App\Models\User;
-use App\Services\DompdfGeneratorService;
 use App\Services\SupplierOrderNotificationService;
 use Carbon\Carbon;
 use Faker\Provider\Uuid;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
 class ProcessSupplierOrders extends Command
 {
@@ -26,12 +26,10 @@ class ProcessSupplierOrders extends Command
 
     protected $description = 'Verifică evenimentele de tip supplier_order din calendar și plasează comenzile corespunzătoare';
     protected $supplierOrderService;
-    protected $pdfGenerator;
-    public function __construct(SupplierOrderNotificationService $supplierOrderService, DompdfGeneratorService $pdfGenerator)
+    public function __construct(SupplierOrderNotificationService $supplierOrderService)
     {
         parent::__construct();
         $this->supplierOrderService = $supplierOrderService;
-        $this->pdfGenerator = $pdfGenerator;
     }
 
     public function handle()
@@ -124,6 +122,11 @@ class ProcessSupplierOrders extends Command
     }
     private function generateAndSaveInvoice($order, $details)
     {
+
+        $storageStrategy = StorageStrategyFactory::create('s3');
+
+        $generator = PdfGeneratorFactory::create('supplier_invoice', $storageStrategy);
+
         // Generăm numele fișierului pentru factură
         $filename = "supplier_invoice_{$order->id}.pdf";
 
@@ -147,7 +150,7 @@ class ProcessSupplierOrders extends Command
             'supplierName' => $details['supplierName'], // Numele furnizorului
         ];
         // Generăm PDF-ul și îl salvăm în S3
-        $filePath = $this->pdfGenerator->generateInvoicePdf($invoiceData, $filename);
+        $filePath = $generator->generatePdf([$invoiceData, $filename]);
 
         // Salvăm factura în tabelul reports pentru acces
         Report::create([
