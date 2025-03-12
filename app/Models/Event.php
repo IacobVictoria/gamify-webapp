@@ -26,7 +26,8 @@ class Event extends Model
         'type',
         'details',
         'calendarId',
-        'is_published'
+        'is_published',
+        'is_favourite'
     ];
 
     public function participants()

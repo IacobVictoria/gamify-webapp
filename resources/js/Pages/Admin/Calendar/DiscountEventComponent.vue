@@ -1,34 +1,45 @@
 <template>
-  <div v-if="!showModal && !eventDeleted" class="discount"> 
-      <div class="discount-header">
-          <img src="/images/event_title.png" alt="">
-          <h3>{{ calendarEvent.title }}</h3>
-      </div>
-      <div class="flex gap-2">
-          <img src="/images/event_description.png" alt="">
-          <p>{{ calendarEvent.description }}</p>
-      </div>
-      <p class="event-time">
-          <span role="img" aria-label="clock">⏰</span>
-          <strong>Start:</strong> {{ calendarEvent.start }} |
-          <strong>End:</strong> {{ calendarEvent.end }}
-      </p>
+  <div v-if="!showModal && !eventDeleted" class="discount">
+    <div v-if="parsedDetails?.fromFavorites" class="from-favorites">
+      ⭐ From Favorites!
+    </div>
+    <div class="discount-header">
+      <img src="/images/event_title.png" alt="">
+      <h3>{{ calendarEvent.title }}</h3>
+    </div>
+    <div class="flex gap-2">
+      <img src="/images/event_description.png" alt="">
+      <p>{{ calendarEvent.description }}</p>
+    </div>
+    <p class="event-time">
+      <span role="img" aria-label="clock">⏰</span>
+      <strong>Start:</strong> {{ calendarEvent.start }} |
+      <strong>End:</strong> {{ calendarEvent.end }}
+    </p>
 
-      <div v-if="parsedDetails">
-          <div class="discount-details">
-              <h4 class="text-lg font-semibold">Discount Details</h4>
-              <p><strong>Apply To:</strong> {{ parsedDetails.applyTo }}</p>
-              <p v-if="parsedDetails.applyTo === 'categories'"><strong>Category:</strong> {{ parsedDetails.category }}</p>
-              <p><strong>Discount:</strong> {{ parsedDetails.discount }}%</p>
-          </div>
+    <div v-if="parsedDetails">
+      <div class="discount-details">
+        <h4 class="text-lg font-semibold">Discount Details</h4>
+        <p><strong>Apply To:</strong> {{ parsedDetails.applyTo }}</p>
+        <p v-if="parsedDetails.applyTo === 'categories'"><strong>Category:</strong> {{ parsedDetails.category }}</p>
+        <p><strong>Discount:</strong> {{ parsedDetails.discount }}%</p>
       </div>
+    </div>
 
-      <div v-if="editMode" class="discount-actions">
-          <button @click="editEvent" class="edit-btn">✏️ Edit</button>
-          <button @click="deleteEvent" class="delete-btn">❌ Delete</button>
-      </div>
+    <div v-if="editMode" class="discount-actions">
+      <button @click="editEvent" class="edit-btn">✏️ Edit</button>
+      <button @click="deleteEvent" class="delete-btn">❌ Delete</button>
+    </div>
+    <div class="order-header-buttons">
+      <button v-if="!parsedDetails?.fromFavorites" @click="toggleFavorite"
+        :class="{ 'favorite-btn': !favourite, 'unfavorite-btn': favourite }">
+        {{ favourite ? '⭐ Favorited' : '⭐ Add to Favorites' }}
+      </button>
+    </div>
   </div>
-  <EditEventModal :show-modal="showModal" :selected-type="selectedType" :calendar-event="calendarEvent" @close="closeModal" :categories="categories">
+
+  <EditEventModal :show-modal="showModal" :selected-type="selectedType" :calendar-event="calendarEvent"
+    @close="closeModal" :categories="categories">
   </EditEventModal>
 </template>
 
@@ -37,47 +48,73 @@ import EditEventModal from './EditEventModal.vue';
 
 export default {
   props: {
-      calendarEvent: Object,
-      categories: Array,
-      editMode: Boolean
+    calendarEvent: Object,
+    categories: Array,
+    editMode: Boolean
   },
   data() {
-      return {
-          showModal: false,
-          selectedType: this.calendarEvent.type,
-          parsedDetails: this.parseDetails(this.calendarEvent.details),
-          eventDeleted: false // Flag pentru a urmări dacă evenimentul a fost șters
-      }
+    return {
+      showModal: false,
+      selectedType: this.calendarEvent.type,
+      parsedDetails: this.parseDetails(this.calendarEvent.details),
+      eventDeleted: false, // Flag pentru a urmări dacă evenimentul a fost șters
+      favourite: this.calendarEvent.is_favorite
+    }
   },
   components: {
-      EditEventModal
+    EditEventModal
+  },
+  mounted(){
+    console.log(this.parsedDetails?.fromFavorites)
   },
   methods: {
-      parseDetails(details) {
-          try {
-              return details ? JSON.parse(details) : null;
-          } catch (e) {
-              console.error("Error parsing details:", e);
-              return null;
-          }
-      },
-      editEvent() {
-          this.showModal = true;
-      },
-      closeModal() {
-          this.showModal = false; 
-          this.selectedType = null; 
-      },
-      deleteEvent() {
-          this.$inertia.delete(route('admin.calendar.event.destroy', { id: this.calendarEvent.id }), {
-              onSuccess: () => {
-                  this.eventDeleted = true;
-                  this.closeModal(); 
-              },
-              onError: (error) => {
-              }
-          });
+    parseDetails(details) {
+      try {
+        return details ? JSON.parse(details) : null;
+      } catch (e) {
+        console.error('Error parsing details:', e);
+        return null;
       }
+    },
+
+    editEvent() {
+      this.showModal = true;
+    },
+
+    closeModal() {
+      this.showModal = false;
+      this.selectedType = null;
+    },
+
+    deleteEvent() {
+      this.$inertia.delete(route('admin.calendar.event.destroy', { id: this.calendarEvent.id }), {
+        onSuccess: () => {
+          this.eventDeleted = true;
+          this.closeModal();
+        },
+        onError: (error) => {
+        }
+      });
+    },
+
+    toggleFavorite() {
+      const newStatus = !this.favourite;
+
+      this.favourite = newStatus;
+
+      this.$inertia.put(route('admin.calendar.event.updateFavorites', { id: this.calendarEvent.id }), {
+        is_favorite: newStatus,
+      }, {
+        preserveScroll: true,
+        onSuccess: () => {
+          this.calendarEvent.is_favorite = newStatus;
+        },
+        onError: (error) => {
+          console.error('Error updating favorite status:', error);
+          this.favourite = !newStatus;
+        }
+      });
+    },
   }
 }
 </script>
@@ -92,6 +129,16 @@ export default {
   font-family: 'Arial', sans-serif;
   margin-bottom: 20px;
   transition: transform 0.3s ease-in-out;
+}
+
+.from-favorites {
+  color: #333;
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 5px;
 }
 
 .discount:hover {
@@ -130,6 +177,7 @@ export default {
 .discount-actions {
   display: flex;
   gap: 10px;
+  margin-top: 1em;
 }
 
 .edit-btn,
@@ -178,5 +226,39 @@ export default {
   font-size: 1rem;
   color: #34495e;
   margin: 5px 0;
+}
+
+.order-header-buttons {
+  margin-top: 1em;
+  display: flex;
+  margin-left: auto;
+}
+
+.favorite-btn {
+  background-color: #f1c40f;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  margin-bottom: 1em;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.favorite-btn:hover {
+  background-color: #f39c12;
+}
+
+.unfavorite-btn {
+  background-color: #2ecc71;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  margin-bottom: 1em;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.unfavorite-btn:hover {
+  background-color: #27ae60;
 }
 </style>

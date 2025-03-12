@@ -30,25 +30,34 @@ class AdminEventCalendarController extends Controller
             ->get()
             ->groupBy('supplier_id');
 
+        $favoritesCommands = Event::where('type', 'supplier_order')
+            ->where('is_favorite', 1)
+            ->select('id', 'title', 'description', 'details')
+            ->get()
+            ->map(function ($event) {
+                $event->details = json_decode($event->details, true);
+                return $event;
+            });
+            
+        $favoritesDiscounts = Event::where('type', 'discount')
+            ->where('is_favorite', 1)
+            ->select('id', 'title', 'description', 'details')
+            ->get()
+            ->map(function ($event) {
+                $event->details = json_decode($event->details, true);
+                return $event;
+            });
+
         return Inertia::render('Admin/Calendar/Index', [
             'events' => $events,
             'categories' => $categories,
             'suppliers' => $suppliers,
-            'products' => $productsBySupplier->toArray()
+            'products' => $productsBySupplier->toArray(),
+            'favoritesCommands' => $favoritesCommands->toArray(),
+            'favoritesDiscounts' => $favoritesDiscounts->toArray()
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
 
@@ -101,25 +110,6 @@ class AdminEventCalendarController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $event = Event::findOrFail($id);
@@ -154,9 +144,23 @@ class AdminEventCalendarController extends Controller
         return redirect()->back();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    public function updateFavorites(Request $request, string $id)
+    {
+        $event = Event::findOrFail($id);
+
+        $validated = $request->validate([
+            'is_favorite' => 'boolean'
+        ]);
+
+        if (isset($validated['is_favorite'])) {
+            $event->is_favorite = $validated['is_favorite'];
+        }
+
+        $event->save();
+
+        return redirect()->back();
+    }
+
     public function destroy(string $id)
     {
         $event = Event::find($id);

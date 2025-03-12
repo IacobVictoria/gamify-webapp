@@ -139,6 +139,7 @@ Route::prefix('calendar')->group(function () {
     Route::post('/create_event', [AdminEventCalendarController::class, 'store'])->name('calendar.event.store');
     Route::put('/update_event/{id}', [AdminEventCalendarController::class, 'update'])->name('calendar.event.update');
     Route::delete('/delete/{id}', [AdminEventCalendarController::class, 'destroy'])->name('calendar.event.destroy');
+    Route::put('/update_event/favorites/{id}', [AdminEventCalendarController::class, 'updateFavorites'])->name('calendar.event.updateFavorites');
 });
 
 Route::prefix('notifications')->group(function () {

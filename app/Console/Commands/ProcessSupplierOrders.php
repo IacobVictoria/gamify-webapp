@@ -38,6 +38,7 @@ class ProcessSupplierOrders extends Command
 
         // Obținem evenimentele de tip 'supplier_order' din calendar pentru ziua de azi
         $events = Event::where('type', 'supplier_order')
+            ->where('status', 'OPEN')
             ->whereDate('start', $today)
             ->get();
 
@@ -67,6 +68,9 @@ class ProcessSupplierOrders extends Command
 
         $this->processProducts($details['productQuantities'], $order, $event);
 
+        // Marcare eveniment ca "closed"
+        $event->status = 'CLOSED';
+        $event->save();
         $this->info('Comanda a fost creată pentru furnizorul ' . $details['supplierName']);
     }
     private function parseEventDetails($event)
@@ -107,7 +111,12 @@ class ProcessSupplierOrders extends Command
                 'phone' => '0123456789',
             ]);
             // Generăm și salvăm factura
-            $this->generateAndSaveInvoice($order, $details);
+            $filePath = $this->generateAndSaveInvoice($order, $details);
+
+            //salvam referinta catre factura din Reports tabel
+            $details['s3_path'] = $filePath;
+            $event->details = json_encode($details);
+            $event->save();
 
             $admin = User::whereHas('roles', function ($query) {
                 $query->where('name', 'Admin');
@@ -147,13 +156,14 @@ class ProcessSupplierOrders extends Command
         $invoiceData = [
             'order' => $order,
             'products' => $products, // Lista produselor și cantitățile
-            'supplierName' => $details['supplierName'], // Numele furnizorului
+            'supplierName' => $details['supplierName'],
+            'filename' => $filename // Numele furnizorului
         ];
         // Generăm PDF-ul și îl salvăm în S3
-        $filePath = $generator->generatePdf([$invoiceData, $filename]);
+        $filePath = $generator->generatePdf($invoiceData);
 
         // Salvăm factura în tabelul reports pentru acces
-        Report::create([
+        $report = Report::create([
             'id' => Uuid::uuid(),
             'type' => 'supplier_invoice',
             'title' => "Factura pentru Comanda {$order->id}",
@@ -161,6 +171,7 @@ class ProcessSupplierOrders extends Command
         ]);
 
         $this->info("Factura pentru comanda '{$order->id}' a fost generată și salvată la '{$filePath}'.");
+        return $filePath;
     }
 
     private function processProducts($productQuantities, $order, $event)

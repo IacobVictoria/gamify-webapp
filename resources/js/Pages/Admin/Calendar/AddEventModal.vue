@@ -22,10 +22,13 @@
                                 <EventForm :selectedDate="selectedDate" @closeForm="closeForm" />
                             </div>
                             <div v-if="selectedType === 'order'">
-                                <SupplierOrderForm :selectedDate="selectedDate" @closeForm="closeForm" :suppliers="props.suppliers" :products="props.products"/>
+                                <SupplierOrderForm :selectedDate="selectedDate" @closeForm="closeForm"
+                                    :suppliers="props.suppliers" :products="props.products"
+                                    :favorite-commands="favoritesCommands" />
                             </div>
                             <div v-if="selectedType === 'discount'">
-                                <DiscountForm :selectedDate="selectedDate" @closeForm="closeForm" :categories="props.categories" />
+                                <DiscountForm :selectedDate="selectedDate" @closeForm="closeForm"
+                                    :categories="props.categories" :favorite-discounts="favoritesDiscounts" />
                             </div>
 
                             <div v-if="selectedType === null" class="mt-5 sm:mt-6">
@@ -57,7 +60,9 @@ const props = defineProps({
     selectedDate: String,
     categories: Array,
     products: Array,
-    suppliers: Array
+    suppliers: Array,
+    favoritesCommands: Array,
+    favoritesDiscounts: Array
 });
 const emit = defineEmits()
 const selectedType = ref(null)

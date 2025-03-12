@@ -5,14 +5,15 @@
                 <template #eventModal="{ calendarEvent }">
                     <div :style="eventModalStyles">
                         <div v-if="calendarEvent.type === 'event'">
-                            <CustomEventComponent :calendar-event="calendarEvent" :edit-mode="true"/>
+                            <CustomEventComponent :calendar-event="calendarEvent" :edit-mode="true" />
                         </div>
                         <div v-if="calendarEvent.type === 'discount'">
-                            <DiscountEventComponent :calendar-event="calendarEvent" :categories="props.categories" :edit-mode="true"/>
+                            <DiscountEventComponent :calendar-event="calendarEvent" :categories="props.categories"
+                                :edit-mode="true" />
                         </div>
                         <div v-if="calendarEvent.type === 'supplier_order'">
-                            <SupplierOrderComponent :calendar-event="calendarEvent" :products="props.products" :edit-mode="true"
-                                :suppliers="props.suppliers" />
+                            <SupplierOrderComponent :calendar-event="calendarEvent" :products="props.products"
+                                :edit-mode="true" :suppliers="props.suppliers" />
                         </div>
                     </div>
 
@@ -21,7 +22,8 @@
 
             <AddEventModal v-if="showModal" :selectedDate="selectedDate" :showModal="showModal"
                 :categories="props.categories" @update:showModal="showModal = $event" @submit="handleSubmit"
-                :suppliers="props.suppliers" :products="props.products" />
+                :suppliers="props.suppliers" :products="props.products" :favorites-commands="favoritesCommands"
+                :favorites-discounts="favoritesDiscounts" />
         </div>
     </AuthenticatedLayout>
 </template>
@@ -51,7 +53,9 @@ const props = defineProps({
         required: true
     }, categories: Array,
     products: Array,
-    suppliers: Array
+    suppliers: Array,
+    favoritesCommands: Array,
+    favoritesDiscounts: Array
 })
 
 const calendarApp = createCalendar({
