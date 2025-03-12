@@ -42,7 +42,7 @@ class DashboardService
         $survey = Survey::where('is_published', true)->first();
 
         // Verifică dacă există un survey publicat
-        $nps = $survey ? $this->npsService->calculateNps($survey->id) : null;
+        $nps = $survey ? $this->npsService->calculateNps($survey->id)['nps'] : null;
         $monthlyNpsData = $survey ? $this->npsService->calculateMonthlyNps($survey->id) : [];
 
         return [

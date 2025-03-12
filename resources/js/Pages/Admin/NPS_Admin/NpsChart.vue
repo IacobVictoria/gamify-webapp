@@ -96,7 +96,7 @@ export default defineComponent({
             props.monthlyNpsData.map((item) => ({
                 month: item.month, // Luna
                 nps: item.nps, // Scorul NPS
-                responses: item.responses,
+                responses: item.totalResponses,
                 entries: item.entries
             }))
         );

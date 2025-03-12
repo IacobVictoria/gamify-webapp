@@ -6,6 +6,7 @@ use App\Console\Commands\ManageDiscountsCommand;
 use App\Console\Commands\ManageEventsCommand;
 use App\Console\Commands\ProcessLowStockOrders;
 use App\Console\Commands\ProcessSupplierOrders;
+use App\Console\Commands\SendNpsReportCommand;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 
@@ -19,3 +20,4 @@ Schedule::command(CheckInactiveUsers::class)->everyThirtyMinutes();
 Schedule::command(ManageDiscountsCommand::class)->everyMinute();
 Schedule::command(ManageEventsCommand::class)->everyMinute();
 Schedule::command(ProcessLowStockOrders::class)->everyMinute();
+Schedule::command(SendNpsReportCommand::class)->monthly();
