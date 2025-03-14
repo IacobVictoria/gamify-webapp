@@ -5,7 +5,8 @@
             <button v-if="showFavorites" class="btn-back" @click="toggleFavorites">🔙 Back</button>
         </div>
         <div v-if="showFavorites">
-            <FavoritesEvents :favorites="favoriteDiscounts" :selected-date="selectedDate" :type="'Discounts'"></FavoritesEvents>
+            <FavoritesEvents :favorites="favoriteDiscounts" :selected-date="selectedDate" :type="'Discounts'">
+            </FavoritesEvents>
         </div>
         <div v-else>
             <h3 class="text-base font-semibold text-gray-900">Create Discount</h3>
@@ -13,7 +14,6 @@
                 <label for="eventDate" class="block text-sm font-medium text-gray-700">Event Date</label>
                 <div>{{ props.selectedDate }}</div>
             </div>
-
 
             <input v-model="formData.title" type="text" placeholder="Enter Discount Title" class="input mt-2" />
             <input v-model="formData.description" type="text" placeholder="Enter Discount Description"
@@ -56,7 +56,30 @@
                 <label for="isPublished" class="block text-sm font-medium text-gray-700">Publish Event</label>
                 <input type="checkbox" id="isPublished" v-model="formData.is_published" class="input-checkbox" />
             </div>
+            <div class="mt-2">
+                <label class="flex items-center">
+                    <input type="checkbox" v-model="formData.is_recurring">
+                    <span class="ml-2 text-sm font-medium text-gray-700">Make it Recurring</span>
+                </label>
+            </div>
 
+            <div v-if="formData.is_recurring" class="mt-2">
+                <label class="block text-sm font-medium text-gray-700">Recurring Interval</label>
+
+                <div class="flex gap-4 mt-2">
+                    <label class="flex items-center">
+                        <input type="radio" v-model="formData.recurring_interval" value="weekly" class="mr-2">
+                        Weekly
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" v-model="formData.recurring_interval" value="monthly" class="mr-2">
+                        Monthly
+                    </label>
+                </div>
+                <div v-if="recurringError" class="text-red-500 text-sm mt-2">
+        {{ recurringError }}
+    </div>
+            </div>
             <div class="mt-5 sm:mt-6">
                 <button type="button"
                     class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
@@ -75,7 +98,7 @@
 </template>
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import { ref} from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import FavoritesEvents from './FavoritesEvents.vue';
 
 const props = defineProps({
@@ -97,11 +120,45 @@ const formData = useForm({
     discount: '',
     applyTo: '',
     is_published: false,
-    calendarId: 'leisure'
+    calendarId: 'leisure',
+    is_recurring: false, // Inițial, evenimentul NU este recurent
+    recurring_interval: null, 
 });
 
 const emits = defineEmits(['closeForm']);
+const recurringError = ref('');
 
+const eventDuration = computed(() => {
+    if (!formData.start || !formData.end) return 0;
+    const start = new Date(formData.start);
+    const end = new Date(formData.end);
+    return (end - start) / (1000 * 60 * 60 * 24); 
+});
+
+watch(() => formData.recurring_interval, async (newInterval) => {
+    if (!newInterval) return;
+    await validateRecurringInterval();
+});
+
+watch(() => [formData.start, formData.end], async () => {
+    await validateRecurringInterval();
+});
+
+async function validateRecurringInterval() {
+    recurringError.value = '';
+
+    if (formData.recurring_interval === 'weekly' && eventDuration.value > 7) {
+        recurringError.value = '❌ Weekly recurrence is not allowed for events longer than 7 days!';
+        await nextTick(() => {
+            formData.recurring_interval = null;
+        });
+    } else if (formData.recurring_interval === 'monthly' && eventDuration.value > 28) {
+        recurringError.value = '❌ Monthly recurrence is not allowed for events longer than 28 days!';
+        await nextTick(() => {
+            formData.recurring_interval = null;
+        });
+    }
+}
 function closeForm() {
     emits('closeForm');
 }

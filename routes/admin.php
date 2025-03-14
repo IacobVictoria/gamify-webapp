@@ -140,6 +140,7 @@ Route::prefix('calendar')->group(function () {
     Route::put('/update_event/{id}', [AdminEventCalendarController::class, 'update'])->name('calendar.event.update');
     Route::delete('/delete/{id}', [AdminEventCalendarController::class, 'destroy'])->name('calendar.event.destroy');
     Route::put('/update_event/favorites/{id}', [AdminEventCalendarController::class, 'updateFavorites'])->name('calendar.event.updateFavorites');
+    Route::put('/stop_reccurence/{id}', [AdminEventCalendarController::class, 'stopRecurrence'])->name('calendar.event.stopRecurrence');
 });
 
 Route::prefix('notifications')->group(function () {

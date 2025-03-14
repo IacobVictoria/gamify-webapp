@@ -58,7 +58,30 @@
             </div>
         </template>
 
-        <button class="btn-submit mt-3" @click="updateCommand">Command!</button>
+        <!-- 🔥 Checkbox pentru recurență -->
+        <div class="mt-2">
+            <label class="flex items-center">
+                <input type="checkbox" v-model="isRecurring" />
+                <span class="ml-2 text-sm font-medium text-gray-700">Make it Recurring</span>
+            </label>
+        </div>
+
+        <!-- 🔥 Selectare interval recurență -->
+        <div v-if="isRecurring" class="mt-2">
+            <label class="block text-sm font-medium text-gray-700">Recurring Interval</label>
+            <div class="flex gap-4 mt-2">
+                <label class="flex items-center">
+                    <input type="radio" v-model="recurringInterval" value="weekly" class="mr-2">
+                    Weekly
+                </label>
+                <label class="flex items-center">
+                    <input type="radio" v-model="recurringInterval" value="monthly" class="mr-2">
+                    Monthly
+                </label>
+            </div>
+        </div>
+
+        <button class="btn-submit mt-3" @click="updateCommand">Apply!</button>
     </div>
 </template>
 
@@ -75,6 +98,10 @@ const props = defineProps({
     type: String
 });
 
+// ✅ Variabile pentru recurență
+const isRecurring = ref(false);
+const recurringInterval = ref(null);
+
 const startDate = ref(props.initialDate);
 const startDateTime = ref('');
 const endDateTime = ref('');
@@ -86,6 +113,7 @@ watch(() => props.command, (newCommand) => {
         endDateTime.value = newCommand.end;
     }
 });
+
 function formatDate(dateTime) {
     if (!dateTime) return null;
 
@@ -97,6 +125,7 @@ function formatDate(dateTime) {
         return date.toISOString().slice(0, 10);
     }
 }
+
 const updateCommand = () => {
     const updatedDetails = {
         ...props.command.details,
@@ -120,8 +149,11 @@ const updateCommand = () => {
             applyTo: props.command.details.applyTo,
             category: props.command.details.category || '',
             discount: props.command.details.discount,
-             calendarId: 'leisure'
-        })
+            calendarId: 'leisure'
+        }),
+        // 🔥 Adăugăm recurența în payload
+        is_recurring: isRecurring.value,
+        recurring_interval: isRecurring.value ? recurringInterval.value : null
     };
 
     useForm(payload).post(route('admin.calendar.event.store' 

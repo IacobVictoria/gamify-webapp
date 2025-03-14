@@ -15,13 +15,16 @@
                         leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
                         <DialogPanel
                             class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
-                            <StartPage v-if="selectedType === null" @setSelectedType="setSelectedType"
+                            <StartPage v-if="selectedType === null  &&!isPastDate" @setSelectedType="setSelectedType"
                                 @close="closeModal" />
+                            <div v-if="isPastDate" class="bg-red-100 text-red-700 p-3 rounded-md text-center mt-2">
+                                ❌ You have selected a past date. You cannot add events to past dates!
+                            </div>
 
                             <div v-if="selectedType === 'event'">
                                 <EventForm :selectedDate="selectedDate" @closeForm="closeForm" />
                             </div>
-                            <div v-if="selectedType === 'order'">
+                            <div v-if="selectedType === 'order' ">
                                 <SupplierOrderForm :selectedDate="selectedDate" @closeForm="closeForm"
                                     :suppliers="props.suppliers" :products="props.products"
                                     :favorite-commands="favoritesCommands" />
@@ -48,7 +51,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import StartPage from './StartPage.vue'
 import EventForm from './EventForm.vue';
 import DiscountForm from './DiscountForm.vue';
@@ -78,5 +81,20 @@ function closeModal() {
 function closeForm() {
     selectedType.value = null
 }
+const today = computed(() => {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    return now;
+});
+
+//Verifică dacă selectedDate este în trecut
+const isPastDate = computed(() => {
+    if (!props.selectedDate) return false;
+
+    const selected = new Date(props.selectedDate);
+    selected.setHours(0, 0, 0, 0); // Ignorăm orele, verificăm doar ziua
+
+    return selected < today.value; // Comparăm fără ore
+});
 
 </script>

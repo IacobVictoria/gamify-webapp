@@ -27,7 +27,12 @@ class Event extends Model
         'details',
         'calendarId',
         'is_published',
-        'is_favourite'
+        'is_favourite',
+        'is_recurring',
+        'recurring_interval',
+        'next_occurrence',
+        'parent_event_id',
+        'last_recurring_event_id'
     ];
 
     public function participants()

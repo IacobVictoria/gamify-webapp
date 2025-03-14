@@ -1,5 +1,8 @@
 <template>
-  <div v-if="!showModal && !eventDeleted" class="discount">
+  <div v-if="!showModal && !eventDeleted" class="discount" :class="{ 'ghost-event': calendarEvent.isGhost }">
+    <div v-if="calendarEvent.isGhost" class="ghost-banner">
+      👻 This is a preview of a future recurring event. Not yet listed.
+    </div>
     <div v-if="parsedDetails?.fromFavorites" class="from-favorites">
       ⭐ From Favorites!
     </div>
@@ -26,15 +29,19 @@
       </div>
     </div>
 
-    <div v-if="editMode" class="discount-actions">
-      <button @click="editEvent" class="edit-btn">✏️ Edit</button>
+    <div v-if="editMode && !calendarEvent.isGhost" class="discount-actions">
+      <button v-if="!parsedDetails?.fromFavorites" @click="editEvent" class="edit-btn">✏️ Edit</button>
       <button @click="deleteEvent" class="delete-btn">❌ Delete</button>
     </div>
     <div class="order-header-buttons">
-      <button v-if="!parsedDetails?.fromFavorites" @click="toggleFavorite"
+      <button v-if="!parsedDetails?.fromFavorites && !calendarEvent.isGhost" @click="toggleFavorite"
         :class="{ 'favorite-btn': !favourite, 'unfavorite-btn': favourite }">
         {{ favourite ? '⭐ Favorited' : '⭐ Add to Favorites' }}
       </button>
+    </div>
+     <!-- Buton "Stop Recurrence" doar pentru ultimul eveniment recurent -->
+     <div v-if="is_reccuring" class="recurrence-actions">
+      <button @click="stopRecurrence" class="stop-recurrence-btn">⏹ Stop Recurrence</button>
     </div>
   </div>
 
@@ -58,7 +65,8 @@ export default {
       selectedType: this.calendarEvent.type,
       parsedDetails: this.parseDetails(this.calendarEvent.details),
       eventDeleted: false, // Flag pentru a urmări dacă evenimentul a fost șters
-      favourite: this.calendarEvent.is_favorite
+      favourite: this.calendarEvent.is_favorite,
+      is_reccuring:this.calendarEvent?.is_last_recurring ?? false
     }
   },
   components: {
@@ -115,6 +123,20 @@ export default {
         }
       });
     },
+    stopRecurrence() {
+    if (!confirm("Are you sure you want to stop this recurrence?")) return;
+
+    this.$inertia.put(route('admin.calendar.event.stopRecurrence', { id: this.calendarEvent.id }), {}, {
+      preserveScroll: true,
+      onSuccess: () => {
+        this.calendarEvent.is_recurring = false; 
+        is_reccuring= false; 
+      },
+      onError: (error) => {
+        console.error('Error stopping recurrence:', error);
+      }
+    });
+  }
   }
 }
 </script>
@@ -141,6 +163,21 @@ export default {
   margin-bottom: 5px;
 }
 
+.ghost-event {
+  background-color: #dcdde1;
+  opacity: 0.8;
+  border: 1px dashed #7f8c8d;
+}
+
+.ghost-banner {
+  background-color: #f1c40f;
+  color: #fff;
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 5px;
+  text-align: center;
+  margin-bottom: 10px;
+}
 .discount:hover {
   transform: scale(1.02);
 }
@@ -260,5 +297,20 @@ export default {
 
 .unfavorite-btn:hover {
   background-color: #27ae60;
+}
+
+.stop-recurrence-btn {
+  background-color: #e74c3c;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 1em;
+}
+
+.stop-recurrence-btn:hover {
+  background-color: #c0392b;
 }
 </style>

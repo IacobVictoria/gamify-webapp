@@ -20,7 +20,7 @@
                                 <EditEventForm :calendarEvent="calendarEvent" @formSubmitted="closeModal" />
                             </div>
                             <div v-if="selectedType === 'supplier_order'">
-                                <EditSupplierOrderForm :calendarEvent="calendarEvent" @closeForm="closeForm" :suppliers="props.suppliers" :products="props.products" />
+                                <EditSupplierOrderForm :event="calendarEvent" @closeForm="closeForm" :suppliers="props.suppliers" :products="props.products" />
                             </div>
                             <div v-if="selectedType === 'discount'">
                                 <EditDiscountForm :calendarEvent="calendarEvent" @formSubmitted="closeModal" :categories="props.categories"/>

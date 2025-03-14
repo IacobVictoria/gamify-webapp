@@ -23,7 +23,7 @@ class ProcessLowStockOrdersJob implements ShouldQueue
     }
 
     public function handle()
-    {     Log::info("a intrat in job!");
+    { 
         $this->orderProcessingService->processLowStockProducts();
     }
 }

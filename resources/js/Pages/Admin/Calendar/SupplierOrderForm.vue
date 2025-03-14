@@ -7,7 +7,8 @@
 
         <!-- Afișează lista de comenzi favorite dacă showFavorites = true -->
         <div v-if="showFavorites">
-            <FavoritesEvents :favorites="favoriteCommands" :selected-date="selectedDate" :type="'Commands'"></FavoritesEvents>
+            <FavoritesEvents :favorites="favoriteCommands" :selected-date="selectedDate" :type="'Commands'">
+            </FavoritesEvents>
         </div>
         <div v-else>
             <h3 class="text-base font-semibold text-gray-900">Create Command</h3>
@@ -63,6 +64,27 @@
                 {{ quantityError }}
             </div>
 
+            <div class="mt-2">
+                <label class="flex items-center">
+                    <input type="checkbox" v-model="formData.is_recurring">
+                    <span class="ml-2 text-sm font-medium text-gray-700">Make it Recurring</span>
+                </label>
+            </div>
+
+            <div v-if="formData.is_recurring" class="mt-2">
+                <label class="block text-sm font-medium text-gray-700">Recurring Interval</label>
+
+                <div class="flex gap-4 mt-2">
+                    <label class="flex items-center">
+                        <input type="radio" v-model="formData.recurring_interval" value="weekly" class="mr-2">
+                        Weekly
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" v-model="formData.recurring_interval" value="monthly" class="mr-2">
+                        Monthly
+                    </label>
+                </div>
+            </div>
             <!-- Butoane submit și close -->
             <div class="mt-5 sm:mt-6">
                 <button type="button"
@@ -83,7 +105,7 @@
 
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { computed, ref, watch, nextTick  } from 'vue';
 import FavoritesEvents from './FavoritesEvents.vue';
 defineOptions({
     name: "CreateCommand"
@@ -110,6 +132,8 @@ const formData = useForm({
     productIds: [],
     productQuantities: {},
     details: '',
+    is_recurring: false, // Inițial, evenimentul NU este recurent
+    recurring_interval: null, // Stocăm dacă e "weekly" sau "monthly"
 });
 
 const selectedProducts = ref([]);
@@ -126,7 +150,6 @@ watch(() => formData.supplierId, (newSupplierId) => {
         formData.supplierName = '';
     }
 });
-
 
 function getMaxQuantity(productId) {
     const product = selectedProducts.value.find(product => product.id === productId);
