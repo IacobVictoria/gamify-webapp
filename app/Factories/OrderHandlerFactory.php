@@ -10,11 +10,10 @@ class OrderHandlerFactory
     public static function create()
     {
         $createOrder = new CreateOrderHandler();
-        $updateStock = new UpdateStockHandler();
         $placeOrder = new PlaceOrderHandler();
 
         // Construim lanțul de handler-e
-        $createOrder->setNext($updateStock)->setNext($placeOrder);
+        $createOrder->setNext($placeOrder);
 
         return $createOrder;
     }
