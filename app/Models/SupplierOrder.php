@@ -26,6 +26,7 @@ class SupplierOrder extends Model
         'country',
         'zip_code',
         'phone',
+        'report_id'
     ];
 
     protected $table = 'supplier_orders';
@@ -44,9 +45,14 @@ class SupplierOrder extends Model
     public function products()
     {
         return $this->belongsToMany(SupplierProduct::class, 'supplier_order_products', 'order_id', 'product_id')
-        ->using(SupplierOrderProduct::class)
-        ->withPivot('quantity', 'price');
-    ;
+            ->using(SupplierOrderProduct::class)
+            ->withPivot('quantity', 'price');
     }
+
+    public function invoice()
+    {
+        return $this->belongsTo(Report::class, 'report_id');
+    }
+
 
 }

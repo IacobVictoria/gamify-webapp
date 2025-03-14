@@ -4,9 +4,13 @@ namespace App\Providers;
 
 use App\Factories\OrderHandlerFactory;
 use App\Factories\PaymentHandlerFactory;
+use App\Factories\SupplierLowStockOrderHandlerFactory;
+use App\Factories\SupplierOrderHandlerFactory;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\QrScannerController;
 use App\Interfaces\BadgeAssignerInterface;
+use App\Interfaces\SupplierLowStockOrderHandlerInterface;
+use App\Interfaces\SupplierOrderHandlerInterface;
 use App\Interfaces\UserAchievementInterface;
 use App\Interfaces\UserScoreInterface;
 use App\Models\ClientOrder;
@@ -56,6 +60,14 @@ class AppServiceProvider extends ServiceProvider
       
         $this->app->bind(PaymentHandlerInterface::class, function ($app) {
             return PaymentHandlerFactory::create($app);
+        });
+
+        $this->app->bind(SupplierOrderHandlerInterface::class, function ($app) {
+            return SupplierOrderHandlerFactory::create($app);
+        });
+
+        $this->app->bind(SupplierLowStockOrderHandlerInterface::class, function ($app) {
+            return SupplierLowStockOrderHandlerFactory::create($app);
         });
     }
 
