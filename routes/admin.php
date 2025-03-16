@@ -14,6 +14,7 @@ use App\Http\Controllers\AdminQuizAnswerController;
 use App\Http\Controllers\AdminQuizController;
 use App\Http\Controllers\AdminQuizManagerController;
 use App\Http\Controllers\AdminQuizQuestionController;
+use App\Http\Controllers\AdminReportGeneratorsController;
 use App\Http\Controllers\AdminShoppingCartController;
 use App\Http\Controllers\AdminSupplierController;
 use App\Http\Controllers\AdminSupplierOrderController;
@@ -176,4 +177,8 @@ Route::prefix('chart')->group(function () {
 
 Route::prefix('inventory_transaction')->group(function () {
     Route::get('/', [AdminInventoryTransactionController::class, 'index'])->name('inventory.index');
+});
+
+Route::prefix('reports_generators')->group(function () {
+    Route::get('/', [AdminReportGeneratorsController::class, 'index'])->name('reports_generators.index');
 });

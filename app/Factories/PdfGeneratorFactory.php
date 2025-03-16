@@ -6,8 +6,7 @@ use App\Services\PdfGenerators\ClientInvoicePdfGenerator;
 use App\Services\PdfGenerators\NpsReportPdfGenerator;
 use App\Services\PdfGenerators\ParticipantsListPdfGenerator;
 use App\Services\PdfGenerators\SupplierInvoicePdfGenerator;
-use Illuminate\Support\Facades\Log;
-
+use App\Services\PdfGenerators\UserActivityMonthlyReportPdfGenerator;
 
 class PdfGeneratorFactory
 {
@@ -18,6 +17,7 @@ class PdfGeneratorFactory
             'supplier_invoice' => new SupplierInvoicePdfGenerator($storageStrategy),
             'client_invoice' => new ClientInvoicePdfGenerator($storageStrategy),
             'nps_report' => new NpsReportPdfGenerator($storageStrategy),
+            'user_activity_monthly' => new UserActivityMonthlyReportPdfGenerator($storageStrategy),
             default => null
         };
 

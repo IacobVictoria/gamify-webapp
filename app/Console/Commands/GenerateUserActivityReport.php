@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Console\Commands;
+
+use App\Factories\PdfGeneratorFactory;
+use App\Factories\StorageStrategyFactory;
+use App\Services\Reports\UserActivityReportService;
+use Illuminate\Console\Command;
+
+class GenerateUserActivityReport extends Command
+{
+    //testing pdf uri
+    protected $signature = 'app:generate-user-activity-report';
+
+    public function handle()
+    {
+        $reportService = new UserActivityReportService();
+        $reportData = $reportService->getMonthlyReport();
+        $storageStrategy = StorageStrategyFactory::create('s3');
+
+        $pdfGenerator = PdfGeneratorFactory::create('user_activity_monthly', $storageStrategy);
+        $pdfUrl = $pdfGenerator->generatePdf($reportData);
+
+        // 5️⃣ Afișăm rezultatul
+        if ($pdfUrl) {
+            $this->info("✅ Raport generat cu succes: {$pdfUrl}");
+        } else {
+            $this->error("❌ Eroare la generarea PDF-ului.");
+        }
+    }
+}
