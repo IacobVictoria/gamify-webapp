@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminCheckoutController;
 use App\Http\Controllers\AdminClientOrderController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminEventCalendarController;
+use App\Http\Controllers\AdminInventoryTransactionController;
 use App\Http\Controllers\AdminNotificationController;
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AdminQuizAnswerController;
@@ -171,4 +172,8 @@ Route::prefix('nps')->group(function () {
 });
 Route::prefix('chart')->group(function () {
     Route::get('/nps/monthly', [ChartController::class, 'getMonthlyNps'])->name('chart.nps.monthly');
+});
+
+Route::prefix('inventory_transaction')->group(function () {
+    Route::get('/', [AdminInventoryTransactionController::class, 'index'])->name('inventory.index');
 });
