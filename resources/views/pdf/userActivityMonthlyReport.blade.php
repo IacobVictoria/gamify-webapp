@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Raport Activitate Utilizatori - {{ $reportData['month'] }}</title>
-    <style>
    <style>
         body {
             font-family: Arial, sans-serif;
@@ -61,7 +60,6 @@
             background-color: #ecf0f1;
             border-radius: 5px;
         }
-    </style>
     </style>
 </head>
 <body>

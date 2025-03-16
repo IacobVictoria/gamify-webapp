@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Factories\PdfGeneratorFactory;
 use App\Factories\StorageStrategyFactory;
+use App\Services\Reports\SalesStockReportService;
 use App\Services\Reports\UserActivityReportService;
 use Illuminate\Console\Command;
 
@@ -14,14 +15,13 @@ class GenerateUserActivityReport extends Command
 
     public function handle()
     {
-        $reportService = new UserActivityReportService();
+        $reportService = new SalesStockReportService();
         $reportData = $reportService->getMonthlyReport();
         $storageStrategy = StorageStrategyFactory::create('s3');
 
-        $pdfGenerator = PdfGeneratorFactory::create('user_activity_monthly', $storageStrategy);
+        $pdfGenerator = PdfGeneratorFactory::create('sales_stock_monthly', $storageStrategy);
         $pdfUrl = $pdfGenerator->generatePdf($reportData);
 
-        // 5️⃣ Afișăm rezultatul
         if ($pdfUrl) {
             $this->info("✅ Raport generat cu succes: {$pdfUrl}");
         } else {
