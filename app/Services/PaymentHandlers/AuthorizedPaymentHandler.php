@@ -34,7 +34,7 @@ class AuthorizedPaymentHandler extends AbstractPaymentHandler
     }
     public function restoreStock(ClientOrder $order)
     {
-        foreach ($order->orderProducts as $orderProduct) {
+        foreach ($order->products as $orderProduct) {
             $product = Product::find($orderProduct->product_id);
             if ($product) {
                 $product->stock += $orderProduct->quantity;

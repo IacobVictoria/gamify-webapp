@@ -8,6 +8,7 @@ use App\Services\PaymentHandlers\ApplyBadgeHandler;
 use App\Services\PaymentHandlers\ApplyDiscountHandler;
 use App\Services\Badges\ShoppingBadgeService;
 use App\Services\DiscountService;
+use App\Services\PaymentHandlers\InventoryTransactionHandler;
 use App\Services\PaymentHandlers\UpdateStockHandler;
 
 class PaymentHandlerFactory
@@ -20,9 +21,11 @@ class PaymentHandlerFactory
         $expediteOrder = new ExpediteOrderHandler();
         $applyBadges = new ApplyBadgeHandler($app->make(ShoppingBadgeService::class));
         $applyDiscount = new ApplyDiscountHandler($app->make(DiscountService::class));
+        $inventory = new InventoryTransactionHandler();
 
         // Construim lanțul de handler-e
         $authorizePayment->setNext($updateStock)
+            ->setNext($inventory)
             ->setNext($applyDiscount)
             ->setNext($generateInvoice)
             ->setNext($expediteOrder)

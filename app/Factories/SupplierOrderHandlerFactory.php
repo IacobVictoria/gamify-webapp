@@ -6,6 +6,7 @@ use App\Services\SupplierOrderHandlers\CreateSupplierOrderHandler;
 use App\Services\SupplierOrderHandlers\CreateSupplierOrderProductsHandler;
 use App\Services\SupplierOrderHandlers\FetchSupplierOrdersHandler;
 use App\Services\SupplierOrderHandlers\GenerateSupplierInvoiceHandler;
+use App\Services\SupplierOrderHandlers\RegisterInventoryTransactionHandler;
 use App\Services\SupplierOrderHandlers\UpdateSupplierStockHandler;
 use App\Services\SupplierOrderHandlers\ValidateEventHandler;
 use App\Services\SupplierOrderHandlers\ValidateSupplierStockHandler;
@@ -23,6 +24,7 @@ class SupplierOrderHandlerFactory
         $createProductsSupplierOrder = new CreateSupplierOrderProductsHandler();
         $updateStock = new UpdateSupplierStockHandler($app->make(SupplierOrderNotificationService::class));
         $finalizeEvent = new CloseSupplierEventHandler();
+        $registerInvetory= new RegisterInventoryTransactionHandler();
 
         $fetchOrders->setNext($validateEvent)
             ->setNext($finalizeEvent)
@@ -30,6 +32,7 @@ class SupplierOrderHandlerFactory
             ->setNext($validateStockSupplier)
             ->setNext($createProductsSupplierOrder)
             ->setNext($updateStock)
+            ->setNext($registerInvetory)
             ->setNext($generateInvoice);
 
 

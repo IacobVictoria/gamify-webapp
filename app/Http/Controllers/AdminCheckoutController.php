@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TransactionType;
 use App\Factories\PdfGeneratorFactory;
 use App\Factories\StorageStrategyFactory;
 use App\Http\Requests\AdminCheckoutRequest;
+use App\Models\InventoryTransaction;
 use App\Models\Product;
 use App\Models\Report;
 use App\Models\SupplierOrder;
@@ -104,6 +106,16 @@ class AdminCheckoutController extends Controller
                 //  adaug acum in stocul aceluiasi produs din tabela Products sau creez noul produs comandatca am cumparat asta
 
             }
+            
+            InventoryTransaction::create([
+                'id' => Uuid::uuid(),
+                'transaction_type' => TransactionType::IN->value, // Tranzacție de tip IN (aprovizionare)
+                'supplier_order_id' => $order->id,
+                'product_id' => $product->id,
+                'quantity' => $productData['quantity'],
+                'transaction_date' => now(),
+                'description' => "Aprovizionare de la furnizor {$order->supplier->name} pentru produsul {$product->name}",
+            ]);
         }
 
         $this->generateAndSaveInvoice($order, $validatedData['products']);

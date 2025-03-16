@@ -15,10 +15,12 @@ return new class extends Migration
         Schema::create('inventory_transactions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->enum('transaction_type', array_column(TransactionType::cases(), 'value'));
-            $table->foreignUuid('supplier_order_id')->constrained('supplier_orders')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignUuid('supplier_order_id')->nullable()->constrained('supplier_orders')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignUuid('product_id')->constrained('products')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignUuid('client_order_id')->constrained('client_orders')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignUuid('client_order_id')->nullable()->constrained('client_orders')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->integer('quantity');
             $table->dateTime('transaction_date');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

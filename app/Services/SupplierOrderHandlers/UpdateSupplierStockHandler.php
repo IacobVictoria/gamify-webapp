@@ -31,7 +31,7 @@ class UpdateSupplierStockHandler extends AbstractSupplierOrderHandler
             $supplierProduct = SupplierProduct::find($productData['productId']);
 
             if (!$supplierProduct) {
-                Log::error("❌ Produsul cu ID {$productData['productId']} nu a fost găsit la furnizor.");
+                Log::error("Produsul cu ID {$productData['productId']} nu a fost găsit la furnizor.");
                 continue;
             }
 

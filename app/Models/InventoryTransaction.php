@@ -15,8 +15,9 @@ class InventoryTransaction extends Model
         'supplier_order_id',
         'product_id',
         'client_order_id',
-        'supplier_product_id',
         'transaction_date',
+        'quantity',
+        'description'
     ];
 
     protected $table = 'inventory_transactions';
@@ -42,8 +43,4 @@ class InventoryTransaction extends Model
         return $this->belongsTo(ClientOrder::class, 'client_order_id');
     }
 
-    public function supplierProduct()
-    {
-        return $this->belongsTo(SupplierProduct::class, 'supplier_product_id');
-    }
 }
