@@ -7,7 +7,6 @@ use App\Models\OrderProduct;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 
-
 class SalesStockReportService
 {
     public function getMonthlyReport(): array
@@ -99,14 +98,14 @@ class SalesStockReportService
     private function getStockRecommendation(int $stockIn, int $stockOut): string
     {
         if ($stockIn > $stockOut) {
-            return "**Stoc prea mare**: Vânzările sunt mai mici decât reaprovizionarea. 
-        ✅ Recomandări: Analizează cererea, aplică reduceri sau promoții, și evită comenzi excesive.";
+            return "**Stoc prea mare**: Vanzarile sunt mai mici decat reaprovizionarea. 
+        Recomandari: Analizeaza cererea, aplica reduceri sau promotii, si evita comenzi excesive.";
         } elseif ($stockOut > $stockIn) {
-            return "**Stoc se epuizează rapid**: Se vinde mai repede decât reaprovizionarea. 
-        ✅ Recomandări: Comandă mai multe unități, optimizează aprovizionarea și monitorizează trendurile de vânzare.";
+            return "**Stoc se epuizeaza rapid**: Se vinde mai repede decat reaprovizionarea. 
+        Recomandari: Comanda mai multe unitati, optimizeaza aprovizionarea si monitorizeaza trendurile de vanzare.";
         } else {
-            return "**Stoc echilibrat**: Intrările și ieșirile sunt aproape egale. 
-        ✅ Recomandări: Menține aceeași strategie de aprovizionare.";
+            return "**Stoc echilibrat**: Intrarile si iesirile sunt aproape egale. 
+        Recomandari: Mentine aceeasi strategie de aprovizionare.";
         }
     }
 

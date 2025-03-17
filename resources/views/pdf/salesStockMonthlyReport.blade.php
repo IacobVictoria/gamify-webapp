@@ -109,12 +109,18 @@
     <table>
         <tr>
             <th>Produs</th>
+            <th>StocIn</th>
+            <th>StocOut</th>
             <th>Variatie Stoc</th>
+            <th>Recomandare</th>
         </tr>
         @foreach ($reportData['stock_fluctuations'] as $product)
             <tr>
                 <td>{{ $product['name'] }}</td>
+                <th>{{ $product['stock_in'] }}</th>
+                <th>{{ $product['stock_out'] }}</th>
                 <td class="center"><?php    echo e($product['stock_variation']); ?></td>
+                <td>{{ $product['recommendation'] }}</td>
             </tr>
         @endforeach
     </table>
