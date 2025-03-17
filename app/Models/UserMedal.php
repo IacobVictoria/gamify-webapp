@@ -16,4 +16,13 @@ class UserMedal extends Pivot
     protected $primaryKey = 'id';
     public $timestamps = true;
     
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function medal()
+    {
+        return $this->belongsTo(Medal::class, 'medal_id');
+    }
 }

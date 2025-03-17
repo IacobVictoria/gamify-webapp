@@ -6,6 +6,7 @@ use App\Factories\PdfGeneratorFactory;
 use App\Factories\StorageStrategyFactory;
 use App\Services\Reports\GamesActivityReportService;
 use App\Services\Reports\ProductsActivityReportService;
+use App\Services\Reports\RewardsActivityReportService;
 use App\Services\Reports\SalesStockReportService;
 use App\Services\Reports\UserActivityReportService;
 use Illuminate\Console\Command;
@@ -17,11 +18,11 @@ class GenerateUserActivityReport extends Command
 
     public function handle()
     {
-        $reportService = new ProductsActivityReportService();
+        $reportService = new RewardsActivityReportService();
         $reportData = $reportService->getMonthlyReport();
         $storageStrategy = StorageStrategyFactory::create('s3');
 
-        $pdfGenerator = PdfGeneratorFactory::create('products_activity_monthly', $storageStrategy);
+        $pdfGenerator = PdfGeneratorFactory::create('rewards_activity_monthly', $storageStrategy);
         $pdfUrl = $pdfGenerator->generatePdf($reportData);
 
         if ($pdfUrl) {
