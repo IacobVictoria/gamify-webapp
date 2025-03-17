@@ -6,6 +6,7 @@ use App\Services\PdfGenerators\ClientInvoicePdfGenerator;
 use App\Services\PdfGenerators\GamesActivityMonthlyReportPdfGenerator;
 use App\Services\PdfGenerators\NpsReportPdfGenerator;
 use App\Services\PdfGenerators\ParticipantsListPdfGenerator;
+use App\Services\PdfGenerators\ProductsActivityMonthlyReportPdfGenerator;
 use App\Services\PdfGenerators\SalesStockMonthlyReportPdfGenerator;
 use App\Services\PdfGenerators\SupplierInvoicePdfGenerator;
 use App\Services\PdfGenerators\UserActivityMonthlyReportPdfGenerator;
@@ -22,6 +23,7 @@ class PdfGeneratorFactory
             'user_activity_monthly' => new UserActivityMonthlyReportPdfGenerator($storageStrategy),
             'sales_stock_monthly' => new SalesStockMonthlyReportPdfGenerator($storageStrategy),
             'games_activity_monthly' => new GamesActivityMonthlyReportPdfGenerator($storageStrategy),
+            'products_activity_monthly' => new ProductsActivityMonthlyReportPdfGenerator($storageStrategy),
             default => null
         };
 

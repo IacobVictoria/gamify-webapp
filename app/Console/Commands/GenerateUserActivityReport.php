@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Factories\PdfGeneratorFactory;
 use App\Factories\StorageStrategyFactory;
 use App\Services\Reports\GamesActivityReportService;
+use App\Services\Reports\ProductsActivityReportService;
 use App\Services\Reports\SalesStockReportService;
 use App\Services\Reports\UserActivityReportService;
 use Illuminate\Console\Command;
@@ -16,11 +17,11 @@ class GenerateUserActivityReport extends Command
 
     public function handle()
     {
-        $reportService = new GamesActivityReportService();
+        $reportService = new ProductsActivityReportService();
         $reportData = $reportService->getMonthlyReport();
         $storageStrategy = StorageStrategyFactory::create('s3');
 
-        $pdfGenerator = PdfGeneratorFactory::create('games_activity_monthly', $storageStrategy);
+        $pdfGenerator = PdfGeneratorFactory::create('products_activity_monthly', $storageStrategy);
         $pdfUrl = $pdfGenerator->generatePdf($reportData);
 
         if ($pdfUrl) {
