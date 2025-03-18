@@ -10,7 +10,6 @@ use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\ProductComparisonController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\QrScannerController;
 use App\Http\Controllers\RecommandationPythonController;
 use App\Http\Controllers\ReviewCommentController;
@@ -44,11 +43,6 @@ Route::group(['prefix' => 'products'], function () {
     Route::post('/{productId}/like', [UserWishlistController::class, 'like'])->name('wishlist.products.like');
     Route::post('/{productId}/dislike', [UserWishlistController::class, 'dislike'])->name('wishlist.products.dislike');
 });
-
-
-Route::get('/qr-scanner', [QrScannerController::class, 'index'])->name('qrscanner.index');
-Route::post('/qr-scanner/scan', [QrScannerController::class, 'scan'])->name('qrscanner.scan');
-Route::patch('/qr-scanner', [QrScannerController::class, 'updateScore'])->name('qrscanner.updateScore');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -102,4 +96,8 @@ Route::post('/cancel-payment', [StripeController::class, 'cancelPayment'])->name
 
 //Suppliers
 Route::get('/suppliers',[SupplierController::class,'web_view'])->name('suppliers.web_view');
+
+Route::post('/scan_product',[QrScannerController::class,'scanProduct'])->name('scan.product.find');
+Route::post('/scan_product/points',[QrScannerController::class,'scanProductEarnPoints'])->name('scan.product.earn');
+
 require __DIR__ . '/auth.php';

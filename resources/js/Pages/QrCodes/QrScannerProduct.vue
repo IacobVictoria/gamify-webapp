@@ -73,6 +73,7 @@ export default {
         },
 
         async onScanSuccess(decodedText) {
+        
             if (this.scannedData === decodedText) {
                 return; // Avoid reprocessing the same scan
             }

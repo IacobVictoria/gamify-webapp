@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Strategies\Badges\Events;
+namespace App\Strategies\Badges\Event;
 
 use App\Interfaces\BadgeStrategyInterface;
 use App\Models\User;

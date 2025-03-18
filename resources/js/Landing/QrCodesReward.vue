@@ -17,10 +17,11 @@
                     favorite snacks!
                 </p>
 
-                <button
+                <button @click="startQrScanner"
                     class="mt-4 px-6 py-3 text-lg font-semibold bg-[#F45D3A] hover:bg-[#e35c2b] text-white rounded-lg shadow-md transition-all duration-300">
                     View Product 📦
                 </button>
+                <div v-if="scanning" id="qr-reader" class="mt-6 w-full max-w-md mx-auto"></div>
             </div>
 
             <!-- Coloană 2: Scan to Win -->
@@ -33,15 +34,81 @@
                     Create an account and scan QR codes to **earn points, unlock badges**, and **climb the
                     leaderboard!**
                 </p>
+                <div>
+                    <inertia-link v-if="isLoggedIn() && authUserHasRole('User')" :href="route('user.dashboard')"
+                        class="mt-4 px-6 py-3 no-underline text-lg font-semibold bg-[#6ACAB1] hover:bg-[#56b29b] text-white rounded-lg shadow-md transition-all duration-300">
+                        Enter your dashboard to win points!
+                    </inertia-link>
 
-                <button
-                    class="mt-4 px-6 py-3 text-lg font-semibold bg-[#6ACAB1] hover:bg-[#56b29b] text-white rounded-lg shadow-md transition-all duration-300">
-                    Join & Start Earning 🚀
-                </button>
+                    <button v-else
+                        class="mt-4 px-6 py-3 text-lg font-semibold bg-[#6ACAB1] hover:bg-[#56b29b] text-white rounded-lg shadow-md transition-all duration-300">
+                        Join & Start Earning 🚀
+                    </button>
+                </div>
             </div>
 
         </div>
     </section>
 </template>
+
 <script>
+import { Html5QrcodeScanner } from "html5-qrcode";
+
+export default {
+    data() {
+        return {
+            scanning: false,
+            decodedText: "",
+            qrScanner: null,
+        };
+    },
+    methods: {
+        startQrScanner() {
+            if (this.qrScanner) {
+                this.qrScanner.clear();
+            }
+
+            this.scanning = true;
+
+            this.$nextTick(() => {
+                this.qrScanner = new Html5QrcodeScanner(
+                    "qr-reader",
+                    { fps: 10, qrbox: { width: 250, height: 250 } },
+                    false
+                );
+
+                this.qrScanner.render(this.onScanSuccess, this.onScanFailure);
+            });
+        },
+
+        onScanSuccess(decodedText, decodedResult) {
+            this.decodedText = decodedText;
+            this.scanning = false;
+
+            this.$inertia.post(route('scan.product.find'), {
+                qrCode: decodedText,
+            }, {
+                preserveState: true,
+                preserveScroll: true
+            });
+
+            if (this.qrScanner) {
+                this.qrScanner.clear();
+            }
+        },
+
+        onScanFailure(error) {
+
+
+        },
+    },
+};
 </script>
+
+<style scoped>
+#qr-reader {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+</style>

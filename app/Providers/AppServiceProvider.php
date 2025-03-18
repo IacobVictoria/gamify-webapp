@@ -55,7 +55,7 @@ class AppServiceProvider extends ServiceProvider
         });
         
         $this->app->bind(OrderHandlerInterface::class, function ($app) {
-            return OrderHandlerFactory::create();
+            return OrderHandlerFactory::create($app);
         });
       
         $this->app->bind(PaymentHandlerInterface::class, function ($app) {

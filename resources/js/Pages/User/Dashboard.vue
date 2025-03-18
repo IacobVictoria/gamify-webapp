@@ -47,8 +47,8 @@
               </div>
             </div>
           </div>
-
           <UserStatsSection :user="account"></UserStatsSection>
+          <ScanQrCodeProducts></ScanQrCodeProducts>
           <ExploreGamesSection></ExploreGamesSection>
           <GameCenterSection></GameCenterSection>
           <ShoppingCenterSection></ShoppingCenterSection>
@@ -67,6 +67,7 @@ import GameCenterSection from './UserDashboard/GameCenterSection.vue';
 import ExploreGamesSection from './UserDashboard/ExploreGamesSection.vue';
 import ShoppingCenterSection from './UserDashboard/ShoppingCenterSection.vue';
 import WellnessCenterSection from './UserDashboard/WellnessCenterSection.vue';
+import ScanQrCodeProducts from './UserDashboard/ScanQrCodeProducts.vue';
 
 export default {
   components: {
@@ -76,7 +77,8 @@ export default {
     GameCenterSection,
     ExploreGamesSection,
     ShoppingCenterSection,
-    WellnessCenterSection
+    WellnessCenterSection,
+    ScanQrCodeProducts
   },
   props: {
     account: {

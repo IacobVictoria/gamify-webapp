@@ -3,8 +3,8 @@
 namespace App\Services\Badges;
 
 use App\Interfaces\BadgeAssignerInterface;
-use App\Strategies\Badges\Events\FirstEventParticipationBadgeStrategy;
-use App\Strategies\Badges\Events\ThreeEventsParticipationBadgeStrategy;
+use App\Strategies\Badges\Event\FirstEventParticipationBadgeStrategy;
+use App\Strategies\Badges\Event\ThreeEventsParticipationBadgeStrategy;
 
 class EventBadgeService extends AbstractBadgeCategoryService
 {

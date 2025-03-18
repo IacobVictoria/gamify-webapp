@@ -22,8 +22,6 @@ use App\Http\Controllers\AdminSupplierProductController;
 use App\Http\Controllers\AdminUserQuizRemarkController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\EventController;
-use App\Http\Controllers\GameController;
-use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SurveyController;
@@ -34,12 +32,6 @@ Route::prefix('dashboard')->group(function () {
         ->name('dashboard');
 });
 
-Route::prefix('qrcodes')->group(function () {
-    Route::get('/', [GameController::class, 'index'])->name('qrcodes');
-    Route::patch('/update-score', [GameController::class, 'updateScore'])->name('updateScore');
-    Route::post('/generate-codes', [QrCodeController::class, 'store'])->name('generateCodes');
-    Route::get('/qrCodes/{productId}', [QrCodeController::class, 'show'])->name('codes.show');
-});
 
 Route::prefix('accounts')->group(function () {
     Route::get('/', [AdminAccountController::class, 'index'])

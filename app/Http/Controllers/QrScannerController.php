@@ -10,6 +10,7 @@ use App\Models\QrCode;
 use App\Models\QrCodeEvent;
 use App\Models\QrCodeScan;
 use App\Services\Badges\EventBadgeService;
+use App\Services\QrCodes\QrCodeService;
 use App\Services\UserScoreService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,42 +19,62 @@ use Faker\Provider\Uuid;
 
 class QrScannerController extends Controller
 {
-    protected $userScoreService, $badgeService;
-    private $achievementInterface;
+    protected $userScoreService, $badgeService, $qrCodeService;
 
-    public function __construct(UserAchievementInterface $achievementInterface, UserScoreService $userScoreService, EventBadgeService $badgeService)
+    public function __construct(UserScoreService $userScoreService, EventBadgeService $badgeService, QrCodeService $qrCodeService)
     {
-        $this->achievementInterface = $achievementInterface;
         $this->userScoreService = $userScoreService;
         $this->badgeService = $badgeService;
+        $this->qrCodeService = $qrCodeService;
     }
 
-    public function index()
+    public function scanProduct(Request $request)
     {
-        return Inertia::render('QrCodes/QrScannerProduct');
-    }
-
-    public function scan(Request $request)
-    {
-
         $qrCodeValue = $request->input('qrCode');
 
         $qrCode = QrCode::where('code', $qrCodeValue)->first();
 
         if (!$qrCode) {
-            return Inertia::render('QrCodes/QrScannerProduct', [
-                'error' => 'Invalid QR code'
-            ]);
+            return back()->with('errorMessage', 'Invalid QR code');
         }
+
+        $product = Product::find($qrCode->product_id);
+        $productId = $qrCode->product_id;
+        if (!$product) {
+            return back()->with('errorMessage', 'Product not found');
+        }
+
+        return redirect()->route('products.show', $productId);
+    }
+
+    public function scanProductEarnPoints(Request $request)
+    {
+        $user = Auth()->user();
+        $qrCodeValue = $request->input('qrCode');
+
+        $qrCode = QrCode::where('code', $qrCodeValue)->first();
+
+        if (!$qrCode) {
+            return back()->with('errorMessage', 'Invalid QR code');
+        }
+
         $product = Product::find($qrCode->product_id);
 
+        $this->userScoreService->addScore($user, $product->score);
+
         if (!$product) {
-            return back()->withErrors(['product' => 'Product not found']);
+            return back()->with('errorMessage', 'Product not found');
         }
 
-
-        return redirect()->route('products.show', ['productsId' => $product->id]);
+        QrCodeScan::create([
+            'id' => Uuid::uuid(),
+            'user_id' => $user->id,
+            'product_id' => $product->id,
+            'scanned_at' => now(),
+        ]);
+        $this->qrCodeService->invalidateQr($qrCode);
     }
+
     public function scanEvent(Request $request)
     {
         $qrCodeValue = $request->input('qrCode'); // Valoarea QR scanata
@@ -86,51 +107,5 @@ class QrScannerController extends Controller
         $this->badgeService->checkAndAssignBadges($participant->user);
 
         return redirect()->back()->with('message', 'Participation Confirmed! 🎉');
-    }
-
-
-
-    public function updateScore(Request $request)
-    {
-        $qrCodeValue = $request->input('qrCode');
-
-        $qrCode = QrCode::where('code', $qrCodeValue)->first();
-
-        if (!$qrCode) {
-            return Inertia::render('QrCodes/QrScannerProduct', [
-                'error' => 'Invalid QR code'
-            ]);
-        }
-
-
-        $product = Product::find($qrCode->product_id);
-
-        $productScore = $product->score;
-
-        $user = Auth::user();
-        $oldScore = $user->score;
-        $newScore = $productScore + $user->score;
-        $this->achievementInterface->checkAndSendMedalEmail($user, $newScore, $oldScore);
-
-        $user->update(['score' => $newScore]);
-
-        $qrCodeScan = new QrCodeScan();
-        $qrCodeScan->id = Uuid::uuid();
-        $qrCodeScan->user_id = $user->id;
-        $qrCodeScan->product_id = $product->id;
-        $qrCodeScan->scanned_at = now();
-        $qrCodeScan->save();
-
-        $imagePath = public_path('images' . DIRECTORY_SEPARATOR . 'qrCodes' . DIRECTORY_SEPARATOR . $product->id . DIRECTORY_SEPARATOR . $qrCode->code . '.png');
-
-        if (file_exists($imagePath)) {
-            unlink($imagePath); // Șterge si fișierul imagine
-        }
-
-        $qrCode->delete();
-        return Inertia::render('QrCodes/QrScannerProduct', [
-            'success' => 'QR code deleted and score updated'
-        ]);
-
     }
 }
