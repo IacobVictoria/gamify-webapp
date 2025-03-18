@@ -1,51 +1,58 @@
 <template>
     <TransitionRoot as="template" :show="showModal">
-        <Dialog class="relative z-10" @close="closeModal">
+        <Dialog class="relative z-10" @close="closeForm">
             <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100"
                 leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
             </TransitionChild>
 
-            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div class="fixed inset-0 overflow-y-auto">
+                <div class="flex min-h-full items-center justify-center p-4 text-center">
                     <TransitionChild as="template" enter="ease-out duration-300"
                         enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         enter-to="opacity-100 translate-y-0 sm:scale-100" leave="ease-in duration-200"
                         leave-from="opacity-100 translate-y-0 sm:scale-100"
                         leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
                         <DialogPanel
-                            class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
-                            <div v-if="!isPastDate" class="space-y-4">
-                                <h2>Adaugă Meeting</h2>
-                                <form @submit.prevent="submitForm">
-                                    <div class="form-group">
-                                        <label for="name">Title Meeting:</label>
-                                        <input type="text" id="title" v-model="form.title" required />
-                                    </div>
+                            class="w-full max-w-md transform overflow-hidden rounded-xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                            <div v-if="!isPastDate">
+                                <DialogTitle class="text-xl font-semibold text-gray-800 mb-2">
+                                    🗓️ Adaugă Meeting
+                                </DialogTitle>
 
-                                    <div class="form-group">
-                                        <label for="description">Descriere:</label>
-                                        <textarea id="description" v-model="form.description"></textarea>
-                                    </div>
+                                <form @submit.prevent="submitForm" class="space-y-4">
                                     <div>
-                                        <label for="startTime" class="block text-sm font-medium text-gray-700">Start
-                                            Time</label>
-                                        <input v-model="form.start" type="datetime-local" id="startTime" class="input"
-                                            :min="`${props.selectedDate}T00:00`" />
+                                        <label class="block text-gray-700">Title Meeting:</label>
+                                        <input type="text" v-model="form.title"
+                                            class="w-full border rounded-md px-3 py-2" required />
                                     </div>
 
-                                    <div class="form-group">
-                                        <label for="period">Perioadă:</label>
-                                        <select id="period" v-model="form.period" required>
+                                    <div>
+                                        <label class="block text-gray-700">Descriere:</label>
+                                        <textarea v-model="form.description" class="w-full border rounded-md px-3 py-2"
+                                            rows="3"></textarea>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-gray-700">Start Time:</label>
+                                        <input type="datetime-local" v-model="form.start" :min="startTimeMin"
+                                            class="w-full border rounded-md px-3 py-2" required />
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-gray-700">Perioadă:</label>
+                                        <select v-model="form.period" class="w-full border rounded-md px-3 py-2"
+                                            required>
                                             <option v-for="period in periods" :key="period" :value="period">
                                                 {{ period.replace('_', ' ') }}
                                             </option>
                                         </select>
                                     </div>
 
-                                    <div class="form-group">
-                                        <label for="report_category_ids">Categorii de Raport:</label>
-                                        <select id="report_category_ids" v-model="form.report_category_ids" multiple>
+                                    <div>
+                                        <label class="block text-gray-700">Categorii de Raport:</label>
+                                        <select v-model="form.report_category_ids" multiple
+                                            class="w-full border rounded-md px-3 py-2">
                                             <option v-for="category in categories" :key="category.id"
                                                 :value="category.id">
                                                 {{ category.name }}
@@ -53,15 +60,27 @@
                                         </select>
                                     </div>
 
-                                    <div class="modal-actions">
-                                        <button type="submit" class="submit-btn">Salvează</button>
-                                        <button type="button" class="cancel-btn" @click="closeForm">Anulează</button>
+                                    <div class="flex justify-end gap-2">
+                                        <button type="button"
+                                            class="px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500"
+                                            @click="closeForm">
+                                            Anulează
+                                        </button>
+                                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 rounded-md">
+                                            Salvează
+                                        </button>
                                     </div>
                                 </form>
                             </div>
-                            <div v-if="isPastDate" class="bg-red-100 text-red-700 p-3 rounded-md text-center mt-2">
-                                ❌ You have selected a past date. You cannot add meetings to past dates!
-                                <button type="button" class="cancel-btn" @click="closeForm">Anulează</button>
+
+                            <div v-else class="text-center">
+                                <p class="text-red-600 font-semibold">
+                                    ❌ Nu poți adăuga meeting-uri la o dată trecută!
+                                </p>
+                                <button type="button" class="mt-4 px-4 py-2 bg-gray-400 text-white rounded-md"
+                                    @click="closeForm">
+                                    Închide
+                                </button>
                             </div>
                         </DialogPanel>
                     </TransitionChild>
@@ -74,7 +93,7 @@
 <script setup>
 import { defineProps, defineEmits } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
-import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue';
+import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue';
 
 const props = defineProps({
     showModal: Boolean,
@@ -84,6 +103,7 @@ const props = defineProps({
     isPastDate: Boolean
 });
 
+const startTimeMin = new Date().toISOString().split("T")[0] + 'T00:00';
 const emit = defineEmits(['closeForm']);
 
 const form = useForm({

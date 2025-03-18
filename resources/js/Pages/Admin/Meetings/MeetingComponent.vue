@@ -49,9 +49,10 @@
             </button>
 
             <button v-if="calendarMeeting.status === 'CLOSED'" @click="viewReports"
-                class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                class="bg-green-500 px-4 py-2 rounded">
                 📄 View Reports
             </button>
+            <!-- // SA II APARA LANGA ACELE RAPOARTE pe post de link uri -->
         </div>
     </div>
 

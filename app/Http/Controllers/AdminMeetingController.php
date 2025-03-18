@@ -19,7 +19,11 @@ class AdminMeetingController extends Controller
             $meeting->categories = ReportCategory::whereIn('id', $meeting->report_category_ids)->pluck('name');
         });
 
-        $categories = ReportCategory::all();
+        $categories = ReportCategory::whereNotIn('name', [
+            'participants',
+            'client_invoice',
+            'supplier_invoice'
+        ])->get();
 
         $periods = MeetingPeriod::values();
 
