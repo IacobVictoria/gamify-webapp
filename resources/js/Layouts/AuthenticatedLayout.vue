@@ -91,9 +91,6 @@ import Icon from '@/Pages/Admin/Notifications/Icon.vue';
                                         :active="route().current('admin.suppliers_orders.index')">
                                         Supplier Orders
                                     </NavLink>
-                                    <NavLink :href="route('admin.qrcodes')" :active="route().current('admin.qrcodes')">
-                                        QrCodes
-                                    </NavLink>
                                     <NavLink :href="route('admin.badges.index')"
                                         :active="route().current('admin.badges.index')">
                                         Badges

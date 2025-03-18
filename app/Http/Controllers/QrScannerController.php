@@ -10,6 +10,7 @@ use App\Models\QrCode;
 use App\Models\QrCodeEvent;
 use App\Models\QrCodeScan;
 use App\Services\Badges\EventBadgeService;
+use App\Services\Badges\QrScanProductsBadgeService;
 use App\Services\QrCodes\QrCodeService;
 use App\Services\UserScoreService;
 use Illuminate\Http\Request;
@@ -19,13 +20,14 @@ use Faker\Provider\Uuid;
 
 class QrScannerController extends Controller
 {
-    protected $userScoreService, $badgeService, $qrCodeService;
+    protected $userScoreService, $badgeService, $qrCodeService, $qrScanProductsBadgeService;
 
-    public function __construct(UserScoreService $userScoreService, EventBadgeService $badgeService, QrCodeService $qrCodeService)
+    public function __construct(UserScoreService $userScoreService, EventBadgeService $badgeService, QrCodeService $qrCodeService, QrScanProductsBadgeService $qrScanProductsBadgeService)
     {
         $this->userScoreService = $userScoreService;
         $this->badgeService = $badgeService;
         $this->qrCodeService = $qrCodeService;
+        $this->qrScanProductsBadgeService = $qrScanProductsBadgeService;
     }
 
     public function scanProduct(Request $request)
@@ -61,6 +63,7 @@ class QrScannerController extends Controller
         $product = Product::find($qrCode->product_id);
 
         $this->userScoreService->addScore($user, $product->score);
+        $this->qrScanProductsBadgeService->checkAndAssignBadges($user);
 
         if (!$product) {
             return back()->with('errorMessage', 'Product not found');

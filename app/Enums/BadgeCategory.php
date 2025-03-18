@@ -12,4 +12,5 @@ enum BadgeCategory: string
     case QUIZ_LEADERBOARD = 'quiz-leaderboard';
     case HANGMAN = 'hangman';
     case LEADERBOARD = 'leaderboard';
+    case QRSCAN = 'qr-scan-product';
 }
