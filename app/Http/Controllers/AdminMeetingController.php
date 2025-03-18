@@ -53,11 +53,21 @@ class AdminMeetingController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'start' => $request->start,
-            'end' => $request->start, 
+            'end' => $request->start,
             'period' => MeetingPeriod::from($request->period),
             'report_category_ids' => $request->report_category_ids,
         ]);
 
         return redirect()->route('admin.meetings.index')->with('success', 'Meeting actualizat cu succes!');
+    }
+
+    public function destroy($id)
+    {
+        $meeting = Meeting::findOrFail($id);
+        $meeting->delete();
+
+        return redirect()
+            ->route('admin.meetings.index')
+            ->with('success', 'Meeting șters cu succes!');
     }
 }

@@ -176,4 +176,5 @@ Route::prefix('meetings')->group(function () {
     Route::get('/', [AdminMeetingController::class, 'index'])->name('meetings.index');
     Route::post('/add', [AdminMeetingController::class, 'store'])->name('meetings.store');
     Route::put('/update/{id}', [AdminMeetingController::class, 'update'])->name('meetings.update');
+    Route::delete('/delete/{id}', [AdminMeetingController::class, 'destroy'])->name('meetings.destroy');
 });
