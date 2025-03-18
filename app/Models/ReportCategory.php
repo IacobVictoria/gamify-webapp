@@ -5,17 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Report extends Model
+class ReportCategory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id','report_category_id', 'title', 's3_path'];
-    protected $table = 'reports';
+    protected $fillable = [
+        'id',
+        'name'
+    ];
+
+    protected $table = 'report_categories';
 
     protected $primaryKey = 'id';
 
     protected $keyType = 'string';
 
     public $incrementing = false;
-
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminClientOrderController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminEventCalendarController;
 use App\Http\Controllers\AdminInventoryTransactionController;
+use App\Http\Controllers\AdminMeetingController;
 use App\Http\Controllers\AdminNotificationController;
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AdminQuizAnswerController;
@@ -171,6 +172,8 @@ Route::prefix('inventory_transaction')->group(function () {
     Route::get('/', [AdminInventoryTransactionController::class, 'index'])->name('inventory.index');
 });
 
-Route::prefix('reports_generators')->group(function () {
-    Route::get('/', [AdminReportGeneratorsController::class, 'index'])->name('reports_generators.index');
+Route::prefix('meetings')->group(function () {
+    Route::get('/', [AdminMeetingController::class, 'index'])->name('meetings.index');
+    Route::post('/add', [AdminMeetingController::class, 'store'])->name('meetings.store');
+    Route::put('/update/{id}', [AdminMeetingController::class, 'update'])->name('meetings.update');
 });

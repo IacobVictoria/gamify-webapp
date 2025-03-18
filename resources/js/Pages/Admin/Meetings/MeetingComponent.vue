@@ -1,0 +1,144 @@
+<template>
+    <div v-if="!showModal && !eventDeleted"
+        class="max-w-xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6 my-4">
+        <div class="flex items-center justify-center gap-2 mb-4">
+            <img class="h-6 w-6" src="/images/event_title.png" alt="">
+            <h3 class="text-xl font-semibold">{{ calendarMeeting.title }}</h3>
+        </div>
+
+        <div class="flex items-start justify-center gap-2 mb-4">
+            <img class="h-6 w-6" src="/images/event_description.png" alt="">
+            <p class="text-gray-600">{{ calendarMeeting.description }}</p>
+        </div>
+
+        <div class="text-center mb-4">
+            <span class="font-medium">Status:</span>
+            <span class="font-semibold"
+                :class="calendarMeeting.status === 'CLOSED' ? 'text-red-500' : 'text-green-500'">
+                {{ calendarMeeting.status }}
+            </span>
+        </div>
+
+        <div class="flex justify-center items-center gap-2 mb-4">
+            <span role="img" aria-label="clock">⏰</span>
+            <span><strong>Date:</strong> {{ calendarMeeting.start }}</span>
+            <span>|</span>
+            <span><strong>Perioada:</strong> {{ calendarMeeting.period }}</span>
+        </div>
+
+        <div class="categories mb-4">
+            <h4 class="text-center font-semibold mb-2">Categorii</h4>
+            <ul class="flex justify-center gap-2 flex-wrap">
+                <li v-for="category in formattedCategories" :key="category.name"
+                    :style="{ backgroundColor: category.color }"
+                    class="px-3 py-1 rounded text-white flex gap-1 items-center">
+                    <span>{{ category.icon }}</span>
+                    <span>{{ category.name }}</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="flex justify-center gap-4">
+            <button v-if="calendarMeeting.status !== 'CLOSED'" @click="editEvent" class="bg-blue-500 px-4 py-2 rounded">
+                ✏️ Edit
+            </button>
+
+            <button v-if="calendarMeeting.status !== 'CLOSED'" @click="deleteEvent"
+                class="bg-red-500 px-4 py-2 rounded">
+                ❌ Delete
+            </button>
+
+            <button v-if="calendarMeeting.status === 'CLOSED'" @click="viewReports"
+                class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                📄 View Reports
+            </button>
+        </div>
+    </div>
+
+    <EditMeetingForm :show-modal="showModal" :calendar-event="calendarMeeting" :categories="categories"
+        :periods="periods" @close="closeModal" :selected-date="selectedDate" />
+
+</template>
+<script>
+import EditMeetingForm from './EditMeetingForm.vue';
+
+export default {
+    props: {
+        calendarMeeting: Object,
+        showModal: Boolean,
+        periods: Array,
+        categories: Array,
+        selectedDate: Date,
+    },
+    data() {
+        return {
+            showModal: this.showModal,
+            eventDeleted: false,
+            categoryStyles: {
+                "sales_stock_monthly": { icon: "💰", color: "#f39c12" },
+                "user_activity_monthly": { icon: "👤", color: "#3498db" },
+                "sales_stock_monthly": { icon: "📊", color: "#2ecc71" },
+                "rewards_activity_monthly": { icon: "📢", color: "#e74c3c" },
+                "nps_report": { icon: "🖥️", color: "#9b59b6" },
+                "games_activity_monthly": { icon: "🖥️", color: "#9b59b6" },
+            }
+        };
+    },
+    computed: {
+        formattedCategories() {
+            return this.calendarMeeting.categories.map(category => {
+                return {
+                    name: category,
+                    icon: this.categoryStyles[category]?.icon || "📌",
+                    color: this.categoryStyles[category]?.color || "#95a5a6"
+                };
+            });
+        }
+    },
+    components: {
+        EditMeetingForm
+    },
+    methods: {
+        editEvent() {
+            this.showModal = true;
+        },
+        closeModal() {
+            this.showModal = false;
+        },
+        deleteEvent() {
+            this.$inertia.delete(route('admin.meetings.destroy', { id: this.calendarMeeting.id }), {
+                onSuccess: () => {
+                    this.eventDeleted = true;
+                    this.closeModal();
+                },
+                onError: (error) => {
+                    console.error("Error deleting event:", error);
+                }
+            });
+        },
+    }
+}
+</script>
+<style scoped>
+.categories {
+    margin-top: 10px;
+}
+
+.categories ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.categories li {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+</style>

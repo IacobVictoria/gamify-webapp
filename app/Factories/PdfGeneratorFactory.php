@@ -14,9 +14,9 @@ use App\Services\PdfGenerators\UserActivityMonthlyReportPdfGenerator;
 
 class PdfGeneratorFactory
 {
-    public static function create(string $type, StorageStrategyInterface $storageStrategy)
+    public static function create(string $categoryId, StorageStrategyInterface $storageStrategy)
     {
-        $generator = match ($type) {
+        $generator = match ($categoryId) {
             'participants' => new ParticipantsListPdfGenerator($storageStrategy),
             'supplier_invoice' => new SupplierInvoicePdfGenerator($storageStrategy),
             'client_invoice' => new ClientInvoicePdfGenerator($storageStrategy),
