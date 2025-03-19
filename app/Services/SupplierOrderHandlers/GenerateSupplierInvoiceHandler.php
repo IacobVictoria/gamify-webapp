@@ -7,11 +7,19 @@ use App\Models\Event;
 use App\Models\SupplierOrder;
 use App\Models\Report;
 use App\Models\SupplierProduct;
+use App\Services\Reports\SupplierInvoiceReportService;
 use Faker\Provider\Uuid;
 use Illuminate\Support\Facades\Log;
 
 class GenerateSupplierInvoiceHandler extends AbstractSupplierOrderHandler
 {
+    protected SupplierInvoiceReportService $supplierInvoiceReportService;
+
+    public function __construct(SupplierInvoiceReportService $supplierInvoiceReportService)
+    {
+        $this->supplierInvoiceReportService = $supplierInvoiceReportService;
+    }
+
     public function handle(?Event $event = null, ?SupplierOrder $order = null)
     {
         if (!$event || !$order) {
@@ -47,14 +55,12 @@ class GenerateSupplierInvoiceHandler extends AbstractSupplierOrderHandler
             // Generăm PDF și îl salvăm
             $filePath = $generator->generatePdf($invoiceData);
 
-            // Salvăm factura în tabelul reports
-            $report = Report::create([
-                'id' => Uuid::uuid(),
-                'type' => 'supplier_invoice',
-                'title' => "Factura pentru Comanda {$order->id}",
-                's3_path' => $filePath,
-            ]);
-            
+            // Salvăm factura 
+            $report = $this->supplierInvoiceReportService->createSupplierInvoiceReport(
+                "Factura pentru Comanda {$order->id}",
+                $filePath
+            );
+
             $order->report_id = $report->id;
             $order->save();
 

@@ -10,6 +10,7 @@ use App\Services\Badges\ShoppingBadgeService;
 use App\Services\DiscountService;
 use App\Services\PaymentHandlers\InventoryTransactionHandler;
 use App\Services\PaymentHandlers\UpdateStockHandler;
+use App\Services\Reports\ClientInvoiceReportService;
 
 class PaymentHandlerFactory
 {
@@ -17,7 +18,7 @@ class PaymentHandlerFactory
     {
         $authorizePayment = new AuthorizedPaymentHandler();
         $updateStock = new UpdateStockHandler();
-        $generateInvoice = new GenerateInvoiceHandler();
+        $generateInvoice = new GenerateInvoiceHandler($app->make(ClientInvoiceReportService::class));
         $expediteOrder = new ExpediteOrderHandler();
         $applyBadges = new ApplyBadgeHandler($app->make(ShoppingBadgeService::class));
         $applyDiscount = new ApplyDiscountHandler($app->make(DiscountService::class));

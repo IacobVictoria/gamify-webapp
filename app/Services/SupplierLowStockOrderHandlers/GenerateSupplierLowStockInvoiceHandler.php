@@ -8,11 +8,19 @@ use App\Models\Report;
 use App\Models\SupplierOrder;
 use App\Models\Product;
 use App\Models\SupplierProduct;
+use App\Services\Reports\SupplierInvoiceReportService;
 use Faker\Provider\Uuid;
 use Illuminate\Support\Facades\Log;
 
 class GenerateSupplierLowStockInvoiceHandler extends AbstractSupplierLowStockOrderHandler
 {
+    protected SupplierInvoiceReportService $supplierInvoiceReportService;
+
+    public function __construct(SupplierInvoiceReportService $supplierInvoiceReportService)
+    {
+        $this->supplierInvoiceReportService = $supplierInvoiceReportService;
+    }
+
     public function handle(?int $quantity = null, ?SupplierProduct $supplierProduct = null, ?SupplierOrder $order = null)
     {
         if (!$order) {
@@ -54,12 +62,13 @@ class GenerateSupplierLowStockInvoiceHandler extends AbstractSupplierLowStockOrd
         ];
         // Generăm factura și o salvăm
         $filePath = $generator->generatePdf($invoiceData);
-        $report = Report::create([
-            'id' => Uuid::uuid(),
-            'type' => 'supplier_invoice',
-            'title' => "Factura pentru Comanda {$order->id}",
-            's3_path' => $filePath,
-        ]);
+
+        //Factura 
+       $report = $this->supplierInvoiceReportService->createSupplierInvoiceReport(
+                "Factura pentru Comanda {$order->id}",
+                $filePath
+            );
+
 
         $order->report_id = $report->id;
         $order->save();

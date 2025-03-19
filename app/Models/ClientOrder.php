@@ -31,7 +31,8 @@ class ClientOrder extends Model
         'is_archived',
         'invoice_url',
         'promo_code',
-        'discount_amount'
+        'discount_amount',
+        'report_id'
 
     ];
     protected $table = 'client_orders';

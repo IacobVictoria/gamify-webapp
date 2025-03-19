@@ -1,6 +1,7 @@
 <?php
 namespace App\Factories;
 
+use App\Services\Reports\SupplierInvoiceReportService;
 use App\Services\SupplierLowStockOrderHandlers\CreateSupplierLowStockOrderHandler;
 use App\Services\SupplierLowStockOrderHandlers\CreateSupplierLowStockOrderProductsHandler;
 use App\Services\SupplierLowStockOrderHandlers\FetchLowStockProductsHandler;
@@ -16,7 +17,7 @@ class SupplierLowStockOrderHandlerFactory
         $fetchOrders = new FetchLowStockProductsHandler($app->make(SupplierOrderNotificationService::class));
         $createOrder = new CreateSupplierLowStockOrderHandler($app->make(SupplierOrderNotificationService::class));
         $createProductsSupplierOrder = new CreateSupplierLowStockOrderProductsHandler();
-        $generateInvoice = new GenerateSupplierLowStockInvoiceHandler();
+        $generateInvoice = new GenerateSupplierLowStockInvoiceHandler($app->make(SupplierInvoiceReportService::class));
         $updateStock = new UpdateLowStockHandler();
         $registerTransactionHandler = new RegisterLowStockInventoryTransactionHandler(); 
 

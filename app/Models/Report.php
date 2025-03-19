@@ -9,7 +9,7 @@ class Report extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id','report_category_id', 'title', 's3_path'];
+    protected $fillable = ['id','report_category_id', 'title', 's3_path','meeting_id'];
     protected $table = 'reports';
 
     protected $primaryKey = 'id';
