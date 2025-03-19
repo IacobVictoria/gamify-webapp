@@ -3,9 +3,8 @@
 
 <head>
     <meta charset="utf-8">
-    <title>NPS Report - {{ $surveyTitle }}</title>
+    <title>NPS Report - {{ $reportData['npsData'][0]['surveyId'] ?? 'N/A' }}</title>
     <style>
-        /* General Styles */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f7fc;
@@ -82,18 +81,12 @@
 
 <body>
 
-    <!-- HEADER -->
-    <div class="header">
-        <h1>NPS Monthly Report - {{ $surveyPeriod }}</h1>
-    </div>
-
     <!-- GENERAL INFO -->
     <div class="section">
         <h2>General Information</h2>
-        <p><strong>Survey Title:</strong> {{ $surveyTitle }}</p>
-        <p><strong>Survey ID:</strong> {{ $surveyId }}</p>
-        <p><strong>Survey Period:</strong> {{ $surveyPeriod }}</p>
-        <p><strong>Total Responses:</strong> {{ $totalResponses }}</p>
+        <p><strong>Start Date:</strong> {{ $reportData['startDate'] ?? 'N/A' }}</p>
+        <p><strong>End Date:</strong> {{ $reportData['endDate'] ?? 'N/A' }}</p>
+        <p><strong>Total Responses:</strong> {{ $reportData['npsData'][0]['totalResponses'] ?? 0 }}</p>
     </div>
 
     <!-- KEY METRICS -->
@@ -102,29 +95,23 @@
         <table class="table">
             <tr>
                 <th>Current NPS</th>
-                <th>Previous NPS</th>
-                <th>Change</th>
+                <th>Promoters</th>
+                <th>Detractors</th>
+                <th>Passives</th>
             </tr>
             <tr>
-                <td>{{ $nps }}</td>
-                <td>{{ $prevNps ?? 'N/A' }}</td>
-                <td>{{ round($nps - $prevNps, 2) }}</td>
+                <td>{{ $reportData['npsData'][0]['nps'] ?? 'N/A' }}</td>
+                <td>{{ $reportData['npsData'][0]['promotersCount'] ?? 0 }} ({{ $reportData['npsData'][0]['promotersPercentage'] ?? 0 }}%)</td>
+                <td>{{ $reportData['npsData'][0]['detractorsCount'] ?? 0 }} ({{ $reportData['npsData'][0]['detractorsPercentage'] ?? 0 }}%)</td>
+                <td>{{ $reportData['npsData'][0]['passivesCount'] ?? 0 }} ({{ $reportData['npsData'][0]['passivesPercentage'] ?? 0 }}%)</td>
             </tr>
         </table>
-    </div>
-
-    <!-- SURVEY RESULTS -->
-    <div class="section">
-        <h2>Survey Results</h2>
-        <p><strong>Promoters:</strong> {{ $promotersCount ?? 'N/A' }} ({{ $promotersPercentage ?? 'N/A' }}%)</p>
-        <p><strong>Passives:</strong> {{ $passivesCount ?? 'N/A' }} ({{ $passivesPercentage ?? 'N/A' }}%)</p>
-        <p><strong>Detractors:</strong> {{ $detractorsCount ?? 'N/A' }} ({{ $detractorsPercentage ?? 'N/A' }}%)</p>
     </div>
 
     <!-- BINARY QUESTIONS -->
     <div class="section">
         <h2>Binary Questions Analysis</h2>
-        @foreach($binaryQuestions as $question => $data)
+        @foreach($reportData['binaryQuestions'] ?? [] as $question => $data)
             <p><strong>{{ $question }}</strong>: Yes {{ $data['yes'] }}% / No {{ $data['no'] }}%</p>
         @endforeach
     </div>
@@ -132,19 +119,19 @@
     <!-- SCALE-BASED QUESTIONS -->
     <div class="section">
         <h2>Scale-Based Questions Analysis</h2>
-        @foreach($scaleQuestions as $question => $average)
+        @foreach($reportData['scaleQuestions'] ?? [] as $question => $average)
             <p><strong>{{ $question }}</strong>: Avg. Score {{ $average }}</p>
         @endforeach
     </div>
 
     <!-- MULTIPLE CHOICE QUESTIONS -->
     <div class="section">
-        <h2>Multiple Choice Summary ( Top 3)</h2>
-        @foreach($multipleChoiceQuestions as $question => $choices)
+        <h2>Multiple Choice Summary (Top 3)</h2>
+        @foreach($reportData['multipleChoiceQuestions'] ?? [] as $question => $choices)
             <p><strong>{{ $question }}</strong>:</p>
             <ul>
-                @foreach($choices as $choice => $count)
-                    <li>{{ $choice }} - {{ $count }}</li>
+                @foreach($choices as $choice)
+                    <li>{{ $choice }}</li>
                 @endforeach
             </ul>
         @endforeach
@@ -153,7 +140,7 @@
     <!-- OPEN-ENDED RESPONSES -->
     <div class="section">
         <h2>Open-Ended Responses (Top 5)</h2>
-        @foreach($openEndedResponses as $question => $responses)
+        @foreach($reportData['openEndedResponses'] ?? [] as $question => $responses)
             <p><strong>{{ $question }}</strong>:</p>
             <ul>
                 @foreach($responses as $response)
@@ -161,12 +148,6 @@
                 @endforeach
             </ul>
         @endforeach
-    </div>
-
-    <!-- NPS SCORE EVOLUTION -->
-    <div class="section">
-        <h2>NPS Score Evolution</h2>
-        <p>{{ $npsEvolution }}</p>
     </div>
 
 </body>

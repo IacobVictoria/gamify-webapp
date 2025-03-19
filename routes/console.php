@@ -20,5 +20,4 @@ Schedule::command(CheckInactiveUsers::class)->everyThirtyMinutes();
 Schedule::command(ManageDiscountsCommand::class)->everyMinute();
 Schedule::command(ManageEventsCommand::class)->everyMinute();
 Schedule::command(ProcessLowStockOrders::class)->everyMinute();
-Schedule::command(SendNpsReportCommand::class)->monthly();
 Schedule::command(GenerateMeetingReportsCommand::class)->everyMinute();

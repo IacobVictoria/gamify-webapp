@@ -3,6 +3,7 @@ namespace App\Factories;
 
 use App\Services\Reports\ClientInvoiceReportService;
 use App\Services\Reports\GamesActivityReportService;
+use App\Services\Reports\NpsActivityReportService;
 use App\Services\Reports\ProductsActivityReportService;
 use App\Services\Reports\RewardsActivityReportService;
 use App\Services\Reports\SalesStockReportService;
@@ -20,6 +21,7 @@ class ReportServiceFactory
             'games_activity_monthly' => GamesActivityReportService::class,
             'rewards_activity_monthly' => RewardsActivityReportService::class,
             'client_invoice' => ClientInvoiceReportService::class,
+            'nps_report' => NpsActivityReportService::class,
             'supplier_invoice' => SupplierInvoiceReportService::class,
             default => null,
         };
