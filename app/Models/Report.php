@@ -9,7 +9,7 @@ class Report extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id','report_category_id', 'title', 's3_path','meeting_id'];
+    protected $fillable = ['id', 'report_category_id', 'title', 's3_path', 'meeting_id'];
     protected $table = 'reports';
 
     protected $primaryKey = 'id';
@@ -17,5 +17,15 @@ class Report extends Model
     protected $keyType = 'string';
 
     public $incrementing = false;
+
+    public function meeting()
+    {
+        return $this->belongsTo(Meeting::class, 'meeting_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(ReportCategory::class, 'report_category_id');
+    }
 
 }

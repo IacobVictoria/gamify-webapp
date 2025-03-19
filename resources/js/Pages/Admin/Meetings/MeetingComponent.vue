@@ -52,7 +52,6 @@
                 class="bg-green-500 px-4 py-2 rounded">
                 📄 View Reports
             </button>
-            <!-- // SA II APARA LANGA ACELE RAPOARTE pe post de link uri -->
         </div>
     </div>
 
@@ -117,6 +116,9 @@ export default {
                 }
             });
         },
+        viewReports() {
+            this.$emit("showReports", this.calendarMeeting.reports);
+        }
     }
 }
 </script>

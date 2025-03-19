@@ -81,6 +81,11 @@
 
 <body>
 
+    <!-- HEADER -->
+    <div class="header">
+        <h1>NPS Report - From {{ $reportData['startDate'] ?? 'N/A' }} to {{ $reportData['endDate'] ?? 'N/A' }}</h1>
+    </div>
+
     <!-- GENERAL INFO -->
     <div class="section">
         <h2>General Information</h2>

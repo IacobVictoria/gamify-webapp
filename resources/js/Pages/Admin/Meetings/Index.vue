@@ -1,38 +1,56 @@
 <template>
     <AuthenticatedLayout>
-        <div>
-            <div class="text-center rounded-lg p-4 mb-6 ">
-                <h2 class="text-2xl font-semibold mb-4 mt-8">📅 Meetings & Reports Calendar</h2>
-                <p class="text-gray-700">
-                    Select a date to schedule or manage your meetings. You can generate reports in
-                    <strong>6 different categories</strong> to be sent directly in <strong>Discord</strong> at the start
-                    date:
-                </p>
-                <ul class="mt-12 flex justify-center gap-3 flex-wrap">
-                    <li class="bg-yellow-200 text-yellow-800 px-3 py-1 rounded">💰 Sales Stock Monthly</li>
-                    <li class="bg-blue-200 text-blue-800 px-3 py-1 rounded">👤 User Activity Monthly</li>
-                    <li class="bg-green-200 text-green-800 px-3 py-1 rounded">📊 Sales Stock Monthly</li>
-                    <li class="bg-red-200 text-red-800 px-3 py-1 rounded">📢 Rewards Activity Monthly</li>
-                    <li class="bg-purple-200 text-purple-800 px-3 py-1 rounded">🖥️ NPS Report</li>
-                    <li class="bg-teal-200 text-teal-800 px-3 py-1 rounded">🎮 Games Activity Monthly</li>
-                </ul>
-            </div>
-            <ScheduleXCalendar :calendar-app="calendarApp">
-                <template #eventModal="{ calendarEvent }">
-                    <div :style="eventModalStyles">
-                        <MeetingComponent :calendarMeeting="calendarEvent" :categories="categories" :periods="periods"
-                            :selectedDate="selectedDate">
-                        </MeetingComponent>
-                    </div>
-                </template>
-            </ScheduleXCalendar>
-
-            <AddMeetingForm v-if="showModal" :selectedDate="selectedDate" :showModal="showModal"
-                :categories="categories" @update:showModal="showModal = $event" @submit="handleSubmit"
-                @closeForm="closeModal" :periods="periods" :isPastDate="isPastDate" />
-
-            <ReportsExplanation></ReportsExplanation>
+        <div class="text-center rounded-lg p-4 mb-6 ">
+            <h2 class="text-2xl font-semibold mb-4 mt-8">📅 Meetings & Reports Calendar</h2>
+            <p class="text-gray-700">
+                Select a date to schedule or manage your meetings. You can generate reports in
+                <strong>6 different categories</strong> to be sent directly in <strong>Discord</strong> at the
+                start
+                date:
+            </p>
+            <ul class="mt-12 flex justify-center gap-3 flex-wrap">
+                <li class="bg-yellow-200 text-yellow-800 px-3 py-1 rounded">💰 Sales Stock Monthly</li>
+                <li class="bg-blue-200 text-blue-800 px-3 py-1 rounded">👤 User Activity Monthly</li>
+                <li class="bg-green-200 text-green-800 px-3 py-1 rounded">📊 Sales Stock Monthly</li>
+                <li class="bg-red-200 text-red-800 px-3 py-1 rounded">📢 Rewards Activity Monthly</li>
+                <li class="bg-purple-200 text-purple-800 px-3 py-1 rounded">🖥️ NPS Report</li>
+                <li class="bg-teal-200 text-teal-800 px-3 py-1 rounded">🎮 Games Activity Monthly</li>
+            </ul>
         </div>
+        <div class="flex">
+            <!-- Calendar -->
+            <div class="flex-1">
+                <ScheduleXCalendar :calendar-app="calendarApp">
+                    <template #eventModal="{ calendarEvent }">
+                        <div :style="eventModalStyles">
+                            <MeetingComponent :calendarMeeting="calendarEvent" :categories="categories"
+                                :periods="periods" :selectedDate="selectedDate" @showReports="updateReportList">
+                            </MeetingComponent>
+                        </div>
+                    </template>
+                </ScheduleXCalendar>
+            </div>
+            <!-- Sidebar Reports -->
+            <div class="flex-1 bg-gray-100 p-4 ml-6">
+                <h3 class="text-lg font-semibold mb-3">Click CLOSED MEETINGS TO CHECK 📂 Reports</h3>
+                <div v-if="reportList.length">
+                    <ul class="space-y-2">
+                        <li v-for="report in reportList" :key="report.id"
+                            class="p-2 bg-white rounded shadow-md cursor-pointer hover:bg-gray-200 transition">
+                            <a :href="report.url" target="_blank" class="flex items-center gap-2 no-underline">
+                                📄 <span>{{ report.name }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <AddMeetingForm v-if="showModal" :selectedDate="selectedDate" :showModal="showModal" :categories="categories"
+            @update:showModal="showModal = $event" @submit="handleSubmit" @closeForm="closeModal" :periods="periods"
+            :isPastDate="isPastDate" />
+
+        <ReportsExplanation></ReportsExplanation>
+
     </AuthenticatedLayout>
 </template>
 
@@ -69,6 +87,8 @@ const props = defineProps({
     },
 
 })
+
+const reportList = ref([]);
 
 const calendarApp = createCalendar({
     views: [
@@ -143,6 +163,11 @@ const calendarApp = createCalendar({
         },
     },
 });
+
+function updateReportList(reports) {
+    reportList.value = reports || [];
+}
+
 calendarControls.setView('month-grid');
 onMounted(() => {
     console.log(props.events)

@@ -15,9 +15,26 @@ class AdminMeetingController extends Controller
 {
     public function index()
     {
-        $meetings = Meeting::all()->each(function ($meeting) {
-            $meeting->categories = ReportCategory::whereIn('id', $meeting->report_category_ids)->pluck('name');
+        $meetings = Meeting::with(['reports.category'])->get()->map(function ($meeting) {
+            return [
+                'id' => $meeting->id,
+                'start' => $meeting->start,
+                'end' => $meeting->end,
+                'period' => $meeting->period,
+                'description' => $meeting->description,
+                'title' => $meeting->title,
+                'status' => $meeting->status,
+                'categories' => ReportCategory::whereIn('id', $meeting->report_category_ids)->pluck('name'),
+                'reports' => $meeting->status === 'CLOSED'
+                    ? $meeting->reports->map(fn($report) => [
+                        'id' => $report->id,
+                        'name' => optional($report->category)->name ?? 'Unknown',
+                        'url' => $report->s3_path,
+                    ])
+                    : [],
+            ];
         });
+
 
         $categories = ReportCategory::whereNotIn('name', [
             'participants',
