@@ -3,7 +3,7 @@
         <div class="py-12">
             <div class="w-full mx-auto sm:px-6 lg:px-8">
                 <inertia-link :href="route('admin.badges.create')"
-                    class="inline-block px-4 py-2 mb-16 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
+                    class="inline-block no-underline px-4 py-2 mb-16 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
                     Create badge
                 </inertia-link>
 

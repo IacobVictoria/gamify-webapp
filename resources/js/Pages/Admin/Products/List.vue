@@ -4,8 +4,7 @@
             <div class="w-full mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <GenericList :title="'Products'" :description="'Here you can see all the products.'"
-                        :items="products" :entityName="'products'" :filters="filters" :getRoute="'admin.products.index'"
-                        :createRoute="'admin.products.create'" :editRoute="'admin.products.edit'"
+                        :items="products" :entityName="'products'" :filters="filters" :getRoute="'admin.products.index'" :editRoute="'admin.products.edit'"
                         :deleteRoute="'admin.products.destroy'" :columns="columns" :prevFilters="prevFilters"
                         class="p-4" />
                 </div>

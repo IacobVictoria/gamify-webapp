@@ -3,7 +3,7 @@
         <div class="py-12">
             <div class="w-full mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <GenericExpandedList :title="'Clients orders'" :description="'Here you can see all th orders.'"
+                    <GenericExpandedList :title="'Clients orders'" :description="'Here you can see all orders made in app by clients!'"
                         :items="orders" :entityName="'orders'" :filters="filters" :columns="columns"
                         :prevFilters="prevFilters" :getRoute="'admin.clients_orders.index'"
                         :descriptionDetails="'Order details:'" class="p-4" :detailsLabel="detailsLabel" :extraLabel="extraLabel" :invoice="'clients'" />

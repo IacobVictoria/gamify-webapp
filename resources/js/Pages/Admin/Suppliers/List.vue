@@ -5,7 +5,6 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <GenericList :title="'Suppliers'" :description="'Here you can see all the suppliers.'"
                         :items="suppliers" :entityName="'suppliers'" :filters="filters" :getRoute="'admin.suppliers.index'"
-                        :createRoute="'admin.suppliers.create'" :editRoute="'admin.suppliers.edit'"
                         :deleteRoute="'admin.suppliers.destroy'" :columns="columns" :prevFilters="prevFilters"
                         class="p-4" />
                 </div>

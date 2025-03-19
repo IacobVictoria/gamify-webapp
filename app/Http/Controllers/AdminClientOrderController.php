@@ -13,7 +13,7 @@ class AdminClientOrderController extends Controller
      */
     public function index(Request $request)
     {
-        $ordersQuery = ClientOrder::with(['user', 'products']);
+        $ordersQuery = ClientOrder::with(['user', 'products','report']);
 
         $filters = $request->input('filters', []);
 
@@ -25,6 +25,8 @@ class AdminClientOrderController extends Controller
 
         if (isset($filters['sortDate'])) {
             $ordersQuery->orderBy('created_at', $filters['sortDate'] === 'asc' ? 'asc' : 'desc');
+        }else {
+            $ordersQuery->orderByDesc('created_at');
         }
 
         $orders = $ordersQuery->paginate(10)->through(function ($order) {
@@ -36,6 +38,7 @@ class AdminClientOrderController extends Controller
                 'id_person' => $order->user->id,
                 'date' => $order->created_at->format('j M Y'),
                 'total_price' => $total,
+                'invoice_url' => $order->report ? $order->report->s3_path : null,
                 'extra' => [
                     'total_products' => $count,
                     'total_price' => $total

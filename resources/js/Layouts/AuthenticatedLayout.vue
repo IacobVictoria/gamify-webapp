@@ -71,17 +71,21 @@ import Icon from '@/Pages/Admin/Notifications/Icon.vue';
                                         :active="route().current('admin.dashboard')">
                                         Dashboard
                                     </NavLink>
-                                    <NavLink :href="route('admin.accounts.index')"
-                                        :active="route().current('admin.accounts.index')">
-                                        Accounts
+                                    <NavLink :href="route('admin.control_center.index')"
+                                        :active="route().current('admin.control_center.index')">
+                                        Control Panel
+                                    </NavLink>
+                                    <NavLink :href="route('admin.games_manager.index')"
+                                        :active="route().current('admin.games_manager.index')">
+                                        Game center
                                     </NavLink>
                                     <NavLink :href="route('admin.products.index')"
                                         :active="route().current('admin.products.index')">
                                         Products
                                     </NavLink>
-                                    <NavLink :href="route('admin.suppliers.index')"
-                                        :active="route().current('admin.suppliers.index')">
-                                        Suppliers
+                                    <NavLink :href="route('admin.badges.index')"
+                                        :active="route().current('admin.badges.index')">
+                                        Badges
                                     </NavLink>
                                     <NavLink :href="route('admin.clients_orders.index')"
                                         :active="route().current('admin.clients_orders.index')">
@@ -91,13 +95,9 @@ import Icon from '@/Pages/Admin/Notifications/Icon.vue';
                                         :active="route().current('admin.suppliers_orders.index')">
                                         Supplier Orders
                                     </NavLink>
-                                    <NavLink :href="route('admin.badges.index')"
-                                        :active="route().current('admin.badges.index')">
-                                        Badges
-                                    </NavLink>
-                                    <NavLink :href="route('admin.user_quiz.index')"
-                                        :active="route().current('admin.user_quiz.index')">
-                                        UserQuiz
+                                    <NavLink :href="route('admin.suppliers.index')"
+                                        :active="route().current('admin.suppliers.index')">
+                                        Suppliers
                                     </NavLink>
                                 </template>
 

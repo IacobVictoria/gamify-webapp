@@ -38,15 +38,15 @@ export default {
     data() {
         return {
             fields: [
-                {
-                    name: 'category',
-                    label: 'Categories',
-                    type: 'select',
-                    options: this.categories,
-                    autocomplete: 'categories',
-                    placeholder: 'Categories',
-                    colSpan: 'sm:col-span-6'
-                },
+                // {
+                //     name: 'category',
+                //     label: 'Categories',
+                //     type: 'select',
+                //     options: this.categories,
+                //     autocomplete: 'categories',
+                //     placeholder: 'Categories',
+                //     colSpan: 'sm:col-span-6'
+                // },
                 {
                     name: 'description',
                     label: 'Description',

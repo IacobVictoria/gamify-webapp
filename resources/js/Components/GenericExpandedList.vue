@@ -63,13 +63,13 @@
 
                     <div v-if="authUserHasRole('Admin')" class="mt-2">
                         <template v-if="invoice === 'clients'">
-                            <button @click="showInvoiceClient(item.id, item.id_person)"
+                            <button @click="showInvoiceClient(item.invoice_url)"
                                 class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">
                                 Factura Client
                             </button>
                         </template>
                         <template v-else-if="invoice === 'suppliers'">
-                            <button @click="showInvoiceSupplier(item.id, item.id_supplier)"
+                            <button @click="showInvoiceSupplier(item.invoice_url)"
                                 class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
                                 Factura Furnizor
                             </button>
@@ -89,7 +89,7 @@
                                     <div v-for="information in extraLabel" :key="information.name"
                                         class="flex flex-col justify-between">
                                         <span class="text-gray-600 font-medium">{{ information.label
-                                            }}:</span>
+                                        }}:</span>
                                         <span class="text-gray-800 font-semibold">{{
                                             item.extra[information.name] }}</span>
                                     </div>
@@ -102,9 +102,9 @@
                                             <template v-for="label in detailsLabel" :key="label.name">
                                                 <div class="flex justify-between">
                                                     <strong class="text-gray-600">{{ label.label
-                                                        }}:</strong>
+                                                    }}:</strong>
                                                     <span class="text-gray-800">{{ detail[label.name]
-                                                        }}</span>
+                                                    }}</span>
                                                 </div>
                                             </template>
                                         </div>
@@ -199,14 +199,12 @@ export default {
             this.showDetails[index] = !this.showDetails[index];
         },
 
-        showInvoiceClient(orderId, personId) {
-            const invoiceUrl = `/clients_invoices/invoices_${personId}/invoice_${orderId}.pdf`;
-            window.open(invoiceUrl, '_blank');
+        showInvoiceClient(url) {
+            window.open(url, '_blank');
         },
 
-        showInvoiceSupplier(orderId, supplierId) {
-            const invoiceUrl = `/suppliers_invoices/invoices_${supplierId}/${orderId}.pdf`;
-            window.open(invoiceUrl, '_blank');
+        showInvoiceSupplier(url) {
+            window.open(url, '_blank');
         },
 
         openDialog(item) {
@@ -214,7 +212,7 @@ export default {
             this.itemToDelete = item.id;
         },
         viewInvoice(url) {
-            window.open(url, '_blank'); 
+            window.open(url, '_blank');
         },
 
     }

@@ -2,7 +2,7 @@
     <AuthenticatedLayout>
         <div class="py-12">
             <div class="w-full mx-auto sm:px-6 lg:px-8">
-                <div class="p-6 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg shadow-xl">
+                <div class="p-6 text-white">
                     <h2 class="text-3xl font-extrabold mb-6 flex items-center text-black">📦 Admin Inventory Dashboard
                     </h2>
 

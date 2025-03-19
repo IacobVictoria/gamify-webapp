@@ -2,11 +2,11 @@
 
 use App\Http\Controllers\AdminAccountController;
 use App\Http\Controllers\AdminBadgeController;
-use App\Http\Controllers\AdminChatController;
-use App\Http\Controllers\AdminCheckoutController;
 use App\Http\Controllers\AdminClientOrderController;
+use App\Http\Controllers\AdminControlCenterController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminEventCalendarController;
+use App\Http\Controllers\AdminGamesManagerController;
 use App\Http\Controllers\AdminInventoryTransactionController;
 use App\Http\Controllers\AdminMeetingController;
 use App\Http\Controllers\AdminNotificationController;
@@ -15,7 +15,6 @@ use App\Http\Controllers\AdminQuizAnswerController;
 use App\Http\Controllers\AdminQuizController;
 use App\Http\Controllers\AdminQuizManagerController;
 use App\Http\Controllers\AdminQuizQuestionController;
-use App\Http\Controllers\AdminReportGeneratorsController;
 use App\Http\Controllers\AdminShoppingCartController;
 use App\Http\Controllers\AdminSupplierController;
 use App\Http\Controllers\AdminSupplierOrderController;
@@ -23,7 +22,6 @@ use App\Http\Controllers\AdminSupplierProductController;
 use App\Http\Controllers\AdminUserQuizRemarkController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\EventController;
-use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SurveyController;
 use Illuminate\Support\Facades\Route;
@@ -103,13 +101,6 @@ Route::prefix('shopping-cart')->group(function () {
     Route::delete('/{productId}', [AdminShoppingCartController::class, 'destroy'])->name('shopping-cart.destroy');
 });
 
-Route::prefix('checkout')->group(function () {
-    Route::get('/', [AdminCheckoutController::class, 'index'])
-        ->name('checkout.index');
-    Route::post('/', [AdminCheckoutController::class, 'store'])
-        ->name('checkout.store');
-});
-
 Route::prefix('user_quiz')->group(function () {
     Route::get('/', [AdminQuizController::class, 'index'])->name('user_quiz.index');
     Route::get('/create_quiz', [AdminQuizController::class, 'create'])->name('user_quiz.create');
@@ -145,13 +136,6 @@ Route::prefix('notifications')->group(function () {
 });
 Route::get('/events/{id}/participants-pdf-preview', [EventController::class, 'generateParticipantsPdfPreview'])->name('events.generateParticipantsPdfPreview');
 
-Route::prefix('reports')->group(function () {
-    Route::get('/', [ReportController::class, 'index'])->name('reports.index');
-    Route::get('/qr-codes', [ReportController::class, 'showQRCodeReports'])->name('reports.showQRCodeReports');
-    Route::get('/participants-list', [ReportController::class, 'showParticipantsList'])->name('reports.showParticipantsList');
-    Route::get('/invoices-list', [ReportController::class, 'showSupplierInvoicesList'])->name('reports.showSupplierInvoicesList');
-});
-
 Route::prefix('nps')->group(function () {
     Route::get('/index', [SurveyController::class, 'index'])->name('nps.survey.index');
     Route::get('/create', [SurveyController::class, 'createSurvey'])->name('nps.survey.create');
@@ -170,6 +154,14 @@ Route::prefix('chart')->group(function () {
 
 Route::prefix('inventory_transaction')->group(function () {
     Route::get('/', [AdminInventoryTransactionController::class, 'index'])->name('inventory.index');
+});
+
+Route::prefix('control_center')->group(function () {
+    Route::get('/', [AdminControlCenterController::class, 'index'])->name('control_center.index');
+});
+
+Route::prefix('games_manager')->group(function () {
+    Route::get('/', [AdminGamesManagerController::class, 'index'])->name('games_manager.index');
 });
 
 Route::prefix('meetings')->group(function () {

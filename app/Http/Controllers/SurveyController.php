@@ -43,6 +43,10 @@ class SurveyController extends Controller
             'is_published' => 'boolean',
         ]);
 
+        if ($validated['is_published'] ?? false) {
+            Survey::where('id', '!=', $surveyId)->update(['is_published' => false]);
+        }
+
         $survey = Survey::findOrFail($surveyId);
 
         $survey->title = $validated['title'];
@@ -77,6 +81,10 @@ class SurveyController extends Controller
             'question_ids.*' => 'exists:survey_questions,id', // Asigură-te că fiecare id de întrebare există în tabela questions
             'is_published' => 'boolean',
         ]);
+
+        if ($request->has('is_published') && $request->is_published) {
+            Survey::where('is_published', true)->update(['is_published' => false]);
+        }
 
         $survey = Survey::create([
             'id' => Uuid::uuid(),

@@ -56,6 +56,8 @@ class ClientOrder extends Model
         ;
     }
 
-
-
+    public function report()
+    {
+        return $this->belongsTo(Report::class, 'report_id');
+    }
 }

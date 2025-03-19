@@ -49,7 +49,7 @@ class SupplierOrder extends Model
             ->withPivot('quantity', 'price');
     }
 
-    public function invoice()
+    public function report()
     {
         return $this->belongsTo(Report::class, 'report_id');
     }
