@@ -8,7 +8,7 @@ class SalesStockMonthlyReportPdfGenerator extends AbstractPdfGeneratorService
     {
         $pdfContent = $this->generatePdfContent('pdf.salesStockMonthlyReport', ['reportData' => $data]);
 
-        $filename = "sales_stock_reports/" . now()->format('Y-m') . ".pdf";
+        $filename = "sales_stock_reports/sales_report_" .  now()->format('Y-m-d') . ".pdf";
 
         $pdfUrl = $this->save($pdfContent, $filename);
 

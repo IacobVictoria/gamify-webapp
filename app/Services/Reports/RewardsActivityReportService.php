@@ -2,31 +2,40 @@
 
 namespace App\Services\Reports;
 
+use App\Helpers\PeriodHelper;
 use App\Models\UserBadge;
 use App\Models\UserMedal;
+use Carbon\Carbon;
 
 class RewardsActivityReportService
 {
-    public function getMonthlyReport(): array
+    public function getReportByPeriod(string $period, Carbon $meetingDate): array
     {
+        $dateRange = PeriodHelper::getPeriodRange($period, $meetingDate);
+        $startDate = $dateRange['start_date'];
+        $endDate = $dateRange['end_date'];
+
         return [
-            'month' => now()->format('F Y'),
-            'average_time_to_first_medal' => $this->getAverageTimeToFirstMedal(),
-            'easiest_and_hardest_badges' => $this->getEasiestAndHardestBadges(),
-            'average_badges_per_category' => $this->getAverageBadgesPerCategory(),
+            'period' => $period,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'average_time_to_first_medal' => $this->getAverageTimeToFirstMedal($startDate, $endDate),
+            'easiest_and_hardest_badges' => $this->getEasiestAndHardestBadges($startDate, $endDate),
+            'average_badges_per_category' => $this->getAverageBadgesPerCategory($startDate, $endDate),
         ];
     }
 
     /**
-     * Calculează timpul mediu până la obținerea primei medalii.
+     * Calculează timpul mediu până la obținerea primei medalii într-o perioadă selectată.
      * Se iau toți utilizatorii care au primit cel puțin o medalie 
      * și se calculează media zilelor dintre data înregistrării și data primei medalii.
      * 
      * @return int Numărul mediu de zile.
      */
-    private function getAverageTimeToFirstMedal(): int
+    private function getAverageTimeToFirstMedal($startDate, $endDate): int
     {
         $users = UserMedal::with('user')
+            ->whereBetween('created_at', [$startDate, $endDate])
             ->selectRaw('user_id, MIN(created_at) as first_medal_date')
             ->groupBy('user_id')
             ->get()
@@ -40,15 +49,16 @@ class RewardsActivityReportService
     }
 
     /**
-     * Returnează insignele cele mai ușor și cele mai greu de obținut.
+     * Returnează insignele cele mai ușor și cele mai greu de obținut într-o perioadă selectată.
      * Se analizează toate insignele obținute până acum și se identifică 
      * cele mai comune (cel mai ușor obținute) și cele mai rare.
      * 
      * @return array ['easiest' => [...], 'hardest' => [...]]
      */
-    private function getEasiestAndHardestBadges(): array
+    private function getEasiestAndHardestBadges($startDate, $endDate): array
     {
-        $badges = UserBadge::selectRaw('badge_id, COUNT(*) as obtained_count')
+        $badges = UserBadge::whereBetween('awarded_at', [$startDate, $endDate])
+            ->selectRaw('badge_id, COUNT(*) as obtained_count')
             ->groupBy('badge_id')
             ->with('badge:id,name')
             ->get()
@@ -65,14 +75,14 @@ class RewardsActivityReportService
     }
 
     /**
-     * Calculează media de insigne obținute per categorie.
+     * Calculează media de insigne obținute per categorie într-o perioadă selectată.
      * Se analizează câte insigne sunt obținute în fiecare categorie și se face o medie.
      * 
      * @return array ['category' => avg_badges]
      */
-    private function getAverageBadgesPerCategory(): array
+    private function getAverageBadgesPerCategory($startDate, $endDate): array
     {
-        return UserBadge::with('badge')
+        return UserBadge::whereBetween('awarded_at', [$startDate, $endDate])->with('badge')
             ->get()
             ->groupBy(fn($badge) => $badge->badge->category ?? 'Unknown') // Grupăm după câmpul text `category`
             ->map(fn($group) => round($group->count() / max(1, $group->unique('user_id')->count()))) // Medie per utilizator

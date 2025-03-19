@@ -48,10 +48,8 @@ class DiscordService
                     ],
                 ]
             ]);
-
-            logger()->info('✅ NPS report sent to Discord successfully!');
         } catch (\Exception $e) {
-            logger()->error('❌ Discord webhook error: ' . $e->getMessage());
+            logger()->error('Discord webhook error: ' . $e->getMessage());
         }
     }
 }

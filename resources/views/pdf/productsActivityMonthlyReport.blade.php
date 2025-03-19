@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raport Activitate Produse - {{ $reportData['month'] }}</title>
+    <title>Raport Activitate Produse - {{ $reportData['period'] }} : Start: {{ $reportData['startDate'] }}- End: {{ $reportData['endDate'] }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -67,7 +67,7 @@
 </head>
 
 <body>
-    <h1>Raport Activitate Produse - {{ $reportData['month'] }}</h1>
+    <h1>Raport Activitate Produse - {{ $reportData['period'] }} : Start: {{ $reportData['startDate'] }}- End: {{ $reportData['endDate'] }}</h1>
 
     <!-- 1. Cea mai vanduta categorie de produse -->
     <h2>Cea mai vanduta categorie</h2>
@@ -105,7 +105,6 @@
     </p>
     <p><strong>De ce este util?</strong> Ne arata daca utilizatorii sunt mai interesati de produse noi sau de cele deja
         existente.</p>
-    <div class="page-break"></div>
 
     <!-- 4. Produse cumparate cu oferte speciale vs. fara oferte -->
     <h2>Vanzari cu discount vs. vanzari standard</h2>

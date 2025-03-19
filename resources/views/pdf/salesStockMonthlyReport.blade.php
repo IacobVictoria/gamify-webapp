@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raport Vanzari si Stocuri - {{ $reportData['month'] }}</title>
+    <title>Raport Vanzari si Stocuri - {{ $reportData['period'] }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -75,7 +75,8 @@
 </head>
 
 <body>
-    <h1>Raport Vanzari si Stocuri - {{ $reportData['month'] }}</h1>
+    <h1>Raport Vanzari si Stocuri - {{ $reportData['period'] }}</h1>
+    <h1>Start - {{ $reportData['startDate'] }}  End - {{ $reportData['endDate'] }}</h1>
 
     <h2>Top 10 Produse Vandute</h2>
     <table>

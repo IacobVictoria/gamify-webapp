@@ -8,7 +8,7 @@ class ProductsActivityMonthlyReportPdfGenerator extends AbstractPdfGeneratorServ
     {
         $pdfContent = $this->generatePdfContent('pdf.productsActivityMonthlyReport', ['reportData' => $data]);
 
-        $filename = "products_activity_reports/" . now()->format('Y-m') . ".pdf";
+        $filename = "products_activity_reports/products_report_" . now()->format('Y-m-d') . ".pdf";
 
         $pdfUrl = $this->save($pdfContent, $filename);
 

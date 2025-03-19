@@ -2,22 +2,30 @@
 
 namespace App\Services\Reports;
 
+use App\Helpers\PeriodHelper;
 use App\Models\HangmanSession;
 use App\Models\UserQuizResult;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class GamesActivityReportService
 {
-    public function getMonthlyReport(): array
+    public function getReportByPeriod(string $period, Carbon $meetingDate): array
     {
+        $dateRange = PeriodHelper::getPeriodRange($period, $meetingDate);
+        $startDate = $dateRange['start_date'];
+        $endDate = $dateRange['end_date'];
+
         return [
-            'month' => now()->format('F Y'),
-            'most_popular_difficulties' => $this->getMostPopularDifficulties(),
-            'most_attempted_quizzes' => $this->getMostAttemptedQuizzes(),
-            'average_quizzes_completed' => round($this->getAverageQuizzesCompleted(), 2),
-            'quiz_success_rate' => $this->getQuizSuccessRate(),
-            'hangman_completion_rate' => $this->getHangmanCompletionRate() . '%',
-            'average_quiz_retries' => round($this->getAverageQuizRetries(), 2),
+            'period' => $period,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'most_popular_difficulties' => $this->getMostPopularDifficulties($startDate, $endDate),
+            'most_attempted_quizzes' => $this->getMostAttemptedQuizzes($startDate, $endDate),
+            'average_quizzes_completed' => round($this->getAverageQuizzesCompleted($startDate, $endDate), 2),
+            'quiz_success_rate' => $this->getQuizSuccessRate($startDate, $endDate),
+            'hangman_completion_rate' => $this->getHangmanCompletionRate($startDate, $endDate) . '%',
+            'average_quiz_retries' => round($this->getAverageQuizRetries($startDate, $endDate), 2),
         ];
     }
 
@@ -25,10 +33,10 @@ class GamesActivityReportService
     /**
      * Most Popular Quiz Difficulty Levels
      */
-    private function getMostPopularDifficulties(): array
+    private function getMostPopularDifficulties($startDate, $endDate): array
     {
         return UserQuizResult::with('quiz:id,difficulty')
-            ->whereBetween('date', [now()->startOfMonth(), now()->endOfMonth()])
+            ->whereBetween('date', [$startDate, $endDate])
             ->get()
             ->groupBy(fn($result) => $result->quiz->difficulty ?? 'Unknown')
             ->map(fn($group, $difficulty) => [
@@ -43,10 +51,10 @@ class GamesActivityReportService
     /**
      *  Most Attempted Quizzes
      */
-    private function getMostAttemptedQuizzes(): array
+    private function getMostAttemptedQuizzes($startDate, $endDate): array
     {
         return UserQuizResult::select('quiz_id', DB::raw('SUM(attempt_number) as total_attempts'))
-            ->whereBetween('date', [now()->startOfMonth(), now()->endOfMonth()])
+            ->whereBetween('date', [$startDate, $endDate])
             ->groupBy('quiz_id')
             ->orderByDesc('total_attempts')
             ->limit(10)
@@ -61,10 +69,12 @@ class GamesActivityReportService
 
     // Dacă vrei să vezi dacă utilizatorii abandonează jocurile, compară jocurile finalizate cu cele începute.
 
-    private function getHangmanCompletionRate(): float
+    private function getHangmanCompletionRate($startDate, $endDate): float
     {
-        $totalGames = HangmanSession::count();
-        $completedGames = HangmanSession::where('completed', true)->count();
+        $totalGames = HangmanSession::whereBetween('created_at', [$startDate, $endDate])->count();
+        $completedGames = HangmanSession::whereBetween('created_at', [$startDate, $endDate])
+            ->where('completed', true)
+            ->count();
 
         return $totalGames > 0 ? round(($completedGames / $totalGames) * 100, 2) : 0;
     }
@@ -72,10 +82,10 @@ class GamesActivityReportService
     /**
      * Average Quizzes Completed Per User
      */
-    private function getAverageQuizzesCompleted(): float
+    private function getAverageQuizzesCompleted($startDate, $endDate): float
     {
         $userQuizCounts = UserQuizResult::select('user_id', DB::raw('COUNT(quiz_id) as quizzes_completed'))
-            ->whereBetween('date', [now()->startOfMonth(), now()->endOfMonth()])
+            ->whereBetween('date', [$startDate, $endDate])
             ->where('is_locked', true)
             ->groupBy('user_id')
             ->get();
@@ -84,9 +94,9 @@ class GamesActivityReportService
     }
 
     //Dacă vrei să vezi câți utilizatori termină quiz-ul cu un scor de peste 80%
-    private function getQuizSuccessRate(): array
+    private function getQuizSuccessRate($startDate, $endDate): array
     {
-        return UserQuizResult::whereBetween('date', [now()->startOfMonth(), now()->endOfMonth()])
+        return UserQuizResult::whereBetween('date', [$startDate, $endDate])
             ->where('percentage_score', '>=', 80)
             ->with('quiz:id,title')
             ->get()
@@ -102,9 +112,9 @@ class GamesActivityReportService
     /**
      * Average Quiz Retakes Per User
      */
-    private function getAverageQuizRetries(): float
+    private function getAverageQuizRetries($startDate, $endDate): float
     {
-        $quizAttempts = UserQuizResult::whereBetween('date', [now()->startOfMonth(), now()->endOfMonth()])
+        $quizAttempts = UserQuizResult::whereBetween('date', [$startDate, $endDate])
             ->get()
             ->avg('attempt_number') ?? 0;
 

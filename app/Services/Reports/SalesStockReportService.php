@@ -2,34 +2,42 @@
 
 namespace App\Services\Reports;
 
+use App\Helpers\PeriodHelper;
 use App\Models\InventoryTransaction;
 use App\Models\OrderProduct;
 use App\Models\Product;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class SalesStockReportService
 {
-    public function getMonthlyReport(): array
+    public function getReportByPeriod(string $period, Carbon $meetingDate): array
     {
+        $dateRange = PeriodHelper::getPeriodRange($period, $meetingDate);
+        $startDate = $dateRange['start_date'];
+        $endDate = $dateRange['end_date'];
+
         return [
-            'month' => now()->format('F Y'),
-            'top_10_sold_products' => $this->getTopSoldProducts(),
-            'least_sold_products' => $this->getLeastSoldProducts(),
-            'stock_fluctuations' => $this->getStockFluctuations(),
-            'daily_sales_avg' => round($this->getDailySalesAvg(), 2),
-            'weekly_sales_avg' => round($this->getWeeklySalesAvg(), 2),
-            'avg_days_to_out_of_stock' => round($this->getAvgDaysToOutOfStock(), 2),
+            'period' => $period,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'top_10_sold_products' => $this->getTopSoldProducts($startDate, $endDate),
+            'least_sold_products' => $this->getLeastSoldProducts($startDate, $endDate),
+            'stock_fluctuations' => $this->getStockFluctuations($startDate, $endDate),
+            'daily_sales_avg' => round($this->getDailySalesAvg($startDate, $endDate), 2),
+            'weekly_sales_avg' => round($this->getWeeklySalesAvg($startDate, $endDate), 2),
+            'avg_days_to_out_of_stock' => round($this->getAvgDaysToOutOfStock($startDate, $endDate), 2),
         ];
     }
 
     /**
      * Top 10 produse vândute lunar
      */
-    private function getTopSoldProducts(): array
+    private function getTopSoldProducts($startDate, $endDate): array
     {
         return OrderProduct::select('product_id', Db::raw('SUM(quantity) as total_sold'))
-            ->whereHas('order', function ($query) {
-                $query->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()]);
+            ->whereHas('order', function ($query) use($startDate, $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
             })
             ->groupBy('product_id')
             ->orderByDesc('total_sold')
@@ -46,11 +54,11 @@ class SalesStockReportService
     /**
      * Cele mai puțin vândute produse (lunar)
      */
-    private function getLeastSoldProducts(): array
+    private function getLeastSoldProducts($startDate, $endDate): array
     {
         return OrderProduct::select('product_id', DB::raw('SUM(quantity) as total_sold'))
-            ->whereHas('order', function ($query) {
-                $query->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()]);
+            ->whereHas('order', function ($query) use($startDate, $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
             })
             ->groupBy('product_id')
             ->orderBy('total_sold')
@@ -69,7 +77,7 @@ class SalesStockReportService
      * Identifici dacă ai produse cu re-aprovizionare frecventă sau produse care stagnează.
      */
 
-    private function getStockFluctuations(): array
+    private function getStockFluctuations($startDate, $endDate): array
     {
         return InventoryTransaction::select(
             'product_id',
@@ -78,7 +86,7 @@ class SalesStockReportService
             DB::raw('ABS(SUM(CASE WHEN transaction_type = "IN" THEN quantity ELSE 0 END) - 
                      SUM(CASE WHEN transaction_type = "OUT" THEN quantity ELSE 0 END)) as stock_variation')
         )
-            ->whereBetween('transaction_date', [now()->startOfMonth(), now()->endOfMonth()])
+            ->whereBetween('transaction_date', [$startDate, $endDate])
             ->groupBy('product_id')
             ->orderByDesc(DB::raw('ABS(SUM(CASE WHEN transaction_type = "IN" THEN quantity ELSE 0 END) - 
                                 SUM(CASE WHEN transaction_type = "OUT" THEN quantity ELSE 0 END))'))
@@ -112,10 +120,10 @@ class SalesStockReportService
     /**
      * Media zilnică a vânzărilor în luna curentă
      */
-    private function getDailySalesAvg(): float
+    private function getDailySalesAvg($startDate, $endDate): float
     {
-        $totalSales = OrderProduct::whereHas('order', function ($query) {
-            $query->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()]);
+        $totalSales = OrderProduct::whereHas('order', function ($query) use($startDate, $endDate) {
+            $query->whereBetween('created_at', [$startDate, $endDate]);
         })
             ->sum('quantity');
 
@@ -125,10 +133,10 @@ class SalesStockReportService
     /**
      * Media săptămânală a vânzărilor în luna curentă
      */
-    private function getWeeklySalesAvg(): float
+    private function getWeeklySalesAvg($startDate, $endDate): float
     {
-        $totalSales = OrderProduct::whereHas('order', function ($query) {
-            $query->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()]);
+        $totalSales = OrderProduct::whereHas('order', function ($query) use($startDate, $endDate) {
+            $query->whereBetween('created_at', [$startDate, $endDate]);
         })
             ->sum('quantity');
 
@@ -140,7 +148,7 @@ class SalesStockReportService
      * Calculează numărul mediu de zile până când produsele rămân fără stoc, 
      * pe baza ratei zilnice de vânzare din ultima lună.
      */
-    private function getAvgDaysToOutOfStock(): float
+    private function getAvgDaysToOutOfStock($startDate, $endDate): float
     {
         $products = Product::where('stock', '>', 0)->get();
 
@@ -148,11 +156,11 @@ class SalesStockReportService
             return 0;
         }
 
-        $daysToOutOfStock = $products->map(function ($product) {
+        $daysToOutOfStock = $products->map(function ($product) use($startDate, $endDate) {
             // Calculăm numărul total de unități vândute în ultima lună
             $totalSold = OrderProduct::where('product_id', $product->id)
-                ->whereHas('order', function ($query) {
-                    $query->whereBetween('created_at', [now()->subMonth(), now()]);
+                ->whereHas('order', function ($query) use($startDate, $endDate) {
+                    $query->whereBetween('created_at', [$startDate, $endDate]);
                 })
                 ->sum('quantity');
 

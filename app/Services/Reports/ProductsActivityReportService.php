@@ -2,22 +2,30 @@
 
 namespace App\Services\Reports;
 
+use App\Helpers\PeriodHelper;
 use App\Models\OrderProduct;
 use App\Models\Review;
 use App\Models\Wishlist;
+use Carbon\Carbon;
 
 class ProductsActivityReportService
 {
-    public function getMonthlyReport(): array
+    public function getReportByPeriod(string $period, Carbon $meetingDate): array
     {
+        $dateRange = PeriodHelper::getPeriodRange($period, $meetingDate);
+        $startDate = $dateRange['start_date'];
+        $endDate = $dateRange['end_date'];
+
         return [
-            'month' => now()->format('F Y'),
-            'best_selling_category' => $this->getBestSellingCategory(),
-            'top_selling_products' => $this->getTopSellingProducts(),
-            'new_vs_old_products_sales' => $this->getNewVsOldProductsSales(),
-            'discount_vs_regular_sales' => $this->getDiscountVsRegularSales(),
-            'best_and_worst_rated_products' => $this->getBestAndWorstRatedProducts(),
-            'most_wishlisted_products' => $this->getMostWishlistedProducts(),
+            'period' => $period,
+            'startDate' => $dateRange['start_date'],
+            'endDate' => $dateRange['end_date'],
+            'best_selling_category' => $this->getBestSellingCategory($startDate, $endDate),
+            'top_selling_products' => $this->getTopSellingProducts($startDate, $endDate),
+            'new_vs_old_products_sales' => $this->getNewVsOldProductsSales($startDate, $endDate),
+            'discount_vs_regular_sales' => $this->getDiscountVsRegularSales($startDate, $endDate),
+            'best_and_worst_rated_products' => $this->getBestAndWorstRatedProducts($startDate, $endDate),
+            'most_wishlisted_products' => $this->getMostWishlistedProducts($startDate, $endDate),
         ];
     }
 
@@ -26,10 +34,10 @@ class ProductsActivityReportService
      * 
      * @return array
      */
-    private function getBestSellingCategory(): array
+    private function getBestSellingCategory($startDate, $endDate): array
     {
-        return OrderProduct::whereHas('order', function ($query) {
-            $query->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()]);
+        return OrderProduct::whereHas('order', function ($query) use ($startDate, $endDate) {
+            $query->whereBetween('created_at', [$startDate, $endDate]);
         })->with('product')
             ->get()
             ->groupBy(fn($orderProduct) => $orderProduct->product->category ?? 'Unknown') // Grupăm după categorie
@@ -46,10 +54,10 @@ class ProductsActivityReportService
      * 
      * @return array
      */
-    private function getTopSellingProducts(): array
+    private function getTopSellingProducts($startDate, $endDate): array
     {
-        return OrderProduct::whereHas('order', function ($query) {
-            $query->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()]);
+        return OrderProduct::whereHas('order', function ($query) use ($startDate, $endDate) {
+            $query->whereBetween('created_at', [$startDate, $endDate]);
         })
             ->with('product')
             ->get()
@@ -69,28 +77,24 @@ class ProductsActivityReportService
      * 
      * @return array
      */
-    private function getNewVsOldProductsSales(): array
+    private function getNewVsOldProductsSales($startDate, $endDate): array
     {
-        $currentMonthStart = now()->startOfMonth();
-        $currentMonthEnd = now()->endOfMonth();
         $threeMonthsAgo = now()->subMonths(3);
         $oneYearAgo = now()->subYear();
 
-        // Vânzări produse noi (doar cele create în ultimele 3 luni)
         $newProductsSales = OrderProduct::whereHas('product', function ($query) use ($threeMonthsAgo) {
             $query->where('created_at', '>=', $threeMonthsAgo);
         })
-            ->whereHas('order', function ($query) use ($currentMonthStart, $currentMonthEnd) {
-                $query->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd]);
+            ->whereHas('order', function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
             })
             ->sum('quantity');
 
-        // Vânzări produse vechi (cele create între 3 și 12 luni în urmă)
         $oldProductsSales = OrderProduct::whereHas('product', function ($query) use ($oneYearAgo, $threeMonthsAgo) {
             $query->whereBetween('created_at', [$oneYearAgo, $threeMonthsAgo]);
         })
-            ->whereHas('order', function ($query) use ($currentMonthStart, $currentMonthEnd) {
-                $query->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd]);
+            ->whereHas('order', function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
             })
             ->sum('quantity');
 
@@ -106,17 +110,17 @@ class ProductsActivityReportService
      * 
      * @return array
      */
-    private function getDiscountVsRegularSales(): array
+    private function getDiscountVsRegularSales($startDate, $endDate): array
     {
-        $discountedSales = OrderProduct::whereHas('order', function ($query) {
+        $discountedSales = OrderProduct::whereHas('order', function ($query) use ($startDate, $endDate) {
             $query->whereNotNull('promo_code')
-                ->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()]);
+                ->whereBetween('created_at', [$startDate, $endDate]);
         })
             ->sum('quantity'); // Produse cumpărate cu ofertă
 
-        $regularSales = OrderProduct::whereDoesntHave('order', function ($query) {
-            $query->whereNotNull('promo_code')
-                ->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()]);
+        $regularSales = OrderProduct::whereHas('order', function ($query) use ($startDate, $endDate) {
+            $query->whereNull('promo_code')
+                ->whereBetween('created_at', [$startDate, $endDate]);
         })
             ->sum('quantity'); // Produse cumpărate fără ofertă
 
@@ -134,10 +138,10 @@ class ProductsActivityReportService
      * 
      * @return array
      */
-    private function getBestAndWorstRatedProducts(): array
+    private function getBestAndWorstRatedProducts($startDate, $endDate): array
     {
         $reviews = Review::with('product')
-            ->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
+            ->whereBetween('created_at', [$startDate, $endDate])
             ->get();
 
         $ratings = $reviews->groupBy('product_id')->map(fn($group) => [
@@ -169,9 +173,9 @@ class ProductsActivityReportService
      * 
      * @return array
      */
-    private function getMostWishlistedProducts(): array
+    private function getMostWishlistedProducts($startDate, $endDate): array
     {
-        return Wishlist::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
+        return Wishlist::whereBetween('created_at', [$startDate, $endDate])
             ->with('product')
             ->get()
             ->groupBy('product_id')

@@ -8,7 +8,7 @@ class RewardsActivityMonthlyReportPdfGenerator extends AbstractPdfGeneratorServi
     {
         $pdfContent = $this->generatePdfContent('pdf.rewardsActivityMonthlyReport', ['reportData' => $data]);
 
-        $filename = "rewards_activity_reports/" . now()->format('Y-m') . ".pdf";
+        $filename = "rewards_activity_reports/rewards_report_" .  now()->format('Y-m-d')  . ".pdf";
 
         $pdfUrl = $this->save($pdfContent, $filename);
 

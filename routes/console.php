@@ -2,11 +2,13 @@
 
 use App\Console\Commands\CalculateWeeklyLeaderboard;
 use App\Console\Commands\CheckInactiveUsers;
+use App\Console\Commands\GenerateMeetingReportsCommand;
 use App\Console\Commands\ManageDiscountsCommand;
 use App\Console\Commands\ManageEventsCommand;
 use App\Console\Commands\ProcessLowStockOrders;
 use App\Console\Commands\ProcessSupplierOrders;
 use App\Console\Commands\SendNpsReportCommand;
+use App\Jobs\ProcessMeetingReportsJob;
 
 // Artisan::command('inspire', function () {
 //     $this->comment(Inspiring::quote());
@@ -19,3 +21,4 @@ Schedule::command(ManageDiscountsCommand::class)->everyMinute();
 Schedule::command(ManageEventsCommand::class)->everyMinute();
 Schedule::command(ProcessLowStockOrders::class)->everyMinute();
 Schedule::command(SendNpsReportCommand::class)->monthly();
+Schedule::command(GenerateMeetingReportsCommand::class)->everyMinute();

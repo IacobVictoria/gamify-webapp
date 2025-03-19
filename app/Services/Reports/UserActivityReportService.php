@@ -2,46 +2,52 @@
 
 namespace App\Services\Reports;
 
+use App\Helpers\PeriodHelper;
 use App\Models\ClientOrder;
 use App\Models\Review;
-use App\Models\ReviewComment;
-use App\Models\ReviewLike;
 use App\Models\User;
 use App\Models\Wishlist;
+use Carbon\Carbon;
 
 
 class UserActivityReportService
 {
-    public function getMonthlyReport(): array
+    public function getReportByPeriod(string $period, Carbon $meetingDate): array
     {
+        $dateRange = PeriodHelper::getPeriodRange($period, $meetingDate);
+        $startDate = $dateRange['start_date'];
+        $endDate = $dateRange['end_date'];
+
         return [
-            'month' => now()->format('F Y'),
-            'new_users_count' => $this->getNewUsersCount(),
-            'avg_orders_per_user' => round($this->getAvgOrdersPerUser(), 2),
-            'avg_order_value' => round($this->getAvgOrderValue(), 2),
-            'top_wishlist_products' => $this->getWishlistInteractions(),
-            'avg_reviews_per_user' => round($this->getAvgReviewsPerUser(), 2),
-            'avg_likes_per_review' => round($this->getAvgLikesPerReview(), 2),
-            'avg_days_to_first_order' => round($this->getAvgDaysToFirstOrder(), 2),
-            'orders_with_discount' => $this->getOrdersWithDiscount(),
-            'orders_without_discount' => $this->getOrdersWithoutDiscount(),
+            'period' => $period,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'new_users_count' => $this->getNewUsersCount($startDate, $endDate),
+            'avg_orders_per_user' => round($this->getAvgOrdersPerUser($startDate, $endDate), 2),
+            'avg_order_value' => round($this->getAvgOrderValue($startDate, $endDate), 2),
+            'top_wishlist_products' => $this->getWishlistInteractions($startDate, $endDate),
+            'avg_reviews_per_user' => round($this->getAvgReviewsPerUser($startDate, $endDate), 2),
+            'avg_likes_per_review' => round($this->getAvgLikesPerReview($startDate, $endDate), 2),
+            'avg_days_to_first_order' => round($this->getAvgDaysToFirstOrder($startDate, $endDate), 2),
+            'orders_with_discount' => $this->getOrdersWithDiscount($startDate, $endDate),
+            'orders_without_discount' => $this->getOrdersWithoutDiscount($startDate, $endDate),
         ];
     }
 
     /**
      * Număr de utilizatori noi într-o perioadă selectată (lunar).
      */
-    private function getNewUsersCount(): int
+    private function getNewUsersCount($startDate, $endDate): int
     {
-        return User::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count();
+        return User::whereBetween('created_at', [$startDate, $endDate])->count();
     }
 
     /**
      * Câte comenzi plasează un utilizator în medie.
      */
-    private function getAvgOrdersPerUser(): float
+    private function getAvgOrdersPerUser($startDate, $endDate): float
     {
-        $ordersGroupedByUser = ClientOrder::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
+        $ordersGroupedByUser = ClientOrder::whereBetween('created_at', [$startDate, $endDate])
             ->get()
             ->groupBy('user_id')
             ->map(fn($orders) => $orders->count());
@@ -52,9 +58,9 @@ class UserActivityReportService
     /**
      * Valoarea medie a coșului de cumpărături.
      */
-    private function getAvgOrderValue(): float
+    private function getAvgOrderValue($startDate, $endDate): float
     {
-        $ordersGroupedByUser = ClientOrder::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
+        $ordersGroupedByUser = ClientOrder::whereBetween('created_at', [$startDate, $endDate])
             ->get()
             ->groupBy('user_id')
             ->map(fn($orders) => $orders->avg('total_price'));
@@ -66,9 +72,9 @@ class UserActivityReportService
     /**
      * Top 3 produse în wishlist în această lună.
      */
-    private function getWishlistInteractions(): array
+    private function getWishlistInteractions($startDate, $endDate): array
     {
-        return Wishlist::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
+        return Wishlist::whereBetween('created_at', [$startDate, $endDate])
             ->select('product_id')
             ->groupBy('product_id')
             ->selectRaw('product_id, COUNT(*) as total_wishlisted')
@@ -88,10 +94,10 @@ class UserActivityReportService
     /**
      * Numărul mediu de recenzii per utilizator în această lună.
      */
-    private function getAvgReviewsPerUser(): float
+    private function getAvgReviewsPerUser($startDate, $endDate): float
     {
         // 1️⃣ Obținem recenziile grupate pe utilizator
-        $reviews = Review::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
+        $reviews = Review::whereBetween('created_at', [$startDate, $endDate])
             ->selectRaw('user_id, COUNT(*) as total_reviews')
             ->groupBy('user_id')
             ->get();
@@ -103,9 +109,9 @@ class UserActivityReportService
     /**
      * Numărul mediu de like-uri per recenzie în această lună.
      */
-    private function getAvgLikesPerReview(): float
+    private function getAvgLikesPerReview($startDate, $endDate): float
     {
-        $reviews = Review::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
+        $reviews = Review::whereBetween('created_at', [$startDate, $endDate])
             ->withCount('reviewLikes')
             ->get();
 
@@ -113,11 +119,19 @@ class UserActivityReportService
     }
 
     /**
-     * Timpul mediu (în zile) între crearea contului și prima achiziție.
+     * Timpul mediu (în zile) între crearea contului și prima achiziție într-o perioadă selectată.
      */
-    private function getAvgDaysToFirstOrder(): float
+    private function getAvgDaysToFirstOrder($startDate, $endDate): float
     {
-        $usersWithOrders = User::whereHas('orders')->with('orders')->get();
+        $usersWithOrders = User::whereHas('orders', function ($query) use ($startDate, $endDate) {
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        })
+            ->with([
+                'orders' => function ($query) use ($startDate, $endDate) {
+                    $query->whereBetween('created_at', [$startDate, $endDate])->oldest();
+                }
+            ])
+            ->get();
 
         if ($usersWithOrders->isEmpty()) {
             return 0;
@@ -135,9 +149,9 @@ class UserActivityReportService
     /**
      * Câte comenzi au fost plasate cu un cod de reducere.
      */
-    private function getOrdersWithDiscount(): int
+    private function getOrdersWithDiscount($startDate, $endDate): int
     {
-        return ClientOrder::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
+        return ClientOrder::whereBetween('created_at', [$startDate, $endDate])
             ->whereNotNull('promo_code')
             ->count();
     }
@@ -145,9 +159,9 @@ class UserActivityReportService
     /**
      * Câte comenzi au fost plasate fără un cod de reducere.
      */
-    private function getOrdersWithoutDiscount(): int
+    private function getOrdersWithoutDiscount($startDate, $endDate): int
     {
-        return ClientOrder::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
+        return ClientOrder::whereBetween('created_at', [$startDate, $endDate])
             ->whereNull('promo_code')
             ->count();
     }
