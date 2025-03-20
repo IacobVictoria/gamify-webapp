@@ -22,8 +22,9 @@ class UserQuizRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
+            'title' => 'required|string|min:1|max:255',
+            'description' => 'required|string|min:1|max:255',
+            'difficulty' => 'required|in:easy,medium,hard',
             'questions' => 'required|array',
             'questions.*.text' => 'required|string',
             'questions.*.score' => 'nullable|integer',

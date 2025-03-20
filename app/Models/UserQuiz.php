@@ -11,6 +11,7 @@ class UserQuiz extends Model
     protected $fillable = [
         'id',
         'title',
+        'description',
         'difficulty'
     ];
     protected $table = 'user_quizzes';

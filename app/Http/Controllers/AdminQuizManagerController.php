@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserQuizDifficulty;
 use App\Http\Requests\AddQuizQuestionRequest;
 use App\Models\UserQuiz;
 use App\Models\UserQuizQuestion;
@@ -11,41 +12,13 @@ use Inertia\Inertia;
 
 class AdminQuizManagerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-
-
-    public function index()
-    {
-
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $quiz = UserQuiz::with('questions.answers')->find($id);
 
         return Inertia::render('Admin/UserQuizzes/QuizManager', [
-            'quiz' => $quiz
+            'quiz' => $quiz,
+            'difficulties' => UserQuizDifficulty::values(),
         ]);
     }
 
@@ -109,27 +82,5 @@ class AdminQuizManagerController extends Controller
 
         return redirect()->back()->with('success', 'Question updated successfully!');
     }
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

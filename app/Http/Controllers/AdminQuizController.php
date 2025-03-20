@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserQuizDifficulty;
 use App\Http\Requests\UserQuizRequest;
 use App\Models\UserQuiz;
 use App\Models\UserQuizAnswer;
@@ -18,7 +19,7 @@ class AdminQuizController extends Controller
     public function index(Request $request)
     {
         $filters = $request->input('filters', []);
-        $quizQuery = UserQuiz::with('questions.answers');
+        $quizQuery = UserQuiz::with('questions.answers')->orderByDesc('created_at');
 
         if (isset($filters['searchTitle'])) {
             $quizQuery->where('title', 'like', '%' . $filters['searchTitle'] . '%');
@@ -60,7 +61,9 @@ class AdminQuizController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Admin/UserQuizzes/Create');
+        return Inertia::render('Admin/UserQuizzes/Create', [
+            'difficulties' => UserQuizDifficulty::values(),
+        ]);
     }
 
     /**
@@ -70,12 +73,16 @@ class AdminQuizController extends Controller
     {
         $validated = $request->validated();
 
+        if (!isset($validated['title']) || !isset($validated['description'])) {
+            return back()->withErrors(['error' => 'Title and description are required.']);
+        }
+
         // Create quiz
         $quiz = UserQuiz::create([
             'id' => Uuid::uuid(),
             'title' => $validated['title'],
-            'description' => $validated['description']
-
+            'description' => $validated['description'],
+            'difficulty' => $validated['difficulty']
         ]);
 
         // Create questions and answers
@@ -125,13 +132,15 @@ class AdminQuizController extends Controller
     {
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'required|string|max:255'
+            'description' => 'required|string|max:255',
+            'difficulty'=>'required'
         ]);
 
         $quiz = UserQuiz::find($quizId);
         $quiz->update([
             'title' => $validatedData['title'],
-            'description' => $validatedData['description']
+            'description' => $validatedData['description'],
+            'difficulty'=>$validatedData['difficulty']
         ]);
 
         return redirect()->back()->with('Succes Updated the quiz');

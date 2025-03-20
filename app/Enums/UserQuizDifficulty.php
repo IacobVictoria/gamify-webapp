@@ -16,6 +16,11 @@ enum UserQuizDifficulty: string
             self::Hard => 'Hard',
         };
     }
+    
+    public static function values(): array
+    {
+        return array_column(self::cases(), 'value');
+    }
 
     /**
      *  a color associated with each difficulty level.
