@@ -26,9 +26,14 @@ class Product extends Model
         'ingredients',
         'allergens',
         'old_price',
-        'image_url'
+        'image_url',
+        'product_sku',
+        'is_published'
     ];
 
+    protected $casts = [
+        'is_published' => 'boolean',
+    ];
     protected $table = 'products';
 
     protected $primaryKey = 'id';
@@ -61,6 +66,11 @@ class Product extends Model
     public function wishlists()
     {
         return $this->hasMany(Wishlist::class);
+    }
+
+    public function supplierProduct()
+    {
+        return $this->hasOne(SupplierProduct::class, 'product_sku', 'product_sku');
     }
 
 }

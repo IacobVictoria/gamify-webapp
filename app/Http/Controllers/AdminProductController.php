@@ -18,6 +18,8 @@ class AdminProductController extends Controller
     public function index(Request $request)
     {
         $filters = $request->input('filters', []);
+        $orderBy = $request->input('orderBy', 'created_at');
+        $orderDirection = $request->input('orderDirection', 'desc');
 
         $productsQuery = Product::query();
 
@@ -25,14 +27,14 @@ class AdminProductController extends Controller
             $productsQuery->where('name', 'like', '%' . $filters['searchName'] . '%');
         }
 
-        if (isset($filters['searchPrice'])) {
-            $productsQuery->where('price', 'like', '%' . $filters['searchPrice'] . '%');
+        if (in_array($orderBy, ['name', 'price', 'score', 'created_at'])) {
+            $orderDirection = in_array($orderDirection, ['asc', 'desc']) ? $orderDirection : 'asc';
+            $productsQuery->orderBy($orderBy, $orderDirection);
         }
 
-        if (isset($filters['searchScore'])) {
-            $productsQuery->where('score', 'like', '%' . $filters['searchScore'] . '%');
+        if (isset($filters['searchPublished']) && in_array($filters['searchPublished'], ['true', 'false'])) {
+            $productsQuery->where('is_published', $filters['searchPublished'] === 'true');
         }
-
 
         $products = $productsQuery->paginate(10)->through(function ($product) {
             return [
@@ -40,6 +42,7 @@ class AdminProductController extends Controller
                 'score' => $product->score,
                 'name' => $product->name,
                 'price' => $product->price,
+                'is_published' => $product->is_published,
                 'created_at' => $product->created_at->format('Y-m-d'),
             ];
         });
@@ -78,17 +81,6 @@ class AdminProductController extends Controller
         return redirect()->route('admin.products.index')->with('success', 'Product created successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $productid)
     {
         $product = Product::find($productid);
@@ -106,9 +98,6 @@ class AdminProductController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(ProductRequest $request, string $productId)
     {
         $product = Product::findOrFail($productId);
@@ -118,6 +107,7 @@ class AdminProductController extends Controller
         $product->description = $validated['description'] ?? '';
         $product->score = $validated['score'];
         $product->price = $validated['price'];
+        $product->is_published = $validated['is_published'];
         if ($request->hasFile('image')) {
             // Șterge imaginea veche de pe S3
             if ($product->image_url) {

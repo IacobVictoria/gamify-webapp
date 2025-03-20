@@ -82,7 +82,11 @@ export default {
                 formFields[this.aditionalData.name] = null;
             }
             this.fields.forEach((field) => {
-                formFields[field.name] = this.initialData[field.name] || '';
+                if (field.type === 'checkbox') {
+                    formFields[field.name] = !!this.initialData[field.name];
+                } else {
+                    formFields[field.name] = this.initialData[field.name] || '';
+                }
             });
             console.log(useForm(formFields))
             return useForm(formFields);
@@ -98,7 +102,7 @@ export default {
             const file = event.target.files[0];
             if (file) {
                 this.imagePreview = URL.createObjectURL(file);
-                this.imageFile = file; 
+                this.imageFile = file;
             }
         }
     },

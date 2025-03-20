@@ -27,8 +27,7 @@ class FetchLowStockProductsHandler extends AbstractSupplierLowStockOrderHandler
         }
 
         foreach ($lowStockProducts as $product) {
-            $supplierProduct = SupplierProduct::where('name', $product->name)
-                ->where('category', $product->category)
+            $supplierProduct = SupplierProduct::where('product_sku', $product->product_sku)
                 ->first();
 
             if (!$supplierProduct) {

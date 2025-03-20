@@ -44,7 +44,7 @@ export default {
             return [
                 { name: 'name', label: 'Badge' },
                 { name: 'score', label: 'Score' },
-                { name: 'created_at', label: 'created_at' }
+                { name: 'created_at', label: 'created_at'}
             ]
         },
 
@@ -56,6 +56,7 @@ export default {
 
         filters() {
             return [
+                { model: 'searchName', label: 'Search by user name', type: 'text', placeholder: 'Search by name' },
                 { model: 'searchName', label: 'Search by user name', type: 'text', placeholder: 'Search by name' },
             ];
         },

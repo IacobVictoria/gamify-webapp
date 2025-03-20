@@ -17,7 +17,6 @@ class SupplierProduct extends Model
         'supplier_id',
         'price',
         'stock',
-        'score',
         'calories',
         'protein',
         'carbs',
@@ -25,7 +24,8 @@ class SupplierProduct extends Model
         'fiber',
         'sugar',
         'ingredients',
-        'allergens'
+        'allergens',
+        'product_sku'
     ];
 
     protected $table = 'supplier_products';
@@ -45,6 +45,11 @@ class SupplierProduct extends Model
     public function supplier()
     {
         return $this->belongsTo(Supplier::class);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_sku', 'product_sku');
     }
 
 }

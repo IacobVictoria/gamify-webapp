@@ -43,8 +43,7 @@ class UpdateSupplierStockHandler extends AbstractSupplierOrderHandler
             $supplierProduct->save();
 
             // Căutăm produsul în baza noastră
-            $product = Product::where('name', $supplierProduct->name)
-                ->where('category', $supplierProduct->category)
+            $product = Product::where('product_sku', $supplierProduct->product_sku)
                 ->first();
 
             if ($product) {
@@ -63,10 +62,9 @@ class UpdateSupplierStockHandler extends AbstractSupplierOrderHandler
                     'id' => Uuid::uuid(),
                     'name' => $supplierProduct->name,
                     'price' => $supplierProduct->price,
-                    'category' => $supplierProduct->category,
                     'description' => $supplierProduct->description,
                     'stock' => $productData['quantity'],
-                    'score' => $supplierProduct->score,
+                    'score' => 10,
                     'calories' => $supplierProduct->calories,
                     'protein' => $supplierProduct->protein,
                     'carbs' => $supplierProduct->carbs,
@@ -74,7 +72,8 @@ class UpdateSupplierStockHandler extends AbstractSupplierOrderHandler
                     'fiber' => $supplierProduct->fiber,
                     'sugar' => $supplierProduct->sugar,
                     'ingredients' => $supplierProduct->ingredients,
-                    'allergens' => $supplierProduct->allergens
+                    'allergens' => $supplierProduct->allergens,
+                    'product_sku' => $supplierProduct->product_sku
                 ]);
 
                 // Notificăm utilizatorii despre noul produs

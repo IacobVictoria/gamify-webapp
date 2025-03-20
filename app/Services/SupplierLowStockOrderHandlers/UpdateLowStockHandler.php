@@ -15,8 +15,7 @@ class UpdateLowStockHandler extends AbstractSupplierLowStockOrderHandler
         }
 
         try {
-            $product = Product::where('name', $supplierProduct->name)
-                ->where('category', $supplierProduct->category)
+            $product = Product::where('product_sku', $supplierProduct->product_sku)
                 ->first();
 
             $supplierProduct->stock -= $quantity;

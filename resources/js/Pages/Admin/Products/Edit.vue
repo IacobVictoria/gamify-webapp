@@ -38,15 +38,15 @@ export default {
     data() {
         return {
             fields: [
-                // {
-                //     name: 'category',
-                //     label: 'Categories',
-                //     type: 'select',
-                //     options: this.categories,
-                //     autocomplete: 'categories',
-                //     placeholder: 'Categories',
-                //     colSpan: 'sm:col-span-6'
-                // },
+                {
+                    name: 'category',
+                    label: 'Categories',
+                    type: 'select',
+                    options: this.categories,
+                    autocomplete: 'categories',
+                    placeholder: 'Categories',
+                    colSpan: 'sm:col-span-6'
+                },
                 {
                     name: 'description',
                     label: 'Description',
@@ -73,6 +73,12 @@ export default {
                     colSpan: 'sm:col-span-6',
                     step: '0.01'
                 },
+                {
+                name: 'is_published',
+                label: 'Publish Product',
+                type: 'checkbox',
+                colSpan: 'sm:col-span-6'
+            }
             ]
             , imageField: {
                 name: 'image',

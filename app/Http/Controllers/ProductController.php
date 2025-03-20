@@ -26,7 +26,7 @@ class ProductController extends Controller
 
         $searchQuery = $request->input('search', '');
 
-        $products = Product::where('name', 'like', "%{$searchQuery}%")->get();
+        $products = Product::where('name', 'like', "%{$searchQuery}%")->where('is_published',true)->get();
 
         $products = $products->map(function ($product) use ($user) {
 

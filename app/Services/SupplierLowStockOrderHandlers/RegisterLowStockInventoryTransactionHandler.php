@@ -19,8 +19,7 @@ class RegisterLowStockInventoryTransactionHandler extends AbstractSupplierLowSto
         }
 
         try {
-            $product = Product::where('name', $supplierProduct->name)
-                ->where('category', $supplierProduct->category)
+            $product = Product::where('product_sku', $supplierProduct->product_sku)
                 ->first();
 
             InventoryTransaction::create([

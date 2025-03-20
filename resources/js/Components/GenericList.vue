@@ -31,7 +31,15 @@
                                 <tr>
                                     <th v-for="column in columns" :key="column.name" scope="col"
                                         class="px-6 py-1 text-left text-sm text-gray-400" :class="column.columnAlign">
-                                        {{ column.label }}</th>
+                                        <div class="flex flex-row items-center gap-2">
+                                                {{ column.label }}
+                                            <div class="cursor-pointer hover:rounded-full hover:bg-gray-300"
+                                                v-if="column.sorting" @click="toggleSorting(column)">
+                                                <ArrowOrderSVG :direction="currentSortDirection[column.name]"
+                                                    v-if="column.sorting === true" />
+                                            </div>
+                                        </div>
+                                    </th>
                                     <template v-if="editRoute && deleteRoute">
                                         <th scope="col"
                                             class="text-center px-6 py-3 text-left text-md font-semibold text-gray-500">
@@ -116,6 +124,7 @@ import Pagination from './Pagination.vue';
 import debounce from "lodash/fp/debounce";
 import { ref } from 'vue';
 import { CheckIcon } from '@heroicons/vue/24/outline';
+import ArrowOrderSVG from './ArrowOrderSVG.vue';
 
 
 export default {
@@ -124,7 +133,7 @@ export default {
     components: {
         Pagination,
         Filter, Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot,
-        CheckIcon
+        CheckIcon, ArrowOrderSVG
 
     },
     setup(props) {
@@ -165,22 +174,22 @@ export default {
     watch: {
         filterValues: {
             handler: debounce(300, function () {
-                if(this.extraId){
-                    this.$inertia.get(route(this.getRoute,this.extraId), {
-                    filters: this.filterValues,
-                }, {
-                    preserveState: true,
-                    replace: true,
-                });
+                if (this.extraId) {
+                    this.$inertia.get(route(this.getRoute, this.extraId), {
+                        filters: this.filterValues,
+                    }, {
+                        preserveState: true,
+                        replace: true,
+                    });
                 }
-                else{
-                this.$inertia.get(route(this.getRoute), {
-                    filters: this.filterValues,
-                }, {
-                    preserveState: true,
-                    replace: true,
-                });
-            }
+                else {
+                    this.$inertia.get(route(this.getRoute), {
+                        filters: this.filterValues,
+                    }, {
+                        preserveState: true,
+                        replace: true,
+                    });
+                }
             }),
             deep: true,
         },
@@ -192,6 +201,8 @@ export default {
                 this.filters.map(filter => [filter.model, this.prevFilters[filter.model] || ''])
             ),
             item: '',
+            currentSortColumn: null,
+            currentSortDirection: {},
         }
     },
     methods: {
@@ -221,7 +232,28 @@ export default {
                     this.item = '';
                 }
             });
-        }
+        },
+        toggleSorting(column) {
+            if (this.currentSortColumn === column.name) {
+                this.currentSortDirection[column.name] = this.currentSortDirection[column.name] === "asc" ? "desc" : "asc";
+            } else {
+                this.currentSortColumn = column.name;
+                this.currentSortDirection[column.name] = "asc";
+            }
+            this.fetchSortedData();
+        },
+
+        fetchSortedData() {
+            this.$inertia.get(route(this.getRoute, {
+                orderBy: this.currentSortColumn,
+                orderDirection: this.currentSortDirection[this.currentSortColumn],
+            }), {}, {
+                preserveState: true,
+                replace: true,
+                preserveScroll: true,
+            });
+        },
+
     }
 }
 </script>

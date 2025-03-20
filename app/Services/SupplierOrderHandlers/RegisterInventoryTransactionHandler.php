@@ -25,8 +25,7 @@ class RegisterInventoryTransactionHandler extends AbstractSupplierOrderHandler
         foreach ($productQuantities as $productData) {
             $supplierProduct = SupplierProduct::find($productData['productId']);
             
-            $product = Product::where('name', $supplierProduct->name)
-            ->where('category', $supplierProduct->category)
+            $product = Product::where('product_sku', $supplierProduct->product_sku)
             ->first();
 
             InventoryTransaction::create([
