@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminControlCenterController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminEventCalendarController;
 use App\Http\Controllers\AdminGamesManagerController;
+use App\Http\Controllers\AdminHangmanManagerController;
 use App\Http\Controllers\AdminInventoryTransactionController;
 use App\Http\Controllers\AdminMeetingController;
 use App\Http\Controllers\AdminNotificationController;
@@ -162,6 +163,13 @@ Route::prefix('control_center')->group(function () {
 
 Route::prefix('games_manager')->group(function () {
     Route::get('/', [AdminGamesManagerController::class, 'index'])->name('games_manager.index');
+});
+
+Route::prefix('hangman_manager')->group(function () {
+    Route::get('/', [AdminHangmanManagerController::class, 'index'])->name('hangman_manager.index');
+    Route::post('/add', [AdminHangmanManagerController::class, 'store'])->name('hangman_manager.store');
+    Route::put('/update/{word}', [AdminHangmanManagerController::class, 'update'])->name('hangman_manager.update');
+    Route::delete('/delete/{word}', [AdminHangmanManagerController::class, 'destroy'])->name('hangman_manager.destroy');
 });
 
 Route::prefix('meetings')->group(function () {

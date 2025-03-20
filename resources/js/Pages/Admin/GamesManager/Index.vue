@@ -28,7 +28,7 @@
                                 <p class="text-gray-700 mt-2">
                                     Classic Hangman game, improving vocabulary and logic skills.
                                 </p>
-                                <inertia-link
+                                <inertia-link :href="route('admin.hangman_manager.index')"
                                     class="w-[20em] mt-6 bg-orange-600 no-underline text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-orange-700 transition duration-300">
                                     🎯 Create Hangman
                                 </inertia-link>
