@@ -13,6 +13,8 @@ class AdminSupplierOrderController extends Controller
     public function index(Request $request)
     {
         $filters = $request->input('filters', []);
+        $orderBy = $request->input('orderBy', 'created_at');
+        $orderDirection = $request->input('orderDirection', 'desc');
 
         $ordersQuery = SupplierOrder::with(['supplier', 'products', 'report']);
 
@@ -22,10 +24,9 @@ class AdminSupplierOrderController extends Controller
             });
         }
 
-        if (!empty($filters['sortDate'])) {
-            $ordersQuery->orderBy('order_date', $filters['sortDate'] === 'asc' ? 'asc' : 'desc');
-        } else {
-            $ordersQuery->orderByDesc('order_date');
+        if (in_array($orderBy, ['order_date','total_price'])) {
+            $orderDirection = in_array($orderDirection, ['asc', 'desc']) ? $orderDirection : 'asc';
+            $ordersQuery->orderBy($orderBy, $orderDirection);
         }
 
 

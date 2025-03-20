@@ -8,7 +8,7 @@
                 </inertia-link>
 
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <GenericExpandedList :items="badges" :title="'Badges for users'" 
+                    <GenericExpandedList :items="badges" :title="'Badges for users'"
                         :description="'Show all Badges available'" :columns="columns" :getRoute="'admin.badges.index'"
                         :extraLabel="detailsLabel" :filters="filters" :prevFilters="prevFilters"
                         :updateRoute="'admin.badges.edit'" :deleteRoute="'admin.badges.destroy'" class="p-4">
@@ -43,8 +43,8 @@ export default {
         columns() {
             return [
                 { name: 'name', label: 'Badge' },
-                { name: 'score', label: 'Score' },
-                { name: 'created_at', label: 'created_at'}
+                { name: 'score', label: 'Score', sorting: true },
+                { name: 'created_at', label: 'created_at', sorting: true }
             ]
         },
 
@@ -56,7 +56,6 @@ export default {
 
         filters() {
             return [
-                { model: 'searchName', label: 'Search by user name', type: 'text', placeholder: 'Search by name' },
                 { model: 'searchName', label: 'Search by user name', type: 'text', placeholder: 'Search by name' },
             ];
         },

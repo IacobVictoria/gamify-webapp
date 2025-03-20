@@ -27,7 +27,7 @@ class AdminProductController extends Controller
             $productsQuery->where('name', 'like', '%' . $filters['searchName'] . '%');
         }
 
-        if (in_array($orderBy, ['name', 'price', 'score', 'created_at'])) {
+        if (in_array($orderBy, ['price', 'score', 'created_at'])) {
             $orderDirection = in_array($orderDirection, ['asc', 'desc']) ? $orderDirection : 'asc';
             $productsQuery->orderBy($orderBy, $orderDirection);
         }

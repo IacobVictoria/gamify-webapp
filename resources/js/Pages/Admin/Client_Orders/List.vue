@@ -3,10 +3,11 @@
         <div class="py-12">
             <div class="w-full mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <GenericExpandedList :title="'Clients orders'" :description="'Here you can see all orders made in app by clients!'"
-                        :items="orders" :entityName="'orders'" :filters="filters" :columns="columns"
-                        :prevFilters="prevFilters" :getRoute="'admin.clients_orders.index'"
-                        :descriptionDetails="'Order details:'" class="p-4" :detailsLabel="detailsLabel" :extraLabel="extraLabel" :invoice="'clients'" />
+                    <GenericExpandedList :title="'Clients orders'"
+                        :description="'Here you can see all orders made in app by clients!'" :items="orders"
+                        :entityName="'orders'" :filters="filters" :columns="columns" :prevFilters="prevFilters"
+                        :getRoute="'admin.clients_orders.index'" :descriptionDetails="'Order details:'" class="p-4"
+                        :detailsLabel="detailsLabel" :extraLabel="extraLabel" :invoice="'clients'" />
                 </div>
             </div>
         </div>
@@ -39,15 +40,14 @@ export default {
         columns() {
             return [
                 { name: 'name', label: 'Client name' },
-                { name: 'date', label: 'Date of order' },
-                { name: 'total_price', label: 'Total Price' }
+                { name: 'created_at', label: 'Date of order', sorting: true },
+                { name: 'total_price', label: 'Total Price', sorting: true },
             ]
         },
 
         filters() {
             return [
                 { model: 'name', label: 'Search by user name', type: 'text', placeholder: 'Search by name' },
-                { model: 'sortDate', label: 'Sort by Date', type: 'sorting', placeholder: 'Search by date' },
             ];
         },
 

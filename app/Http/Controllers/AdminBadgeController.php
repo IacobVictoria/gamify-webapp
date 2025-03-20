@@ -18,12 +18,21 @@ class AdminBadgeController extends Controller
     public function index(Request $request)
     {
         $filters = $request->input('filters', []);
+        $orderBy = $request->input('orderBy', 'created_at');
+        $orderDirection = $request->input('orderDirection', 'desc');
+
         $badgeQuery = Badge::query();
 
         if (isset($filters['searchName'])) {
 
             $badgeQuery->where('name', 'like', '%' . $filters['searchName'] . '%');
         }
+
+        if (in_array($orderBy, ['name', 'price', 'score', 'created_at'])) {
+            $orderDirection = in_array($orderDirection, ['asc', 'desc']) ? $orderDirection : 'asc';
+            $badgeQuery->orderBy($orderBy, $orderDirection);
+        }
+
         $badges = $badgeQuery->paginate(10)->through(function ($badge) {
             return [
                 'id' => $badge->id,

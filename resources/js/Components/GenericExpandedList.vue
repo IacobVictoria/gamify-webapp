@@ -22,7 +22,14 @@
                                 <tr>
                                     <th v-for="column in columns" :key="column.name" scope="col"
                                         class="px-6 py-1 text-left text-sm text-gray-400" :class="column.columnAlign">
-                                        {{ column.label }}
+                                        <div class="flex flex-row items-center gap-2">
+                                            {{ column.label }}
+                                            <div class="cursor-pointer hover:rounded-full hover:bg-gray-300"
+                                                v-if="column.sorting" @click="toggleSorting(column)">
+                                                <ArrowOrderSVG :direction="currentSortDirection[column.name]"
+                                                    v-if="column.sorting === true" />
+                                            </div>
+                                        </div>
                                     </th>
                                     <th scope="col" class="text-center px-6 py-3 text-md font-semibold text-gray-500">
                                         Acțiuni
@@ -131,6 +138,7 @@
 </template>
 
 <script>
+import ArrowOrderSVG from './ArrowOrderSVG.vue';
 import Filter from './Filter.vue';
 import GenericDeleteNotification from './GenericDeleteNotification.vue';
 import Pagination from './Pagination.vue';
@@ -143,7 +151,8 @@ export default {
     components: {
         Pagination,
         Filter,
-        GenericDeleteNotification
+        GenericDeleteNotification,
+        ArrowOrderSVG
     },
 
     props: {
@@ -170,6 +179,8 @@ export default {
             showDetails: [],
             isDeleteDialogOpen: false,
             itemToDelete: null,
+            currentSortColumn: null,
+            currentSortDirection: {},
         };
     },
 
@@ -213,6 +224,26 @@ export default {
         },
         viewInvoice(url) {
             window.open(url, '_blank');
+        },
+        toggleSorting(column) {
+            if (this.currentSortColumn === column.name) {
+                this.currentSortDirection[column.name] = this.currentSortDirection[column.name] === "asc" ? "desc" : "asc";
+            } else {
+                this.currentSortColumn = column.name;
+                this.currentSortDirection[column.name] = "asc";
+            }
+            this.fetchSortedData();
+        },
+
+        fetchSortedData() {
+            this.$inertia.get(route(this.getRoute, {
+                orderBy: this.currentSortColumn,
+                orderDirection: this.currentSortDirection[this.currentSortColumn],
+            }), {}, {
+                preserveState: true,
+                replace: true,
+                preserveScroll: true,
+            });
         },
 
     }
