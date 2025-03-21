@@ -45,7 +45,7 @@ class UserActivityReportService
     /**
      * Câte comenzi plasează un utilizator în medie.
      */
-    private function getAvgOrdersPerUser($startDate, $endDate): float
+    public function getAvgOrdersPerUser($startDate, $endDate): float
     {
         $ordersGroupedByUser = ClientOrder::whereBetween('created_at', [$startDate, $endDate])
             ->get()
@@ -58,7 +58,7 @@ class UserActivityReportService
     /**
      * Valoarea medie a coșului de cumpărături.
      */
-    private function getAvgOrderValue($startDate, $endDate): float
+    public function getAvgOrderValue($startDate, $endDate): float
     {
         $ordersGroupedByUser = ClientOrder::whereBetween('created_at', [$startDate, $endDate])
             ->get()
@@ -94,7 +94,7 @@ class UserActivityReportService
     /**
      * Numărul mediu de recenzii per utilizator în această lună.
      */
-    private function getAvgReviewsPerUser($startDate, $endDate): float
+    public function getAvgReviewsPerUser($startDate, $endDate): float
     {
         // 1️⃣ Obținem recenziile grupate pe utilizator
         $reviews = Review::whereBetween('created_at', [$startDate, $endDate])
@@ -149,7 +149,7 @@ class UserActivityReportService
     /**
      * Câte comenzi au fost plasate cu un cod de reducere.
      */
-    private function getOrdersWithDiscount($startDate, $endDate): int
+    public function getOrdersWithDiscount($startDate, $endDate): int
     {
         return ClientOrder::whereBetween('created_at', [$startDate, $endDate])
             ->whereNotNull('promo_code')
@@ -159,7 +159,7 @@ class UserActivityReportService
     /**
      * Câte comenzi au fost plasate fără un cod de reducere.
      */
-    private function getOrdersWithoutDiscount($startDate, $endDate): int
+    public function getOrdersWithoutDiscount($startDate, $endDate): int
     {
         return ClientOrder::whereBetween('created_at', [$startDate, $endDate])
             ->whereNull('promo_code')

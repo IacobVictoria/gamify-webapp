@@ -30,7 +30,8 @@
     </div>
 
     <div v-if="editMode && !calendarEvent.isGhost" class="discount-actions">
-      <button v-if="!parsedDetails?.fromFavorites" @click="editEvent" class="edit-btn">✏️ Edit</button>
+      <!-- edit button apare cand nu este la favorite si cand  nu a inceput deja discount ul -->
+      <button v-if="!parsedDetails?.fromFavorites && !calendarEvent.is_started" @click="editEvent" class="edit-btn">✏️ Edit</button>
       <button @click="deleteEvent" class="delete-btn">❌ Delete</button>
     </div>
     <div class="order-header-buttons">

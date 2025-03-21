@@ -41,6 +41,7 @@ class AdminEventCalendarController extends Controller
         $events = $events->map(function ($event) use ($lastEvents) {
             $eventArray = $event->toArray();
             $eventArray['is_last_recurring'] = $lastEvents->contains('id', $event->id);
+            $eventArray['is_started'] = now()->greaterThanOrEqualTo($event->start);
             return $eventArray;
         });        
 

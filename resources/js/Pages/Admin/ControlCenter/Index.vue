@@ -1,11 +1,14 @@
 <template>
     <AuthenticatedLayout>
+        <template #header>
+      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        📊 Admin Dashboard - Control Panel 🔧
+      </h2>
+    </template>
         <div class="px-24 py-6">
             <div class="w-full  mx-auto sm:px-6 lg:px-8">
                 <div class="p-6 text-white">
-                    <h2 class="text-3xl font-extrabold mb-6 flex items-center text-black">📦 Admin Control Panel
-                    </h2>
-                    <!-- Calendar Section -->
+            <!-- Calendar Section -->
                     <div class="mt-8 bg-white p-8 flex flex-col md:flex-row items-center justify-between">
                         <div class="text-left w-full md:w-2/3">
                             <h3 class="text-2xl font-bold text-gray-900">📅 Plan Ahead with Your Business Calendar</h3>

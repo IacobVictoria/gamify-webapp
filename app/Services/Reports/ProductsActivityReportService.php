@@ -54,7 +54,7 @@ class ProductsActivityReportService
      * 
      * @return array
      */
-    private function getTopSellingProducts($startDate, $endDate): array
+    public function getTopSellingProducts($startDate, $endDate): array
     {
         return OrderProduct::whereHas('order', function ($query) use ($startDate, $endDate) {
             $query->whereBetween('created_at', [$startDate, $endDate]);
@@ -64,7 +64,8 @@ class ProductsActivityReportService
             ->groupBy('product_id')
             ->map(fn($group) => [
                 'product_name' => $group->first()->product->name ?? 'Unknown',
-                'total_sold' => $group->sum('quantity')
+                'total_sold' => $group->sum('quantity'),
+                'image' => $group->first()->product->image_url
             ])
             ->sortByDesc('total_sold')
             ->values()

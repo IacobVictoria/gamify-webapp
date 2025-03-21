@@ -49,7 +49,26 @@
                         </option>
                     </select>
                 </div>
+                <div v-if="!is_recurring" class="mt-2">
+            <label class="flex items-center">
+                <input type="checkbox" v-model="formData.is_recurring">
+                <span class="ml-2 text-sm font-medium text-gray-700">Make it Recurring</span>
+            </label>
+        </div>
 
+        <div v-if="!is_recurring" class="mt-2">
+            <label class="block text-sm font-medium text-gray-700">Recurring Interval</label>
+            <div class="flex gap-4 mt-2">
+                <label class="flex items-center">
+                    <input type="radio" v-model="formData.recurring_interval" value="weekly" class="mr-2">
+                    Weekly
+                </label>
+                <label class="flex items-center">
+                    <input type="radio" v-model="formData.recurring_interval" value="monthly" class="mr-2">
+                    Monthly
+                </label>
+            </div>
+        </div>
                 <div class="mt-2">
                     <label for="discount" class="block text-sm font-medium text-gray-700">Discount Percentage</label>
                     <input v-model="formData.discount" type="number" id="discount"
@@ -88,8 +107,11 @@ export default {
                 category: this.calendarEvent.details ? JSON.parse(this.calendarEvent.details).category : '',
                 discount: this.calendarEvent.details ? JSON.parse(this.calendarEvent.details).discount : 0,
                 is_published: this.calendarEvent.is_published || false,
+                is_recurring: this.calendarEvent?.is_recurring ?? false,
+                recurring_interval: this.calendarEvent?.recurring_interval ?? null,
             },
-            startTimeMin: new Date().toISOString().split("T")[0] + 'T00:00'
+            startTimeMin: new Date().toISOString().split("T")[0] + 'T00:00',
+            
         };
     },
     methods: {

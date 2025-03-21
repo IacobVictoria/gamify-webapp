@@ -1,5 +1,10 @@
 <template>
     <AuthenticatedLayout>
+        <template #header>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        📊 Admin Dashboard - Quiz and Hangman Manager 🎮
+      </h2>
+    </template>
         <div class="px-24 py-6">
             <div class="w-full  mx-auto sm:px-6 lg:px-8">
                     <div class="container mx-auto px-6 py-12">

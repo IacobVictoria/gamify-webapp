@@ -69,7 +69,7 @@ class GamesActivityReportService
 
     // Dacă vrei să vezi dacă utilizatorii abandonează jocurile, compară jocurile finalizate cu cele începute.
 
-    private function getHangmanCompletionRate($startDate, $endDate): float
+    public function getHangmanCompletionRate($startDate, $endDate): float
     {
         $totalGames = HangmanSession::whereBetween('created_at', [$startDate, $endDate])->count();
         $completedGames = HangmanSession::whereBetween('created_at', [$startDate, $endDate])
@@ -82,7 +82,7 @@ class GamesActivityReportService
     /**
      * Average Quizzes Completed Per User
      */
-    private function getAverageQuizzesCompleted($startDate, $endDate): float
+    public function getAverageQuizzesCompleted($startDate, $endDate): float
     {
         $userQuizCounts = UserQuizResult::select('user_id', DB::raw('COUNT(quiz_id) as quizzes_completed'))
             ->whereBetween('date', [$startDate, $endDate])
@@ -94,7 +94,7 @@ class GamesActivityReportService
     }
 
     //Dacă vrei să vezi câți utilizatori termină quiz-ul cu un scor de peste 80%
-    private function getQuizSuccessRate($startDate, $endDate): array
+    public function getQuizSuccessRate($startDate, $endDate): array
     {
         return UserQuizResult::whereBetween('date', [$startDate, $endDate])
             ->where('percentage_score', '>=', 80)
