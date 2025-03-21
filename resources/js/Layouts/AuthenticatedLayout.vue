@@ -137,11 +137,9 @@ import Icon from '@/Pages/Admin/Notifications/Icon.vue';
                                         <DropdownLink :href="route('home')" method="get" as="button">
                                             Home
                                         </DropdownLink>
-                                        <DropdownLink v-if="authUserHasRole('Admin')"
-                                            :href="route('admin.shopping-cart.index')" method="get" as="button">
-                                            Shopping Cart
+                                        <DropdownLink :href="route('user.shopping-cart.index')" method="get" as="button">
+                                            ShoppingCart
                                         </DropdownLink>
-
                                     </template>
                                 </Dropdown>
                             </div>

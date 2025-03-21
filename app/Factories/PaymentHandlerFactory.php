@@ -2,6 +2,7 @@
 namespace App\Factories;
 
 use App\Services\PaymentHandlers\AuthorizedPaymentHandler;
+use App\Services\PaymentHandlers\ClearCartHandler;
 use App\Services\PaymentHandlers\GenerateInvoiceHandler;
 use App\Services\PaymentHandlers\ExpediteOrderHandler;
 use App\Services\PaymentHandlers\ApplyBadgeHandler;
@@ -23,6 +24,7 @@ class PaymentHandlerFactory
         $applyBadges = new ApplyBadgeHandler($app->make(ShoppingBadgeService::class));
         $applyDiscount = new ApplyDiscountHandler($app->make(DiscountService::class));
         $inventory = new InventoryTransactionHandler();
+        $clearCart = new ClearCartHandler();
 
         // Construim lanțul de handler-e
         $authorizePayment->setNext($updateStock)
@@ -30,8 +32,8 @@ class PaymentHandlerFactory
             ->setNext($applyDiscount)
             ->setNext($generateInvoice)
             ->setNext($expediteOrder)
-            ->setNext($applyBadges);
-
+            ->setNext($applyBadges)
+            ->setNext($clearCart);
 
         return $authorizePayment;
     }

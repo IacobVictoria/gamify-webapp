@@ -1,6 +1,8 @@
 <template>
-  <div class="bg-white">
-    <div class="mx-auto max-w-4xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+<AuthenticatedLayout>
+        <div class="bg-gray-50">
+            <div class="mx-auto max-w-2xl px-4 pb-24 pt-16 sm:px-6 lg:max-w-7xl lg:px-8">
+    <div class="mx-auto max-w-4xl">
       <h1 class="text-3xl font-bold tracking-tight text-gray-900">Shopping Cart</h1>
 
       <form class="mt-12">
@@ -10,7 +12,7 @@
           <ul role="list" class="divide-y divide-gray-200 border-b border-t border-gray-200">
             <li v-for="item in cartItems" :key="item.product.id" class="flex py-6 sm:py-10">
               <div class="flex-shrink-0">
-                <img src="/images/best.jpg" :alt="item.product.description"
+                <img :src="item.product.image" :alt="item.product.description"
                   class="h-24 w-24 rounded-lg object-cover object-center sm:h-32 sm:w-32" />
               </div>
 
@@ -109,6 +111,8 @@
         :items="outOfStockItems" :deleteRoute="'user.shopping-cart.destroy'" />
     </div>
   </div>
+</div>
+</AuthenticatedLayout>
 </template>
 
 <script>
@@ -116,8 +120,7 @@ import DropdownInput from '@/Components/DropdownInput.vue';
 import FormInput from '@/Components/FormInput.vue';
 import GenericDeleteNotification from '@/Components/GenericDeleteNotification.vue';
 import { CheckIcon, ClockIcon } from '@heroicons/vue/24/outline';
-
-
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 export default {
   name: 'User/ShoppingCart',
@@ -125,7 +128,8 @@ export default {
     GenericDeleteNotification,
     DropdownInput,
     CheckIcon,
-    ClockIcon
+    ClockIcon,
+    AuthenticatedLayout
 
   },
   props: {

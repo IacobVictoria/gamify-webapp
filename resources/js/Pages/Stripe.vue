@@ -94,6 +94,9 @@ export default {
         } else {
           this.successMessage = "Payment successful!";
           await axios.post("/confirm-payment", { order_id: this.order.id });
+          setTimeout(() => {
+        this.$inertia.visit('/user/dashboard'); // ← Redirecționează după succes
+      }, 2000);
         }
       } catch (error) {
         this.errorMessage = "Something went wrong!";
