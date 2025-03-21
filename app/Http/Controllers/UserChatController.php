@@ -42,22 +42,17 @@ class UserChatController extends Controller
                 return $message->sender_id === $currentUser->id ? $message->receiver_id : $message->sender_id;
             })
             ->map(function ($messages) use ($currentUser) {
-                $lastMessage = $messages->sortByDesc('sent_at')->first(); //mesajul cel mai recent
-                $friend = $lastMessage->sender_id === Auth::id() ? $lastMessage->receiver : $lastMessage->sender;
+                $friend = $messages->first()->sender_id === Auth::id() ? $messages->first()->receiver : $messages->first()->sender;
 
                 $unreadCount = $messages->where('receiver_id', $currentUser->id)
                     ->where('is_read', false) // Mesaje necitite
                     ->count();
-                // broadcast(new UserStatusChangedEvent($currentUser, 'online', $friend));
-    
+
                 return [
                     'friend' => [
                         'id' => $friend->id,
                         'name' => $friend->name,
                     ],
-                    'lastMessage' => $lastMessage,
-                    'sent_at' => $lastMessage->sent_at,
-                    'is_read' => $lastMessage->is_read,
                     'unreadCount' => $unreadCount,
                     'status' => ''
                 ];
@@ -91,7 +86,7 @@ class UserChatController extends Controller
         $currentUser = Auth::user();
         $friend = User::find($friendId);
         $offset = $request->query('offset', 0); // Offset-ul implicit este 0
-        $limit = $request->query('limit', 10);
+        $limit = $request->query('limit', 5);
 
         //  intreaga conversație între utilizatorul curent și prietenul selectat
         $messages = ChatMessage::where(function ($query) use ($currentUser, $friend) {
@@ -183,11 +178,17 @@ class UserChatController extends Controller
     {
         $currentUser = Auth::user();
         $email = $request->input('emailFriend');
-
-        $friends = User::where('email', 'like', "%{$email}%")->get(['id', 'name', 'email']);
-
+    
+        $friendsQuery = User::query();
+    
+        if (!empty($email)) {
+            $friendsQuery->where('email', 'like', "%{$email}%");
+        }
+    
+        $friends = $friendsQuery->get(['id', 'name', 'email']);
+    
         if ($friends->isEmpty()) {
-            return response()->json([], 200);
+            return response()->json([]);
         }
 
         // grupăm toate mesajele între utilizatorul curent și prietenii găsiți

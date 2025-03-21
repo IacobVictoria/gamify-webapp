@@ -1,27 +1,49 @@
 <template>
-    <div class="w-1/4 p-4 border-r">
-        <input type="text" v-model="searchQuery" @input="searchFriendConversation"
-            placeholder="Search by email friend..." class="w-full p-2 border rounded mb-4">
-        <h2 class="text-lg font-semibold mb-4">Conversațiile tale</h2>
-        <ul v-if="searchResults.length > 0">
-            <li v-for="conversation in searchResults" :key="conversation.friend.id"
-                @click="selectConversation(conversation.friend)"
-                class="p-2 mb-2 cursor-pointer bg-gray-200 rounded-lg hover:bg-gray-300 relative">
-                <!-- <p>{{ conversation.status }}</p> -->
-                <p :class="conversation.status === 'Online' ? 'text-green-500' : 'text-gray-500'">{{ conversation.status
-                    }}</p>
-
-                <p class="font-semibold">{{ conversation.friend.name }}</p>
-                <p class="text-sm font-semibold">Expeditor: {{ conversation.lastMessage.sender.name }}</p>
-                <p class="text-gray-500 text-sm">Ultimul mesaj: {{ conversation.lastMessage.content }}</p>
-                <p class="text-xs text-gray-400">{{ conversation.sent_at }}</p>
-                <div v-if="conversation.unreadCount > 0" class="notification-badge">
-                    {{ conversation.unreadCount }}
-                </div>
-            </li>
-        </ul>
+    <div class="w-full md:w-1/3 bg-white shadow-md rounded-lg p-5 h-full z-50 overflow-y-auto">
+      <!-- Căutare -->
+      <input
+        type="text"
+        v-model="searchQuery"
+        @input="searchFriendConversation"
+        placeholder="🔍 Search friend..."
+        class="w-full p-3 border rounded-lg mb-5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+  
+      <h2 class="text-xl font-bold text-gray-800 mb-4">💬 Conversations</h2>
+  
+      <ul v-if="searchResults.length > 0" class="space-y-3">
+        <li
+          v-for="conversation in searchResults"
+          :key="conversation.friend.id"
+          @click="selectConversation(conversation.friend)"
+          class="flex items-center justify-between p-3 rounded-lg cursor-pointer bg-gray-100 hover:bg-blue-100 transition"
+        >
+          <!-- Stânga: avatar + nume -->
+          <div class="flex items-center gap-3">
+            <img  class="w-8 h-8 rounded-full"
+            :src="conversation.friend.gender === 'Male' ? '/images/male.png' : '/images/female.png'" alt="User Avatar" />
+            <div>
+              <p class="font-semibold text-gray-800">{{ conversation.friend.name }}</p>
+              <p
+                class="text-sm"
+                :class="conversation.status === 'Online' ? 'text-green-600' : 'text-gray-500'"
+              >
+                {{ conversation.status }}
+              </p>
+            </div>
+          </div>
+  
+          <!-- Dreapta: badge pentru mesaje necitite -->
+          <div v-if="conversation.unreadCount > 0"
+            class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+            {{ conversation.unreadCount }}
+          </div>
+        </li>
+      </ul>
+  
+      <p v-else class="text-sm text-gray-500 text-center mt-10">No conversations found.</p>
     </div>
-</template>
+  </template>
 
 <script>
 export default {
@@ -45,19 +67,12 @@ export default {
     },
     methods: {
         async searchFriendConversation() {
-            if (this.searchQuery.trim() === "") {
-                this.searchResults = [];
-                return;
-            }
-
             try {
                 const response = await axios.get('/user/user_chat/searchFriendConversation',
                     {
                         params: { emailFriend: this.searchQuery }
                     });
-                console.log(response.data)
                 this.searchResults = response.data;
-                console.log(this.searchResults)
             } catch (error) {
                 console.error("Error searching friends:", error);
                 this.searchResults = [];

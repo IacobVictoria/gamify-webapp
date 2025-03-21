@@ -2,29 +2,68 @@
     <AuthenticatedLayout>
         <div class="flex h-screen">
             <!-- Sidebar-ul cu lista de conversații -->
-            <ChatSidebar :conversations="conversations" :current-user="currentUser"
-                @selectConversation="openConversation" />
+            <ChatSidebar
+                :conversations="conversations"
+                :current-user="currentUser"
+                @selectConversation="openConversation"
+            />
 
             <!-- Fereastra pentru conversația selectată -->
             <div class="flex-1">
-                <ChatWindow v-if="selectedFriend" :friend="selectedFriend" :currentUser="currentUser" />
+                <ChatWindow
+                    v-if="selectedFriend"
+                    :friend="selectedFriend"
+                    :currentUser="currentUser"
+                />
                 <div v-else class="flex items-center justify-center h-full">
                     <p>Selectează o conversație pentru a începe chatul</p>
                 </div>
             </div>
-            <div class="w-80 border-l bg-gray-100 p-4">
-                <h3 class="text-lg font-bold mb-4">Add Friends</h3>
-                <input v-model="searchQuery" @input="searchUsers" type="text" placeholder="Search by email..."
-                    class="w-full p-2 border rounded mb-4" />
-                <ul>
-                    <li v-for="user in searchResults" :key="user.id" class="flex justify-between items-center mb-2">
-                        <span>{{ user.name }} ({{ user.email }})</span>
-                        <button @click="addFriend(user.id)"
-                            class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
-                            Add Friend
+            <div
+                class="w-full md:w-80 max-h-[100vh] overflow-y-auto bg-white border border-gray-200 p-6"
+            >
+                <h3 class="text-xl font-semibold text-gray-800 mb-5">
+                    👥 Add Friends
+                </h3>
+
+                <!-- Search Input -->
+                <input
+                    v-model="searchQuery"
+                    @input="searchUsers"
+                    type="text"
+                    placeholder="🔍 Search by email..."
+                    class="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+
+                <!-- Results -->
+                <ul v-if="searchResults.length > 0" class="space-y-3">
+                    <li
+                        v-for="user in searchResults"
+                        :key="user.id"
+                        class="flex justify-between items-center gap-3 bg-gray-50 border border-gray-100 rounded-lg px-3 py-3 hover:bg-blue-50 transition"
+                    >
+                        <div class="flex-1 min-w-0 overflow-hidden">
+                            <p class="font-semibold text-gray-800 truncate">
+                                {{ user.name }}
+                            </p>
+                            <p class="text-gray-500 text-sm truncate">
+                                {{ user.email }}
+                            </p>
+                        </div>
+
+                        <button
+                            @click="addFriend(user.id)"
+                            class="text-sm bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg whitespace-nowrap"
+                        >
+                            Add
                         </button>
                     </li>
                 </ul>
+
+                <!-- No Results -->
+                <p v-else class="text-center text-sm text-gray-400 mt-6">
+                    No users found. Try another email.
+                </p>
             </div>
         </div>
     </AuthenticatedLayout>
@@ -50,7 +89,6 @@ export default {
             type: Array,
             required: true,
         },
-
     },
     data() {
         return {
@@ -87,14 +125,16 @@ export default {
         },
         async addFriend(userId) {
             try {
-                await axios.post(`/user/user_friends/request`, { receiver_id: userId });
-                this.searchResults = this.searchResults.filter((user) => user.id !== userId);
-
+                await axios.post(`/user/user_friends/request`, {
+                    receiver_id: userId,
+                });
+                this.searchResults = this.searchResults.filter(
+                    (user) => user.id !== userId
+                );
             } catch (error) {
                 console.error("Error sending friend request:", error);
             }
         },
-
     },
 };
 </script>
