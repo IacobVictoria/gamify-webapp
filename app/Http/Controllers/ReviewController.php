@@ -168,7 +168,6 @@ class ReviewController extends Controller
         $review = Review::findOrFail($reviewId);
         $review->delete();
 
-        return redirect()->route('products.show', $productId)
-            ->with('success', 'Review deleted successfully!');
+        return redirect()->back();
     }
 }

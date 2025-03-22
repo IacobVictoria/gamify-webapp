@@ -133,7 +133,7 @@
                                         <div class="flex">
                                             <div class="min-w-0 flex-1">
                                                 <h4 class="text-sm">
-                                                    <a :href="route('products.show', item.product.id)"
+                                                    <a :href="route('products.show', item.product.slug)"
                                                         class="font-medium text-gray-700 hover:text-gray-800">{{
                                                             item.product.name }}</a>
                                                 </h4>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
@@ -28,9 +29,24 @@ class Product extends Model
         'old_price',
         'image_url',
         'product_sku',
-        'is_published'
+        'is_published',
+        'slug'
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($product) {
+            $product->slug = Str::slug($product->name, '-');
+        });
+
+        static::updating(function ($product) {
+            if ($product->isDirty('name')) {
+                $product->slug = Str::slug($product->name, '-');
+            }
+        });
+    }
     protected $casts = [
         'is_published' => 'boolean',
     ];

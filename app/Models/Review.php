@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\RatingTitle;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Review extends Model
 {
@@ -17,8 +18,9 @@ class Review extends Model
         'title',
         'rating',
         'description',
-        'likes'
+        'likes',
     ];
+
     protected $table = 'reviews';
 
     protected $primaryKey = 'id';

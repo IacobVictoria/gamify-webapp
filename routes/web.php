@@ -34,10 +34,8 @@ Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
 Route::group(['prefix' => 'products'], function () {
     Route::get('/', [ProductController::class, 'index'])->name('products.index');
-    Route::get('/{productsId}', [ProductController::class, 'show'])->name('products.show');
-    Route::get('/{productId}/reviews/create', [ReviewController::class, 'create'])->name('products.reviews.create');
+    Route::get('/{slug}', [ProductController::class, 'show'])->name('products.show');
     Route::post('/{productId}/reviews', [ReviewController::class, 'store'])->name('products.reviews.store');
-    Route::get('/{productId}/reviews/{reviewId}/edit', [ReviewController::class, 'edit'])->name('products.reviews.edit');
     Route::post('/{productId}/reviews/{reviewId}', [ReviewController::class, 'update'])->name('products.reviews.update');
     Route::delete('/{productId}/reviews/{reviewId}', [ReviewController::class, 'destroy'])->name('products.reviews.destroy');
     Route::post('/{productId}/like', [UserWishlistController::class, 'like'])->name('wishlist.products.like');

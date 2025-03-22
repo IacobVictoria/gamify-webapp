@@ -26,7 +26,7 @@ class ProductController extends Controller
 
         $searchQuery = $request->input('search', '');
 
-        $products = Product::where('name', 'like', "%{$searchQuery}%")->where('is_published',true)->get();
+        $products = Product::where('name', 'like', "%{$searchQuery}%")->where('is_published', true)->get();
 
         $products = $products->map(function ($product) use ($user) {
 
@@ -50,6 +50,7 @@ class ProductController extends Controller
                 'id' => $product->id,
                 'name' => $product->name,
                 'price' => $finalPrice,
+                'slug' => $product->slug,
                 'old_price' => !empty($discounts) ? $oldPrice : null,
                 'isFavorite' => $this->userService->hasLikedProduct($user, $product),
                 'discounts' => $discountValues,
@@ -63,16 +64,17 @@ class ProductController extends Controller
         ]);
     }
 
-    public function show(Request $request, string $id)
+    public function show($slug, Request $request)
     {
         $user = Auth()->user();
-
+        $product = Product::where('slug', $slug)->firstOrFail();
+        $id = $product->id;
         $product = Product::find($id);
         $isFavorite = $this->userService->hasLikedProduct($user, $product);
         $sortOrder = $request->input('order', "");
         $buyers = $request->input('buyers', "");
         $comparison = session('comparison', []);
-        $comparisonChecked = in_array($id, $comparison);
+        $comparisonChecked = in_array($product->id, $comparison);
 
         $discounts = Cache::get("discount_product_{$product->id}", []);
 
@@ -110,7 +112,7 @@ class ProductController extends Controller
         $noStatistics = true;
 
         if (
-            $buyers === 'true' && $reviewsQuery->whereHas('user.orders', function ($query) use ($id) {
+            $buyers === 'true' && !$reviewsQuery->whereHas('user.orders', function ($query) use ($id) {
                 $query->where('product_id', $id);
             })->exists()
         ) {
@@ -118,7 +120,6 @@ class ProductController extends Controller
             $noBuyersMessage = 'Nu există cumpărători care să fi lăsat o recenzie pentru acest produs.';
             $noStatistics = false;
         }
-
 
         $reviews = $reviewsQuery->orderBy($orderColumn, $orderDirection)->get();
 
@@ -175,13 +176,14 @@ class ProductController extends Controller
             'product' => [
                 'id' => $product->id,
                 'name' => $product->name,
+                'slug' => $product->slug,
                 'price' => $finalPrice,
                 'old_price' => !empty($discounts) ? $oldPrice : null,
                 'discounts' => $discountValues,
                 'category' => $product->category,
                 'image' => $product->image_url,
                 'description' => $product->description,
-                'stock'=>$product->stock,
+                'stock' => $product->stock,
                 'calories' => $product->calories,
                 'protein' => $product->protein,
                 'carbs' => $product->carbs,

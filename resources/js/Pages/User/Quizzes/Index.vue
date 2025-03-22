@@ -3,7 +3,8 @@
         <!-- 🔥 Leaderboard Section -->
         <div class="leaderboard-header animate-fade-in">
             <h2
-                class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-500 font-extrabold text-3xl md:text-4xl tracking-wide">
+                class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-500 font-extrabold text-3xl md:text-4xl tracking-wide"
+            >
                 Hello, {{ $page.props.user.name }}! 🚀
             </h2>
             <p class="text-gray-700 text-lg font-medium mt-2">
@@ -16,24 +17,49 @@
             <!-- 🎯 Easy Quizzes -->
             <div v-if="quizzes['easy'].length" class="space-y-6">
                 <div
-                    class=" flex flex-row category-header bg-green-200 shadow-md p-4 rounded-lg flex items-center justify-center gap-2">
+                    class="flex flex-row category-header bg-green-200 shadow-md p-4 rounded-lg flex items-center justify-center gap-2"
+                >
                     <div class="flex flex-row">
-                        <span class="letter-box bg-green-500 text-white">E</span>
-                        <span class="letter-box bg-green-400 text-white">A</span>
-                        <span class="letter-box bg-green-300 text-white">S</span>
-                        <span class="letter-box bg-green-200 text-white">Y</span>
-                        <h2 class="text-green-700 font-semibold text-2xl">Easy</h2>
+                        <span class="letter-box bg-green-500 text-white"
+                            >E</span
+                        >
+                        <span class="letter-box bg-green-400 text-white"
+                            >A</span
+                        >
+                        <span class="letter-box bg-green-300 text-white"
+                            >S</span
+                        >
+                        <span class="letter-box bg-green-200 text-white"
+                            >Y</span
+                        >
+                        <h2 class="text-green-700 font-semibold text-2xl">
+                            Easy
+                        </h2>
                     </div>
-                    <img :src="imagePath('/quizzes/easy-quiz.png')" class="w-12" />
+                    <img
+                        :src="imagePath('/quizzes/easy-quiz.png')"
+                        class="w-12"
+                    />
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div v-for="quiz in quizzes['easy']" :key="quiz.quizData.id" class="quiz-card quiz-easy">
+                    <div
+                        v-for="quiz in quizzes['easy']"
+                        :key="quiz.quizData.id"
+                        class="quiz-card quiz-easy"
+                    >
                         <h3 class="quiz-title">{{ quiz.quizData.title }}</h3>
-                        <p class="quiz-description">{{ quiz.quizData.description }}</p>
-                        <inertia-link :href="route('user.quiz.show', { quizId: quiz.quizData.id })"
-                            class="quiz-button bg-green-500">Let's Play</inertia-link>
-                        <div v-if="quiz.is_locked" class="locked-overlay">LOCKED</div>
+                        <p class="quiz-description">
+                            {{ quiz.quizData.description }}
+                        </p>
+                        <inertia-link
+                            :href="route('user.quiz.show', quiz.quizData.slug)"
+                            class="quiz-button bg-green-500"
+                            >Let's Play</inertia-link
+                        >
+                        <div v-if="quiz.is_locked" class="locked-overlay">
+                            LOCKED
+                        </div>
                     </div>
                 </div>
             </div>
@@ -41,48 +67,95 @@
             <!-- 🏆 Medium Quizzes -->
             <div v-if="quizzes['medium'].length" class="space-y-6">
                 <div
-                    class="category-header bg-yellow-200 shadow-md p-4 rounded-lg flex items-center justify-center gap-2">
+                    class="category-header bg-yellow-200 shadow-md p-4 rounded-lg flex items-center justify-center gap-2"
+                >
                     <div class="flex flex-row">
-                        <span class="letter-box bg-yellow-500 text-white">M</span>
-                        <span class="letter-box bg-yellow-400 text-white">E</span>
-                        <span class="letter-box bg-yellow-300 text-white">D</span>
-                        <span class="letter-box bg-yellow-200 text-white">I</span>
-                        <span class="letter-box bg-yellow-100 text-white">U</span>
-                        <span class="letter-box bg-yellow-50 text-white">M</span>
-                        <h2 class="text-yellow-700 font-semibold text-2xl">Medium</h2>
+                        <span class="letter-box bg-yellow-500 text-white"
+                            >M</span
+                        >
+                        <span class="letter-box bg-yellow-400 text-white"
+                            >E</span
+                        >
+                        <span class="letter-box bg-yellow-300 text-white"
+                            >D</span
+                        >
+                        <span class="letter-box bg-yellow-200 text-white"
+                            >I</span
+                        >
+                        <span class="letter-box bg-yellow-100 text-white"
+                            >U</span
+                        >
+                        <span class="letter-box bg-yellow-50 text-white"
+                            >M</span
+                        >
+                        <h2 class="text-yellow-700 font-semibold text-2xl">
+                            Medium
+                        </h2>
                     </div>
-                    <img :src="imagePath('/quizzes/medium-quiz.png')" class="w-12" />
+                    <img
+                        :src="imagePath('/quizzes/medium-quiz.png')"
+                        class="w-12"
+                    />
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div v-for="quiz in quizzes['medium']" :key="quiz.quizData.id" class="quiz-card quiz-medium">
+                    <div
+                        v-for="quiz in quizzes['medium']"
+                        :key="quiz.quizData.id"
+                        class="quiz-card quiz-medium"
+                    >
                         <h3 class="quiz-title">{{ quiz.quizData.title }}</h3>
-                        <p class="quiz-description">{{ quiz.quizData.description }}</p>
-                        <inertia-link :href="route('user.quiz.show', { quizId: quiz.quizData.id })"
-                            class="quiz-button bg-yellow-500">Let's Play</inertia-link>
-                        <div v-if="quiz.is_locked" class="locked-overlay">LOCKED</div>
+                        <p class="quiz-description">
+                            {{ quiz.quizData.description }}
+                        </p>
+                        <inertia-link
+                            :href="route('user.quiz.show', quiz.quizData.slug)"
+                            class="quiz-button bg-yellow-500"
+                            >Let's Play</inertia-link
+                        >
+                        <div v-if="quiz.is_locked" class="locked-overlay">
+                            LOCKED
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- 🔥 Hard Quizzes -->
             <div v-if="quizzes['hard'].length" class="space-y-6">
-                <div class="category-header bg-red-200 shadow-md p-4 rounded-lg flex items-center justify-center gap-2">
+                <div
+                    class="category-header bg-red-200 shadow-md p-4 rounded-lg flex items-center justify-center gap-2"
+                >
                     <div class="flex flex-row">
                         <span class="letter-box bg-red-500 text-white">H</span>
                         <span class="letter-box bg-red-400 text-white">A</span>
                         <span class="letter-box bg-red-300 text-white">R</span>
                         <span class="letter-box bg-red-200 text-white">D</span>
-                        <h2 class="text-red-700 font-semibold text-2xl">Hard</h2>
+                        <h2 class="text-red-700 font-semibold text-2xl">
+                            Hard
+                        </h2>
                     </div>
-                    <img :src="imagePath('/quizzes/hard-quiz.png')" class="w-12" />
+                    <img
+                        :src="imagePath('/quizzes/hard-quiz.png')"
+                        class="w-12"
+                    />
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div v-for="quiz in quizzes['hard']" :key="quiz.quizData.id" class="quiz-card quiz-hard">
+                    <div
+                        v-for="quiz in quizzes['hard']"
+                        :key="quiz.quizData.id"
+                        class="quiz-card quiz-hard"
+                    >
                         <h3 class="quiz-title">{{ quiz.quizData.title }}</h3>
-                        <p class="quiz-description">{{ quiz.quizData.description }}</p>
-                        <inertia-link :href="route('user.quiz.show', { quizId: quiz.quizData.id })"
-                            class="quiz-button bg-red-500">Let's Play</inertia-link>
-                        <div v-if="quiz.is_locked" class="locked-overlay">LOCKED</div>
+                        <p class="quiz-description">
+                            {{ quiz.quizData.description }}
+                        </p>
+                        <inertia-link
+                            :href="route('user.quiz.show', quiz.quizData.slug)"
+                            class="quiz-button bg-red-500"
+                            >Let's Play</inertia-link
+                        >
+                        <div v-if="quiz.is_locked" class="locked-overlay">
+                            LOCKED
+                        </div>
                     </div>
                 </div>
             </div>
@@ -90,28 +163,27 @@
     </AuthenticatedLayout>
 </template>
 
-
 <script>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import LeaderBoardQuizzes from './LeaderBoardQuizzes.vue';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import LeaderBoardQuizzes from "./LeaderBoardQuizzes.vue";
 export default {
     components: {
-        AuthenticatedLayout
+        AuthenticatedLayout,
     },
 
     props: {
         quizzes: {
             type: Array,
-            required: true
+            required: true,
         },
         leaderboard: {
             type: Array,
-            required: true
-        }
+            required: true,
+        },
     },
     components: {
         LeaderBoardQuizzes,
-        AuthenticatedLayout
+        AuthenticatedLayout,
     },
     watch: {
         quizzes: {
@@ -119,10 +191,10 @@ export default {
             immediate: true,
             handler: (newQuizzes, oldQuizzes) => {
                 //console.log("Quizzes changed:", newQuizzes, oldQuizzes);
-            }
-        }
+            },
+        },
     },
-}
+};
 </script>
 <style scoped>
 /* 🏆 Carduri quiz mai mari */
@@ -272,13 +344,10 @@ export default {
     border-radius: 10px;
     backdrop-filter: blur(10px);
     margin-top: 4em;
-
 }
 
 /* 🔥 Gradient pe text pentru un efect premium */
 .bg-clip-text {
     -webkit-text-fill-color: transparent;
 }
-
-
 </style>

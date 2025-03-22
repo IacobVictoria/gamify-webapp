@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class UserQuiz extends Model
 {
@@ -12,8 +13,25 @@ class UserQuiz extends Model
         'id',
         'title',
         'description',
-        'difficulty'
+        'difficulty',
+        'slug'
     ];
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($quiz) {
+            if (empty($quiz->slug)) {
+                $quiz->slug = Str::slug($quiz->title, '-');
+            }
+        });
+
+        static::updating(function ($quiz) {
+            if ($quiz->isDirty('title')) {
+                $quiz->slug = Str::slug($quiz->title, '-');
+            }
+        });
+    }
     protected $table = 'user_quizzes';
 
     protected $primaryKey = 'id';

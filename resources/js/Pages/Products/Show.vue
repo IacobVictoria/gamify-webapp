@@ -193,7 +193,7 @@ export default {
             });
         },
         authorizedBuyers() {
-            this.$inertia.get(route('products.show', this.product.id), {
+            this.$inertia.get(route('products.show', this.product.slug), {
                 buyers: true,
             }, {
                 preserveState: true,
@@ -219,7 +219,7 @@ export default {
     watch: {
         sortOrder: {
             handler: debounce(300, function () {
-                this.$inertia.get(route('products.show', this.product.id), {
+                this.$inertia.get(route('products.show', this.product.slug), {
 
                     order: this.sortOrder,
                 }, {

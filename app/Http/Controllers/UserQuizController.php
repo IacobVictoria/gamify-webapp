@@ -22,7 +22,7 @@ class UserQuizController extends Controller
     protected $userScoreService;
     protected $quizService, $notificationService;
 
-    public function __construct(UserScoreService $userScoreService,UserQuizService $quizService, NotificationService $notificationService)
+    public function __construct(UserScoreService $userScoreService, UserQuizService $quizService, NotificationService $notificationService)
     {
         $this->userScoreService = $userScoreService;
         $this->quizService = $quizService;
@@ -55,7 +55,7 @@ class UserQuizController extends Controller
         ]);
     }
 
-    public function show(string $quizId)
+    public function show(string $slug)
     {
         $user = Auth::user();
 
@@ -63,8 +63,9 @@ class UserQuizController extends Controller
             'questions.answers' => function ($query) {
                 $query->orderByRaw('RAND()');
             }
-        ])->findOrFail($quizId);
+        ])->where('slug', $slug)->firstOrFail();
 
+        $quizId = $quiz->id;
         $quiz->questions = $quiz->questions->shuffle();
 
         $nr_attempts = $user->quizResults()->where('quiz_id', $quizId)->max('attempt_number') ?? 0;

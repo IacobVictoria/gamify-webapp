@@ -72,7 +72,7 @@ Route::prefix('wishlist')->group(function () {
 
 Route::prefix('quizzes')->group(function () {
     Route::get('/', [UserQuizController::class, 'index'])->name('quizzes.index');
-    Route::get('/{quizId}', [UserQuizController::class, 'show'])->name('quiz.show');
+    Route::get('/{slug}', [UserQuizController::class, 'show'])->name('quiz.show');
     Route::post('/remarks/{quizId}', [UserQuizRemarkController::class, 'store'])->name('quiz.remark.store');
 });
 

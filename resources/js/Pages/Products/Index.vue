@@ -27,7 +27,7 @@
 
                             <div v-for="product in products" :key="product.id"
                                 class="group relative bg-white shadow-lg rounded-lg p-4 flex flex-col items-center h-full">
-                                <inertia-link :href="route('products.show', product.id)" class="no-underline">
+                                <inertia-link :href="route('products.show', product.slug)" class="no-underline">
                                     <div
                                         class="relative w-full h-64 flex items-center justify-center overflow-hidden rounded-lg">
                                         <img :src="product.image" alt="imageAlt"
