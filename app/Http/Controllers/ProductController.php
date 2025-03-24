@@ -175,7 +175,7 @@ class ProductController extends Controller
                 'old_price' => !empty($discounts) ? $oldPrice : null,
                 'discounts' => $discountValues,
                 'category' => $product->category,
-                'image' => $product->image_url,
+                'image_url' => $product->image_url,
                 'description' => $product->description,
                 'stock' => $product->stock,
                 'calories' => $product->calories,

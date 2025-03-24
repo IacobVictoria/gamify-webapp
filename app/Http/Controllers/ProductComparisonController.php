@@ -45,14 +45,17 @@ class ProductComparisonController extends Controller
         return response()->json($products);
     }
 
-    // Obține produse comparate dintr-un URL cu ID-uri
-    public function getComparisonByIds($ids)
+    // Obține produse comparate dintr-un URL cu SLUG-uri
+    public function getComparisonBySlugs($productSlugs)
     {
-        $productIds = explode(',', $ids);
-        $products = Product::whereIn('id', $productIds)->get();
+        $slugs = explode(',', $productSlugs);
+        $products = Product::whereIn('slug', $slugs)->where('is_published', true)->get();
 
-        if ($products->isEmpty()) {
-            return response()->json(['message' => 'Nu există produse de comparat.'], 404);
+        if ($products->count() !== count($slugs)) {
+            return redirect()->route('home')->with(
+                'errorMessage', 'Unul sau mai multe produse nu mai sunt disponibile pentru comparație.',
+            );
+            
         }
 
         $comparisonData = $this->compareAttributes($products);

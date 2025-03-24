@@ -1,32 +1,71 @@
 <template>
     <div class="relative mt-6">
-        <label class="block text-sm font-medium text-gray-700">Add to comparison</label>
-        <input type="checkbox" v-model="is_checked" @change="handleComparisonChange" class="mt-1 block" />
+        <label class="block text-sm font-medium text-gray-700"
+            >Add to comparison</label
+        >
+        <input
+            type="checkbox"
+            v-model="is_checked"
+            @change="handleComparisonChange"
+            class="mt-1 block"
+        />
 
-        <div v-if="showComparisonDropdown"
-            class="absolute right-0 mt-2 w-56 bg-white shadow-lg rounded-lg border border-gray-200 z-10">
+        <div
+            v-if="showComparisonDropdown"
+            class="absolute right-0 mt-2 w-56 bg-white shadow-lg rounded-lg border border-gray-200 z-10"
+        >
             <div class="p-4">
                 <div class="space-y-2">
-                    <div v-for="index in 3" :key="index" class="flex items-center justify-between mb-2">
+                    <div
+                        v-for="index in 3"
+                        :key="index"
+                        class="flex items-center justify-between mb-2"
+                    >
                         <div class="flex items-center">
-                            <img v-if="comparisonProducts[index - 1]" src="/images/pic1.jpg" alt="product image"
-                                class="w-12 h-12 object-cover border rounded mr-2" />
-                            <div v-else class="w-12 h-12 bg-gray-100 border rounded mr-2"></div>
+                            <img
+                                v-if="comparisonProducts[index - 1]"
+                                :src="comparisonProducts[index - 1].image_url"
+                                alt="product image"
+                                class="w-12 h-12 object-cover border rounded mr-2"
+                            />
+                            <div
+                                v-else
+                                class="w-12 h-12 bg-gray-100 border rounded mr-2"
+                            ></div>
                         </div>
-                        <button v-if="comparisonProducts[index - 1]"
-                            @click="removeFromComparison(comparisonProducts[index - 1].id)"
-                            class="text-red-500 hover:text-red-700 font-semibold">
+                        <button
+                            v-if="comparisonProducts[index - 1]"
+                            @click="
+                                removeFromComparison(
+                                    comparisonProducts[index - 1].id
+                                )
+                            "
+                            class="text-red-500 hover:text-red-700 font-semibold"
+                        >
                             ✖
                         </button>
                     </div>
                 </div>
 
-                <p v-if="comparisonProducts.length === 0" class="text-gray-500 text-sm text-center mt-2">
+                <p
+                    v-if="comparisonProducts.length === 0"
+                    class="text-gray-500 text-sm text-center mt-2"
+                >
                     No products in comparison
                 </p>
 
-                <button v-if="comparisonProducts.length > 0" @click="goToComparison"
-                    class="w-full bg-indigo-600 text-white py-2 rounded-lg mt-4 hover:bg-indigo-700">
+                <button
+                    v-if="comparisonProducts.length > 0"
+                    @click="goToComparison"
+                    :disabled="comparisonProducts.length < 2"
+                    class="w-full py-2 rounded-lg mt-4 font-semibold transition-colors duration-200"
+                    :class="{
+                        'bg-indigo-600 text-white hover:bg-indigo-700':
+                            comparisonProducts.length >= 2,
+                        'bg-gray-300 text-gray-600 cursor-not-allowed':
+                            comparisonProducts.length < 2,
+                    }"
+                >
                     Compare
                 </button>
             </div>
@@ -74,13 +113,16 @@ export default {
         },
         addToComparison(product) {
             const isDifferentCategory = this.comparisonProducts.some(
-                (existingProduct) => existingProduct.category !== product.category
+                (existingProduct) =>
+                    existingProduct.category !== product.category
             );
 
             if (isDifferentCategory) {
                 this.comparisonProducts = [];
                 this.is_checked = true;
-                alert("Category changed. Existing products were removed from comparison.");
+                alert(
+                    "Category changed. Existing products were removed from comparison."
+                );
             }
 
             axios
@@ -91,38 +133,46 @@ export default {
                 })
                 .catch((error) => {
                     console.error("Error adding product to comparison:", error);
-                    alert("Failed to add product to comparison. Please try again.");
+                    alert(
+                        "Failed to add product to comparison. Please try again."
+                    );
                     this.is_checked = false;
                 });
-        }
+        },
 
-        ,
         removeFromComparison(productId) {
-            this.comparisonProducts = this.comparisonProducts.filter((product) => product.id !== productId);
+            this.comparisonProducts = this.comparisonProducts.filter(
+                (product) => product.id !== productId
+            );
             this.toggleDropdownVisibility();
-            this.is_checked=false;
+            this.is_checked = false;
 
-            axios
-                .delete(`/comparison/remove/${productId}`)
-                .catch((error) => {
-                    console.error("Error removing product from comparison:", error);
-                    this.fetchComparisonProducts();
-                });
+            axios.delete(`/comparison/remove/${productId}`).catch((error) => {
+                console.error("Error removing product from comparison:", error);
+                this.fetchComparisonProducts();
+            });
         },
         toggleDropdownVisibility() {
             this.showComparisonDropdown = this.comparisonProducts.length > 0;
         },
         goToComparison() {
-            const productIds = this.comparisonProducts
-                .map((product) => product.id)
+            const productSlugs = this.comparisonProducts
+                .map((product) => product.slug)
                 .join(",");
-            window.location.href = `/comparison/${productIds}`;
-            axios.post('/comparison/reset');
+            this.$inertia.get(
+                `/comparison/${productSlugs}`,
+                {},
+                {
+                    onSuccess: () => {
+                        // optional dacă vrei reset după afișare
+                        axios.post("/comparison/reset");
+                    },
+                }
+            );
         },
     },
 };
 </script>
-
 
 <style scoped>
 .relative {

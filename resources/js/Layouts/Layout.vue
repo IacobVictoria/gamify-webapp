@@ -79,6 +79,9 @@ export default {
     },
 
     mounted() {
+        if (this.$page.props.errorMessage) {
+            this.show = true;
+        }
         this.$inertia.on('success', () => {
             if (this.$page.props.message) {
                 this.show = true;
@@ -87,12 +90,12 @@ export default {
                 }, 3500);
             }
 
-            if (this.$page.props.errorMessage) {
-                this.show = true;
-                setTimeout(() => {
-                    this.show = false;
-                }, 3500);
-            }
+            // if (this.$page.props.errorMessage) {
+            //     this.show = true;
+            //     setTimeout(() => {
+            //         this.show = false;
+            //     }, 3500);
+            // }
         })
     }
 }

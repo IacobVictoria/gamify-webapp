@@ -14,7 +14,7 @@
                                 class="relative w-full h-86 flex items-center justify-center overflow-hidden rounded-lg"
                             >
                                 <img
-                                    :src="product.image"
+                                    :src="product.image_url"
                                     alt="imageAlt"
                                     class="max-h-full max-w-full object-cover"
                                 />
@@ -77,7 +77,10 @@
                                     >💸 {{ product.price }} RON</span
                                 >
                             </div>
-
+                            <ComparisonDropdown
+                                :product="product"
+                                :isChecked="comparisonChecked"
+                            ></ComparisonDropdown>
                             <!-- Quantity Selector -->
                             <div class="mt-6">
                                 <label

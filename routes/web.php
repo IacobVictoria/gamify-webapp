@@ -68,8 +68,7 @@ Route::prefix('comparison')->group(function () {
     Route::post('/add', [ProductComparisonController::class, 'addToComparison']);
     Route::delete('/remove/{productId}', [ProductComparisonController::class, 'removeFromComparison']);
     Route::get('/', [ProductComparisonController::class, 'getProductsComparison']);
-    Route::get('/{ids}', [ProductComparisonController::class, 'getComparisonByIds'])->name('comparison.show');
-    ;
+    Route::get('/{productSlugs}', [ProductComparisonController::class, 'getComparisonBySlugs'])->name('comparison.show');
     Route::post('/reset', [ProductComparisonController::class, 'resetComparison']);
 
 });
