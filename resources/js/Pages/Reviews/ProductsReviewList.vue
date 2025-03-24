@@ -174,9 +174,8 @@
                                         <i
                                             class="fa fa-thumbs-up fa-3x"
                                             @click="
-                                                review.isLiked
-                                                    ? dislikeReview(review)
-                                                    : likeReview(review)
+                                                 review.user.id !== $page.props.user.id &&
+                                                 (review.isLiked ? dislikeReview(review) : likeReview(review))
                                             "
                                             :style="{
                                                 color: review.isLiked
@@ -299,7 +298,7 @@
                 </div>
             </div>
             <div
-                v-if="reviews.length < 0 && message === ''"
+                v-if="reviews.length === 0 && message==='' "
                 class="bg-yellow-100 mt-16 border border-yellow-300 text-yellow-700 text-center py-4 px-6 rounded-lg mb-6"
             >
                 Nu exista review uri la acest produs momentan! Fii primul care

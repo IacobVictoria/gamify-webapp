@@ -8,7 +8,7 @@ interface UserServiceInterface
 {
     public function likeReview(User $user, Review $review);
     public function unlikeReview(User $user, Review $review);
-    public function isVerified(User $user, string $productId);
+    public function isVerified(User $user, string $productId,string $reviewCreatedAt);
     public function hasLikedReview(User $user, Review $review);
 
     public function likeComment(User $user, ReviewComment $review);

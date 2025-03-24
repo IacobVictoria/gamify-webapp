@@ -103,23 +103,6 @@ class ProductController extends Controller
 
         $reviewsQuery = $product->reviews()->with(['user:id,name,gender', 'reviewMedia']);
 
-        if ($buyers === 'true') {
-            $reviewsQuery->whereHas('user.orders', function ($query) use ($id) {
-                $query->where('product_id', $id);
-            });
-        }
-        $noBuyersMessage = '';
-        $noStatistics = true;
-
-        if (
-            $buyers === 'true' && !$reviewsQuery->whereHas('user.orders', function ($query) use ($id) {
-                $query->where('product_id', $id);
-            })->exists()
-        ) {
-
-            $noBuyersMessage = 'Nu există cumpărători care să fi lăsat o recenzie pentru acest produs.';
-            $noStatistics = false;
-        }
 
         $reviews = $reviewsQuery->orderBy($orderColumn, $orderDirection)->get();
 
@@ -140,7 +123,7 @@ class ProductController extends Controller
 
         $reviews = $reviews->map(function ($review) use ($user, $id) {
             $userReview = $review->user;
-            $isVerfied = $this->userService->isVerified($userReview, $id);
+            $isVerfied = $this->userService->isVerified($userReview, $id,$review->updated_at);
             $comments = $review->reviewComments()->with('user:id,name,gender')->orderBy('updated_at', 'desc')->get()->map(function ($comment) use ($user) {
                 return [
                     'id' => $comment->id,
@@ -171,6 +154,17 @@ class ProductController extends Controller
                 'commentsCount' => $comments->count()
             ];
         });
+
+        $noBuyersMessage = '';
+        $noStatistics = true;
+        if ($buyers === 'true') {
+            $reviews = $reviews->filter(fn($review) => $review['isVerified']);
+        }
+
+        if ($buyers === 'true' && $reviews->isEmpty()) {
+            $noBuyersMessage = 'Nu există cumpărători verificați care să fi lăsat o recenzie pentru acest produs.';
+            $noStatistics = false;
+        }
 
         return Inertia::render('Products/Show', [
             'product' => [
