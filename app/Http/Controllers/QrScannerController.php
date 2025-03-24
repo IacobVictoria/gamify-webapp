@@ -62,12 +62,12 @@ class QrScannerController extends Controller
 
         $product = Product::find($qrCode->product_id);
 
-        $this->userScoreService->addScore($user, $product->score);
-        $this->qrScanProductsBadgeService->checkAndAssignBadges($user);
-
         if (!$product) {
             return back()->with('errorMessage', 'Product not found');
         }
+
+        $this->userScoreService->addScore($user, $product->score);
+        $this->qrScanProductsBadgeService->checkAndAssignBadges($user);
 
         QrCodeScan::create([
             'id' => Uuid::uuid(),
