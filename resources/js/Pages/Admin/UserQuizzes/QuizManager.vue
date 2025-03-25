@@ -123,10 +123,10 @@
             </div>
             <!-- Modal for Adding Question -->
             <AddQuizQuestion :isQuestionModalOpen="isAddQuestionOpen" :quiz-id="quiz.id"
-                :add-route="'admin.quiz_add_questions.store'" @close:closeModal="closeAddQuestionModal">
+                :add-route="'admin-gamification.quiz_add_questions.store'" @close:closeModal="closeAddQuestionModal">
             </AddQuizQuestion>
 
-            <UpdateQuizQuestion :is-update-open="isEditQuestionOpen" :update-route="'admin.quiz_update_question.update'"
+            <UpdateQuizQuestion :is-update-open="isEditQuestionOpen" :update-route="'admin-gamification.quiz_update_question.update'"
                 :question-data="questionToEdit" :quiz-id="quiz.id" @close:closeModal="closeEditQuestionModal">
             </UpdateQuizQuestion>
 
@@ -172,7 +172,7 @@ export default {
     },
     methods: {
         updateQuiz() {
-            this.$inertia.put(route('admin.user_quiz.update', { quizId: this.quiz.id }), {
+            this.$inertia.put(route('admin-gamification.user_quiz.update', { quizId: this.quiz.id }), {
                 title: this.quiz.title,
                 description: this.quiz.description,
                 difficulty: this.quiz.difficulty
@@ -180,7 +180,7 @@ export default {
         },
         deleteQuiz() {
             this.isDeleteOpen = true;
-            this.deleteRoute = 'admin.user_quiz.destroy';
+            this.deleteRoute = 'admin-gamification.user_quiz.destroy';
             this.deleteMessage += 'Are you sure  want to delete this quiz ?';
             this.objectToDelete = this.quiz.id;
         },
@@ -204,13 +204,13 @@ export default {
         },
         deleteQuestion(question) {
             this.isDeleteOpen = true;
-            this.deleteRoute = 'admin.questions.destroy';
+            this.deleteRoute = 'admin-gamification.questions.destroy';
             this.deleteMessage += 'Are you sure  want to delete this question ?';
             this.objectToDelete = question.id;
         },
         deleteAnswer(answer) {
             this.isDeleteOpen = true;
-            this.deleteRoute = 'admin.answers.destroy';
+            this.deleteRoute = 'admin-gamification.answers.destroy';
             this.deleteMessage += ' Are you sure  want to delete this answer ?';
             this.objectToDelete = answer.id;
         }

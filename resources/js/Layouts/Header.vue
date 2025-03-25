@@ -51,6 +51,12 @@
                                 Admin Dashboard
                             </inertia-link>
                         </template>
+                        <template v-if="authUserHasRole('Admin-Gamification')">
+                            <inertia-link :href="route('admin-gamification.dashboard')"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Admin Gamify Dashboard
+                            </inertia-link>
+                        </template>
                         <template v-if="authUserHasRole('User')">
                             <inertia-link :href="route('user.dashboard')"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">

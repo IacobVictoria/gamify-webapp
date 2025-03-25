@@ -19,15 +19,27 @@ class AdminQuizController extends Controller
     public function index(Request $request)
     {
         $filters = $request->input('filters', []);
-        $quizQuery = UserQuiz::with('questions.answers')->orderByDesc('created_at');
+        $quizQuery = UserQuiz::with('questions.answers');
+        $orderBy = $request->input('orderBy', 'created_at');
+        $orderDirection = $request->input('orderDirection', 'desc');
 
         if (isset($filters['searchTitle'])) {
             $quizQuery->where('title', 'like', '%' . $filters['searchTitle'] . '%');
         }
+
         if (isset($filters['searchQuestion'])) {
             $quizQuery->whereHas('questions', function ($query) use ($filters) {
                 $query->where('question', 'like', '%' . $filters['searchQuestion'] . '%');
             });
+        }
+
+        if (!empty($filters['searchDifficulty'])) {
+            $quizQuery->where('difficulty', $filters['searchDifficulty']);
+        }
+
+        if (in_array($orderBy, ['created_at'])) {
+            $orderDirection = in_array($orderDirection, ['asc', 'desc']) ? $orderDirection : 'asc';
+            $quizQuery->orderBy($orderBy, $orderDirection);
         }
 
         $quizzes = $quizQuery->paginate(10)->through(function ($quiz) {
@@ -49,10 +61,15 @@ class AdminQuizController extends Controller
             ];
         });
 
+        $difficulties = collect(UserQuizDifficulty::cases())->map(fn($diff) => [
+            'value' => $diff->value,
+            'label' => $diff->label(),
+        ]);
 
         return Inertia::render('Admin/UserQuizzes/Index', [
             'quizzes' => $quizzes,
-            'prevFilters' => $filters
+            'prevFilters' => $filters,
+            'difficulties' => $difficulties
         ]);
     }
 
@@ -106,7 +123,7 @@ class AdminQuizController extends Controller
         }
 
 
-        return redirect()->route('admin.user_quiz.index')->with('success', 'Quiz created successfully!');
+        return redirect()->route('admin-gamification.user_quiz.index')->with('success', 'Quiz created successfully!');
     }
 
     /**
@@ -133,17 +150,17 @@ class AdminQuizController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
-            'difficulty'=>'required'
+            'difficulty' => 'required'
         ]);
 
         $quiz = UserQuiz::find($quizId);
         $quiz->update([
             'title' => $validatedData['title'],
             'description' => $validatedData['description'],
-            'difficulty'=>$validatedData['difficulty']
+            'difficulty' => $validatedData['difficulty']
         ]);
 
-        return redirect()->back()->with('Succes Updated the quiz');
+        return redirect()->route('admin-gamification.user_quiz.index')->with('Succes Updated the quiz');
     }
 
     /**
@@ -155,7 +172,7 @@ class AdminQuizController extends Controller
 
         $quiz->delete();
 
-        return redirect()->route('admin.user_quiz.index')
+        return redirect()->route('admin-gamification.user_quiz.index')
             ->with('success', 'Quiz deleted successfully!');
     }
 }

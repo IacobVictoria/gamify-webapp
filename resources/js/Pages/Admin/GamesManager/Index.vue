@@ -19,7 +19,7 @@
                                 <p class="text-gray-700 mt-2">
                                     Create engaging quizzes for your users to test their knowledge and have fun.
                                 </p>
-                                <inertia-link :href="route('admin.user_quiz.index')"
+                                <inertia-link :href="route('admin-gamification.user_quiz.index')"
                                     class=" w-[20em] mt-6 bg-purple-600 no-underline text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-purple-700 transition duration-300">
                                     📝 Create Quiz
                                 </inertia-link>
@@ -33,7 +33,7 @@
                                 <p class="text-gray-700 mt-2">
                                     Classic Hangman game, improving vocabulary and logic skills.
                                 </p>
-                                <inertia-link :href="route('admin.hangman_manager.index')"
+                                <inertia-link :href="route('admin-gamification.hangman_manager.index')"
                                     class="w-[20em] mt-6 bg-orange-600 no-underline text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-orange-700 transition duration-300">
                                     🎯 Create Hangman
                                 </inertia-link>

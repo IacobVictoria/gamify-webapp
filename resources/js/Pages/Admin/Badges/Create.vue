@@ -33,7 +33,7 @@ export default {
     ,
     data() {
         return {
-            createRoute: route('admin.badges.store'),
+            createRoute: route('admin-gamification.badges.store'),
             fields: [
                 {
                     name: 'name',

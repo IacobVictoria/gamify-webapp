@@ -33,11 +33,16 @@ class AdminBadgeController extends Controller
             $badgeQuery->orderBy($orderBy, $orderDirection);
         }
 
+        if (!empty($filters['searchCategory'])) {
+            $badgeQuery->where('category', $filters['searchCategory']);
+        }
+
         $badges = $badgeQuery->paginate(10)->through(function ($badge) {
             return [
                 'id' => $badge->id,
                 'name' => $badge->name,
                 'score' => $badge->score,
+                'category' => $badge->category,
                 'created_at' => $badge->created_at->format('Y-m-d'),
                 'extra' => [
                     'description' => $badge->description,
@@ -46,9 +51,15 @@ class AdminBadgeController extends Controller
             ];
         });
 
+        $categories = collect(BadgeCategory::cases())->map(fn($case) => [
+            'value' => $case->value,
+            'label' => $case->label(),
+        ]);
+
         return Inertia::render('Admin/Badges/List', [
             'badges' => $badges,
-            'prevFilters' => $filters
+            'prevFilters' => $filters,
+            'categories' => $categories,
         ]);
     }
 
@@ -91,7 +102,7 @@ class AdminBadgeController extends Controller
         $badge->category = $validatedData['category'];
         $badge->image_path = $imageUrl;
         $badge->save();
-        return redirect()->route('admin.badges.index')->with('success', 'Badge created successfully!');
+        return redirect()->route('admin-gamification.badges.index')->with('success', 'Badge created successfully!');
 
     }
 
@@ -153,7 +164,7 @@ class AdminBadgeController extends Controller
         }
         $badge->save();
 
-        return redirect()->route('admin.badges.index')->with('success', 'Badge updated successfully!');
+        return redirect()->route('admin-gamification.badges.index')->with('success', 'Badge updated successfully!');
     }
 
     /**
@@ -171,6 +182,6 @@ class AdminBadgeController extends Controller
         }
         $badge->delete();
 
-        return redirect()->route('admin.badges.index')->with('success', 'Badge deleted successfully!');
+        return redirect()->route('admin-gamification.badges.index')->with('success', 'Badge deleted successfully!');
     }
 }

@@ -243,7 +243,7 @@ export default {
             };
 
             // Send the data to the backend to store
-            this.$inertia.post(route('admin.user_quiz.store'), payload);
+            this.$inertia.post(route('admin-gamification.user_quiz.store'), payload);
         }
     }
 };

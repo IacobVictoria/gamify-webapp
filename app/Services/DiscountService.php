@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Events\UserEligibleForPromoCodeEvent;
 use App\Jobs\SendMailPromoCodeGrantedJob;
+use App\Models\Medal;
 use App\Models\User;
 use Illuminate\Support\Str;
 
@@ -41,38 +42,38 @@ class DiscountService
     /**
      * Verifică dacă utilizatorul a atins un prag de discount și notifică
      */
-    public function checkAndNotifyBonusAvailability(User $user)
+    public function assignPromoForMedalAndNotify(User $user, string $tier)
     {
-        $discountLevels = [
-            200 => 20,
-            500 => 25,
-            1000 => 30
-        ];
+        $medal = Medal::where('tier', $tier)->first();
+
+        if (!$medal || !$medal->discount) {
+            return;
+        }
 
         $usedDiscounts = json_decode($user->used_discounts, true) ?? [];
 
-        foreach ($discountLevels as $points => $discount) {
-            if ($user->score >= $points && !isset($usedDiscounts[$points])) {
-                // Generăm un cod promo unic
-                $code = strtoupper(Str::random(10));
-
-                // Salvăm codul în user_discounts fără să îl marcăm ca folosit
-                $usedDiscounts[$points] = [
-                    'code' => $code,
-                    'discount' => $discount,
-                    'used' => false
-                ];
-
-                $user->used_discounts = json_encode($usedDiscounts);
-                $user->save();
-
-                // Trimitem email cu promo code și punctele câștigate
-                dispatch(new SendMailPromoCodeGrantedJob($user, $code, $discount, $points));
-
-                // Notificare despre noul discount
-                broadcast(new UserEligibleForPromoCodeEvent($user, $discount, $this->notificationService));
-            }
+        // Evită dublura
+        if (isset($usedDiscounts[$tier])) {
+            return;
         }
+
+        $code = strtoupper(\Str::random(10));
+
+        $usedDiscounts[$tier] = [
+            'code' => $code,
+            'discount' => $medal->discount,
+            'used' => false,
+        ];
+
+        $user->used_discounts = json_encode($usedDiscounts);
+        $user->save();
+
+        // Trimitem email cu promo code și punctele câștigate
+        dispatch(new SendMailPromoCodeGrantedJob($user, $code, $medal->discount, strtoupper($tier)));
+
+        // Notificare despre noul discount
+        broadcast(new UserEligibleForPromoCodeEvent($user, $medal->discount, $this->notificationService));
+
     }
 
     /**

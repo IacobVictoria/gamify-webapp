@@ -2,7 +2,7 @@
     <AuthenticatedLayout>
         <div v-if="$props.remarks.data.length > 0">
             <GenericList :title="'Quiz Remarks'" :description="'Here you can see all the feedbacks.'" :items="remarks"
-                :entityName="'remarks'" :filters="filters" :getRoute="'admin.quiz_remarks.show'" :extraId="quizId"
+                :entityName="'remarks'" :filters="filters" :getRoute="'admin-gamification.quiz_remarks.show'" :extraId="quizId"
                 :columns="columns" :prevFilters="prevFilters" class="p-4">
             </GenericList>
         </div>
@@ -55,7 +55,7 @@ export default {
     methods: {
         generateRoute(remarkId) {
             // Construiți ruta dinamic cu quizId și remarkId
-            return this.$route('admin.quiz_remarks.show', { quizId: this.quizId });
+            return this.$route('admin-gamification.quiz_remarks.show', { quizId: this.quizId });
         },
     },
 }

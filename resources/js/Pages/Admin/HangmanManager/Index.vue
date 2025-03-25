@@ -129,7 +129,7 @@ export default {
         addWord() {
             if (!this.newWord || !this.newHint) return;
             this.$inertia.post(
-                this.route("admin.hangman_manager.store"),
+                this.route("admin-gamification.hangman_manager.store"),
                 { word: this.newWord, hint: this.newHint },
                 {
                     preserveScroll: true,
@@ -143,7 +143,7 @@ export default {
         },
         deleteWord(word) {
             if (!confirm(`Ești sigur că vrei să ștergi ${word}?`)) return;
-            this.$inertia.delete(this.route("admin.hangman_manager.destroy", word), {
+            this.$inertia.delete(this.route("admin-gamification.hangman_manager.destroy", word), {
                 preserveScroll: true,
                 onSuccess: (page) => {
                     this.words = page.props.words;
@@ -153,7 +153,7 @@ export default {
         saveEdit() {
             if (!this.editWord.word || !this.editWord.hint) return;
 
-            this.$inertia.put(this.route("admin.hangman_manager.update", this.editWord.oldWord), {
+            this.$inertia.put(this.route("admin-gamification.hangman_manager.update", this.editWord.oldWord), {
                 new_word: this.editWord.word,
                 hint: this.editWord.hint
             }, {

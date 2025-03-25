@@ -46,6 +46,10 @@ class AuthenticatedSessionController extends Controller
                 return redirect()->intended(route('admin.dashboard', absolute: false));
             }
 
+            if (auth()->user()->hasRole('admin-gamification')) {
+                return redirect()->intended(route('admin.dashboard', absolute: false));
+            }
+
             if (auth()->user()->hasRole('user')) {
                 return redirect()->intended(route('user.dashboard', absolute: false));
             }

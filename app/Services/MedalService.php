@@ -9,28 +9,26 @@ use App\Models\User;
 
 class MedalService
 {
-    protected $notificationService;
+    protected $notificationService, $discountService;
 
-    public function __construct(NotificationService $notificationService)
+    public function __construct(NotificationService $notificationService, DiscountService $discountService)
     {
         $this->notificationService = $notificationService;
+        $this->discountService = $discountService;
     }
     public function checkAndAwardMedal(User $user)
     {
         $score = $user->score;
         $existingMedals = $user->medals->pluck('tier')->toArray();
 
-        // Lista medaliilor pe care le poate primi
-        $medals = [
-            'bronze' => 50,
-            'silver' => 100,
-            'gold' => 300
-        ];
+        // Obținem toate medaliile ordonate crescător după prag (threshold)
+        $medals = Medal::orderBy('threshold')->get();
+
         //să primească toate medaliile pentru care devine eligibil, chiar dacă sare peste anumite praguri
 
-        foreach ($medals as $tier => $threshold) {
-            if ($score >= $threshold && !in_array($tier, $existingMedals)) {
-                $this->awardMedal($user, $tier);
+        foreach ($medals as $medal) {
+            if ($score >= $medal->threshold && !in_array($medal->tier, $existingMedals)) {
+                $this->awardMedal($user, $medal->tier);
             }
         }
     }
@@ -42,6 +40,8 @@ class MedalService
 
             // Trimitere email prin job
             SendMedalAwardedMailJob::dispatch($user, $tier);
+
+            $this->discountService->assignPromoForMedalAndNotify($user, $tier);
         }
         broadcast(new UserMedalAwardedEvent($user, $medal, $this->notificationService));
     }

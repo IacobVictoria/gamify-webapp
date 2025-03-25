@@ -90,7 +90,7 @@ export default {
     },
     computed: {
         getUpdateRoute() {
-            return route('admin.badges.update', { badgeId: this.badge.id });
+            return route('admin-gamification.badges.update', { badgeId: this.badge.id });
         },
     },
 }

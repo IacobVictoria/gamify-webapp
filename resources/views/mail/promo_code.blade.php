@@ -40,7 +40,7 @@
 <body>
     <div class="container">
         <h2>🎉 Hello, {{ $user->name }}!</h2>
-        <p>Congratulations! You have reached <strong>{{ $points }} points</strong> and unlocked a <strong>{{ $discount }}%</strong> discount.</p>
+        <p>Congratulations! You have reached <strong>{{ $tier }} medal</strong> and unlocked a <strong>{{ $discount }}%</strong> discount.</p>
         <p>Your exclusive promo code is:</p>
         <p class="promo-code">{{ $promoCode }}</p>
         <p>Use this code at checkout to redeem your discount.</p>

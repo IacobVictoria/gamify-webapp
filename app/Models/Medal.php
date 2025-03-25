@@ -9,7 +9,12 @@ class Medal extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id', 'tier'];
+    protected $fillable = [
+        'id',
+        'tier',
+        'threshold',
+        'discount',
+    ];
 
     protected $primaryKey = 'id';
 
@@ -22,7 +27,7 @@ class Medal extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class,'user_medals');
-           
+        return $this->belongsToMany(User::class, 'user_medals');
+
     }
 }

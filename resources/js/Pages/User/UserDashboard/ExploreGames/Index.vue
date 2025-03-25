@@ -55,11 +55,11 @@
                         <h3 class="text-lg font-bold text-gray-700 mb-2">📚 Archives of knowledge</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <inertia-link :href="route('user.dashboard.explore-games.historyQuiz')"
-                                class="archive-link">
+                                class="archive-link no-underline">
                                 📊 Check your Quiz scores
                             </inertia-link>
                             <inertia-link :href="route('user.dashboard.explore-games.historyHangman')"
-                                class="archive-link">
+                                class="archive-link no-underline">
                                 🎯 Check your Hangman scores
                             </inertia-link>
                         </div>

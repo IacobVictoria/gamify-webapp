@@ -17,14 +17,14 @@ class SendMailPromoCodeGrantedJob implements ShouldQueue
     protected $user;
     protected $promoCode;
     protected $discount;
-    protected $points;
+    protected $tier;
 
-    public function __construct(User $user, string $promoCode, int $discount, int $points)
+    public function __construct(User $user, string $promoCode, int $discount, $tier)
     {
         $this->user = $user;
         $this->promoCode = $promoCode;
         $this->discount = $discount;
-        $this->points = $points;
+        $this->points = $tier;
     }
 
     public function handle()
@@ -33,7 +33,7 @@ class SendMailPromoCodeGrantedJob implements ShouldQueue
             $this->user,
             $this->promoCode,
             $this->discount,
-            $this->points
+            $this->tier
         ));
     }
 }

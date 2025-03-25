@@ -16,17 +16,17 @@ class PromoCodeGrantedMail extends Mailable
     public $user;
     public $promoCode;
     public $discount;
-    public $points;
+    public $tier;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(User $user, string $promoCode, int $discount, int $points)
+    public function __construct(User $user, string $promoCode, int $discount, $tier)
     {
         $this->user = $user;
         $this->promoCode = $promoCode;
         $this->discount = $discount;
-        $this->points = $points;
+        $this->points = $tier;
     }
 
     /**
@@ -35,7 +35,7 @@ class PromoCodeGrantedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '🎉 You’ve earned a promo code for reaching ' . $this->points . ' points!',
+            subject: '🎉 You’ve earned a promo code for reaching ' . $this->tier . ' medal!',
         );
     }
 

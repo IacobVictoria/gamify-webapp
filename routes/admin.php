@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminAccountController;
+use App\Http\Controllers\AdminActivitiesManagerController;
 use App\Http\Controllers\AdminBadgeController;
 use App\Http\Controllers\AdminClientOrderController;
 use App\Http\Controllers\AdminControlCenterController;
@@ -55,15 +56,15 @@ Route::prefix('products')->group(function () {
 
 });
 
-Route::prefix('badges')->group(function () {
-    Route::get('/', [AdminBadgeController::class, 'index'])
-        ->name('badges.index');
-    Route::get('/create-badge', [AdminBadgeController::class, 'create'])->name('badges.create');
-    Route::post('/create-badge', [AdminBadgeController::class, 'store'])->name('badges.store');
-    Route::get('/update-badge/{badgeId}', [AdminBadgeController::class, 'edit'])->name('badges.edit');
-    Route::put('/update-badge/{badgeId}', [AdminBadgeController::class, 'update'])->name('badges.update');
-    Route::delete('/delete/{badgeId}', [AdminBadgeController::class, 'destroy'])->name('badges.destroy');
-});
+// Route::prefix('badges')->group(function () {
+//     Route::get('/', [AdminBadgeController::class, 'index'])
+//         ->name('badges.index');
+//     Route::get('/create-badge', [AdminBadgeController::class, 'create'])->name('badges.create');
+//     Route::post('/create-badge', [AdminBadgeController::class, 'store'])->name('badges.store');
+//     Route::get('/update-badge/{badgeId}', [AdminBadgeController::class, 'edit'])->name('badges.edit');
+//     Route::put('/update-badge/{badgeId}', [AdminBadgeController::class, 'update'])->name('badges.update');
+//     Route::delete('/delete/{badgeId}', [AdminBadgeController::class, 'destroy'])->name('badges.destroy');
+// });
 
 Route::prefix('suppliers')->group(function () {
     Route::get('/', [AdminSupplierController::class, 'index'])
@@ -102,24 +103,24 @@ Route::prefix('shopping-cart')->group(function () {
     Route::delete('/{productId}', [AdminShoppingCartController::class, 'destroy'])->name('shopping-cart.destroy');
 });
 
-Route::prefix('user_quiz')->group(function () {
-    Route::get('/', [AdminQuizController::class, 'index'])->name('user_quiz.index');
-    Route::get('/create_quiz', [AdminQuizController::class, 'create'])->name('user_quiz.create');
-    Route::post('/create_quiz', [AdminQuizController::class, 'store'])->name('user_quiz.store');
-    Route::put('/update_quiz/{quizId}', [AdminQuizController::class, 'update'])->name('user_quiz.update');
-    Route::get('/update_quiz/{id}', [AdminQuizController::class, 'edit'])->name('user_quiz.edit');
-    Route::delete('/{quizId}', [AdminQuizController::class, 'destroy'])->name('user_quiz.destroy');
-    Route::delete('/questions/{id}', [AdminQuizQuestionController::class, 'destroy'])->name('questions.destroy');
-    Route::delete('/answers/{id}', [AdminQuizAnswerController::class, 'destroy'])->name('answers.destroy');
+// Route::prefix('user_quiz')->group(function () {
+//     Route::get('/', [AdminQuizController::class, 'index'])->name('user_quiz.index');
+//     Route::get('/create_quiz', [AdminQuizController::class, 'create'])->name('user_quiz.create');
+//     Route::post('/create_quiz', [AdminQuizController::class, 'store'])->name('user_quiz.store');
+//     Route::put('/update_quiz/{quizId}', [AdminQuizController::class, 'update'])->name('user_quiz.update');
+//     Route::get('/update_quiz/{id}', [AdminQuizController::class, 'edit'])->name('user_quiz.edit');
+//     Route::delete('/{quizId}', [AdminQuizController::class, 'destroy'])->name('user_quiz.destroy');
+//     Route::delete('/questions/{id}', [AdminQuizQuestionController::class, 'destroy'])->name('questions.destroy');
+//     Route::delete('/answers/{id}', [AdminQuizAnswerController::class, 'destroy'])->name('answers.destroy');
 
-});
+// });
 
-Route::prefix('quiz_manager')->group(function () {
-    Route::get('/{id}', [AdminQuizManagerController::class, 'show'])->name('quiz_manager.show');
-    Route::post('/{quizId}/add_question', [AdminQuizManagerController::class, 'addQuestion'])->name('quiz_add_questions.store');
-    Route::put('/{quizId}/update_question', [AdminQuizManagerController::class, 'updateQuestion'])->name('quiz_update_question.update');
-    Route::get('/quiz_remarks/{quizId}', [AdminUserQuizRemarkController::class, 'show'])->name('quiz_remarks.show');
-});
+// Route::prefix('quiz_manager')->group(function () {
+//     Route::get('/{id}', [AdminQuizManagerController::class, 'show'])->name('quiz_manager.show');
+//     Route::post('/{quizId}/add_question', [AdminQuizManagerController::class, 'addQuestion'])->name('quiz_add_questions.store');
+//     Route::put('/{quizId}/update_question', [AdminQuizManagerController::class, 'updateQuestion'])->name('quiz_update_question.update');
+//     Route::get('/quiz_remarks/{quizId}', [AdminUserQuizRemarkController::class, 'show'])->name('quiz_remarks.show');
+// });
 
 Route::prefix('calendar')->group(function () {
     Route::get('/', [AdminEventCalendarController::class, 'index'])->name('calendar.index');
@@ -161,16 +162,25 @@ Route::prefix('control_center')->group(function () {
     Route::get('/', [AdminControlCenterController::class, 'index'])->name('control_center.index');
 });
 
-Route::prefix('games_manager')->group(function () {
-    Route::get('/', [AdminGamesManagerController::class, 'index'])->name('games_manager.index');
+// Route::prefix('games_manager')->group(function () {
+//     Route::get('/', [AdminGamesManagerController::class, 'index'])->name('games_manager.index');
+// });
+
+Route::prefix('activities')->group(function () {
+    Route::get('/', [AdminActivitiesManagerController::class, 'index'])->name('activities.index');
+    Route::get('/create-activity', [AdminActivitiesManagerController::class, 'create'])->name('activities.create');
+    Route::post('/create-activity', [AdminActivitiesManagerController::class, 'store'])->name('activities.store');
+    Route::delete('/activities/{activityId}', [AdminActivitiesManagerController::class, 'destroy'])->name('activities.destroy');
+    Route::get('/update-activity/{activityId}', [AdminActivitiesManagerController::class, 'edit'])->name('activities.edit');
+    Route::put('/update-activity/{activityId}', [AdminActivitiesManagerController::class, 'update'])->name('activities.update');
 });
 
-Route::prefix('hangman_manager')->group(function () {
-    Route::get('/', [AdminHangmanManagerController::class, 'index'])->name('hangman_manager.index');
-    Route::post('/add', [AdminHangmanManagerController::class, 'store'])->name('hangman_manager.store');
-    Route::put('/update/{word}', [AdminHangmanManagerController::class, 'update'])->name('hangman_manager.update');
-    Route::delete('/delete/{word}', [AdminHangmanManagerController::class, 'destroy'])->name('hangman_manager.destroy');
-});
+// Route::prefix('hangman_manager')->group(function () {
+//     Route::get('/', [AdminHangmanManagerController::class, 'index'])->name('hangman_manager.index');
+//     Route::post('/add', [AdminHangmanManagerController::class, 'store'])->name('hangman_manager.store');
+//     Route::put('/update/{word}', [AdminHangmanManagerController::class, 'update'])->name('hangman_manager.update');
+//     Route::delete('/delete/{word}', [AdminHangmanManagerController::class, 'destroy'])->name('hangman_manager.destroy');
+// });
 
 Route::prefix('meetings')->group(function () {
     Route::get('/', [AdminMeetingController::class, 'index'])->name('meetings.index');

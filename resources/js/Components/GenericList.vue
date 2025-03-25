@@ -7,7 +7,7 @@
 
             <div v-if="createRoute" class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                 <inertia-link :href="route(createRoute)"
-                    class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    class="block no-underline rounded-md bg-indigo-600 px-3 py-2 text-center text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                     Add new {{ entityName }}
                 </inertia-link>
             </div>
@@ -95,7 +95,7 @@
                                     </div>
                                     <div class="mt-3 text-center sm:mt-5">
                                         <DialogTitle as="h3" class="text-base font-semibold leading-6 text-gray-900">
-                                            Are you sure you want to delete this account?
+                                            Are you sure you want to delete this item?
                                         </DialogTitle>
                                     </div>
                                 </div>

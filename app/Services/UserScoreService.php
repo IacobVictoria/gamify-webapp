@@ -11,12 +11,11 @@ use App\Models\User;
 class UserScoreService implements UserScoreInterface
 {
     protected $notificationService;
-    protected $discountService, $medalService;
+    protected $medalService;
 
-    public function __construct(NotificationService $notificationService, DiscountService $discountService, MedalService $medalService)
+    public function __construct(NotificationService $notificationService, MedalService $medalService)
     {
         $this->notificationService = $notificationService;
-        $this->discountService = $discountService;
         $this->medalService = $medalService;
     }
     public function addScore(User $user, $score)
@@ -33,14 +32,10 @@ class UserScoreService implements UserScoreInterface
         // verificare leaderboard
         app(LeaderboardService::class)->checkAndNotifyLeaderboardEntry($user, $previousPosition);
 
-        // verificare discounturi
-        $this->discountService->checkAndNotifyBonusAvailability($user);
-
         // acordare medalii
         $this->medalService->checkAndAwardMedal($user);
 
         broadcast(new UserScoreUpdatedEvent($user, $score, "Ai primit " . $score . " !", $this->notificationService));
-
     }
 
     public function updateScore(User $user, $score)
