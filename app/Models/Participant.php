@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,20 +10,19 @@ class Participant extends Model
 
     protected $fillable = [
         'id',
-        'event_id',
+        'activity_id',
         'user_id',
-        'confirmed',
     ];
+
     protected $primaryKey = 'id';
     protected $keyType = 'string';
     public $incrementing = false;
 
     protected $table = 'participants';
 
-
-    public function event()
+    public function activity()
     {
-        return $this->belongsTo(Event::class);
+        return $this->belongsTo(Activity::class);
     }
 
     public function user()

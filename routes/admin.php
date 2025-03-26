@@ -166,15 +166,6 @@ Route::prefix('control_center')->group(function () {
 //     Route::get('/', [AdminGamesManagerController::class, 'index'])->name('games_manager.index');
 // });
 
-Route::prefix('activities')->group(function () {
-    Route::get('/', [AdminActivitiesManagerController::class, 'index'])->name('activities.index');
-    Route::get('/create-activity', [AdminActivitiesManagerController::class, 'create'])->name('activities.create');
-    Route::post('/create-activity', [AdminActivitiesManagerController::class, 'store'])->name('activities.store');
-    Route::delete('/activities/{activityId}', [AdminActivitiesManagerController::class, 'destroy'])->name('activities.destroy');
-    Route::get('/update-activity/{activityId}', [AdminActivitiesManagerController::class, 'edit'])->name('activities.edit');
-    Route::put('/update-activity/{activityId}', [AdminActivitiesManagerController::class, 'update'])->name('activities.update');
-});
-
 // Route::prefix('hangman_manager')->group(function () {
 //     Route::get('/', [AdminHangmanManagerController::class, 'index'])->name('hangman_manager.index');
 //     Route::post('/add', [AdminHangmanManagerController::class, 'store'])->name('hangman_manager.store');

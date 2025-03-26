@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Jobs\ProcessRecurringEventJob;
 use App\Models\Event;
 use App\Models\Product;
-use App\Models\QrCodeEvent;
 use App\Services\EventService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -90,7 +89,7 @@ class AdminEventCalendarController extends Controller
             'start' => $validated['start'],
             'end' => $validated['end'],
             'status' => $validated['status'] ?? 'OPEN',
-            'type' => $validated['type'] ?? 'event',
+            'type' => $validated['type'],
             'details' => $validated['details'] ?? null,
             'calendarId' => $validated['calendarId'],
             'is_published' => $validated['is_published'] ?? false,
@@ -101,26 +100,6 @@ class AdminEventCalendarController extends Controller
         $event->last_recurring_event_id = $validated['is_recurring'] ? $event->id : null;
 
         $event->save();
-
-        if ($event->type === 'event') {
-            $qrFileName = "events/qr_codes_{$event->id}.png";
-            //url ul evenimentului
-            $qrCodeImage = QrCodeGenerator::format('png')
-                ->size(300)
-                ->color(0, 0, 0) // Negru
-                ->backgroundColor(255, 255, 255) // Alb
-                ->margin(1)
-                ->generate($qrFileName);
-
-            Storage::disk('s3')->put($qrFileName, $qrCodeImage, 'public');
-            QrCodeEvent::create([
-                'id' => Uuid::uuid(),
-                'qr_code' => $qrFileName,
-                'image_url' => Storage::disk('s3')->url($qrFileName),
-                'event_id' => $event->id,
-            ]);
-
-        }
 
         // Lansează job-ul doar dacă evenimentul este recurent
         if ($event->is_recurring) {
@@ -234,14 +213,7 @@ class AdminEventCalendarController extends Controller
         $event = Event::find($id);
         if ($event->type === 'discount') { //daca stergem un discount sa refacem preturile
             $this->resetDiscountPricesOnEventDeletion($event);
-        } elseif ($event->type === 'event') {
-            $qrCode = QrCodeEvent::where('event_id', $id)->first();
-
-            if ($qrCode) {
-                Storage::disk('s3')->delete($qrCode->qr_code);
-                QrCodeEvent::where('event_id', $id)->delete();
-            }
-        }
+        } 
 
         if ($event->is_recurring) {
             $familyId = $event->parent_event_id ?? $event->id;

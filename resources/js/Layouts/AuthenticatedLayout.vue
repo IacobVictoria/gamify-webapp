@@ -165,20 +165,6 @@ const isAdminGamification = () => {
                                         Control Panel
                                     </NavLink>
                                     <NavLink
-                                        :href="
-                                            route(
-                                                'admin-gamification.games_manager.index'
-                                            )
-                                        "
-                                        :active="
-                                            route().current(
-                                                'admin-gamification.games_manager.index'
-                                            )
-                                        "
-                                    >
-                                        Game center
-                                    </NavLink>
-                                    <NavLink
                                         :href="route('admin.products.index')"
                                         :active="
                                             route().current(
@@ -188,17 +174,6 @@ const isAdminGamification = () => {
                                     >
                                         Products
                                     </NavLink>
-                                    <NavLink
-                                        :href="route('admin-gamification.badges.index')"
-                                        :active="
-                                            route().current(
-                                                'admin-gamification.badges.index'
-                                            )
-                                        "
-                                    >
-                                        Badges
-                                    </NavLink>
-                                  
                                     <NavLink
                                         :href="
                                             route('admin.clients_orders.index')
@@ -268,6 +243,20 @@ const isAdminGamification = () => {
                                         "
                                     >
                                         Game center
+                                    </NavLink>
+                                    <NavLink
+                                        :href="
+                                            route(
+                                                'admin-gamification.activities.index'
+                                            )
+                                        "
+                                        :active="
+                                            route().current(
+                                                'admin-gamification.activities.index'
+                                            )
+                                        "
+                                    >
+                                        Activities Center
                                     </NavLink>
                                     <NavLink
                                         :href="
@@ -393,7 +382,8 @@ const isAdminGamification = () => {
                                         >
                                             Home
                                         </DropdownLink>
-                                        <DropdownLink v-if="authUserHasRole('User')"
+                                        <DropdownLink
+                                            v-if="authUserHasRole('User')"
                                             :href="
                                                 route(
                                                     'user.shopping-cart.index'

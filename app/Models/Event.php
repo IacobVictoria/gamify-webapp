@@ -35,13 +35,4 @@ class Event extends Model
         'last_recurring_event_id'
     ];
 
-    public function participants()
-    {
-        return $this->hasMany(Participant::class);
-    }
-    public function qrCode()
-    {
-        return $this->hasOne(QRCodeEvent::class, 'event_id');
-    }
-
 }

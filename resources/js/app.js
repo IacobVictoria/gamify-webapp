@@ -35,6 +35,13 @@ createInertiaApp({
                     imagePath(path) {
                         return window.settings.images + "/" + path;
                     },
+                    isRouteActive(route) {
+                        let currentRoute = window.location.href.replace(
+                            /\/$/,
+                            ""
+                        );
+                        return currentRoute == route;
+                    },
                 },
             })
             .use(ZiggyVue)

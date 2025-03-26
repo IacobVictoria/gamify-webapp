@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminActivitiesManagerController;
 use App\Http\Controllers\AdminBadgeController;
 use App\Http\Controllers\AdminGamesManagerController;
 use App\Http\Controllers\AdminGamificationController;
@@ -65,4 +66,14 @@ Route::prefix('hangman_manager')->group(function () {
     Route::post('/add', [AdminHangmanManagerController::class, 'store'])->name('hangman_manager.store');
     Route::put('/update/{word}', [AdminHangmanManagerController::class, 'update'])->name('hangman_manager.update');
     Route::delete('/delete/{word}', [AdminHangmanManagerController::class, 'destroy'])->name('hangman_manager.destroy');
+});
+
+
+Route::prefix('activities')->group(function () {
+    Route::get('/', [AdminActivitiesManagerController::class, 'index'])->name('activities.index');
+    Route::get('/create-activity', [AdminActivitiesManagerController::class, 'create'])->name('activities.create');
+    Route::post('/create-activity', [AdminActivitiesManagerController::class, 'store'])->name('activities.store');
+    Route::delete('/activities/{activityId}', [AdminActivitiesManagerController::class, 'destroy'])->name('activities.destroy');
+    Route::get('/update-activity/{activityId}', [AdminActivitiesManagerController::class, 'edit'])->name('activities.edit');
+    Route::put('/update-activity/{activityId}', [AdminActivitiesManagerController::class, 'update'])->name('activities.update');
 });

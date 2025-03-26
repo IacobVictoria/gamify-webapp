@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\MedalTier;
 use Illuminate\Foundation\Http\FormRequest;
 
-class SendMessageRequest extends FormRequest
+class ActivityStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,12 +22,12 @@ class SendMessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'medal' => ['required', MedalTier::cases()],
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'phone' => ['required', 'string', 'max:255'],
-            'message' => ['required', 'string'],
+            'title' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'in:diet,article,tip'],
+            'score' => ['nullable', 'integer', 'min:0'],
+            'is_published' => ['boolean'],
+            'description' => ['nullable', 'string'],
+            'details' => ['required', 'array'],
         ];
     }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class BadgeRequest extends FormRequest
+class ActivityUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,12 @@ class BadgeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
-            'score' => 'required|integer|min:0|max:200',
-            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif',
+            'title' => 'required|string|max:255',
+            'type' => 'required|in:diet,article,tip',
+            'score' => 'nullable|integer|min:0',
+            'is_published' => 'boolean',
+            'description' => 'nullable|string|max:1000',
+            'details' => 'required|array',
         ];
     }
 }

@@ -94,11 +94,23 @@ class DashboardService
             'progressBarStats' => $progressBarStats,
             'currentDiscounts' => $currentDiscounts,
             'variousStats' => $variousStats,
-            'globalStats' => $globalStats
+            'globalStats' => $globalStats,
+            'toggleSuperAdmin' => false,
 
         ];
     }
 
+    public function getSuperAdminDashboardData(){
+        return [
+            'toggleSuperAdmin' => true
+        ];
+    }
+
+    public function getAdminGamificationDashboardData(){
+        return [
+            'toggleAdminGamification' => true
+        ];
+    }
 
     public function getCurrentDiscounts()
     {

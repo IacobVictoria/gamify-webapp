@@ -1,5 +1,10 @@
 <template>
     <AuthenticatedLayout>
+        <template #header>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                🏅 Admin Dashboard – Badges Manager ✨
+            </h2>
+        </template>
         <div class="py-12">
             <div class="w-full mx-auto sm:px-6 lg:px-8">
                 <inertia-link
@@ -48,7 +53,7 @@ export default {
             type: Array,
             required: true,
         },
-        categories: Array
+        categories: Array,
     },
 
     computed: {

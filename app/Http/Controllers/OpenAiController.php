@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AiConversation;
-use App\Models\AiMessage;
+
 use App\Models\Product;
-use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Inertia\Inertia;
 use OpenAI\Laravel\Facades\OpenAI;
 
 

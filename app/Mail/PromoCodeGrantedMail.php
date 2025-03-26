@@ -26,7 +26,7 @@ class PromoCodeGrantedMail extends Mailable
         $this->user = $user;
         $this->promoCode = $promoCode;
         $this->discount = $discount;
-        $this->points = $tier;
+        $this->tier = $tier;
     }
 
     /**

@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('qr_codes_events', function (Blueprint $table) {
+        Schema::create('activities', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('qr_code');
-            $table->string('image_url');
-            $table->foreignUuid('event_id')->nullable()->constrained('events')->cascadeOnDelete();
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->enum('type', ['diet', 'article', 'tip']);
+            $table->json('details')->nullable();
+            $table->boolean('is_published')->default(false);
             $table->timestamps();
         });
     }
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('qr_codes_events');
+        Schema::dropIfExists('activities');
     }
 };

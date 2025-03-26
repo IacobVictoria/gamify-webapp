@@ -24,7 +24,7 @@ class SendMailPromoCodeGrantedJob implements ShouldQueue
         $this->user = $user;
         $this->promoCode = $promoCode;
         $this->discount = $discount;
-        $this->points = $tier;
+        $this->tier = $tier;
     }
 
     public function handle()

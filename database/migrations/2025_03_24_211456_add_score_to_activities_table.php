@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ai_conversations', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('title')->nullable();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->timestamps();
+        Schema::table('activities', function (Blueprint $table) {
+            $table->integer('score')->nullable()->after('type');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ai_conversations');
+        Schema::table('activities', function (Blueprint $table) {
+            $table->dropColumn('score');
+        });
     }
 };

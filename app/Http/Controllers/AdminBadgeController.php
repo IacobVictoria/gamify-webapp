@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\BadgeCategory;
+use App\Http\Requests\AdminStoreBadgeRequest;
+use App\Http\Requests\AdminUpdateBadgeRequest;
 use App\Http\Requests\BadgeRequest;
 use App\Models\Badge;
 use Faker\Provider\Uuid;
@@ -85,7 +87,7 @@ class AdminBadgeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(BadgeRequest $request)
+    public function store(AdminStoreBadgeRequest $request)
     {
         $validatedData = $request->validated();
 
@@ -139,7 +141,7 @@ class AdminBadgeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(BadgeRequest $request, string $badgeId)
+    public function update(AdminUpdateBadgeRequest $request, string $badgeId)
     {
         $badge = Badge::find($badgeId);
 

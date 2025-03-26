@@ -22,6 +22,17 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->name('admin.')
                 ->prefix('admin')
                 ->group(base_path('routes/admin.php'));
+
+                $router->middleware(['web', 'role:admin-gamification', 'auth', 'verified'])
+                ->name('admin-gamification.')
+                ->prefix('admin-gamification')
+                ->group(base_path('routes/admin-gamification.php'));
+
+
+            $router->middleware(['web', 'role:super-admin', 'auth', 'verified'])
+            ->name('super-admin.')
+            ->prefix('super-admin')
+            ->group(base_path('routes/super-admin.php'));
         },
         // web: [
         //     __DIR__ . '/../routes/web.php',
