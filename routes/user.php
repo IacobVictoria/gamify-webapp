@@ -5,18 +5,16 @@ use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\ExploreGamesController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\HangmanGameController;
-use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\NutritionAndWellnessController;
 use App\Http\Controllers\OpenAiController;
+use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\QrScannerController;
-use App\Http\Controllers\ReviewCommentController;
-use App\Http\Controllers\ReviewLikeController;
 use App\Http\Controllers\ShoppingCenterController;
-use App\Http\Controllers\UserCalendarController;
 use App\Http\Controllers\UserChatController;
 use App\Http\Controllers\UserCheckoutController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserFavoriteActivityController;
 use App\Http\Controllers\UserGameCenterController;
 use App\Http\Controllers\UserOrderHistoryController;
 use App\Http\Controllers\UserProfileController;
@@ -37,7 +35,7 @@ Route::prefix('dashboard')->group(function () {
         ->name('dashboard.explore-games.show');
 
     Route::get('/explore-games/history-hangman', [ExploreGamesController::class, 'historyHangman'])->name('dashboard.explore-games.historyHangman');
-
+    Route::get('/favorite-activities', [UserFavoriteActivityController::class, 'index'])->name('dashboard.favorite_activities.index');
 });
 
 Route::prefix('shopping-cart')->group(function () {
@@ -106,10 +104,6 @@ Route::prefix('wellness')->group(function () {
     Route::post('/openai/respond-messages', [OpenAiController::class, 'respondMessages']);
 });
 
-Route::prefix('calendar')->group(function () {
-    Route::get('/', [UserCalendarController::class, 'index'])->name('calendar.index');
-});
-
 Route::prefix('scanEvents')->group(function () {
     Route::post('/', [QrScannerController::class, 'scanEvent'])->name('scanEvent.post');
 });
@@ -132,4 +126,11 @@ Route::get('shopping-center', [ShoppingCenterController::class, 'index'])->name(
 //Discount Center
 Route::get('/discounts', [DiscountController::class, 'getUserDiscounts']);
 Route::post('/validate-discount', [DiscountController::class, 'validatePromo']);
+
+Route::post('/participants/{activityId}/done', [ParticipantController::class, 'store'])
+    ->name('participant.store');
+
+Route::post('/participants/{activityId}/toggleFavorite', [ParticipantController::class, 'toggleFavorite'])
+    ->name('participant.toggleFavorite');
+
 

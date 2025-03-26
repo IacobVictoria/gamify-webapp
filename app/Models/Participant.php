@@ -12,6 +12,7 @@ class Participant extends Model
         'id',
         'activity_id',
         'user_id',
+        'is_favorite'
     ];
 
     protected $primaryKey = 'id';

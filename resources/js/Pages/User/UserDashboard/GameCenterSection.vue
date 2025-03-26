@@ -68,11 +68,11 @@ export default {
                     route: 'user.dashboard.game_center.index'
                 },
                 {
-                    name: 'Evenimentele mele',
+                    name: 'Activitatile favorite',
                     image: '/user_dashboard/events_banner.png',
                     bgColor: 'bg-[#D1D3D4]',  // gri pastel
                     textColor: 'text-[#7B7F7D]',
-                    route: 'user.calendar.index'
+                    route: 'user.dashboard.favorite_activities.index'
                 }
             ]
         }

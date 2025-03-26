@@ -4,9 +4,6 @@
             <ScheduleXCalendar :calendar-app="calendarApp">
                 <template #eventModal="{ calendarEvent }">
                     <div :style="eventModalStyles">
-                        <div v-if="calendarEvent.type === 'event'">
-                            <CustomEventComponent :calendar-event="calendarEvent" :edit-mode="true" />
-                        </div>
                         <div v-if="calendarEvent.type === 'discount'">
                             <DiscountEventComponent :calendar-event="calendarEvent" :categories="props.categories"
                                 :edit-mode="true" />
@@ -37,7 +34,6 @@ import AddEventModal from './AddEventModal.vue'
 import { createEventsServicePlugin } from '@schedule-x/events-service'
 import { createEventModalPlugin } from '@schedule-x/event-modal'
 import { createCalendarControlsPlugin } from '@schedule-x/calendar-controls'
-import CustomEventComponent from './CustomEventComponent.vue'
 import DiscountEventComponent from './DiscountEventComponent.vue'
 import SupplierOrderComponent from './SupplierOrderComponent.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'

@@ -1,29 +1,19 @@
 <?php
 
 use App\Http\Controllers\AdminAccountController;
-use App\Http\Controllers\AdminActivitiesManagerController;
-use App\Http\Controllers\AdminBadgeController;
 use App\Http\Controllers\AdminClientOrderController;
 use App\Http\Controllers\AdminControlCenterController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminEventCalendarController;
-use App\Http\Controllers\AdminGamesManagerController;
-use App\Http\Controllers\AdminHangmanManagerController;
 use App\Http\Controllers\AdminInventoryTransactionController;
 use App\Http\Controllers\AdminMeetingController;
 use App\Http\Controllers\AdminNotificationController;
 use App\Http\Controllers\AdminProductController;
-use App\Http\Controllers\AdminQuizAnswerController;
-use App\Http\Controllers\AdminQuizController;
-use App\Http\Controllers\AdminQuizManagerController;
-use App\Http\Controllers\AdminQuizQuestionController;
 use App\Http\Controllers\AdminShoppingCartController;
 use App\Http\Controllers\AdminSupplierController;
 use App\Http\Controllers\AdminSupplierOrderController;
 use App\Http\Controllers\AdminSupplierProductController;
-use App\Http\Controllers\AdminUserQuizRemarkController;
 use App\Http\Controllers\ChartController;
-use App\Http\Controllers\EventController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SurveyController;
 use Illuminate\Support\Facades\Route;
@@ -136,7 +126,6 @@ Route::prefix('notifications')->group(function () {
     Route::post('/markAsRead', [AdminNotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::post('/{id}/handle', [AdminNotificationController::class, 'handleNotification'])->name('notifications.handle');
 });
-Route::get('/events/{id}/participants-pdf-preview', [EventController::class, 'generateParticipantsPdfPreview'])->name('events.generateParticipantsPdfPreview');
 
 Route::prefix('nps')->group(function () {
     Route::get('/index', [SurveyController::class, 'index'])->name('nps.survey.index');

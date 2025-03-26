@@ -1,12 +1,6 @@
 <?php
 
-use App\Http\Controllers\AchievementController;
-use App\Http\Controllers\EventController;
-use App\Http\Controllers\ExportDataController;
-use App\Http\Controllers\GameController;
-use App\Http\Controllers\ImageController;
-use App\Http\Controllers\OpenAiController;
-use App\Http\Controllers\ParticipantController;
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ProductComparisonController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -17,16 +11,12 @@ use App\Http\Controllers\ReviewCommentLikeController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReviewLikeController;
 use App\Http\Controllers\ReviewMediaController;
-use App\Http\Controllers\ShoppingCenterController;
 use App\Http\Controllers\StripeController;
-use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserSurveyController;
 use App\Http\Controllers\UserWishlistController;
 use App\Http\Controllers\WelcomeController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
@@ -41,6 +31,12 @@ Route::group(['prefix' => 'products'], function () {
     Route::post('/{productId}/like', [UserWishlistController::class, 'like'])->name('wishlist.products.like');
     Route::post('/{productId}/dislike', [UserWishlistController::class, 'dislike'])->name('wishlist.products.dislike');
 });
+
+Route::group(['prefix' => 'activities'], function () {
+    Route::get('/', [ActivityController::class, 'index'])->name('activities.index');
+    Route::get('/{slug}', [ActivityController::class, 'show'])->name('activities.show');
+});
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -73,12 +69,6 @@ Route::prefix('comparison')->group(function () {
 
 });
 
-Route::prefix('events')->group(function () {
-    Route::get('/', [EventController::class, 'index'])->name('events.index');
-    Route::get('/{id}', [EventController::class, 'show'])->name('event.show');
-    Route::post('/{eventId}/participant/store', [ParticipantController::class, 'store'])->name('event.participant.store');
-});
-
 Route::prefix('nps')->group(function () {
     Route::get('/form', [UserSurveyController::class, 'index'])->name('nps.form.index');
     Route::post('/form/store', [UserSurveyController::class, 'storeResults'])->name('nps.form.storeResults');
@@ -96,5 +86,6 @@ Route::get('/suppliers',[SupplierController::class,'web_view'])->name('suppliers
 
 Route::post('/scan_product',[QrScannerController::class,'scanProduct'])->name('scan.product.find');
 Route::post('/scan_product/points',[QrScannerController::class,'scanProductEarnPoints'])->name('scan.product.earn');
+
 
 require __DIR__ . '/auth.php';
