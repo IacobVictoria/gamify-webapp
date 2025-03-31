@@ -47,7 +47,6 @@ watch(enabled, (newValue) => {
         router.get(adminRoute);
     }
 });
-
 </script>
 
 <template>
@@ -155,7 +154,9 @@ watch(enabled, (newValue) => {
                                         🎮 Explore Games
                                     </NavLink>
                                 </template>
-                                <template v-if="roles.includes('Admin') && !enabled">
+                                <template
+                                    v-if="roles.includes('Admin') && !enabled"
+                                >
                                     <NavLink
                                         :href="route('admin.dashboard')"
                                         :active="
@@ -299,7 +300,11 @@ watch(enabled, (newValue) => {
                                         Medals
                                     </NavLink>
                                 </template>
-                                <template v-if="roles.includes('Super-Admin') && enabled">
+                                <template
+                                    v-if="
+                                        roles.includes('Super-Admin') && enabled
+                                    "
+                                >
                                     <NavLink
                                         :href="route('super-admin.dashboard')"
                                         :active="
@@ -379,28 +384,43 @@ watch(enabled, (newValue) => {
                                             </div>
                                             <div
                                                 v-if="isDoubleAdmin"
-                                                class="flex items-center justify-center"
+                                                class="flex items-center justify-between gap-4  px-4 py-2 "
                                             >
-                                                <span>SUPER-ADMIN</span>
+                                                <div
+                                                    class="flex items-center gap-2"
+                                                >
+                                                    <span
+                                                        class="px-2 py-0.5 text-xs font-bold uppercase rounded-full"
+                                                        :class="
+                                                            enabled
+                                                                ? 'bg-indigo-100 text-indigo-700'
+                                                                : 'bg-gray-200 text-gray-700'
+                                                        "
+                                                    >
+                                                        {{
+                                                            enabled
+                                                                ? "Super Admin"
+                                                                : "Admin"
+                                                        }}
+                                                    </span>
+                                                </div>
+
                                                 <Switch
                                                     v-model="enabled"
                                                     :class="[
                                                         enabled
                                                             ? 'bg-indigo-600'
-                                                            : 'bg-gray-200',
-                                                        'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2',
+                                                            : 'bg-gray-300',
+                                                        'relative inline-flex h-6 w-12 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2',
                                                     ]"
                                                 >
-                                                    <span class="sr-only"
-                                                        >Use setting</span
-                                                    >
                                                     <span
                                                         aria-hidden="true"
                                                         :class="[
                                                             enabled
-                                                                ? 'translate-x-5'
-                                                                : 'translate-x-0',
-                                                            'pointer-events-none inline-block size-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                                                                ? 'translate-x-6'
+                                                                : 'translate-x-1',
+                                                            'inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition',
                                                         ]"
                                                     />
                                                 </Switch>
