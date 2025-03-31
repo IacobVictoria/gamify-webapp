@@ -96,6 +96,7 @@ class DashboardService
             'variousStats' => $variousStats,
             'globalStats' => $globalStats,
             'toggleSuperAdmin' => false,
+            'toggleAdmin' => true
 
         ];
     }
@@ -132,6 +133,7 @@ class DashboardService
 
         return [
             'toggleSuperAdmin' => true,
+            'toggleAdmin' => false,
             'accounts_count' => $totalAccounts,
             'roles_count' => $totalRoles,
             'accounts_this_week' => $accountsThisWeek,

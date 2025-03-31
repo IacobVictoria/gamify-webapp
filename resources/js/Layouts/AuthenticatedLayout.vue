@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { computed, isReadonly, onMounted, ref, watch } from "vue";
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
@@ -10,27 +10,44 @@ import NotificationCenter from "@/Pages/Notification_System/NotificationCenter.v
 import Icon from "@/Pages/Admin/Notifications/Icon.vue";
 import { Switch } from "@headlessui/vue";
 
-const props = defineProps({
-    toggleSuperAdmin: Boolean,
-});
-
 const showingNavigationDropdown = ref(false);
-const enabled = ref(props.toggleSuperAdmin);
 const page = usePage();
+const roles = computed(() => page.props.user.roles.map((r) => r.name));
 
+// Check if user has both roles
+const isDoubleAdmin = computed(
+    () => roles.value.includes("Admin") && roles.value.includes("Super-Admin")
+);
+
+// Detect current path
+const currentPath = window.location.pathname;
+
+// Detect current mode
+const isOnSuperAdmin = ref(currentPath.includes("super-admin"));
+
+// Switch enabled state (default based on current path)
+const enabled = ref(isOnSuperAdmin.value);
+
+// Utility function
+function isRouteActive(routeToMatch) {
+    const currentRoute = window.location.href.replace(/\/$/, "");
+    return currentRoute === routeToMatch.replace(/\/$/, "");
+}
+
+// Watch switch and redirect
 watch(enabled, (newValue) => {
-    if (newValue) {
-        router.get(route("super-admin.dashboard"));
-    } else {
-        router.get(route("admin.dashboard"));
+    const superAdminRoute = route("super-admin.dashboard");
+    const adminRoute = route("admin.dashboard");
+
+    if (newValue && !isRouteActive(superAdminRoute)) {
+        router.get(superAdminRoute);
+    }
+
+    if (!newValue && !isRouteActive(adminRoute)) {
+        router.get(adminRoute);
     }
 });
 
-const isSuperAdmin = () => {
-    return page.props.user.roles.some(
-        (role) => role === "Super-Admin" && role === "Admin"
-    );
-};
 </script>
 
 <template>
@@ -138,7 +155,7 @@ const isSuperAdmin = () => {
                                         🎮 Explore Games
                                     </NavLink>
                                 </template>
-                                <template v-if="authUserHasRole('Admin')">
+                                <template v-if="roles.includes('Admin') && !enabled">
                                     <NavLink
                                         :href="route('admin.dashboard')"
                                         :active="
@@ -282,7 +299,7 @@ const isSuperAdmin = () => {
                                         Medals
                                     </NavLink>
                                 </template>
-                                <template v-if="authUserHasRole('Super-Admin')">
+                                <template v-if="roles.includes('Super-Admin') && enabled">
                                     <NavLink
                                         :href="route('super-admin.dashboard')"
                                         :active="
@@ -306,9 +323,7 @@ const isSuperAdmin = () => {
                                         Accounts
                                     </NavLink>
                                     <NavLink
-                                        :href="
-                                            route('super-admin.roles.index')
-                                        "
+                                        :href="route('super-admin.roles.index')"
                                         :active="
                                             route().current(
                                                 'super-admin.roles.index'
@@ -363,7 +378,7 @@ const isSuperAdmin = () => {
                                                 </button>
                                             </div>
                                             <div
-                                                v-if="isSuperAdmin()"
+                                                v-if="isDoubleAdmin"
                                                 class="flex items-center justify-center"
                                             >
                                                 <span>SUPER-ADMIN</span>
