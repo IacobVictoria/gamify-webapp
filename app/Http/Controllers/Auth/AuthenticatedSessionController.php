@@ -42,16 +42,20 @@ class AuthenticatedSessionController extends Controller
             session(['cart' => array_merge($currentCart, $cookieCart)]);
             //
 
-            if (auth()->user()->hasRole('admin')) {
+            if (auth()->user()->hasRole('Admin')) {
                 return redirect()->intended(route('admin.dashboard', absolute: false));
             }
 
-            if (auth()->user()->hasRole('admin-gamification')) {
-                return redirect()->intended(route('admin.dashboard', absolute: false));
+            if (auth()->user()->hasRole('Admin-Gamification')) {
+                return redirect()->intended(route('admin-gamification.dashboard', absolute: false));
             }
 
-            if (auth()->user()->hasRole('user')) {
+            if (auth()->user()->hasRole('User')) {
                 return redirect()->intended(route('user.dashboard', absolute: false));
+            }
+
+            if (auth()->user()->hasRole('Super-Admin')) {
+                return redirect()->intended(route('super-admin.dashboard', absolute: false));
             }
 
         }

@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules;
 
-class CreateAccountRequest extends FormRequest
+class SuperAdminCreateAccountRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,7 +27,8 @@ class CreateAccountRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role_id' => 'exists:roles,id'
+            'role_ids' => ['required', 'array'],
+            'role_ids.*' => ['exists:roles,id'],
         ];
     }
 }

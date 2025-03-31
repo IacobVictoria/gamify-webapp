@@ -24,17 +24,6 @@ Route::prefix('dashboard')->group(function () {
 });
 
 
-Route::prefix('accounts')->group(function () {
-    Route::get('/', [AdminAccountController::class, 'index'])
-        ->name('accounts.index');
-    Route::get('/create-account', [AdminAccountController::class, 'create'])->name('accounts.create');
-    Route::post('/create-account', [AdminAccountController::class, 'store'])->name('accounts.store');
-    Route::delete('/accounts/{accountId}', [AdminAccountController::class, 'destroy'])->name('accounts.destroy');
-    Route::get('/update-account/{accountId}', [AdminAccountController::class, 'edit'])->name('accounts.edit');
-    Route::put('/update-account/{accountId}', [AdminAccountController::class, 'update'])->name('accounts.update');
-
-});
-
 Route::prefix('products')->group(function () {
     Route::get('/', [AdminProductController::class, 'index'])
         ->name('products.index');

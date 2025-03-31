@@ -3,10 +3,10 @@
         <div class="py-12">
             <div class="w-full mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <GenericList :title="'Accounts'" :description="'Here you can see all the accounts.'"
-                        :items="accounts" :entityName="'accounts'" :filters="filters" :getRoute="'super-admin.accounts.index'"
-                        :createRoute="'super-admin.accounts.create'" :editRoute="'super-admin.accounts.edit'"
-                        :deleteRoute="'super-admin.accounts.destroy'" :columns="columns" :prevFilters="prevFilters"
+                    <GenericList :title="'Roles'" :description="'Here you can see all the roles.'"
+                        :items="roles" :entityName="'roles'" :filters="filters" :getRoute="'super-admin.roles.index'"
+                        :createRoute="'super-admin.roles.create'" :editRoute="'super-admin.roles.edit'"
+                        :deleteRoute="'super-admin.roles.destroy'" :columns="columns" :prevFilters="prevFilters"
                         class="p-4" />
                 </div>
             </div>
@@ -20,7 +20,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { CheckIcon } from '@heroicons/vue/24/outline';
 import { Head } from '@inertiajs/vue3';
 export default {
-    name: 'Admin/Accounts/List',
+    name: 'SuperAdmin/Roles/List',
 
     components: {
         AuthenticatedLayout,
@@ -30,16 +30,10 @@ export default {
     },
 
     props: {
-        accounts: {
+        roles: {
             type: Object,
             required: true
         },
-
-        roles: {
-            type: Array,
-            required: true
-        },
-
         prevFilters: {
             type: Array,
             required: true
@@ -50,8 +44,6 @@ export default {
         columns() {
             return [
                 { name: 'name', label: 'Name' },
-                { name: 'email', label: 'Email' },
-                { name: 'roles', label: 'Role' },
                 { name: 'created_at', label: 'Created' },
             ];
         },
@@ -59,8 +51,6 @@ export default {
         filters() {
             return [
                 { model: 'searchName', label: 'Search by Name', type: 'text', placeholder: 'Search by name' },
-                { model: 'searchEmail', label: 'Search by Email', type: 'text', placeholder: 'Search by email' },
-                { model: 'searchRole', label: 'Search by role', type: 'select', placeholder: 'Search by role', options: this.roles.map(role => ({ value: role.name, label: role.name })) },
             ];
         },
     },

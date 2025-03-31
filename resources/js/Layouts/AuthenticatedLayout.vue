@@ -7,7 +7,6 @@ import NavLink from "@/Components/NavLink.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 import { Link, router, usePage } from "@inertiajs/vue3";
 import NotificationCenter from "@/Pages/Notification_System/NotificationCenter.vue";
-import NotificationComponentIcon from "@/Pages/Notification_System/NotificationComponentIcon.vue";
 import Icon from "@/Pages/Admin/Notifications/Icon.vue";
 import { Switch } from "@headlessui/vue";
 
@@ -29,12 +28,8 @@ watch(enabled, (newValue) => {
 
 const isSuperAdmin = () => {
     return page.props.user.roles.some(
-        (role) => role === "Super-Admin" || role === "Admin"
+        (role) => role === "Super-Admin" && role === "Admin"
     );
-};
-
-const isAdminGamification = () => {
-    return page.props.user.roles.some((role) => role === "Admin-Gamification");
 };
 </script>
 
@@ -285,6 +280,42 @@ const isAdminGamification = () => {
                                         "
                                     >
                                         Medals
+                                    </NavLink>
+                                </template>
+                                <template v-if="authUserHasRole('Super-Admin')">
+                                    <NavLink
+                                        :href="route('super-admin.dashboard')"
+                                        :active="
+                                            route().current(
+                                                'super-admin.dashboard'
+                                            )
+                                        "
+                                    >
+                                        Dashboard
+                                    </NavLink>
+                                    <NavLink
+                                        :href="
+                                            route('super-admin.accounts.index')
+                                        "
+                                        :active="
+                                            route().current(
+                                                'super-admin.accounts.index'
+                                            )
+                                        "
+                                    >
+                                        Accounts
+                                    </NavLink>
+                                    <NavLink
+                                        :href="
+                                            route('super-admin.roles.index')
+                                        "
+                                        :active="
+                                            route().current(
+                                                'super-admin.roles.index'
+                                            )
+                                        "
+                                    >
+                                        Roles
                                     </NavLink>
                                 </template>
                             </div>

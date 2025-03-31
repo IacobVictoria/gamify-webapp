@@ -63,6 +63,12 @@
                                 User Dashboard
                             </inertia-link>
                         </template>
+                        <template v-if="authUserHasRole('Super-Admin')">
+                            <inertia-link :href="route('super-admin.dashboard')"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Super Admin Dashboard
+                            </inertia-link>
+                        </template>
                         <inertia-link :href="route('user.shopping-cart.index')" method="get"
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             Shopping Cart

@@ -28,8 +28,6 @@ export default {
         AuthenticatedLayout,
 
     },
-    props: {
-    },
     data() {
         return {
             createRoute: route('admin.products.store'),
@@ -91,11 +89,6 @@ export default {
             ]
 
         };
-    },
-    computed: {
-        getUpdateRoute() {
-            return route('admin.accounts.update', { accountId: this.user.id });
-        },
     },
 };
 </script>
