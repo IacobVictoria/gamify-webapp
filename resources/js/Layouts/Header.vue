@@ -47,34 +47,34 @@
                         class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
                         <template v-if="authUserHasRole('Admin')">
                             <inertia-link :href="route('admin.dashboard')"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                class="block no-underline px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Admin Dashboard
                             </inertia-link>
                         </template>
                         <template v-if="authUserHasRole('Admin-Gamification')">
                             <inertia-link :href="route('admin-gamification.dashboard')"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                class="block no-underline px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Admin Gamify Dashboard
                             </inertia-link>
                         </template>
                         <template v-if="authUserHasRole('User')">
                             <inertia-link :href="route('user.dashboard')"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                class="block no-underline px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 User Dashboard
                             </inertia-link>
                         </template>
                         <template v-if="authUserHasRole('Super-Admin')">
                             <inertia-link :href="route('super-admin.dashboard')"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                class="block no-underline px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Super Admin Dashboard
                             </inertia-link>
                         </template>
                         <inertia-link :href="route('user.shopping-cart.index')" method="get"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            class="block no-underline px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             Shopping Cart
                         </inertia-link>
                         <inertia-link :href="route('logout')" method="post"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            class="block no-underline px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             Log out
                         </inertia-link>
                     </div>
@@ -83,11 +83,11 @@
                 <!-- Dacă utilizatorul nu este autentificat, afișează butoanele Log in / Sign up -->
                 <template v-else>
                     <inertia-link :href="route('login')"
-                        class="text-[#075985] font-semibold py-2 px-4 rounded-lg shadow-md bg-transparent hover:bg-[#075985] hover:text-white transition-colors duration-300 px-4 py-2 rounded-md cursor: pointer">
+                        class="text-[#075985] no-underline font-semibold py-2 px-4 rounded-lg shadow-md bg-transparent transition-colors duration-300 px-4 py-2 rounded-md cursor: pointer">
                         Log in
                     </inertia-link>
                     <inertia-link :href="route('register')"
-                        class="bg-[#075985] text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-white hover:text-[#075985] transition-colors cursor: pointer">
+                        class="bg-[#075985] no-underline text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors cursor: pointer">
                         Sign up
                     </inertia-link>
                 </template>

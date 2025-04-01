@@ -77,7 +77,7 @@ class SalesStockReportService
      * Identifici dacă ai produse cu re-aprovizionare frecventă sau produse care stagnează.
      */
 
-    private function getStockFluctuations($startDate, $endDate): array
+    public function getStockFluctuations($startDate, $endDate): array
     {
         return InventoryTransaction::select(
             'product_id',

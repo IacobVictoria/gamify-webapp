@@ -3,7 +3,7 @@
         <!-- Titlu + Butoane Scroll -->
         <div class="flex justify-between items-center mb-3">
             <h2 class="text-lg font-semibold text-gray-700">
-                Top Selling Products (Last 7 Days)
+                Most Played Quizzes (Last 7 Days)
             </h2>
             <div class="flex space-x-1">
                 <button
@@ -23,32 +23,31 @@
 
         <!-- Carousel -->
         <div
-            v-if="topProductsWeekly.length > 0"
+            v-if="quizzes.length > 0"
             ref="carousel"
             class="flex space-x-4 overflow-x-auto scrollbar-hide"
         >
             <div
-                v-for="(product, index) in topProductsWeekly"
+                v-for="(quiz, index) in quizzes"
                 :key="index"
                 class="min-w-[180px] border border-gray-200 rounded-md bg-white p-3 flex flex-col items-center"
             >
                 <img
-                    :src="product.image"
-                    alt="Product Image"
+                    :src="quiz.image"
+                    alt="Quiz Image"
                     class="w-32 h-32 object-cover rounded-md mb-2"
                 />
 
                 <h3 class="text-sm font-medium text-gray-800 text-center">
-                    {{ product.product_name }}
+                    {{ quiz.title }}
                 </h3>
                 <p class="text-xs text-gray-500">
-                    {{ product.total_sold }} Pcs
+                    {{ quiz.appearances }} Plays
                 </p>
             </div>
         </div>
-
         <div v-else class="text-center text-gray-500 mt-4 italic">
-          💤  No products sales recorded this week.
+            💤 No quiz activity recorded this week.
         </div>
     </div>
 </template>
@@ -57,31 +56,24 @@
 import { ref } from "vue";
 
 const props = defineProps({
-    topProductsWeekly: Array,
+    quizzes: Array,
 });
 
 const carousel = ref(null);
 
-// Funcție pentru scroll stânga
 const scrollLeft = () => {
-    if (carousel.value) {
-        carousel.value.scrollBy({ left: -200, behavior: "smooth" });
-    }
+    carousel.value?.scrollBy({ left: -200, behavior: "smooth" });
 };
 
-// Funcție pentru scroll dreapta
 const scrollRight = () => {
-    if (carousel.value) {
-        carousel.value.scrollBy({ left: 200, behavior: "smooth" });
-    }
+    carousel.value?.scrollBy({ left: 200, behavior: "smooth" });
 };
 </script>
 
-<style>
+<style scoped>
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
 }
-
 .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;

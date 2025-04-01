@@ -80,7 +80,7 @@ class RewardsActivityReportService
      * 
      * @return array ['category' => avg_badges]
      */
-    private function getAverageBadgesPerCategory($startDate, $endDate): array
+    public function getAverageBadgesPerCategory($startDate, $endDate): array
     {
         return UserBadge::whereBetween('awarded_at', [$startDate, $endDate])->with('badge')
             ->get()

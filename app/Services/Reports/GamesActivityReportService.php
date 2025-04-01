@@ -33,7 +33,7 @@ class GamesActivityReportService
     /**
      * Most Popular Quiz Difficulty Levels
      */
-    private function getMostPopularDifficulties($startDate, $endDate): array
+    public function getMostPopularDifficulties($startDate, $endDate): array
     {
         return UserQuizResult::with('quiz:id,difficulty')
             ->whereBetween('date', [$startDate, $endDate])
@@ -112,7 +112,7 @@ class GamesActivityReportService
     /**
      * Average Quiz Retakes Per User
      */
-    private function getAverageQuizRetries($startDate, $endDate): float
+    public function getAverageQuizRetries($startDate, $endDate): float
     {
         $quizAttempts = UserQuizResult::whereBetween('date', [$startDate, $endDate])
             ->get()

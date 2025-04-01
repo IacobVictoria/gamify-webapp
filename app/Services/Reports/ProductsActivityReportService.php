@@ -111,7 +111,7 @@ class ProductsActivityReportService
      * 
      * @return array
      */
-    private function getDiscountVsRegularSales($startDate, $endDate): array
+    public function getDiscountVsRegularSales($startDate, $endDate): array
     {
         $discountedSales = OrderProduct::whereHas('order', function ($query) use ($startDate, $endDate) {
             $query->whereNotNull('promo_code')
