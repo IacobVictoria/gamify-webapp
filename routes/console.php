@@ -21,3 +21,5 @@ Schedule::command(ManageDiscountsCommand::class)->everyMinute();
 Schedule::command(ManageEventsCommand::class)->everyMinute();
 Schedule::command(ProcessLowStockOrders::class)->everyMinute();
 Schedule::command(GenerateMeetingReportsCommand::class)->everyMinute();
+Schedule::command('backup:run')->monthlyOn(0,'00:00');
+Schedule::command('backup:clean')->monthlyOn(0,'00:10');
