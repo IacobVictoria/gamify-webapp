@@ -36,7 +36,8 @@
             background-color: #fff;
         }
 
-        th, td {
+        th,
+        td {
             border: 1px solid #ddd;
             padding: 12px;
             text-align: left;
@@ -70,12 +71,18 @@
             background-color: #ecf0f1;
             border-radius: 5px;
         }
+
+        h3.mt-6 {
+            font-size: 18px;
+            margin-top: 25px;
+            color: #34495e;
+        }
     </style>
 </head>
 
 <body>
     <h1>Raport Activitate Jocuri si Quiz - {{ $reportData['period'] }}</h1>
-    <h1>Start - {{ $reportData['startDate'] }}  End - {{ $reportData['endDate'] }}</h1>
+    <h1>Start - {{ $reportData['startDate'] }} End - {{ $reportData['endDate'] }}</h1>
 
     <!-- 1. Cele mai populare dificultati -->
     <h2>Cele mai populare dificultati</h2>
@@ -91,7 +98,8 @@
             </tr>
         @endforeach
     </table>
-    <p><strong>De ce este util?</strong> Ne ajuta sa vedem ce nivel de dificultate prefera utilizatorii si daca trebuie ajustata distributia quiz-urilor.</p>
+    <p><strong>De ce este util?</strong> Ne ajuta sa vedem ce nivel de dificultate prefera utilizatorii si daca trebuie
+        ajustata distributia quiz-urilor.</p>
 
     <!-- 2. Quiz-uri cu cele mai multe incercari -->
     <h2>Quiz-uri cu cele mai multe incercari</h2>
@@ -107,12 +115,15 @@
             </tr>
         @endforeach
     </table>
-    <p><strong>De ce este util?</strong> Aceste date ne indica care quiz-uri sunt atractive pentru utilizatori si unde ar trebui sa ne concentram eforturile de imbunatatire.</p>
+    <p><strong>De ce este util?</strong> Aceste date ne indica care quiz-uri sunt atractive pentru utilizatori si unde
+        ar trebui sa ne concentram eforturile de imbunatatire.</p>
 
     <!-- 3. Medie quiz-uri finalizate per utilizator -->
     <h2>Medie quiz-uri finalizate per utilizator</h2>
-    <p class="center highlight"><strong>{{ $reportData['average_quizzes_completed'] }}</strong> quiz-uri finalizate per utilizator.</p>
-    <p><strong>De ce este util?</strong> Ne ajuta sa intelegem cat de angajati sunt utilizatorii si daca trebuie sa oferim stimulente pentru finalizarea mai multor quiz-uri.</p>
+    <p class="center highlight"><strong>{{ $reportData['average_quizzes_completed'] }}</strong> quiz-uri finalizate per
+        utilizator.</p>
+    <p><strong>De ce este util?</strong> Ne ajuta sa intelegem cat de angajati sunt utilizatorii si daca trebuie sa
+        oferim stimulente pentru finalizarea mai multor quiz-uri.</p>
 
     <br> <!-- Spatiu adaugat pentru separare mai clara -->
 
@@ -130,17 +141,71 @@
             </tr>
         @endforeach
     </table>
-    <p><strong>De ce este util?</strong> Daca prea multi utilizatori nu reusesc sa finalizeze un quiz cu un scor bun, poate fi prea dificil sau neclar. Acest lucru ne ajuta sa imbunatatim continutul quiz-urilor.</p>
+    <p><strong>De ce este util?</strong> Daca prea multi utilizatori nu reusesc sa finalizeze un quiz cu un scor bun,
+        poate fi prea dificil sau neclar. Acest lucru ne ajuta sa imbunatatim continutul quiz-urilor.</p>
 
     <!-- 5. Rata de finalizare a jocurilor Hangman -->
     <h2>Rata de finalizare a jocurilor Hangman</h2>
-    <p class="center highlight"><strong>{{ $reportData['hangman_completion_rate'] }}</strong> dintre jocurile Hangman au fost finalizate.</p>
-    <p><strong>De ce este util?</strong> Daca rata de finalizare este scazuta, este posibil ca utilizatorii sa isi piarda interesul sau sa gaseasca jocul prea greu. Acest lucru ne ajuta sa imbunatatim mecanicile jocului.</p>
+    <p class="center highlight"><strong>{{ $reportData['hangman_completion_rate'] }}</strong> dintre jocurile Hangman au
+        fost finalizate.</p>
+    <p><strong>De ce este util?</strong> Daca rata de finalizare este scazuta, este posibil ca utilizatorii sa isi
+        piarda interesul sau sa gaseasca jocul prea greu. Acest lucru ne ajuta sa imbunatatim mecanicile jocului.</p>
 
     <!-- 6. Media incercarilor per quiz -->
     <h2>Media incercarilor per quiz</h2>
-    <p class="center highlight"><strong>{{ $reportData['average_quiz_retries'] }}</strong> incercari in medie per quiz.</p>
-    <p><strong>De ce este util?</strong> Daca un quiz este refacut de foarte multe ori, ar putea fi fie prea dificil, fie foarte captivant. Ne ajuta sa determinam daca trebuie sa ajustam nivelul de dificultate sau sa imbunatatim explicatiile.</p>
+    <p class="center highlight"><strong>{{ $reportData['average_quiz_retries'] }}</strong> incercari in medie per quiz.
+    </p>
+    <p><strong>De ce este util?</strong> Daca un quiz este refacut de foarte multe ori, ar putea fi fie prea dificil,
+        fie foarte captivant. Ne ajuta sa determinam daca trebuie sa ajustam nivelul de dificultate sau sa imbunatatim
+        explicatiile.</p>
+
+    <!-- 7. Statistici despre activitati -->
+    <h2>Statistici despre activitati (salvate de utilizatori)</h2>
+
+    <!-- Total activitati salvate -->
+    <p class="center highlight">
+        <strong>{{ $reportData['activity_stats']['total_saved'] }}</strong> activitati au fost marcate ca favorite de
+        catre utilizatori.
+    </p>
+
+    <!-- Media punctelor din activitatile salvate -->
+    <p class="center highlight">
+        Media scorului oferit de activitatile salvate:
+        <strong>{{ $reportData['activity_stats']['average_score'] }}</strong> puncte.
+    </p>
+
+    <!-- Tipuri de activitati cele mai apreciate -->
+    <h3 class="mt-6">Tipuri de activitati cele mai apreciate</h3>
+    <table>
+        <tr>
+            <th>Tip activitate</th>
+            <th>Total salvari</th>
+        </tr>
+        @foreach ($reportData['activity_stats']['most_appreciated_type'] as $type)
+            <tr>
+                <td>{{ $type['type'] }}</td>
+                <td class="center">{{ $type['total_saves'] }}</td>
+            </tr>
+        @endforeach
+    </table>
+
+    <!-- Top 5 activitati cele mai salvate -->
+    <h3 class="mt-6">Top 5 activitati salvate</h3>
+    <table>
+        <tr>
+            <th>Titlu activitate</th>
+            <th>Numar salvari</th>
+        </tr>
+        @foreach ($reportData['activity_stats']['most_saved_activities'] as $activity)
+            <tr>
+                <td>{{ $activity['title'] }}</td>
+                <td class="center">{{ $activity['total_saves'] }}</td>
+            </tr>
+        @endforeach
+    </table>
+
+    <p><strong>De ce este util?</strong> Ne arata ce tipuri de activitati atrag cel mai mult atentia utilizatorilor si
+        care merita promovate sau extinse.</p>
 
 </body>
 

@@ -30,7 +30,7 @@
             <div
                 v-for="(product, index) in topProductsWeekly"
                 :key="index"
-                class="min-w-[180px] border border-gray-200 rounded-md bg-white p-3 flex flex-col items-center"
+                class="max-w-[180px] border border-gray-200 rounded-md bg-white p-3 flex flex-col items-center"
             >
                 <img
                     :src="product.image"

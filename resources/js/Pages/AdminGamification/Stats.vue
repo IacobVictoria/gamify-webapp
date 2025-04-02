@@ -15,7 +15,7 @@
       <!-- Avg Quiz Score -->
       <div class="flex flex-col items-center justify-center h-48 p-6 bg-gradient-to-r from-blue-400 to-indigo-600 shadow-xl rounded-2xl text-center">
         <h3 class="text-white font-semibold text-xl mb-2">Avg Quiz Score</h3>
-        <p class="text-white text-4xl font-extrabold mb-1">{{ avgQuizScore }}%</p>
+        <p class="text-white text-4xl font-extrabold mb-1">{{ Number(avgQuizScore).toFixed(2) }}%</p>
       </div>
     </div>
   </template>

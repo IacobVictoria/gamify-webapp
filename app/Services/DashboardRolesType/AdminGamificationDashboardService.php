@@ -118,7 +118,7 @@ class AdminGamificationDashboardService
 
         // Cele mai frecvente insigne acordate în săptămâna curentă
         $topBadges = UserBadge::whereBetween('awarded_at', [$startOfWeek, $endOfWeek])
-            ->with('badge:id,name,image_url')
+            ->with('badge:id,name,image_path')
             ->select('badge_id', DB::raw('COUNT(*) as awarded_count'))
             ->groupBy('badge_id')
             ->orderByDesc('awarded_count')
@@ -126,7 +126,7 @@ class AdminGamificationDashboardService
             ->get()
             ->map(fn($item) => [
                 'name' => $item->badge->name ?? 'N/A',
-                'image' => $item->badge->image_url ?? '/images/badge-placeholder.png',
+                'image' => $item->badge->image_path,
                 'count' => $item->awarded_count
             ]);
 

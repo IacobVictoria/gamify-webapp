@@ -13,7 +13,7 @@
         </div>
         <LeaderBoardQuizzes :leaderboard="leaderboard" />
 
-        <div class="container mx-auto mt-6 space-y-12 px-4">
+        <div class="container mx-auto mt-6 space-y-12 px-4 pb-32">
             <!-- 🎯 Easy Quizzes -->
             <div v-if="quizzes['easy']" class="space-y-6">
                 <div

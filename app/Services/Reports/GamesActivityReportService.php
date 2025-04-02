@@ -4,6 +4,7 @@ namespace App\Services\Reports;
 
 use App\Helpers\PeriodHelper;
 use App\Models\HangmanSession;
+use App\Models\Participant;
 use App\Models\UserQuizResult;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +27,12 @@ class GamesActivityReportService
             'quiz_success_rate' => $this->getQuizSuccessRate($startDate, $endDate),
             'hangman_completion_rate' => $this->getHangmanCompletionRate($startDate, $endDate) . '%',
             'average_quiz_retries' => round($this->getAverageQuizRetries($startDate, $endDate), 2),
+            'activity_stats' => [
+                'total_saved' => $this->getTotalSavedActivities($startDate, $endDate),
+                'average_score' => round($this->getAverageActivityScore($startDate, $endDate), 2),
+                'most_appreciated_type' => $this->getMostAppreciatedActivityType($startDate, $endDate),
+                'most_saved_activities' => $this->getMostSavedActivities($startDate, $endDate),
+            ],
         ];
     }
 
@@ -120,4 +127,57 @@ class GamesActivityReportService
 
         return round($quizAttempts, 2);
     }
+
+    //Câte activități sunt salvate în total
+    public function getTotalSavedActivities($startDate, $endDate): int
+    {
+        return Participant::whereBetween('created_at', [$startDate, $endDate])
+            ->where('is_favorite', true)
+            ->count();
+    }
+
+    //Media punctajelor activităților 
+    public function getAverageActivityScore($startDate, $endDate): float
+    {
+        return Participant::whereBetween('created_at', [$startDate, $endDate])
+            ->with('activity:id,score')
+            ->get()
+            ->avg(fn($p) => $p->activity->score ?? 0);
+    }
+
+    //Cel mai apreciat tip de activitate
+    public function getMostAppreciatedActivityType($startDate, $endDate): array
+    {
+        return Participant::whereBetween('created_at', [$startDate, $endDate])
+            ->where('is_favorite', true)
+            ->with('activity:id,type')
+            ->get()
+            ->groupBy(fn($p) => $p->activity->type ?? 'unknown')
+            ->map(fn($group, $type) => [
+                'type' => ucfirst($type),
+                'total_saves' => $group->count()
+            ])
+            ->sortByDesc('total_saves')
+            ->values()
+            ->toArray();
+    }
+    public function getMostSavedActivities($startDate, $endDate, $limit = 5): array
+    {
+        return Participant::whereBetween('created_at', [$startDate, $endDate])
+            ->where('is_favorite', true)
+            ->with('activity:id,title')
+            ->get()
+            ->groupBy('activity_id')
+            ->map(function ($group) {
+                return [
+                    'title' => optional($group->first()->activity)->title ?? 'N/A',
+                    'total_saves' => $group->count(),
+                ];
+            })
+            ->sortByDesc('total_saves')
+            ->take($limit)
+            ->values()
+            ->toArray();
+    }
+
 }
