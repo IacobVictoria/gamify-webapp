@@ -32,7 +32,7 @@ class UserQuizController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $quizzes = UserQuiz::all();
+        $quizzes = UserQuiz::where('is_published', true)->get();
 
         $groupedQuizzes = $quizzes->groupBy('difficulty')->map(function ($quizzes) use ($user) {
             return $quizzes->map(function ($quiz) use ($user) {

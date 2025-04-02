@@ -25,6 +25,7 @@ class UserQuizRequest extends FormRequest
             'title' => 'required|string|min:1|max:255',
             'description' => 'required|string|min:1|max:255',
             'difficulty' => 'required|in:easy,medium,hard',
+            'is_published' => 'nullable|boolean',
             'questions' => 'required|array',
             'questions.*.text' => 'required|string',
             'questions.*.score' => 'nullable|integer',

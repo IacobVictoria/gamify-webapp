@@ -37,6 +37,10 @@ class AdminQuizController extends Controller
             $quizQuery->where('difficulty', $filters['searchDifficulty']);
         }
 
+        if (isset($filters['searchPublished']) && in_array($filters['searchPublished'], ['true', 'false'])) {
+            $quizQuery->where('is_published', $filters['searchPublished'] === 'true');
+        }
+
         if (in_array($orderBy, ['created_at'])) {
             $orderDirection = in_array($orderDirection, ['asc', 'desc']) ? $orderDirection : 'asc';
             $quizQuery->orderBy($orderBy, $orderDirection);
@@ -49,6 +53,7 @@ class AdminQuizController extends Controller
                 'difficulty' => $quiz->difficulty,
                 'created_at' => $quiz->created_at->format('Y-m-d'),
                 'max_score' => $quiz->questions->sum('score'),
+                'is_published' => $quiz->is_published,
                 'questions' => $quiz->questions->map(function ($question) {
                     return [
                         'id' => $question->id,
@@ -83,9 +88,7 @@ class AdminQuizController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(UserQuizRequest $request)
     {
         $validated = $request->validated();
@@ -99,7 +102,8 @@ class AdminQuizController extends Controller
             'id' => Uuid::uuid(),
             'title' => $validated['title'],
             'description' => $validated['description'],
-            'difficulty' => $validated['difficulty']
+            'difficulty' => $validated['difficulty'],
+            'is_published' => $validated['is_published'] ?? false
         ]);
 
         // Create questions and answers
@@ -126,46 +130,27 @@ class AdminQuizController extends Controller
         return redirect()->route('admin-gamification.user_quiz.index')->with('success', 'Quiz created successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $quizId)
     {
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
-            'difficulty' => 'required'
+            'difficulty' => 'required',
+            'is_published' => 'nullable|boolean',
         ]);
 
         $quiz = UserQuiz::find($quizId);
         $quiz->update([
             'title' => $validatedData['title'],
             'description' => $validatedData['description'],
-            'difficulty' => $validatedData['difficulty']
+            'difficulty' => $validatedData['difficulty'],
+            'is_published' => $validatedData['is_published'] ?? false
         ]);
 
         return redirect()->route('admin-gamification.user_quiz.index')->with('Succes Updated the quiz');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $quizId)
     {
         $quiz = UserQuiz::find($quizId);

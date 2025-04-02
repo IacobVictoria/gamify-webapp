@@ -1,10 +1,10 @@
 <template>
     <AuthenticatedLayout>
         <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        ✍️  Quizzes Manager
-      </h2>
-    </template>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                ✍️ Quizzes Manager
+            </h2>
+        </template>
         <div class="py-12">
             <div class="w-full mx-auto sm:px-6 lg:px-8">
                 <inertia-link
@@ -57,6 +57,7 @@ export default {
                 { name: "difficulty", label: "Difficulty" },
                 { name: "max_score", label: "Total Score" },
                 { name: "created_at", label: "Created At", sorting: true },
+                { name: 'is_published', label: 'Published' },
             ];
         },
 
@@ -83,6 +84,17 @@ export default {
                         value: d.value,
                         label: d.label,
                     })),
+                },
+                {
+                    model: "searchPublished",
+                    label: "Search by published",
+                    type: "select",
+                    placeholder: "Search by published",
+                    options: [
+                        { value: "", label: "All" },
+                        { value: "true", label: "Published" },
+                        { value: "false", label: "Unpublished" },
+                    ],
                 },
             ];
         },

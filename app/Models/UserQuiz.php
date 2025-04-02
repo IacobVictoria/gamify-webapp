@@ -14,7 +14,8 @@ class UserQuiz extends Model
         'title',
         'description',
         'difficulty',
-        'slug'
+        'slug',
+        'is_published',
     ];
     public static function boot()
     {
@@ -32,6 +33,10 @@ class UserQuiz extends Model
             }
         });
     }
+    protected $casts = [
+        'is_published' => 'boolean',
+    ];
+
     protected $table = 'user_quizzes';
 
     protected $primaryKey = 'id';

@@ -15,7 +15,7 @@
 
         <div class="container mx-auto mt-6 space-y-12 px-4">
             <!-- 🎯 Easy Quizzes -->
-            <div v-if="quizzes['easy'].length" class="space-y-6">
+            <div v-if="quizzes['easy']" class="space-y-6">
                 <div
                     class="flex flex-row category-header bg-green-200 shadow-md p-4 rounded-lg flex items-center justify-center gap-2"
                 >
@@ -65,7 +65,7 @@
             </div>
 
             <!-- 🏆 Medium Quizzes -->
-            <div v-if="quizzes['medium'].length" class="space-y-6">
+            <div v-if="quizzes['medium']" class="space-y-6">
                 <div
                     class="category-header bg-yellow-200 shadow-md p-4 rounded-lg flex items-center justify-center gap-2"
                 >
@@ -120,7 +120,7 @@
             </div>
 
             <!-- 🔥 Hard Quizzes -->
-            <div v-if="quizzes['hard'].length" class="space-y-6">
+            <div v-if="quizzes['hard']" class="space-y-6">
                 <div
                     class="category-header bg-red-200 shadow-md p-4 rounded-lg flex items-center justify-center gap-2"
                 >
@@ -197,14 +197,10 @@ export default {
 };
 </script>
 <style scoped>
-/* 🏆 Carduri quiz mai mari */
 .quiz-card {
     width: 350px;
-    /* Mărit dimensiunea cardurilor */
     height: 250px;
-    /* Ajustat pentru mai mult conținut */
     border-radius: 25px;
-    /* Colțuri și mai rotunjite */
     padding: 25px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease-in-out;
@@ -215,29 +211,23 @@ export default {
     justify-content: space-between;
 }
 
-/* 🌟 Hover Effect */
 .quiz-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
 }
 
-/* 💡 Culori pastel pentru dificultăți */
 .quiz-easy {
     background: #bbf7d0;
-    /* Verde pastel */
 }
 
 .quiz-medium {
     background: #fef08a;
-    /* Galben pastel */
 }
 
 .quiz-hard {
     background: #fecaca;
-    /* Roșu pastel */
 }
 
-/* 🏆 Titlu quiz */
 .quiz-title {
     font-size: 1.4rem;
     font-weight: bold;
@@ -245,14 +235,12 @@ export default {
     margin-bottom: 8px;
 }
 
-/* 📜 Descrierea quizului */
 .quiz-description {
     font-size: 1rem;
     color: #555;
     margin-bottom: 12px;
 }
 
-/* 🏅 Badge pentru dificultate */
 .quiz-badge {
     display: inline-block;
     padding: 6px 14px;
@@ -263,7 +251,6 @@ export default {
     margin-bottom: 12px;
 }
 
-/* Culoarea badge-ului în funcție de dificultate */
 .quiz-easy .quiz-badge {
     background: #16a34a;
 }
@@ -276,7 +263,6 @@ export default {
     background: #dc2626;
 }
 
-/* 🎮 Butonul "Let's Play" */
 .quiz-button {
     display: inline-block;
     padding: 10px 18px;
@@ -294,7 +280,6 @@ export default {
     box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.25);
 }
 
-/* Culoarea butonului în funcție de dificultate */
 .quiz-easy .quiz-button {
     background: #16a34a;
 }
@@ -307,7 +292,6 @@ export default {
     background: #dc2626;
 }
 
-/* 🔒 Locked Overlay */
 .locked-overlay {
     position: absolute;
     inset: 0;
@@ -320,7 +304,7 @@ export default {
     font-weight: bold;
     border-radius: 25px;
 }
-/* 🌟 Animare de apariție */
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -336,7 +320,6 @@ export default {
     animation: fadeIn 0.8s ease-out;
 }
 
-/* 🎨 Stilizare pentru header-ul leaderboard */
 .leaderboard-header {
     text-align: center;
     margin-bottom: 1.5rem;
@@ -346,7 +329,6 @@ export default {
     margin-top: 4em;
 }
 
-/* 🔥 Gradient pe text pentru un efect premium */
 .bg-clip-text {
     -webkit-text-fill-color: transparent;
 }
