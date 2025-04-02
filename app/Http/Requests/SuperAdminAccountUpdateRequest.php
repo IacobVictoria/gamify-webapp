@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -29,11 +30,27 @@ class SuperAdminAccountUpdateRequest extends FormRequest
                 'string',
                 'email',
                 'max:255',
-                Rule::unique('users')->ignore($this->route('accountId')), 
+                Rule::unique('users')->ignore($this->route('accountId')),
             ],
             'password' => ['nullable', 'confirmed', 'min:6'],
             'role_ids' => ['required', 'array'],
             'role_ids.*' => ['exists:roles,id'],
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $roleIds = $this->get('role_ids', []);
+            $roles = Role::whereIn('id', $roleIds)->pluck('name')->map(fn($name) => strtolower($name))->toArray();
+
+            if (count($roles) > 1) {
+                $validCombination = collect($roles)->sort()->values()->toArray() === ['admin', 'super-admin'];
+
+                if (!$validCombination) {
+                    $validator->errors()->add('role_ids', 'Only the combination of admin and super-admin is allowed.');
+                }
+            }
+        });
     }
 }

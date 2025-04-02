@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules;
@@ -30,5 +31,20 @@ class SuperAdminCreateAccountRequest extends FormRequest
             'role_ids' => ['required', 'array'],
             'role_ids.*' => ['exists:roles,id'],
         ];
+    }
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $roleIds = $this->get('role_ids', []);
+            $roles = Role::whereIn('id', $roleIds)->pluck('name')->map(fn($name) => strtolower($name))->toArray();
+
+            if (count($roles) > 1) {
+                $validCombination = collect($roles)->sort()->values()->toArray() === ['admin', 'super-admin'];
+
+                if (!$validCombination) {
+                    $validator->errors()->add('role_ids', 'Only the combination of admin and super-admin is allowed.');
+                }
+            }
+        });
     }
 }
