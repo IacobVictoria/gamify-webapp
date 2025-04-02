@@ -12,7 +12,7 @@
           <ul role="list" class="divide-y divide-gray-200 border-b border-t border-gray-200">
             <li v-for="item in cartItems" :key="item.product.id" class="flex py-6 sm:py-10">
               <div class="flex-shrink-0">
-                <img :src="item.product.image" :alt="item.product.description"
+                <img :src="item.product.image_url" :alt="item.product.description"
                   class="h-24 w-24 rounded-lg object-cover object-center sm:h-32 sm:w-32" />
               </div>
 

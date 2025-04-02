@@ -69,17 +69,7 @@ class AdminSupplierController extends Controller
         return redirect()->route('admin.suppliers.index')->with('success', 'Supplier created successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $supplierId)
     {
         $supplier = Supplier::find($supplierId);
@@ -89,9 +79,6 @@ class AdminSupplierController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(SupplierRequest $request, string $supplierId)
     {
         $supplier = Supplier::findOrFail($supplierId);
