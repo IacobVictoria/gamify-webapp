@@ -40,7 +40,7 @@ class QrScannerController extends Controller
             return back()->with('errorMessage', 'Product not found');
         }
 
-        return redirect()->route('products.show', $productId);
+        return redirect()->route('products.show', $product->slug);
     }
 
     public function scanProductEarnPoints(Request $request)
