@@ -7,35 +7,33 @@ use App\Events\UserScoreUpdatedEvent;
 use App\Interfaces\UserScoreInterface;
 use App\Models\Medal;
 use App\Models\User;
+use App\Services\User\BroadcastScoreHandler;
+use App\Services\User\LeaderboardHandler;
+use App\Services\User\MedalHandler;
+use App\Services\User\SaveScoreHandler;
+use App\Services\User\ScoreHandlerInterface;
 
 class UserScoreService implements UserScoreInterface
 {
-    protected $notificationService;
-    protected $medalService;
+    protected ScoreHandlerInterface $handlerChain;
 
-    public function __construct(NotificationService $notificationService, MedalService $medalService)
-    {
-        $this->notificationService = $notificationService;
-        $this->medalService = $medalService;
+    public function __construct(
+        SaveScoreHandler $saveHandler,
+        LeaderboardHandler $leaderboardHandler,
+        MedalHandler $medalHandler,
+        BroadcastScoreHandler $broadcastHandler
+    ) {
+        $saveHandler
+            ->setNext($leaderboardHandler)
+            ->setNext($medalHandler)
+            ->setNext($broadcastHandler);
+
+        $this->handlerChain = $saveHandler;
     }
+
     public function addScore(User $user, $score)
     {
-        $user->score += $score;
-        $user->save();
-        // Verificăm dacă utilizatorul este eligibil pentru medalie
-        //fac un broadcast pentru ca punctele se primesc si din badges si atunci ar fi bine sa emitem partea asta nu sa o rendaruim la o pagina anume
-        //el primeste puncte si daca nu face nimic cum ar fi la badge urile de "like uri" el doar primeste like uri 
-
-        // Poziția înainte de actualizarea scorului
-        $previousPosition = User::where('score', '>', $user->score)->count() + 1;
-
-        // verificare leaderboard
-        app(LeaderboardService::class)->checkAndNotifyLeaderboardEntry($user, $previousPosition);
-
-        // acordare medalii
-        $this->medalService->checkAndAwardMedal($user);
-
-        broadcast(new UserScoreUpdatedEvent($user, $score, "Ai primit " . $score . " !", $this->notificationService));
+        $this->handlerChain->handle($user, $score);
     }
 
     public function updateScore(User $user, $score)
@@ -55,10 +53,6 @@ class UserScoreService implements UserScoreInterface
         $final_score = $obtained_score * $multiplier;
 
         $this->addScore($user, $final_score);
-        // $user->score += $final_score;
-        // $user->save();
-
-        // broadcast(new UserScoreUpdatedEvent($user, $final_score, "Quiz ul completat ti-a adus puncte!", $this->notificationService));
 
     }
 
@@ -68,10 +62,8 @@ class UserScoreService implements UserScoreInterface
 
         // Award points based on rank
         $this->addScore($user, $points);
-
-        // Broadcast the event for score update
-        // broadcast(new UserScoreUpdatedEvent($user, $points, "Ai primit puncte pentru locul #$rank pe leaderboard!", $this->notificationService));
     }
+
     public function getPointsForRank(int $rank): int
     {
         switch ($rank) {

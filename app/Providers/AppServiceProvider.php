@@ -29,13 +29,8 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(BadgeAssignerInterface::class, BadgeAssignerService::class);
         //returnează o instanță a BadgeAssignerService, care implementează BadgeAssignerInterface.
-        $this->app->bind(UserScoreInterface::class, function ($app) {
-            return new UserScoreService(
-                $app->make(NotificationService::class),
-                $app->make(MedalService::class),
-            );
-        });
-        
+        $this->app->bind(UserScoreInterface::class, UserScoreService::class);
+
         $this->app->bind(OrderHandlerInterface::class, function ($app) {
             return OrderHandlerFactory::create($app);
         });
