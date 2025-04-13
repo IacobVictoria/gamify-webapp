@@ -1,5 +1,5 @@
 <script setup>
-import { computed, isReadonly, onMounted, ref, watch } from "vue";
+import { computed, isReadonly, onBeforeMount, onMounted, ref, watch } from "vue";
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
@@ -9,10 +9,28 @@ import { Link, router, usePage } from "@inertiajs/vue3";
 import NotificationCenter from "@/Pages/Notification_System/NotificationCenter.vue";
 import Icon from "@/Pages/Admin/Notifications/Icon.vue";
 import { Switch } from "@headlessui/vue";
+import IconAdminGamification from "@/Pages/Admin/Notifications/IconAdminGamification.vue";
+import {
+    CheckCircleIcon,
+    XCircleIcon,
+    XMarkIcon,
+} from "@heroicons/vue/24/outline";
 
 const showingNavigationDropdown = ref(false);
 const page = usePage();
 const roles = computed(() => page.props.user.roles.map((r) => r.name));
+
+const show = ref(false);
+
+const errorMessage = computed(() => page?.props?.errorMessage);
+const success = computed(() => page?.props?.success);
+const message = computed(() => page?.props?.message);
+
+onMounted(() => {
+    if (errorMessage.value || success.value || message.value) {
+        show.value = true;
+    }
+});
 
 // Check if user has both roles
 const isDoubleAdmin = computed(
@@ -381,10 +399,24 @@ watch(enabled, (newValue) => {
                                                 >
                                                     <Icon />
                                                 </button>
+                                                <button
+                                                    v-if="
+                                                        authUserHasRole(
+                                                            'Admin-Gamification'
+                                                        )
+                                                    "
+                                                    type="button"
+                                                    @click.stop="
+                                                        handleIconClick
+                                                    "
+                                                    class="ms-2 p-2 bg-gray-100 rounded-full hover:bg-gray-200"
+                                                >
+                                                    <IconAdminGamification />
+                                                </button>
                                             </div>
                                             <div
                                                 v-if="isDoubleAdmin"
-                                                class="flex items-center justify-between gap-4  px-4 py-2 "
+                                                class="flex items-center justify-between gap-4 px-4 py-2"
                                             >
                                                 <div
                                                     class="flex items-center gap-2"
@@ -561,7 +593,77 @@ watch(enabled, (newValue) => {
                     </div>
                 </div>
             </nav>
-
+            <div
+                aria-live="assertive"
+                class="pointer-events-none fixed inset-24 flex items-end px-4 py-6 sm:items-start sm:p-6"
+            >
+                <div
+                    v-if="show"
+                    class="flex w-full flex-col items-center space-y-4 sm:items-end"
+                >
+                    <!-- Notification panel, dynamically insert this into the live region when it needs to be displayed -->
+                    <transition
+                        enter-active-class="transform ease-out duration-300 transition"
+                        enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+                        enter-to-class="translate-y-0 opacity-100 sm:translate-x-0"
+                        leave-active-class="transition ease-in duration-100"
+                        leave-from-class="opacity-100"
+                        leave-to-class="opacity-0"
+                    >
+                        <div
+                            class="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5"
+                        >
+                            <div class="p-4">
+                                <div class="flex items-start">
+                                    <template v-if="$page.props.message">
+                                        <div class="flex-shrink-0">
+                                            <CheckCircleIcon
+                                                class="h-6 w-6 text-green-400"
+                                                aria-hidden="true"
+                                            />
+                                        </div>
+                                        <div class="ml-3 w-0 flex-1 pt-0.5">
+                                            <p
+                                                class="text-sm font-medium text-gray-900"
+                                            >
+                                                {{ $page.props.message }}
+                                            </p>
+                                        </div>
+                                    </template>
+                                    <template v-if="$page.props.errorMessage">
+                                        <div class="flex-shrink-0">
+                                            <XCircleIcon
+                                                class="h-6 w-6 text-red-400"
+                                                aria-hidden="true"
+                                            />
+                                        </div>
+                                        <div class="ml-3 w-0 flex-1 pt-0.5">
+                                            <p
+                                                class="text-sm font-medium text-gray-900"
+                                            >
+                                                {{ $page.props.errorMessage }}
+                                            </p>
+                                        </div>
+                                    </template>
+                                    <div class="ml-4 flex flex-shrink-0">
+                                        <button
+                                            type="button"
+                                            @click="show = false"
+                                            class="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                        >
+                                            <span class="sr-only">Close</span>
+                                            <XMarkIcon
+                                                class="h-5 w-5"
+                                                aria-hidden="true"
+                                            />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </transition>
+                </div>
+            </div>
             <!-- Page Heading -->
             <header class="bg-white shadow" v-if="$slots.header">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">

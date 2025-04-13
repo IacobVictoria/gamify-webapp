@@ -138,7 +138,7 @@
                 </button>
 
                 <!-- Lista întrebărilor -->
-                <div class="mt-6">
+                <div class="mt-6 max-h-[19vh] overflow-y-auto pr-2">
                     <h5 class="text-md font-semibold mb-2">
                         📝 Your Questions
                     </h5>
@@ -307,7 +307,7 @@ export default {
             questions: [],
             errors: {},
             quizDifficulty: "easy",
-            isPublished: false
+            isPublished: false,
         };
     },
     methods: {

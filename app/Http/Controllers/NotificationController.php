@@ -24,12 +24,6 @@ class NotificationController extends Controller
         $this->notificationService = $notificationService;
     }
 
-    public function index()
-    {
-
-
-    }
-
     public function getNotifications()
     {
         $user = Auth::user();
@@ -58,7 +52,6 @@ class NotificationController extends Controller
 
             return response()->json(['message' => 'Nu sunt notificări necitite'], 400);
         }
-
     }
 
     public function handleRequestNotification(Request $request, $notifId)
@@ -96,49 +89,7 @@ class NotificationController extends Controller
         return response()->json(['message' => 'Invalid notification type'], 400);
 
     }
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $notificationId)
     {
         $notification = Notification::findOrFail($notificationId);

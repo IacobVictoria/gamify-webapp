@@ -1,26 +1,33 @@
 <template>
     <AuthenticatedLayout>
         <div class="game-setup">
-            <div class="image-container">
-                <img src="/images/hangman_startPic.png" alt="Hangman Game Cover" class="game-image" />
+            <div class="image-container w-full max-w-3xl mx-auto mb-6 px-4">
+                <img
+                    src="/images/hangman_startPic.png"
+                    alt="Hangman Game Cover"
+                    class="w-full rounded-xl shadow-lg object-cover"
+                />
             </div>
+
             <h2 class="game-title">Welcome to Hangman</h2>
-            <button @click="startNewGame" class="start-button">Start New Game</button>
+            <button @click="startNewGame" class="start-button">
+                Start New Game
+            </button>
         </div>
     </AuthenticatedLayout>
 </template>
 
 <script>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 
 export default {
     components: {
-        AuthenticatedLayout
+        AuthenticatedLayout,
     },
     methods: {
         startNewGame() {
             try {
-                this.$inertia.post(route('user.generateGameSession'));
+                this.$inertia.post(route("user.generateGameSession"));
             } catch (error) {
                 console.error("Error starting new game:", error);
                 alert("Failed to start the game.");
@@ -40,28 +47,15 @@ export default {
     justify-content: center;
 }
 
-.image-container {
-    margin-bottom: 20px;
-    width: 60em;
-    height: 30em;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-}
-
-.game-image {
-    object-fit: cover; 
-    box-shadow: 0px 4px 20px;
-}
-
 .game-title {
-    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-family: "Comic Sans MS", cursive, sans-serif;
     font-size: 24px;
     color: #333;
     margin-bottom: 20px;
 }
 
 .start-button {
-    background-color: #7bc043; 
+    background-color: #7bc043;
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -69,7 +63,7 @@ export default {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
 .start-button:hover {

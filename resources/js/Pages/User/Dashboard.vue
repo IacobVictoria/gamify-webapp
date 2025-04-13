@@ -8,8 +8,6 @@
         🎮 Gaming Dashboard - Level Up! 🚀
       </h2>
     </template>
-
-
     <div class="py-12">
       <div class="max-w-[90%] mx-auto sm:px-6">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">

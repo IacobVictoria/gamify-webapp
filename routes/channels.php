@@ -32,6 +32,10 @@ Broadcast::channel('admin-channel', function ($user) {
     return $user && $user->hasRole('admin');
 });
 
+Broadcast::channel('admin-gamification-channel', function ($user) {
+    return $user && $user->hasRole('Admin-Gamification');
+});
+
 Broadcast::channel('chat.{id}', function ($user, $id) {
 
     return (int) $user->id === (int) $id;

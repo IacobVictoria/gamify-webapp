@@ -1,35 +1,71 @@
 <template>
     <AuthenticatedLayout>
-        <div class="flex flex-col justify-center items-center min-h-screen bg-gray-200 space-y-4">
-            <inertia-link :href="route('user.quizzes.index')" class="text-blue-500 underline">Back to search for
-                quizzes</inertia-link>
-
-            <StartScreen v-if="!quizStarted && !quizEnded && !isQuizLocked && $page.props.nr_attempts < 3" :quiz="quiz"
-                @start-quiz="startQuiz" :nr_attempts="nr_attempts" />
+        <div
+            class="flex flex-col justify-center items-center min-h-screen bg-gray-200 space-y-4"
+        >
+            <StartScreen
+                v-if="
+                    !quizStarted &&
+                    !quizEnded &&
+                    !isQuizLocked &&
+                    $page.props.nr_attempts < 3
+                "
+                :quiz="quiz"
+                @start-quiz="startQuiz"
+                :nr_attempts="nr_attempts"
+            />
 
             <div v-if="quiz.questions.length > 0">
-                <QuizCard v-if="quizStarted" :question="currentQuestion" :questionIndex="currentQuestionIndex"
-                    :totalQuestions="quiz.questions.length" :initialScore="score" @next-question="nextQuestion"
-                    @quit-quiz="quitQuiz" @score-updated="updateScore" @quiz-completed="quizCompleted"
-                    :nr_attempts="nr_attempts" />
+                <QuizCard
+                    v-if="quizStarted"
+                    :question="currentQuestion"
+                    :questionIndex="currentQuestionIndex"
+                    :totalQuestions="quiz.questions.length"
+                    :initialScore="score"
+                    @next-question="nextQuestion"
+                    @quit-quiz="quitQuiz"
+                    @score-updated="updateScore"
+                    @quiz-completed="quizCompleted"
+                    :nr_attempts="nr_attempts"
+                />
             </div>
 
-            <FinalScreen v-if="quizEnded === true" :score="score" :totalQuestions="quiz.questions.length"
-                :correct-answers="correctAnswersCount" @lock-quiz="lockQuiz" :quiz-id="quiz.id" :responses="responses"
-                @retry-quiz="retryQuiz" :nr-attempts="nr_attempts" />
+            <FinalScreen
+                v-if="quizEnded === true"
+                :score="score"
+                :totalQuestions="quiz.questions.length"
+                :correct-answers="correctAnswersCount"
+                @lock-quiz="lockQuiz"
+                :quiz-id="quiz.id"
+                :responses="responses"
+                @retry-quiz="retryQuiz"
+                :nr-attempts="nr_attempts"
+            />
 
             <!-- componenta de vizualizare rezultate finale -->
-            <FinalResult v-if="isQuizLocked === true" :responses="responses" :quiz="quiz"></FinalResult>
+            <FinalResult
+                v-if="isQuizLocked === true"
+                :responses="responses"
+                :quiz="quiz"
+            ></FinalResult>
+            <!-- Mesaj dacă quiz-ul este blocat -->
+            <div
+                v-if="isQuizLocked && !quizStarted && !quizEnded"
+                class="bg-red-100 text-red-800 p-4 rounded-md shadow-md w-full max-w-xl text-center"
+            >
+                Acest quiz a fost închis! Vezi în
+                <b>Dashboard-ul utilizatorului</b> ce poți îmbunătăți. 📊
+            </div>
         </div>
     </AuthenticatedLayout>
 </template>
 
 <script>
-import QuizCard from './QuizCard.vue';
-import StartScreen from './StartScreen.vue';
-import FinalScreen from './FinalScreen.vue';
-import FinalResult from './FinalResult.vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import QuizCard from "./QuizCard.vue";
+import StartScreen from "./StartScreen.vue";
+import FinalScreen from "./FinalScreen.vue";
+import FinalResult from "./FinalResult.vue";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 
 export default {
     components: {
@@ -37,11 +73,12 @@ export default {
         QuizCard,
         FinalScreen,
         FinalResult,
-        AuthenticatedLayout
+        AuthenticatedLayout,
     },
     props: {
         quiz: Object,
         nr_attempts: Number,
+        is_locked: Boolean,
     },
     data() {
         return {
@@ -51,13 +88,13 @@ export default {
             quizEnded: false,
             correctAnswersCount: 0,
             responses: [],
-            isQuizLocked: false
+            isQuizLocked: this.is_locked,
         };
     },
     computed: {
         currentQuestion() {
             return this.quiz.questions[this.currentQuestionIndex];
-        }
+        },
     },
     methods: {
         startQuiz() {
@@ -91,7 +128,6 @@ export default {
             this.quizStarted = false;
             this.responses = responses;
             this.quizEnded = true;
-
         },
 
         retryQuiz() {
@@ -105,8 +141,7 @@ export default {
             this.quizStarted = false;
             this.quizEnded = false;
             this.isQuizLocked = true;
-        }
-
-    }
+        },
+    },
 };
 </script>

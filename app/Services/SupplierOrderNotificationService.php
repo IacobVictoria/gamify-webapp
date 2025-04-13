@@ -66,6 +66,7 @@ class SupplierOrderNotificationService implements SupplierOrderNotificationInter
                 'is_read' => false,
                 'handled' => false,
             ]);
+            $this->notificationService->updateNotifications($admin);
         }
     }
 
@@ -87,6 +88,7 @@ class SupplierOrderNotificationService implements SupplierOrderNotificationInter
                 'is_read' => false,
                 'handled' => false,
             ]);
+            $this->notificationService->updateNotifications($admin);
         }
     }
 

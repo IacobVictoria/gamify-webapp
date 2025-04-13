@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminBadgeController;
 use App\Http\Controllers\AdminGamesManagerController;
 use App\Http\Controllers\AdminGamificationController;
 use App\Http\Controllers\AdminGamificationMedalController;
+use App\Http\Controllers\AdminGamificationNotificationController;
 use App\Http\Controllers\AdminHangmanManagerController;
 use App\Http\Controllers\AdminQuizAnswerController;
 use App\Http\Controllers\AdminQuizController;
@@ -76,4 +77,9 @@ Route::prefix('activities')->group(function () {
     Route::delete('/activities/{activityId}', [AdminActivitiesManagerController::class, 'destroy'])->name('activities.destroy');
     Route::get('/update-activity/{activityId}', [AdminActivitiesManagerController::class, 'edit'])->name('activities.edit');
     Route::put('/update-activity/{activityId}', [AdminActivitiesManagerController::class, 'update'])->name('activities.update');
+});
+
+Route::prefix('notifications')->group(function () {
+    Route::get('/', [AdminGamificationNotificationController::class, 'getNotifications'])->name('notifications.getNotifications');
+    Route::post('/markAsRead', [AdminGamificationNotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
 });

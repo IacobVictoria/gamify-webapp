@@ -4,6 +4,8 @@ namespace App\Events;
 
 use App\Models\Notification;
 use App\Models\SupplierOrder;
+use App\Models\User;
+use App\Services\NotificationService;
 use Faker\Provider\Uuid;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -18,12 +20,13 @@ class SupplierOrderSuccessEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $order, $adminId;
+    public $order, $adminId, $notificationService;
 
-    public function __construct(SupplierOrder $order, $adminId)
+    public function __construct(SupplierOrder $order, $adminId, NotificationService $notificationService)
     {
         $this->order = $order;
         $this->adminId = $adminId;
+        $this->notificationService = $notificationService;
         $this->makeNotification();
     }
     public function makeNotification()
@@ -39,7 +42,9 @@ class SupplierOrderSuccessEvent implements ShouldBroadcastNow
             'type' => 'SupplierOrderSuccess'
         ]);
 
+        $user = User::where('id', $this->adminId)->first();
         $notification->save();
+        $this->notificationService->updateNotifications($user);
     }
 
     public function broadcastOn(): array

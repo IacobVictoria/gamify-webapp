@@ -5,31 +5,20 @@ namespace App\Http\Controllers;
 use App\Events\UserRemarkedOnQuizEvent;
 use App\Models\UserQuiz;
 use App\Models\UserQuizRemark;
+use App\Services\NotificationService;
 use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserQuizRemarkController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected NotificationService $notificationService;
+
+    public function __construct(NotificationService $notificationService)
     {
-        //
+        $this->notificationService = $notificationService;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request, $quizId)
     {
         $validatedData = $request->validate([
@@ -44,39 +33,7 @@ class UserQuizRemarkController extends Controller
             'description' => $validatedData['feedback']
         ]);
         $quiz = UserQuiz::find($quizId);
-        broadcast(new UserRemarkedOnQuizEvent($user, $quiz, $userQuizRemark));
-
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        broadcast(new UserRemarkedOnQuizEvent($user, $quiz, $userQuizRemark, $this->notificationService));
+        return redirect()->route('user.quizzes.index');
     }
 }

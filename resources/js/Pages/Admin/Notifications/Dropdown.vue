@@ -2,7 +2,7 @@
     <div v-if="notifications.length > 0" class="notifications-list">
       <div v-for="(notification, index) in notifications" :key="index" class="notification-item">
         <p>{{ notification.message }}</p>
-        <div v-if="!notification.handled">
+        <div v-if="!notification.handled && handle">
           <button @click="markAsHandled(notification.id)" class="btn-handle">Mark as Handled</button>
         </div>
       </div>
@@ -15,7 +15,8 @@
   <script>
   export default {
     props: {
-      notifications: Array
+      notifications: Array,
+      handle: Boolean
     },
     methods: {
       markAsHandled(notificationId) {

@@ -16,16 +16,16 @@ class UserRegistration implements ShouldBroadcastNow
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $user;
-    public function __construct( $user)
+    public function __construct($user)
     {
-        $this->user=$user;
+        $this->user = $user;
     }
 
-  
+
     public function broadcastOn()
     {
-               new Channel('user.'. $this->user->id);
-      
+        new Channel('user.' . $this->user->id);
+
     }
 
     public function broadcastAs()
@@ -33,8 +33,9 @@ class UserRegistration implements ShouldBroadcastNow
         return 'UserRegistration';
     }
 
-    public function broadcastWith(){
-        return[
+    public function broadcastWith()
+    {
+        return [
             "message" => "[{$this->user->name}]",
         ];
     }

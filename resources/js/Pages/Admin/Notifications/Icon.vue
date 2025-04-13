@@ -16,7 +16,7 @@
 
     <!-- Dropdown pentru notificări -->
     <div v-if="isDropdownVisible" class="dropdown">
-      <Dropdown :notifications="notifications" @markHandled="markHandled" />
+      <Dropdown :notifications="notifications" @markHandled="markHandled" :handle="true" />
     </div>
   </div>
 </template>

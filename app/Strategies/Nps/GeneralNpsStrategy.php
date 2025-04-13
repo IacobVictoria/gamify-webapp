@@ -43,8 +43,6 @@ class GeneralNpsStrategy implements NpsCalculationStrategyInterface
                 }
             }
         }
-
-        // Calculează NPS-ul
         $nps = $totalResponses > 0
             ? round((($promoters - $detractors) / $totalResponses) * 100, 2)
             : 0;

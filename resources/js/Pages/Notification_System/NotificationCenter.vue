@@ -39,8 +39,8 @@ export default {
                 .listen('.UserMadeLeaderboard', (event) => {
                     this.addNotification('Felicitări!', event.message);
                 });
-            if (user.roles[0].name === 'Admin') {
-                window.Echo.private('admin-channel')
+            if (user.roles[0].name === 'Admin-Gamification') {
+                window.Echo.private('admin-gamification-channel')
                     .listen('.UserRemarkedOnQuiz', (event) => {
                         this.addNotification('New Remark!', event.message);
                     });

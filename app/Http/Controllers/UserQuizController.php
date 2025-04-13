@@ -70,9 +70,16 @@ class UserQuizController extends Controller
 
         $nr_attempts = $user->quizResults()->where('quiz_id', $quizId)->max('attempt_number') ?? 0;
 
+        $quizResult = UserQuizResult::where('user_id', $user->id)
+            ->where('quiz_id', $quizId)
+            ->first();
+
+        $is_locked = $quizResult?->is_locked ?? false;
+
         return Inertia::render('User/Quizzes/Show', [
             'quiz' => $quiz,
             'nr_attempts' => $nr_attempts,
+            'is_locked' => $is_locked
         ]);
     }
 

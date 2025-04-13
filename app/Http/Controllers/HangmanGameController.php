@@ -47,6 +47,10 @@ class HangmanGameController extends Controller
     {
         $session = HangmanSession::findOrFail($sessionId);
 
+        if ($session->completed) {
+            return redirect()->route('user.dashboard')->with('errorMessage', 'Această sesiune de joc a fost deja finalizată.');
+        }
+        
         return Inertia::render('HangmanGame/Start', [
             'sessionId' => $session->id,
             'creatorId' => $session->creator_id,

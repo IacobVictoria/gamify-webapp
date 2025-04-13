@@ -42,7 +42,9 @@
                     />
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+                >
                     <div
                         v-for="quiz in quizzes['easy']"
                         :key="quiz.quizData.id"
@@ -198,7 +200,7 @@ export default {
 </script>
 <style scoped>
 .quiz-card {
-    width: 350px;
+    width: 100%;
     height: 250px;
     border-radius: 25px;
     padding: 25px;

@@ -51,13 +51,13 @@ class QrScannerController extends Controller
         $qrCode = QrCode::where('code', $qrCodeValue)->first();
 
         if (!$qrCode) {
-            return back()->with('errorMessage', 'Invalid QR code');
+            return redirect()->route('user.dashboard')->with('errorMessage', 'Invalid QR code');
         }
 
         $product = Product::find($qrCode->product_id);
 
         if (!$product) {
-            return back()->with('errorMessage', 'Product not found');
+            return redirect()->route('user.dashboard')->with('errorMessage', 'Product not found');
         }
 
         $this->userScoreService->addScore($user, $product->score);
