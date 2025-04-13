@@ -1,39 +1,59 @@
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight text-center">
-                🎮 Your Quiz History 🏆
+            <h2
+                class="font-semibold text-2xl text-gray-800 leading-tight text-center mb-6"
+            >
+                🧠 Quiz History
             </h2>
         </template>
 
-        <div class="py-12 ">
-            <div class="max-w-[90%] mx-auto sm:px-6">
-                <div class="bg-gradient-to-r from-pink-300 to-red-300 text-white shadow-2xl sm:rounded-lg p-6">
-                    <h3 class="text-2xl font-bold mb-3 text-center">✨ Your Achievements ✨</h3>
-                    <div class="flex flex-row items-center justify-end learn-message mb-12">
-                        <div class="text-lg font-bold text-white pr-4">
-                            Learn from your mistakes - Click on the quizzes!
-                        </div>
-                        <img :src="imagePath('/user_dashboard/search.png')" class="w-32 search-icon" />
+        <div class="py-12 lg:px-24">
+            <div class="px-4 sm:px-6 lg:px-8">
+                <div
+                    class="bg-white shadow-xl rounded-xl p-8 border border-gray-200"
+                >
+                    <h3
+                        class="text-2xl font-semibold text-[#2c3e50] text-center mb-8"
+                    >
+                        📚 Recapitulare & Progres 📈
+                    </h3>
+
+                    <div
+                        v-if="userResults.length === 0"
+                        class="text-center text-gray-500 text-lg"
+                    >
+                        Nicio încercare încă. Începe acum și câștigă XP! 🚀
                     </div>
 
-                    <div v-if="userResults.length === 0" class="text-center text-gray-100 text-lg">
-                        No quiz history found. 🚀 Start your journey now!
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                        <inertia-link v-for="result in userResults" :key="result.id"
-                            :href="route('user.dashboard.explore-games.show', { quizId: result.quiz.id })"
-                            class="quiz-card">
+                    <div
+                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+                    >
+                        <inertia-link
+                            v-for="result in userResults"
+                            :key="result.id"
+                            :href="
+                                route('user.dashboard.explore-games.show', {
+                                    quizId: result.quiz.id,
+                                })
+                            "
+                            class="quiz-card hover:shadow-lg transition-all"
+                        >
                             <h4 class="quiz-title">{{ result.quiz.title }}</h4>
                             <p class="quiz-score">
-                                Score: <span :class="getScoreColor(result.total_score)">{{ result.total_score }}
-                                    🎯</span>
+                                Score:
+                                <span
+                                    :class="getScoreColor(result.total_score)"
+                                >
+                                    {{ result.total_score }} 🎯
+                                </span>
                             </p>
                             <p class="quiz-attempt">
                                 Attempt #{{ result.attempt_number }}
                             </p>
-                            <p class="quiz-date">📅 {{ formatDate(result.date) }}</p>
+                            <p class="quiz-date">
+                                📅 {{ formatDate(result.date) }}
+                            </p>
                         </inertia-link>
                     </div>
                 </div>
@@ -43,96 +63,74 @@
 </template>
 
 <script>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 
 export default {
     components: {
-        AuthenticatedLayout
+        AuthenticatedLayout,
     },
     props: {
         userResults: {
             type: Array,
-            required: true
-        }
+            required: true,
+        },
     },
     methods: {
         getScoreColor(score) {
-            if (score >= 20) return 'text-green-300 font-bold';
-            if (score >= 10) return 'text-yellow-300 font-bold';
-            return 'text-red-300 font-bold';
+            if (score >= 20) return "text-green";
+            if (score >= 10) return "text-yellow";
+            return "text-red";
         },
         formatDate(date) {
-            return new Date(date).toLocaleDateString();
-        }
-    }
+            return new Date(date).toLocaleDateString("ro-RO", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            });
+        },
+    },
 };
 </script>
-
 <style scoped>
-/* ✅ Adăugăm un aspect mai gamificat */
 .quiz-card {
-    background: rgba(255, 255, 255, 0.15); /* Transparent White */
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Mai mult shadow pentru vizibilitate */
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    text-decoration: none;
-    color: white;
-    font-weight: bold;
+    background-color: #f9fafa;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid #e1e8ee;
     display: flex;
     flex-direction: column;
-    align-items: center;
     text-align: center;
-    backdrop-filter: blur(10px); /* Blur pentru un efect modern */
-    border: 1px solid rgba(255, 255, 255, 0.3); /* Bordură subtilă pentru contrast */
+    text-decoration: none;
+    color: #2c3e50;
 }
 
-/* Efecte de hover */
-.quiz-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(12px); /* Blur mai accentuat la hover */
-}
-
-
-/* 🏆 Titlu quiz */
 .quiz-title {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: white;
-    margin-bottom: 5px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 10px;
 }
 
-/* 🌟 Scor & detalii */
 .quiz-score {
     font-size: 1rem;
-    color: white;
-    margin: 5px 0;
+    margin: 6px 0;
 }
 
 .quiz-attempt,
 .quiz-date {
-    font-size: 0.9rem;
-    opacity: 0.8;
+    font-size: 0.875rem;
+    color: #7b8a97;
 }
 
-/* ✅ Adăugăm un fundal vibrant */
-.bg-gradient-to-r {
-    border-radius: 15px;
-    padding: 20px;
-    text-align: center;
+.text-green {
+    color: #2e7d32;
+    font-weight: 600;
 }
-
-/* Stil pentru iconiță */
-.search-icon {
-    animation: float 3s ease-in-out infinite;
+.text-yellow {
+    color: #f9a825;
+    font-weight: 600;
 }
-
-/* Animație pentru a face iconița să se miște ușor */
-@keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-5px); }
-    100% { transform: translateY(0px); }
+.text-red {
+    color: #d32f2f;
+    font-weight: 600;
 }
-
 </style>

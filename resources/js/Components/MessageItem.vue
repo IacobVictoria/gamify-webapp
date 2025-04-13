@@ -72,6 +72,18 @@
                             : 'text-gray-100',
                     ]"
                 />
+                <p
+                    v-else-if="isUrl(message.content)"
+                    class="text-sm whitespace-pre-wrap break-words"
+                >
+                    <a
+                        :href="message.content"
+                        target="_blank"
+                        class="text-black underline"
+                    >
+                        {{ message.content }}
+                    </a>
+                </p>
                 <p v-else class="text-sm whitespace-pre-wrap break-words">
                     {{ message.content }}
                 </p>
@@ -114,6 +126,9 @@ export default {
     methods: {
         cleanAttachmentUrl(url) {
             return url.replace("http://127.0.0.1:8000/storage/", "");
+        },
+        isUrl(text) {
+            return /^http?:\/\/\S+$/.test(text);
         },
     },
 };

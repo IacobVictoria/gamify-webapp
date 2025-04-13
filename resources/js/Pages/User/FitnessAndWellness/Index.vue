@@ -1,43 +1,51 @@
 <script setup lang="ts">
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import CalorieTracker from './CalorieTracker.vue';
-import AiAssistent from './AiAssistent.vue';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import CalorieTracker from "./CalorieTracker.vue";
+import AiAssistent from "./AiAssistent.vue";
 </script>
 
 <template>
     <AuthenticatedLayout>
         <div class="bg-gray-100 min-h-screen">
-            <!-- 🏋️ Introducere -->
-            <section class="relative w-full py-16 px-6 bg-gradient-to-r from-green-400 to-teal-500 text-white text-center">
-                <div class="max-w-4xl mx-auto">
-                    <h1 class="text-4xl font-extrabold mb-4">Welcome to Your Wellness Journey! 🌱</h1>
-                    <p class="text-lg opacity-90">Let’s find out how many calories you need and get personalized advice from our AI assistant.</p>
-                </div>
-            </section>
-            <!-- 🚀 Tracker de Calorii -->
-            <section class="py-20 bg-white text-center">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-6">🔥 Track Your Calories</h2>
-                    <p class="text-lg text-gray-600">Fill in your details to find out your optimal calorie intake.</p>
-                    <CalorieTracker />
-            </section>
+            <!-- 🚀 Tracker de Calorii + AI Assistant side by side -->
+            <section class="py-20 bg-gray-50">
+                <h2 class="text-3xl font-bold text-gray-800 text-center mb-4">
+                    🧮 Calorie Tracker & 🤖 AI Assistant
+                </h2>
+                <p class="text-lg text-gray-600 text-center mb-10">
+                    Discover your calorie needs and get real-time nutrition
+                    advice powered by AI.
+                </p>
 
-            <!-- 🤖 AI Assistant -->
-            <section class="py-20 bg-gray-50 text-center">
-                    <h2 class="text-3xl font-bold">🤖 Meet Your AI Assistant</h2>
-                    <p class="text-lg text-gray-600">Based on your data, our AI will give you tailored nutrition and fitness advice.</p>
-                    <AiAssistent />
-            </section>
+                <div
+                    class="px-24 grid grid-cols-1 lg:grid-cols-2 gap-8"
+                >
+                    <!-- Tracker Card -->
+                    <div
+                        class="bg-white rounded-xl shadow-md p-6 h-full flex flex-col"
+                    >
+                        <h3 class="text-xl font-semibold text-indigo-700 mb-4">
+                            🔥 Calorie Calculator
+                        </h3>
+                        <div class="flex-1">
+                            <CalorieTracker />
+                        </div>
+                    </div>
 
-            <!-- 🎯 Final Call to Action -->
-            <section class="py-16 bg-gradient-to-r from-green-500 to-teal-600 text-white text-center">
-                <div class="max-w-4xl mx-auto">
-                    <h2 class="text-3xl font-bold">Ready to Take Control of Your Health?</h2>
-                    <p class="text-lg opacity-90 mt-3">Start tracking today and let AI help you reach your goals! 🚀</p>
+                    <!-- AI Assistant Card -->
+                    <div
+                        class="bg-white rounded-xl shadow-md p-6 h-full flex flex-col"
+                    >
+                        <h3 class="text-xl font-semibold text-indigo-700 mb-4">
+                            🤖 Ask the AI
+                        </h3>
+                        <div class="flex-1">
+                            <AiAssistent />
+                        </div>
+                    </div>
                 </div>
             </section>
         </div>
     </AuthenticatedLayout>
 </template>
 
-<style scoped>
-</style>

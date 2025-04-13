@@ -8,11 +8,16 @@
                     <p><strong>Opponent:</strong> {{ opponentName }}</p>
                     <p>
                         <strong>Current Turn:</strong>
-                        <span v-if="$page.props.user.id === turnData">Your turn</span>
+                        <span v-if="$page.props.user.id === turnData"
+                            >Your turn</span
+                        >
                         <span v-else>Opponent's turn</span>
                     </p>
-                    <button v-if="$page.props.user.id === creatorId && !gameStart" @click="startGame"
-                        class="btn btn-primary mt-3">
+                    <button
+                        v-if="$page.props.user.id === creatorId && !gameStart"
+                        @click="startGame"
+                        class="btn btn-primary mt-3"
+                    >
                         Start Game
                     </button>
                 </div>
@@ -23,32 +28,76 @@
                 <div v-if="!wordSelected && gameStart" class="word-selection">
                     <h3>Select a Word for Your Opponent</h3>
                     <div class="word-options">
-                        <button v-for="(option, index) in wordOptions" :key="index" @click="submitWord(option)"
-                            class="word-button">
+                        <button
+                            v-for="(option, index) in wordOptions"
+                            :key="index"
+                            @click="submitWord(option)"
+                            class="word-button"
+                        >
                             {{ option.word }}
                         </button>
                     </div>
                 </div>
                 <div v-if="gameStart && wordSelected">
-                    <HangmanDrawing :mistakes="errors" :maxMistakes="Math.ceil(currentWord.length / 2)" />
-                    <GameBoard :isMyTurn="$page.props.user.id === turnData" :hint="currentHint" :word="currentWord"
-                        :usedLetters="usedLetters" :correctLetters="correctLetters" :wrongLetters="wrongLetters"
-                        :errors="errors" @guess="handleGuess" />
+                    <HangmanDrawing
+                        :mistakes="errors"
+                        :maxMistakes="Math.ceil(currentWord.length / 2)"
+                    />
+                    <GameBoard
+                        :isMyTurn="$page.props.user.id === turnData"
+                        :hint="currentHint"
+                        :word="currentWord"
+                        :usedLetters="usedLetters"
+                        :correctLetters="correctLetters"
+                        :wrongLetters="wrongLetters"
+                        :errors="errors"
+                        @guess="handleGuess"
+                    />
                 </div>
-                <div v-if="!bothConnected" class="friend-search mt-5">
+                <div
+                    v-if="!bothConnected && !waitingForFriend"
+                    class="friend-search mt-5"
+                >
                     <h3>Invite a Friend</h3>
-                    <input type="text" v-model="search" @input="searchFriends" placeholder="Search friends by email..."
-                        class="form-control" />
-                    <ul v-if="friends.length > 0" class="friend-list mt-3 list-group">
-                        <li v-for="friend in friends" :key="friend.id"
-                            class="list-group-item d-flex justify-content-between align-items-center">
+                    <input
+                        type="text"
+                        v-model="search"
+                        @input="searchFriends"
+                        placeholder="Search friends by email..."
+                        class="form-control"
+                    />
+                    <ul
+                        v-if="friends.length > 0"
+                        class="friend-list mt-3 list-group"
+                    >
+                        <li
+                            v-for="friend in friends"
+                            :key="friend.id"
+                            class="list-group-item d-flex justify-content-between align-items-center"
+                        >
                             <span>{{ friend.name }} ({{ friend.email }})</span>
-                            <button @click="sendGameInvite(friend.id)" class="btn btn-sm btn-success">
+                            <button
+                                @click="sendGameInvite(friend.id)"
+                                class="btn btn-sm btn-success"
+                            >
                                 Invite
                             </button>
                         </li>
                     </ul>
                     <p v-else class="text-muted mt-3">No friends found.</p>
+                </div>
+                <div
+                    v-if="waitingForFriend && !bothConnected"
+                    class="waiting-for-opponent mt-5"
+                >
+                    <h3>
+                        Waiting for {{ waitingForFriend }} to join the game...
+                        ⏳
+                    </h3>
+                    <p>
+                        They received your invite and can join using the shared
+                        game link.
+                    </p>
                 </div>
             </div>
             <div v-if="gameEnd">
@@ -70,7 +119,7 @@ export default {
         AuthenticatedLayout,
         GameBoard,
         EndGame,
-        HangmanDrawing
+        HangmanDrawing,
     },
     props: {
         sessionId: String,
@@ -100,7 +149,8 @@ export default {
             wrongLetters: [],
             errors: 0,
             wordOptions: [], // Cele 3 opțiuni de cuvinte
-            wordSelected: false
+            wordSelected: false,
+            waitingForFriend: null,
         };
     },
     methods: {
@@ -111,9 +161,12 @@ export default {
             }
 
             try {
-                const response = await axios.get(`/user/hangmanGame/search_friends`, {
-                    params: { email: this.search.trim() },
-                });
+                const response = await axios.get(
+                    `/user/hangmanGame/search_friends`,
+                    {
+                        params: { email: this.search.trim() },
+                    }
+                );
                 this.friends = response.data;
             } catch (error) {
                 console.error("Error searching friends:", error);
@@ -127,24 +180,34 @@ export default {
                     message: this.gameUrl,
                 };
 
-                await axios.post(`/user/user_chat/messages/${friendId}`, payload)
+                await axios
+                    .post(`/user/user_chat/messages/${friendId}`, payload)
                     .then(() => {
+                        const invitedFriend = this.friends.find(
+                            (f) => f.id === friendId
+                        );
+                        localStorage.setItem(
+                            `hangman_invite_${this.sessionId}`,
+                            invitedFriend.name
+                        );
+                        this.waitingForFriend = invitedFriend.name;
+
                         this.friends = [];
                         this.search = "";
-                        alert('Invitatie trimisa cu succes!');
+                        alert("Invitatie trimisa cu succes!");
                     })
                     .catch((error) => {
-                        console.error('Error sending invitation:', error);
-                        alert('A apărut o eroare la trimiterea invitației.');
+                        console.error("Error sending invitation:", error);
+                        alert("A apărut o eroare la trimiterea invitației.");
                     });
-
-
             }
         },
 
         async joinSession() {
             try {
-                const response = await axios.post(`/user/hangmanGame/${this.sessionId}/join`);
+                const response = await axios.post(
+                    `/user/hangmanGame/${this.sessionId}/join`
+                );
                 this.creatorName = response.data.creator_name;
                 this.opponentName = response.data.opponent_name;
                 this.bothConnected = response.data.opponent_connected;
@@ -155,7 +218,6 @@ export default {
         async startGame() {
             try {
                 await axios.post(`/user/hangmanGame/${this.sessionId}/start`);
-                alert("Game has started!");
             } catch (error) {
                 console.error("Error starting game:", error);
                 alert("Failed to start the game.");
@@ -163,7 +225,9 @@ export default {
         },
         async loadWordOptions() {
             try {
-                const response = await axios.get(`/user/hangmanGame/word-options`);
+                const response = await axios.get(
+                    `/user/hangmanGame/word-options`
+                );
 
                 // Verifică dacă userul curent este creatorul
                 if (this.$page.props.user.id === this.creatorId) {
@@ -174,16 +238,16 @@ export default {
             } catch (error) {
                 console.error("Error loading words:", error);
             }
-        }
-        ,
-
+        },
         async submitWord(word) {
             try {
-                await axios.post(`/user/hangmanGame/${this.sessionId}/submitWord`, {
-                    word,
-                });
+                await axios.post(
+                    `/user/hangmanGame/${this.sessionId}/submitWord`,
+                    {
+                        word,
+                    }
+                );
                 this.wordSelected = true;
-                alert("Word and hint submitted successfully!");
             } catch (error) {
                 console.error("Error submitting word and hint:", error);
                 alert("Failed to submit the word and hint.");
@@ -191,7 +255,10 @@ export default {
         },
         async handleGuess(letter) {
             try {
-                const response = await axios.post(`/user/hangmanGame/${this.sessionId}/guess`, { letter });
+                const response = await axios.post(
+                    `/user/hangmanGame/${this.sessionId}/guess`,
+                    { letter }
+                );
 
                 const { correct, finished, nextTurn } = response.data;
 
@@ -226,7 +293,8 @@ export default {
                 confirmButtonText: "OK",
                 confirmButtonColor: "#2e7d32",
                 didOpen: () => {
-                    const wordOptionsContainer = document.getElementById("swal-word-options");
+                    const wordOptionsContainer =
+                        document.getElementById("swal-word-options");
                     this.wordOptions.forEach((word, index) => {
                         const button = document.createElement("button");
                         button.innerText = word.word;
@@ -253,20 +321,31 @@ export default {
     },
     mounted() {
         this.joinSession();
+        const cachedName = localStorage.getItem(
+            `hangman_invite_${this.sessionId}`
+        );
+        if (cachedName) {
+            this.waitingForFriend = cachedName;
+        }
     },
     beforeMount() {
-        window.Echo.private(`hangman-session.${this.sessionId}`)
-            .listen(".OpponentJoined", (event) => {
+        window.Echo.private(`hangman-session.${this.sessionId}`).listen(
+            ".OpponentJoined",
+            (event) => {
                 this.opponentName = event.opponentName;
                 this.bothConnected = true;
-            });
-        window.Echo.private(`hangman-session.${this.sessionId}`)
-            .listen(".GameStarted", async () => {
+            }
+        );
+        window.Echo.private(`hangman-session.${this.sessionId}`).listen(
+            ".GameStarted",
+            async () => {
                 await this.loadWordOptions();
                 this.showEnterWordPopup();
-            });
-        window.Echo.private(`hangman-session.${this.sessionId}`)
-            .listen(".GameReady", (event) => {
+            }
+        );
+        window.Echo.private(`hangman-session.${this.sessionId}`).listen(
+            ".GameReady",
+            (event) => {
                 this.creatorWord = event.wordForCreator;
                 this.creatorHint = event.hintForCreator;
                 this.opponentWord = event.wordForOpponent;
@@ -280,31 +359,42 @@ export default {
                 this.updateCurrentWordAndHint();
 
                 this.gameStart = true;
-            });
-
-        window.Echo.private(`hangman-session.${this.sessionId}`).listen(".GameUpdated", (event) => {
-            this.turnData = event.turn;
-            this.correctLetters = event.correctLetters || [];
-            this.wrongLetters = event.wrongLetters || [];
-            this.usedLetters = event.usedLetters || [];
-            this.errors = this.turnData === this.creatorId ? event.creatorErrors : event.opponentErrors;
-
-
-            if (event.correctLetters.length === 0 && event.wrongLetters.length === 0) {
-                this.correctLetters = [];
-                this.wrongLetters = [];
-                this.usedLetters = [];
-                this.errors = 0;
             }
-            this.updateCurrentWordAndHint();
-        });
-        window.Echo.private(`hangman-session.${this.sessionId}`)
-            .listen(".GameEnded", (event) => {
+        );
+
+        window.Echo.private(`hangman-session.${this.sessionId}`).listen(
+            ".GameUpdated",
+            (event) => {
+                this.turnData = event.turn;
+                this.correctLetters = event.correctLetters || [];
+                this.wrongLetters = event.wrongLetters || [];
+                this.usedLetters = event.usedLetters || [];
+                this.errors =
+                    this.turnData === this.creatorId
+                        ? event.creatorErrors
+                        : event.opponentErrors;
+
+                if (
+                    event.correctLetters.length === 0 &&
+                    event.wrongLetters.length === 0
+                ) {
+                    this.correctLetters = [];
+                    this.wrongLetters = [];
+                    this.usedLetters = [];
+                    this.errors = 0;
+                }
+                this.updateCurrentWordAndHint();
+            }
+        );
+        window.Echo.private(`hangman-session.${this.sessionId}`).listen(
+            ".GameEnded",
+            (event) => {
                 this.gameStart = false;
                 this.gameEnd = true;
                 this.scores = event.scores;
-            });
-    }
+            }
+        );
+    },
 };
 </script>
 <style scoped>
@@ -316,7 +406,7 @@ export default {
     background: #f5fff5;
     padding: 20px;
     color: #2c3e50;
-    font-family: 'Arial', sans-serif;
+    font-family: "Arial", sans-serif;
 }
 
 .game-session {

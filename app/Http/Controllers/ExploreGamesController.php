@@ -11,35 +11,11 @@ use Illuminate\Support\Facades\Auth;
 
 class ExploreGamesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return Inertia::render('User/UserDashboard/ExploreGames/Index', [
-
-        ]);
+        return Inertia::render('User/UserDashboard/ExploreGames/Index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $quizId)
     {
 
@@ -63,9 +39,6 @@ class ExploreGamesController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function historyQuiz()
     {
         $user = Auth()->user();
@@ -82,8 +55,13 @@ class ExploreGamesController extends Controller
     public function historyHangman()
     {
         $user = Auth()->user();
-        $userResults = HangmanSession::where('creator_id', $user->id)
-            ->orWhere('opponent_id', $user->id)
+        $userResults = HangmanSession::with('creator', 'opponent')
+            ->where(function ($query) use ($user) {
+                $query->where('creator_id', $user->id)
+                    ->orWhere('opponent_id', $user->id);
+            })
+            ->whereNotNull('opponent_id')
+            ->where('completed', 1)
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($session) use ($user) {
@@ -109,20 +87,5 @@ class ExploreGamesController extends Controller
         return Inertia::render('User/UserDashboard/ExploreGames/HangmanHistory', [
             'userResults' => $userResults
         ]);
-    }
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

@@ -36,38 +36,14 @@ class OpenAiController extends Controller
 
             $responseContent = $response['choices'][0]['message']['content'] ?? '';
 
-            // 4. Analiza răspunsului AI pentru produse relevante
-            $suggestedProducts = $this->getSuggestedProducts($userMessage);
-
             // 5. Returnăm răspunsul cu sugestiile de produse
             return response()->json([
                 'response' => $responseContent,
-                'products' => $suggestedProducts,
             ]);
         } catch (\Exception $e) {
             logger()->error('OpenAI Error: ' . $e->getMessage());
             return response()->json(['error' => 'An error occurred: ' . $e->getMessage()], 500);
         }
-    }
-    private function getSuggestedProducts(string $userMessage)
-    {
-        $categories = Product::distinct()->pluck('category')->toArray();
-
-        $matchingKeywords = array_filter($categories, function ($category) use ($userMessage) {
-            return stripos($userMessage, $category) !== false;
-        });
-
-        if (empty($matchingKeywords)) {
-            return [];
-        }
-
-        $products = Product::where(function ($query) use ($matchingKeywords) {
-            foreach ($matchingKeywords as $keyword) {
-                $query->orWhere('category', 'LIKE', "%$keyword%");
-            }
-        })->take(5)->get();
-
-        return $products;
     }
 
 }

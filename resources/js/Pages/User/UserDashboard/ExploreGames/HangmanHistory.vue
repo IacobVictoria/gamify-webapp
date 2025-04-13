@@ -1,101 +1,176 @@
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight text-center">
-                🎭 Your Hangman History ✨
+            <h2 class="text-3xl font-bold text-center text-indigo-800 mb-6">
+                🕹️ Hangman Game History
             </h2>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-[90%] mx-auto sm:px-6">
-                <div class="bg-gradient-to-r from-green-300 to-teal-300 text-black shadow-2xl sm:rounded-lg p-6">
-                    <h3 class="text-2xl font-bold mb-3 text-center">🔍 Review Your Past Games</h3>
-                    <div class="flex flex-row items-center justify-end learn-message mb-12">
-                        <div class="text-lg font-bold text-black pr-4">
-                            Learn new words - Click on a result!
-                        </div>
-                        <img :src="imagePath('/user_dashboard/search.png')" class="w-32 search-icon" />
-                    </div>
+        <div class="py-10 md:px-4 lg:px-32">
+            <div
+                class="bg-white shadow-lg rounded-xl p-6 border border-gray-200"
+            >
+                <h3
+                    class="text-xl font-semibold text-center text-gray-700 mb-6"
+                >
+                    📚 Past Battles & Progress
+                </h3>
 
-                    <div v-if="userResults.length === 0" class="text-center text-gray-100 text-lg">
-                        No hangman history found. 🏆 Try a new game!
-                    </div>
+                <div
+                    v-if="userResults.length === 0"
+                    class="text-center text-gray-500"
+                >
+                    No hangman games played yet. Start your first match today!
+                    🧠
+                </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                        <div v-for="result in userResults" :key="result.id" 
-                            class="hangman-card" 
-                            @click="openModal(result)">
-                            <h4 class="hangman-title">🆚 {{ result.creator_name }} vs {{ result.opponent_name }}</h4>
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                >
+                    <div
+                        v-for="result in userResults"
+                        :key="result.id"
+                        class="bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg p-5 shadow transition cursor-pointer"
+                        @click="openModal(result)"
+                    >
+                        <h4
+                            class="text-lg font-bold text-indigo-700 text-center mb-2"
+                        >
+                            {{ result.creator_name }} vs
+                            {{ result.opponent_name }} 🆚
+                        </h4>
 
-                            <p class="hangman-word">
-                                Your Word: <span class="font-semibold">{{ result.is_creator ? result.word_for_creator : result.word_for_opponent }}</span>
-                            </p>
+                        <p class="text-sm text-gray-600 text-center mb-1">
+                            Your Word:
+                            <span class="font-medium text-gray-900">{{
+                                result.is_creator
+                                    ? result.word_for_creator
+                                    : result.word_for_opponent
+                            }}</span>
+                        </p>
+                        <p class="text-sm text-gray-600 text-center mb-1">
+                            Opponent’s Word:
+                            <span class="font-medium text-gray-900">{{
+                                result.is_creator
+                                    ? result.word_for_opponent
+                                    : result.word_for_creator
+                            }}</span>
+                        </p>
 
-                            <p class="hangman-word">
-                                Opponent’s Word: <span class="font-semibold">{{ result.is_creator ? result.word_for_opponent : result.word_for_creator }}</span>
-                            </p>
+                        <p class="text-sm text-center">
+                            🎯 Your Score:
+                            <span
+                                :class="
+                                    getScoreColor(
+                                        result.is_creator
+                                            ? result.scores.creator.score
+                                            : result.scores.opponent.score
+                                    )
+                                "
+                            >
+                                {{
+                                    result.is_creator
+                                        ? result.scores.creator.score
+                                        : result.scores.opponent.score
+                                }}
+                            </span>
+                        </p>
+                        <p class="text-sm text-center">
+                            🧠 Opponent's Score:
+                            <span
+                                :class="
+                                    getScoreColor(
+                                        result.is_creator
+                                            ? result.scores.opponent.score
+                                            : result.scores.creator.score
+                                    )
+                                "
+                            >
+                                {{
+                                    result.is_creator
+                                        ? result.scores.opponent.score
+                                        : result.scores.creator.score
+                                }}
+                            </span>
+                        </p>
 
-                            <p class="hangman-score">
-                                Your Mistakes: <span class="text-red-400">{{ result.is_creator ? result.mistakes_creator : result.mistakes_opponent }}</span>
-                            </p>
-
-                            <p class="hangman-score">
-                                Opponent’s Mistakes: <span class="text-red-400">{{ result.is_creator ? result.mistakes_opponent : result.mistakes_creator }}</span>
-                            </p>
-
-                            <p class="hangman-score">
-                                Your Score: <span :class="getScoreColor(result.is_creator ? result.scores.creator.score : result.scores.opponent.score)">
-                                    {{ result.is_creator ? result.scores.creator.score : result.scores.opponent.score }} 🎯
-                                </span>
-                            </p>
-
-                            <p class="hangman-score">
-                                Opponent's Score: <span :class="getScoreColor(result.is_creator ? result.scores.opponent.score : result.scores.creator.score)">
-                                    {{ result.is_creator ? result.scores.opponent.score : result.scores.creator.score }} 🎯
-                                </span>
-                            </p>
-
-                            <p class="hangman-date">📅 {{ formatDate(result.updated_at) }}</p>
-                        </div>
+                        <p class="text-xs text-gray-500 text-center mt-2">
+                            📅 {{ formatDate(result.updated_at) }}
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ✅ MODAL PENTRU DETALII -->
-        <div v-if="selectedGame" class="modal-overlay" @click="closeModal">
-            <div class="modal-content" @click.stop>
-                <button class="close-button" @click="closeModal">✖</button>
-                <h3 class="text-2xl font-bold text-gray-800 mb-3">📖 Word & Hints</h3>
+        <!-- MODAL PENTRU DETALII -->
+        <div
+            v-if="selectedGame"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        >
+            <div
+                class="bg-white w-[90%] sm:w-[500px] p-6 rounded-lg relative shadow-lg"
+            >
+                <button
+                    class="absolute top-2 right-3 text-gray-500 hover:text-red-500 text-xl"
+                    @click="closeModal"
+                >
+                    ×
+                </button>
+                <h3
+                    class="text-xl font-semibold text-center text-indigo-800 mb-4"
+                >
+                    📝 Word & Hints
+                </h3>
 
-                <div class="game-details">
-                    <p class="text-lg font-semibold">Your Word: <span class="text-green-700">{{ selectedGame.is_creator ? selectedGame.word_for_creator : selectedGame.word_for_opponent }}</span></p>
-                    <p class="text-lg font-semibold">Opponent's Word: <span class="text-red-600">{{ selectedGame.is_creator ? selectedGame.word_for_opponent : selectedGame.word_for_creator }}</span></p>
+                <p class="text-sm text-gray-700 mb-2">
+                    🧩 Your Word:
+                    <span class="font-bold">{{
+                        selectedGame.is_creator
+                            ? selectedGame.word_for_creator
+                            : selectedGame.word_for_opponent
+                    }}</span>
+                </p>
+                <p class="text-sm text-gray-700 mb-2">
+                    🧩 Opponent's Word:
+                    <span class="font-bold">{{
+                        selectedGame.is_creator
+                            ? selectedGame.word_for_opponent
+                            : selectedGame.word_for_creator
+                    }}</span>
+                </p>
 
-                    <p class="text-sm text-gray-600 mt-4">💡 Your Hint: {{ selectedGame.is_creator ? selectedGame.hint_for_creator : selectedGame.hint_for_opponent }}</p>
-                    <p class="text-sm text-gray-600">💡 Opponent's Hint: {{ selectedGame.is_creator ? selectedGame.hint_for_opponent : selectedGame.hint_for_creator }}</p>
-                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    💡 Your Hint:
+                    {{
+                        selectedGame.is_creator
+                            ? selectedGame.hint_for_creator
+                            : selectedGame.hint_for_opponent
+                    }}
+                </p>
+                <p class="text-sm text-gray-500">
+                    💡 Opponent's Hint:
+                    {{
+                        selectedGame.is_creator
+                            ? selectedGame.hint_for_opponent
+                            : selectedGame.hint_for_creator
+                    }}
+                </p>
             </div>
         </div>
     </AuthenticatedLayout>
 </template>
 
 <script>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 
 export default {
-    components: {
-        AuthenticatedLayout
-    },
+    components: { AuthenticatedLayout },
     props: {
-        userResults: {
-            type: Array,
-            required: true
-        }
+        userResults: Array,
     },
     data() {
         return {
-            selectedGame: null
+            selectedGame: null,
         };
     },
     methods: {
@@ -106,85 +181,13 @@ export default {
             this.selectedGame = null;
         },
         getScoreColor(score) {
-            if (score >= 75) return 'text-green-500 font-bold';
-            if (score >= 50) return 'text-yellow-300 font-bold';
-            return 'text-red-300 font-bold';
+            if (score >= 75) return "text-green-600 font-bold";
+            if (score >= 50) return "text-yellow-500 font-bold";
+            return "text-red-500 font-bold";
         },
         formatDate(date) {
             return new Date(date).toLocaleDateString();
-        }
-    }
+        },
+    },
 };
 </script>
-
-<style scoped>
-/* 🎨 Card Design */
-.hangman-card {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    text-decoration: none;
-    color: black;
-    font-weight: bold;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    cursor: pointer;
-}
-
-/* Hover Effect */
-.hangman-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(12px);
-}
-
-/* Modal */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(5px);
-    z-index: 1000;
-}
-
-.modal-content {
-    background: black;
-    padding: 20px;
-    border-radius: 10px;
-    width: 400px;
-    text-align: center;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    animation: fadeIn 0.3s ease-in-out;
-}
-
-.close-button {
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
-    position: absolute;
-    right: 15px;
-    top: 10px;
-    cursor: pointer;
-}
-
-.game-details {
-    margin-top: 10px;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
-}
-</style>
