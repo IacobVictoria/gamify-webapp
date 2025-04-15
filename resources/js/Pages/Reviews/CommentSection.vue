@@ -67,20 +67,29 @@
                                 <i
                                     class="fa fa-thumbs-up fa-2x"
                                     @click="
-                                        comment.isLiked
+                                        !(
+                                            isLoggedIn() &&
+                                            comment.user.id !== $page.props.user?.id
+                                        )
+                                            ? null
+                                            : comment.isLiked
                                             ? dislikeComment(comment)
                                             : likeComment(comment)
                                     "
-                                    :class="
-                                        comment.isLiked
+                                    :class="[
+                                        !isLoggedIn() ||
+                                        comment.user.id === $page.props.user?.id
+                                            ? 'text-gray-300 cursor-not-allowed'
+                                            : comment.isLiked
                                             ? 'text-blue-500'
-                                            : 'text-gray-500'
-                                    "
+                                            : 'text-gray-500',
+                                    ]"
                                 ></i>
                                 <span
                                     class="text-base text-gray-800 font-semibold"
-                                    >{{ comment.likes }}</span
                                 >
+                                    {{ comment.likes }}
+                                </span>
                             </div>
                         </div>
 
@@ -138,9 +147,7 @@
                 </div>
             </div>
         </div>
-        <div v-else>
-            Nu există comentarii! Fii primul care comentează!
-        </div>
+        <div v-else>Nu există comentarii! Fii primul care comentează!</div>
     </div>
 </template>
 

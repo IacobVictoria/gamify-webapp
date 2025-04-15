@@ -174,18 +174,30 @@
                                         <i
                                             class="fa fa-thumbs-up fa-3x"
                                             @click="
-                                                 review.user.id !== $page.props.user.id &&
-                                                 (review.isLiked ? dislikeReview(review) : likeReview(review))
+                                                !(
+                                                    isLoggedIn() &&
+                                                    review.user.id !==
+                                                        $page.props.user?.id
+                                                )
+                                                    ? null
+                                                    : review.isLiked
+                                                    ? dislikeReview(review)
+                                                    : likeReview(review)
                                             "
-                                            :style="{
-                                                color: review.isLiked
-                                                    ? '#74C0FC'
-                                                    : 'gray',
-                                            }"
+                                            :class="[
+                                                !isLoggedIn() ||
+                                                review.user.id ===
+                                                    $page.props.user?.id
+                                                    ? 'text-gray-300 cursor-not-allowed'
+                                                    : review.isLiked
+                                                    ? 'text-blue-400'
+                                                    : 'text-gray-500',
+                                            ]"
                                             aria-hidden="true"
                                         ></i>
                                         <div>{{ review.likes }}</div>
                                     </div>
+
                                     <div class="flex gap-32">
                                         <div class="flex items-center gap-3">
                                             <button
@@ -298,7 +310,7 @@
                 </div>
             </div>
             <div
-                v-if="reviews.length === 0 && message==='' "
+                v-if="reviews.length === 0 && message === ''"
                 class="bg-yellow-100 mt-16 border border-yellow-300 text-yellow-700 text-center py-4 px-6 rounded-lg mb-6"
             >
                 Nu exista review uri la acest produs momentan! Fii primul care
