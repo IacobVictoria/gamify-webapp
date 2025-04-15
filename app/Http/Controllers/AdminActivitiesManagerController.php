@@ -63,7 +63,10 @@ class AdminActivitiesManagerController extends Controller
 
     public function create()
     {
-        $products = Product::all();
+        $products = Product::where('is_published', 1)->get()->map(function ($product) {
+            $product->link = route('products.show', $product->id);
+            return $product;
+        });
         return Inertia::render('Admin/ActivitiesManager/Create', [
             'products' => $products
         ]);
@@ -72,7 +75,10 @@ class AdminActivitiesManagerController extends Controller
     public function edit($activityId)
     {
         $activity = Activity::findOrFail($activityId);
-        $products = Product::all();
+        $products = Product::where('is_published', 1)->get()->map(function ($product) {
+            $product->link = route('products.show', $product->slug);
+            return $product;
+        });
 
         return Inertia::render('Admin/ActivitiesManager/Edit', [
             'activity' => $activity,

@@ -39,7 +39,7 @@
                 <option
                     v-for="product in availableProducts"
                     :key="product.id"
-                    :value="product.id"
+                    :value="product.link"
                 >
                     {{ product.name }} ({{ product.calories }} kcal)
                 </option>

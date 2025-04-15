@@ -82,7 +82,7 @@
                     </inertia-link>
                     <!-- FIXED Navigation -->
                     <nav
-                        class="absolute bottom-1 left-0 right-0 flex justify-center"
+                        class="absolute bottom-1 left-0 right-0 flex justify-center mb-2"
                         role="navigation"
                         aria-label="Event navigation"
                     >
