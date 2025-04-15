@@ -79,7 +79,7 @@
                             <div v-else>
                                 <inertia-link
                                     href="/login"
-                                    class="inline-flex items-center gap-2 px-6 py-2 bg-yellow-500 text-white font-semibold rounded-md shadow hover:bg-yellow-600 transition"
+                                    class="no-underline inline-flex items-center gap-2 px-6 py-2 bg-yellow-500 text-white font-semibold rounded-md shadow hover:bg-yellow-600 transition"
                                 >
                                     🔐 Login to earn points and save this
                                     activity

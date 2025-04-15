@@ -64,6 +64,7 @@
                         </div>
                         <!-- Products Grid -->
                         <div
+                            v-if="products.length > 0"
                             class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12"
                         >
                             <div
@@ -164,6 +165,29 @@
                                 </div>
                             </div>
                         </div>
+                        <div
+                            v-else
+                            class="flex flex-col items-center justify-center h-[50vh] text-center text-gray-500 text-lg"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-12 w-12 mb-4 text-gray-400"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M9 17v-6h6v6h4V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10h4zm0 0v2a2 2 0 002 2h2a2 2 0 002-2v-2"
+                                />
+                            </svg>
+                            <p>
+                                Nu există produse care să se potrivească
+                                filtrului.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </main>
@@ -190,7 +214,7 @@ export default {
     data() {
         return {
             searchQuery: this.searchQueryProp,
-            selectedCategory: this.searchCategory ? this.searchCategory : '',
+            selectedCategory: this.searchCategory ? this.searchCategory : "",
         };
     },
     methods: {
