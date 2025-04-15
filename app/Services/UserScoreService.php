@@ -33,12 +33,18 @@ class UserScoreService implements UserScoreInterface
 
     public function addScore(User $user, $score)
     {
+        if (!is_numeric($score) || (float) $score === 0.0) {
+            return;
+        }
+
+        $score = round($score);
+
         $this->handlerChain->handle($user, $score);
     }
 
     public function updateScore(User $user, $score)
     {
-        $user->score = $score;
+        $user->score = round($score);
         $user->save();
     }
 
