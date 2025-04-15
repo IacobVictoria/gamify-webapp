@@ -1,13 +1,18 @@
 <template>
     <div class="notification-center">
-        <NotificationPopup v-for="(notification, index) in notifications" :key="index" :title="notification.title"
-            :message="notification.message" @close="removeNotification(index)" />
+        <NotificationPopup
+            v-for="(notification, index) in notifications"
+            :key="index"
+            :title="notification.title"
+            :message="notification.message"
+            @close="removeNotification(index)"
+        />
     </div>
 </template>
 
 <script>
-import NotificationPopup from './NotificationPopup.vue';
-import { usePage } from '@inertiajs/vue3';
+import NotificationPopup from "./NotificationPopup.vue";
+import { usePage } from "@inertiajs/vue3";
 
 export default {
     components: { NotificationPopup },
@@ -29,88 +34,132 @@ export default {
         const { user } = usePage().props;
 
         if (user && user.id) {
+            window.Echo.private(`comments.${user.id}`).listen(
+                ".CommentEvent",
+                (event) => {
+                    this.addNotification("Comment nou!", event.message);
+                }
+            );
 
-            window.Echo.private(`comments.${user.id}`)
-                .listen('.CommentEvent', (event) => {
-                    this.addNotification('Comment nou!', event.message);
-                });
-
-            window.Echo.private(`leaderboard.${user.id}`)
-                .listen('.UserMadeLeaderboard', (event) => {
-                    this.addNotification('Felicitări!', event.message);
-                });
-            if (user.roles[0].name === 'Admin-Gamification') {
-                window.Echo.private('admin-gamification-channel')
-                    .listen('.UserRemarkedOnQuiz', (event) => {
-                        this.addNotification('New Remark!', event.message);
-                    });
+            window.Echo.private(`leaderboard.${user.id}`).listen(
+                ".UserMadeLeaderboard",
+                (event) => {
+                    this.addNotification("Felicitări!", event.message);
+                }
+            );
+            if (user.roles[0].name === "Admin-Gamification") {
+                window.Echo.private("admin-gamification-channel").listen(
+                    ".UserRemarkedOnQuiz",
+                    (event) => {
+                        this.addNotification("New Remark!", event.message);
+                    }
+                );
             }
 
-            window.Echo.private(`obtain_badge.${user.id}`).listen('.ObtainBadge', (event) => {
-                this.addNotification('Badge nou!', event.message);
-            });
+            window.Echo.private(`obtain_badge.${user.id}`).listen(
+                ".ObtainBadge",
+                (event) => {
+                    this.addNotification("Badge nou!", event.message);
+                }
+            );
 
-            window.Echo.private(`review_liked.${user.id}`).listen('.ReviewLikedEvent', (event) => {
-                this.addNotification('Like nou!', event.message);
-            });
+            window.Echo.private(`review_liked.${user.id}`).listen(
+                ".ReviewLikedEvent",
+                (event) => {
+                    this.addNotification("Like nou!", event.message);
+                }
+            );
 
             window.Echo.private(`user.${user.id}`)
-                .listen('.UserScoreUpdatedEvent', (event) => {
-                    this.addNotification('Felicitări!', event.message);
+                .listen(".UserScoreUpdatedEvent", (event) => {
+                    this.addNotification("Felicitări!", event.message);
                 })
-                .listen('.FriendRequestAccepted', (event) => {
-                    this.addNotification('New friend!', event.message);
+                .listen(".FriendRequestAccepted", (event) => {
+                    this.addNotification("New friend!", event.message);
                 });
-            window.Echo.private(`user.${user.id}`)
-                .listen('.UserMedalAwarded', (event) => {
-                    this.addNotification('New medal!', event.message);
-                });
-            window.Echo.private(`user.${user.id}`).listen('.OrderDelivered', (event) => {
-                this.addNotification('Order Delivered!', event.message);
-            });
-            window.Echo.private(`user.${user.id}`).listen('.OrderFailed', (event) => {
-                this.addNotification('Order Failed!', event.message);
-            });
-            window.Echo.private(`user.${user.id}`).listen('.OrderExpedited', (event) => {
-                this.addNotification('Order Expedited!', event.message);
-            });
+            window.Echo.private(`user.${user.id}`).listen(
+                ".UserMedalAwarded",
+                (event) => {
+                    this.addNotification("New medal!", event.message);
+                }
+            );
+            window.Echo.private(`user.${user.id}`).listen(
+                ".OrderDelivered",
+                (event) => {
+                    this.addNotification("Order Delivered!", event.message);
+                }
+            );
+            window.Echo.private(`user.${user.id}`).listen(
+                ".OrderFailed",
+                (event) => {
+                    this.addNotification("Order Failed!", event.message);
+                }
+            );
+            window.Echo.private(`user.${user.id}`).listen(
+                ".OrderExpedited",
+                (event) => {
+                    this.addNotification("Order Expedited!", event.message);
+                }
+            );
 
-            window.Echo.private(`user.${user.id}`).listen('.UserEligibleForDiscount', (event) => {
-                this.addNotification('Ready for bonus!', event.message);
-            });
+            window.Echo.private(`user.${user.id}`).listen(
+                ".UserEligibleForDiscount",
+                (event) => {
+                    this.addNotification("Ready for bonus!", event.message);
+                }
+            );
+            if (user.roles[0].name === "User") {
+                window.Echo.private(`user_newDiscount.${user.id}`).listen(
+                    ".DiscountApplied",
+                    (event) => {
+                        this.addNotification("New discount", event.message);
+                    }
+                );
+            }
+            window.Echo.private(`user_newEvent.${user.id}`).listen(
+                ".NewEventNotification",
+                (event) => {
+                    this.addNotification("New Event", event.message);
+                }
+            );
+            window.Echo.private(`friend-requests.${user.id}`).listen(
+                ".FriendRequestSent",
+                (event) => {
+                    this.addNotification("New friend request", event.message);
+                }
+            );
+            window.Echo.private(`admin-channel.${user.id}`).listen(
+                ".SupplierOrderError",
+                (event) => {
+                    this.addNotification("Error", event.message);
+                }
+            );
+            window.Echo.private(`admin-channel.${user.id}`).listen(
+                ".SupplierOrderSuccess",
+                (event) => {
+                    this.addNotification("Success", event.message);
+                }
+            );
+            window.Echo.private(`user_reminder.${user.id}`).listen(
+                ".EventReminderNotification",
+                (event) => {
+                    this.addNotification("Reminder!", event.message);
+                }
+            );
 
-            window.Echo.private(`user_newDiscount.${user.id}`).listen('.DiscountApplied', (event) => {
-                this.addNotification('New discount', event.message)
-            });
-            window.Echo.private(`user_newEvent.${user.id}`)
-                .listen('.NewEventNotification', (event) => {
-                    this.addNotification('New Event', event.message);
-                });
-            window.Echo.private(`friend-requests.${user.id}`).listen('.FriendRequestSent', (event) => {
-                this.addNotification('New friend request', event.message);
-            });
-            window.Echo.private(`admin-channel.${user.id}`).listen('.SupplierOrderError', (event) => {
-                this.addNotification('Error', event.message);
-            });
-            window.Echo.private(`admin-channel.${user.id}`).listen('.SupplierOrderSuccess', (event) => {
-                this.addNotification('Success', event.message);
-            });
-            window.Echo.private(`user_reminder.${user.id}`)
-                .listen('.EventReminderNotification', (event) => {
-                    this.addNotification('Reminder!', event.message);
-                })
-
-            window.Echo.private(`user_newProduct.${user.id}`)
-                .listen('.NewProductNotification', (event) => {
-                    this.addNotification('New Product', event.message);
-                });
-            window.Echo.private(`user_restockProduct.${user.id}`)
-                .listen('.ProductRestockedNotification', (event) => {
-                    this.addNotification('Restock Product', event.message);
-                });
-
+            window.Echo.private(`user_newProduct.${user.id}`).listen(
+                ".NewProductNotification",
+                (event) => {
+                    this.addNotification("New Product", event.message);
+                }
+            );
+            window.Echo.private(`user_restockProduct.${user.id}`).listen(
+                ".ProductRestockedNotification",
+                (event) => {
+                    this.addNotification("Restock Product", event.message);
+                }
+            );
         }
-
     },
 };
 </script>

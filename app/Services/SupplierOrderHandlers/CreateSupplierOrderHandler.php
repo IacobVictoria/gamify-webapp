@@ -7,6 +7,7 @@ use App\Models\SupplierOrder;
 use App\Models\SupplierProduct;
 use App\Models\User;
 use App\Events\SupplierOrderSuccessEvent;
+use App\Services\NotificationService;
 use App\Services\SupplierOrderNotificationService;
 use Faker\Provider\Uuid;
 
@@ -14,10 +15,12 @@ use Faker\Provider\Uuid;
 class CreateSupplierOrderHandler extends AbstractSupplierOrderHandler
 {
     protected SupplierOrderNotificationService $notificationService;
+    protected NotificationService $notifService;
 
-    public function __construct(SupplierOrderNotificationService $notificationService)
+    public function __construct(SupplierOrderNotificationService $notificationService, NotificationService $notifService)
     {
         $this->notificationService = $notificationService;
+        $this->notifService = $notifService;
     }
 
     public function handle(?Event $event = null, ?SupplierOrder $order = null)
@@ -49,11 +52,13 @@ class CreateSupplierOrderHandler extends AbstractSupplierOrderHandler
             ]);
 
 
-            $admin = User::whereHas('roles', function ($query) {
+            $admins = User::whereHas('roles', function ($query) {
                 $query->where('name', 'Admin');
-            })->first();
+            })->get();
 
-            broadcast(new SupplierOrderSuccessEvent($order, $admin->id));
+            foreach ($admins as $admin) {
+                broadcast(new SupplierOrderSuccessEvent($order, $admin->id, $this->notifService));
+            }
 
             // Trimitem mai departe în lanț
             $this->nextHandler?->handle($event, $order);

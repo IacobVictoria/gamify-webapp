@@ -1,6 +1,7 @@
 <?php
 namespace App\Factories;
 
+use App\Services\NotificationService;
 use App\Services\Reports\SupplierInvoiceReportService;
 use App\Services\SupplierOrderHandlers\CloseSupplierEventHandler;
 use App\Services\SupplierOrderHandlers\CreateSupplierOrderHandler;
@@ -19,13 +20,13 @@ class SupplierOrderHandlerFactory
     {
         $fetchOrders = new FetchSupplierOrdersHandler();
         $validateEvent = new ValidateEventHandler();
-        $createOrder = new CreateSupplierOrderHandler($app->make(SupplierOrderNotificationService::class));
+        $createOrder = new CreateSupplierOrderHandler($app->make(SupplierOrderNotificationService::class), $app->make(NotificationService::class));
         $generateInvoice = new GenerateSupplierInvoiceHandler($app->make(SupplierInvoiceReportService::class));
         $validateStockSupplier = new ValidateSupplierStockHandler($app->make(SupplierOrderNotificationService::class));
         $createProductsSupplierOrder = new CreateSupplierOrderProductsHandler();
         $updateStock = new UpdateSupplierStockHandler($app->make(SupplierOrderNotificationService::class));
         $finalizeEvent = new CloseSupplierEventHandler();
-        $registerInvetory= new RegisterInventoryTransactionHandler();
+        $registerInvetory = new RegisterInventoryTransactionHandler();
 
         $fetchOrders->setNext($validateEvent)
             ->setNext($finalizeEvent)

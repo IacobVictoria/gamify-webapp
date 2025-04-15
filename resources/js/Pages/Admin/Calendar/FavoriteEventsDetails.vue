@@ -1,6 +1,8 @@
 <template>
     <div v-if="command" class="favorite-details">
-        <h3 class="text-lg font-semibold">{{ type === 'Commands' ? 'Command Details' : 'Discount Details' }}</h3>
+        <h3 class="text-lg font-semibold">
+            {{ type === "Commands" ? "Command Details" : "Discount Details" }}
+        </h3>
 
         <!-- Comenzi -->
         <template v-if="type === 'Commands'">
@@ -8,17 +10,24 @@
             <p><strong>Supplier:</strong> {{ command.details.supplierName }}</p>
             <h4 class="font-semibold mt-3">Products:</h4>
             <ul>
-                <li v-for="(item, index) in command.details.productQuantities" :key="index">
+                <li
+                    v-for="(item, index) in command.details.productQuantities"
+                    :key="index"
+                >
                     {{ item.productName }}: {{ item.quantity }}
                 </li>
             </ul>
 
             <div class="mt-2">
-                <label for="startDate" class="block text-sm font-medium text-gray-700">Event Date</label>
-                <input 
-                    v-model="startDate" 
-                    type="date" 
-                    id="startDate" 
+                <label
+                    for="startDate"
+                    class="block text-sm font-medium text-gray-700"
+                    >Event Date</label
+                >
+                <input
+                    v-model="startDate"
+                    type="date"
+                    id="startDate"
                     class="input mt-2"
                     :min="today"
                 />
@@ -27,8 +36,13 @@
 
         <!-- Reduceri -->
         <template v-if="type === 'Discounts'">
-            <p><strong>Applies To:</strong> 
-                {{ command.details.applyTo === 'all' ? 'All Products' : 'Category' }}
+            <p>
+                <strong>Applies To:</strong>
+                {{
+                    command.details.applyTo === "all"
+                        ? "All Products"
+                        : "Category"
+                }}
             </p>
             <p v-if="command.details.applyTo === 'categories'">
                 <strong>Category:</strong> {{ command.details.category }}
@@ -36,23 +50,31 @@
             <p><strong>Discount:</strong> {{ command.details.discount }}%</p>
 
             <div>
-                <label for="startTime" class="block text-sm font-medium text-gray-700">Start Time</label>
-                <input 
-                    v-model="startDateTime" 
-                    type="datetime-local" 
-                    id="startTime" 
-                    class="input" 
+                <label
+                    for="startTime"
+                    class="block text-sm font-medium text-gray-700"
+                    >Start Time</label
+                >
+                <input
+                    v-model="startDateTime"
+                    type="datetime-local"
+                    id="startTime"
+                    class="input"
                     :min="now"
                 />
             </div>
 
             <div>
-                <label for="endTime" class="block text-sm font-medium text-gray-700">End Time</label>
-                <input 
-                    v-model="endDateTime" 
-                    type="datetime-local" 
-                    id="endTime" 
-                    class="input"  
+                <label
+                    for="endTime"
+                    class="block text-sm font-medium text-gray-700"
+                    >End Time</label
+                >
+                <input
+                    v-model="endDateTime"
+                    type="datetime-local"
+                    id="endTime"
+                    class="input"
                     :min="startDateTime"
                 />
             </div>
@@ -62,20 +84,34 @@
         <div class="mt-2">
             <label class="flex items-center">
                 <input type="checkbox" v-model="isRecurring" />
-                <span class="ml-2 text-sm font-medium text-gray-700">Make it Recurring</span>
+                <span class="ml-2 text-sm font-medium text-gray-700"
+                    >Make it Recurring</span
+                >
             </label>
         </div>
 
         <!-- 🔥 Selectare interval recurență -->
         <div v-if="isRecurring" class="mt-2">
-            <label class="block text-sm font-medium text-gray-700">Recurring Interval</label>
+            <label class="block text-sm font-medium text-gray-700"
+                >Recurring Interval</label
+            >
             <div class="flex gap-4 mt-2">
                 <label class="flex items-center">
-                    <input type="radio" v-model="recurringInterval" value="weekly" class="mr-2">
+                    <input
+                        type="radio"
+                        v-model="recurringInterval"
+                        value="weekly"
+                        class="mr-2"
+                    />
                     Weekly
                 </label>
                 <label class="flex items-center">
-                    <input type="radio" v-model="recurringInterval" value="monthly" class="mr-2">
+                    <input
+                        type="radio"
+                        v-model="recurringInterval"
+                        value="monthly"
+                        class="mr-2"
+                    />
                     Monthly
                 </label>
             </div>
@@ -86,16 +122,16 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
-import { useForm } from '@inertiajs/vue3';
+import { ref, watch } from "vue";
+import { useForm } from "@inertiajs/vue3";
 
-const today = ref(new Date().toISOString().split("T")[0]); 
-const now = ref(new Date().toISOString().slice(0, 16)); 
+const today = ref(new Date().toISOString().split("T")[0]);
+const now = ref(new Date().toISOString().slice(0, 16));
 
 const props = defineProps({
     command: Object,
     initialDate: String,
-    type: String
+    type: String,
 });
 
 // ✅ Variabile pentru recurență
@@ -103,16 +139,21 @@ const isRecurring = ref(false);
 const recurringInterval = ref(null);
 
 const startDate = ref(props.initialDate);
-const startDateTime = ref('');
-const endDateTime = ref('');
+const startDateTime = ref("");
+const endDateTime = ref("");
 
-watch(() => props.command, (newCommand) => {
-    if (newCommand) {
-        startDate.value = newCommand.start;
-        startDateTime.value = newCommand.start;
-        endDateTime.value = newCommand.end;
+watch(
+    () => props.command,
+    (newCommand) => {
+        if (newCommand) {
+            startDate.value = newCommand.start;
+            startDateTime.value = newCommand.start;
+            endDateTime.value = newCommand.end;
+        }
     }
-});
+);
+
+const emit = defineEmits(["close"]);
 
 function formatDate(dateTime) {
     if (!dateTime) return null;
@@ -120,7 +161,7 @@ function formatDate(dateTime) {
     const date = new Date(dateTime);
 
     if (dateTime.includes("T")) {
-        return date.toISOString().slice(0, 16).replace('T', ' ');
+        return date.toISOString().slice(0, 16).replace("T", " ");
     } else {
         return date.toISOString().slice(0, 10);
     }
@@ -129,41 +170,49 @@ function formatDate(dateTime) {
 const updateCommand = () => {
     const updatedDetails = {
         ...props.command.details,
-        fromFavorites: true, 
+        fromFavorites: true,
     };
 
     const payload = {
         title: props.command.title,
-        description: props.command.description || '',
-        start: props.type === 'Commands' ? startDate.value : formatDate(startDateTime.value),
-        end: props.type === 'Commands' ? startDate.value : formatDate(endDateTime.value),
+        description: props.command.description || "",
+        start:
+            props.type === "Commands"
+                ? startDate.value
+                : formatDate(startDateTime.value),
+        end:
+            props.type === "Commands"
+                ? startDate.value
+                : formatDate(endDateTime.value),
         details: JSON.stringify(updatedDetails),
-        ...(props.type === 'Commands' ? {
-            type: 'supplier_order',
-            supplierId: props.command.details.supplierId,
-            supplierName: props.command.details.supplierName,
-            productQuantities: props.command.details.productQuantities,
-            calendarId: 'personal',
-        } : {
-            type: 'discount',
-            applyTo: props.command.details.applyTo,
-            category: props.command.details.category || '',
-            discount: props.command.details.discount,
-            calendarId: 'leisure'
-        }),
+        ...(props.type === "Commands"
+            ? {
+                  type: "supplier_order",
+                  supplierId: props.command.details.supplierId,
+                  supplierName: props.command.details.supplierName,
+                  productQuantities: props.command.details.productQuantities,
+                  calendarId: "personal",
+              }
+            : {
+                  type: "discount",
+                  applyTo: props.command.details.applyTo,
+                  category: props.command.details.category || "",
+                  discount: props.command.details.discount,
+                  calendarId: "leisure",
+              }),
         // 🔥 Adăugăm recurența în payload
         is_recurring: isRecurring.value,
-        recurring_interval: isRecurring.value ? recurringInterval.value : null
+        recurring_interval: isRecurring.value ? recurringInterval.value : null,
     };
 
-    useForm(payload).post(route('admin.calendar.event.store' 
-    ), {
+    useForm(payload).post(route("admin.calendar.event.store"), {
         onSuccess: () => {
             console.log("New entry created successfully!");
+            emit("close");
         },
         onError: (errors) => {
             console.error("Failed to create new entry:", errors);
-        }
+        },
     });
 };
 </script>

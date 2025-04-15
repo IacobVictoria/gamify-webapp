@@ -34,7 +34,7 @@
                                     :categories="props.categories" :favorite-discounts="favoritesDiscounts" />
                             </div>
 
-                            <div v-if="selectedType === null" class="mt-5 sm:mt-6">
+                            <div v-if="selectedType === null" class="mt-2 sm:mt-4">
 
                                 <button type="button"
                                     class="inline-flex w-full justify-center mt-3 rounded-md bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-200"

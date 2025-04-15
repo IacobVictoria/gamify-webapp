@@ -8,22 +8,32 @@
 
         <ul v-else class="scrollable-list">
             <li v-for="fav in favorites" :key="fav.id" class="fav-item">
-                <span @click="selectFavorite(fav)" class="cursor-pointer">{{ fav.title }}</span>
-                <button class="btn-command" @click="editCommand(fav)">✏️ Command</button>
+                <span @click="selectFavorite(fav)" class="cursor-pointer">{{
+                    fav.title
+                }}</span>
+                <button class="btn-command" @click="editCommand(fav)">
+                    ✏️ Edit
+                </button>
             </li>
         </ul>
     </div>
-    <FavoriteEventsDetails v-if="selectedFavorite" :command="selectedFavorite" :initialDate="selectedDate" :type="type"/>
+    <FavoriteEventsDetails
+        v-if="selectedFavorite"
+        :command="selectedFavorite"
+        :initialDate="selectedDate"
+        :type="type"
+        @close="selectedFavorite = null"
+    />
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import FavoriteEventsDetails from './FavoriteEventsDetails.vue';
+import { ref } from "vue";
+import FavoriteEventsDetails from "./FavoriteEventsDetails.vue";
 
 const props = defineProps({
     favorites: Array,
     selectedDate: String,
-    type: String
+    type: String,
 });
 
 const selectedFavorite = ref(null);
@@ -35,7 +45,6 @@ function selectFavorite(fav) {
 function editCommand(fav) {
     selectedFavorite.value = fav;
 }
-
 </script>
 
 <style scoped>

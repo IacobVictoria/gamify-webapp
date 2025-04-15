@@ -47,8 +47,10 @@ class BroadcastDiscountAppliedJob implements ShouldBroadcastNow
      */
     public function handle(): void
     {
-       
-        $users = User::all(); // Se iau doar utilizatorii cu rol "User"
+
+        $users = User::whereHas('roles', function ($query) {
+            $query->where('name', 'User');
+        })->get();
 
         foreach ($users as $user) {
             broadcast(new DiscountApplied($this->description, app(NotificationService::class), $user));

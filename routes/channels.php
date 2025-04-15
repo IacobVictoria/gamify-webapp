@@ -68,8 +68,9 @@ Broadcast::channel('user_newEvent.{id}', function ($user, $id) {
 });
 Broadcast::channel('user_newDiscount.{id}', function ($user, $id) {
 
-    return (int) $user->id === (int) $id;
+    return (int) $user->id === (int) $id && $user->hasRole('User');
 });
+
 Broadcast::channel('user_newProduct.{id}', function ($user, $id) {
 
     return (int) $user->id === (int) $id;
@@ -86,7 +87,7 @@ Broadcast::channel('user_reminder.{id}', function ($user, $id) {
 Broadcast::channel('hangman-session.{id}', function ($user, $id) {
     $session = HangmanSession::find($id);
     if (!$session) {
-        return false; 
+        return false;
     }
     // Permite accesul doar dacă utilizatorul este creator sau oponent
     return $user->id === $session->creator_id || $user->id === $session->opponent_id;

@@ -42,13 +42,33 @@ class AdminEventCalendarController extends Controller
             $eventArray['is_last_recurring'] = $lastEvents->contains('id', $event->id);
             $eventArray['is_started'] = now()->greaterThanOrEqualTo($event->start);
             return $eventArray;
-        });        
+        });
+
+        $favoritesCommands = Event::where('type', 'supplier_order')
+            ->where('is_favorite', 1)
+            ->select('id', 'title', 'description', 'details')
+            ->get()
+            ->map(function ($event) {
+                $event->details = json_decode($event->details, true);
+                return $event;
+            });
+
+        $favoritesDiscounts = Event::where('type', 'discount')
+            ->where('is_favorite', 1)
+            ->select('id', 'title', 'description', 'details')
+            ->get()
+            ->map(function ($event) {
+                $event->details = json_decode($event->details, true);
+                return $event;
+            });
 
         return Inertia::render('Admin/Calendar/Index', [
             'events' => array_merge($events->toArray(), $ghostEvents->toArray()),
             'categories' => $categories,
             'suppliers' => $suppliers,
-            'products' => $productsBySupplier->toArray()
+            'products' => $productsBySupplier->toArray(),
+            'favoritesDiscounts' => $favoritesDiscounts,
+            'favoritesCommands' => $favoritesCommands
         ]);
     }
 
@@ -103,7 +123,7 @@ class AdminEventCalendarController extends Controller
 
         // Lansează job-ul doar dacă evenimentul este recurent
         if ($event->is_recurring) {
-            ProcessRecurringEventJob::dispatch($event)->delay(now()->addMinute());
+            ProcessRecurringEventJob::dispatch($event)->delay($event->next_occurrence);
         }
 
 
@@ -213,7 +233,7 @@ class AdminEventCalendarController extends Controller
         $event = Event::find($id);
         if ($event->type === 'discount') { //daca stergem un discount sa refacem preturile
             $this->resetDiscountPricesOnEventDeletion($event);
-        } 
+        }
 
         if ($event->is_recurring) {
             $familyId = $event->parent_event_id ?? $event->id;

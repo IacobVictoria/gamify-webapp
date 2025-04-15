@@ -389,6 +389,49 @@ watch(enabled, (newValue) => {
                                             class="inline-flex rounded-md gap-5"
                                         >
                                             <div class="flex flex-row gap-1">
+                                                <div
+                                                    v-if="isDoubleAdmin"
+                                                    class="flex items-center justify-between gap-4 px-4 py-2"
+                                                >
+                                                    <div
+                                                        class="flex items-center gap-2"
+                                                    >
+                                                        <span
+                                                            class="px-2 py-0.5 text-xs font-bold uppercase rounded-full"
+                                                            :class="
+                                                                enabled
+                                                                    ? 'bg-indigo-100 text-indigo-700'
+                                                                    : 'bg-gray-200 text-gray-700'
+                                                            "
+                                                        >
+                                                            {{
+                                                                enabled
+                                                                    ? "Super Admin"
+                                                                    : "Admin"
+                                                            }}
+                                                        </span>
+                                                    </div>
+
+                                                    <Switch
+                                                        v-model="enabled"
+                                                        :class="[
+                                                            enabled
+                                                                ? 'bg-indigo-600'
+                                                                : 'bg-gray-300',
+                                                            'relative inline-flex h-6 w-12 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2',
+                                                        ]"
+                                                    >
+                                                        <span
+                                                            aria-hidden="true"
+                                                            :class="[
+                                                                enabled
+                                                                    ? 'translate-x-6'
+                                                                    : 'translate-x-1',
+                                                                'inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition',
+                                                            ]"
+                                                        />
+                                                    </Switch>
+                                                </div>
                                                 <button
                                                     type="button"
                                                     class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
@@ -434,49 +477,6 @@ watch(enabled, (newValue) => {
                                                 >
                                                     <IconAdminGamification />
                                                 </button>
-                                            </div>
-                                            <div
-                                                v-if="isDoubleAdmin"
-                                                class="flex items-center justify-between gap-4 px-4 py-2"
-                                            >
-                                                <div
-                                                    class="flex items-center gap-2"
-                                                >
-                                                    <span
-                                                        class="px-2 py-0.5 text-xs font-bold uppercase rounded-full"
-                                                        :class="
-                                                            enabled
-                                                                ? 'bg-indigo-100 text-indigo-700'
-                                                                : 'bg-gray-200 text-gray-700'
-                                                        "
-                                                    >
-                                                        {{
-                                                            enabled
-                                                                ? "Super Admin"
-                                                                : "Admin"
-                                                        }}
-                                                    </span>
-                                                </div>
-
-                                                <Switch
-                                                    v-model="enabled"
-                                                    :class="[
-                                                        enabled
-                                                            ? 'bg-indigo-600'
-                                                            : 'bg-gray-300',
-                                                        'relative inline-flex h-6 w-12 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2',
-                                                    ]"
-                                                >
-                                                    <span
-                                                        aria-hidden="true"
-                                                        :class="[
-                                                            enabled
-                                                                ? 'translate-x-6'
-                                                                : 'translate-x-1',
-                                                            'inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition',
-                                                        ]"
-                                                    />
-                                                </Switch>
                                             </div>
                                         </span>
                                     </template>
