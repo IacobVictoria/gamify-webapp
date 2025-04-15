@@ -6,7 +6,7 @@
         <div
             class="flex items-center justify-center gap-3 mb-6 bg-white px-5 py-3 rounded-lg shadow-sm border"
         >
-            <h2 class="text-base text-gray-600 font-medium">Meeting</h2>
+            <h2 class="text-base text-gray-600 font-medium"> Meeting</h2>
         </div>
         <div class="flex flex-row gap-8">
             <img
@@ -18,7 +18,6 @@
                 {{ calendarMeeting.title }}
             </h3>
         </div>
-
         <div class="flex items-start justify-center gap-2 mb-4">
             <img class="h-6 w-6" src="/images/event_description.png" alt="" />
             <p class="text-gray-600">{{ calendarMeeting.description }}</p>
@@ -100,11 +99,11 @@
         :periods="periods"
         @close="closeModal"
         :selected-date="selectedDate"
-        :edit-route="'admin.meetings.update'"
+        :edit-route="'admin-gamification.meetings.update'"
     />
 </template>
 <script>
-import EditMeetingForm from "./EditMeetingForm.vue";
+import EditMeetingForm from "@/Pages/Admin/Meetings/EditMeetingForm.vue";
 
 export default {
     props: {
@@ -119,10 +118,8 @@ export default {
             showModal: this.showModal,
             eventDeleted: false,
             categoryStyles: {
-                sales_stock: { icon: "💰", color: "#f39c12" },
-                user_activity: { icon: "👤", color: "#3498db" },
-                sales_stock: { icon: "📊", color: "#2ecc71" },
-                nps_report: { icon: "🖥️", color: "#9b59b6" },
+                rewards_activity: { icon: "📢", color: "#e74c3c" },
+                games_activity: { icon: "🖥️", color: "#9b59b6" },
             },
         };
     },
@@ -149,7 +146,7 @@ export default {
         },
         deleteEvent() {
             this.$inertia.delete(
-                route("admin.meetings.destroy", {
+                route("admin-gamification.meetings.destroy", {
                     id: this.calendarMeeting.id,
                 }),
                 {

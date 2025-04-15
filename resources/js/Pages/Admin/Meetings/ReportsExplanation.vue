@@ -35,38 +35,6 @@
                     <li>⏱️ Timp până la epuizarea stocului</li>
                 </ul>
             </div>
-
-            <!-- Jocuri și Quiz-uri -->
-            <div class="bg-purple-100 rounded-lg shadow-md p-4">
-                <h3 class="text-xl font-semibold mb-3">
-                    🎮 Jocuri și Quiz-uri
-                </h3>
-                <ul class="space-y-2">
-                    <li>🔥 Tipuri populare de quiz-uri (ușor/mediu/greu)</li>
-                    <li>🔄 Quiz-uri cu cele mai multe încercări</li>
-                    <li>🚀 Evoluția scorurilor utilizatorilor</li>
-                    <li>📌 Quiz-uri terminate în medie</li>
-                    <li>🔁 Număr mediu de reîncercări per quiz</li>
-                </ul>
-                <h3 class="text-xl font-semibold mb-3">
-                    📘 Activități și Preferințe
-                </h3>
-                <ul class="space-y-2 list-disc list-inside text-gray-800">
-                    <li>📌 Număr total de activități salvate (favorite)</li>
-                    <li>🏆 Top 5 activități cel mai des salvate</li>
-                    <li>
-                        📊 Media punctelor obținute din activitățile favorite
-                    </li>
-                    <li>
-                        🔍 Cel mai apreciat tip de activitate: dietă, articol,
-                        sfat rapid
-                    </li>
-                    <li>
-                        📈 Identificarea activităților care merită promovate
-                    </li>
-                </ul>
-            </div>
-
             <!-- Produse -->
             <div class="bg-yellow-100 rounded-lg shadow-md p-4">
                 <h3 class="text-xl font-semibold mb-3">🛍️ Produse</h3>
@@ -77,18 +45,6 @@
                     <li>🎁 Cumpărături cu/fără oferte</li>
                     <li>⭐️ Rating-uri (bun/slab)</li>
                     <li>💖 Wishlist frecvent</li>
-                </ul>
-            </div>
-
-            <!-- Medalii și Insigne -->
-            <div class="bg-red-100 rounded-lg shadow-md p-4">
-                <h3 class="text-xl font-semibold mb-3">
-                    🏅 Medalii și Insigne
-                </h3>
-                <ul class="space-y-2">
-                    <li>⏰ Timp mediu până la prima insignă</li>
-                    <li>🎖️ Insigne ușor vs. greu de obținut</li>
-                    <li>🔖 Numărul mediu de badge-uri per categorie</li>
                 </ul>
             </div>
 
@@ -105,7 +61,3 @@
         </div>
     </div>
 </template>
-
-<script setup>
-// Logică suplimentară dacă e necesar
-</script>

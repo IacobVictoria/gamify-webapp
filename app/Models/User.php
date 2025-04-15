@@ -135,13 +135,6 @@ class User extends Authenticatable
         return $this->hasMany(ChatMessage::class, 'receiver_id');
     }
 
-    public function aiConversation()
-    {
-        $this->hasMany(AiConversation::class);
-    }
-    /**
-     * Un utilizator poate avea mai multe participări.
-     */
     public function participants()
     {
         return $this->hasMany(Participant::class);

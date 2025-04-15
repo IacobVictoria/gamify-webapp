@@ -11,7 +11,7 @@ use Faker\Provider\Uuid;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class AdminMeetingController extends Controller
+class AdminGamificationMeetingController extends Controller
 {
     public function index()
     {
@@ -24,10 +24,10 @@ class AdminMeetingController extends Controller
                 'description' => $meeting->description,
                 'title' => $meeting->title,
                 'status' => $meeting->status,
-                'admin_id' => $meeting->admin_id,
+                'admin_id'=>$meeting->admin_id,
                 'calendarId' => $meeting->calendarId,
-                'categories' => ReportCategory::whereIn('id', $meeting->report_category_ids)->pluck('name'),
                 'report_category_ids' => $meeting->report_category_ids,
+                'categories' => ReportCategory::whereIn('id', $meeting->report_category_ids)->pluck('name'),
                 'reports' => $meeting->status === 'CLOSED'
                     ? $meeting->reports->map(fn($report) => [
                         'id' => $report->id,
@@ -43,13 +43,15 @@ class AdminMeetingController extends Controller
             'participants',
             'client_invoice',
             'supplier_invoice',
-            'rewards_activity',
-            'games_activity'
+            'sales_stock',
+            'products_activity',
+            'user_activity',
+            'nps_report'
         ])->get();
 
         $periods = MeetingPeriod::values();
 
-        return Inertia::render('Admin/Meetings/Index', [
+        return Inertia::render('AdminGamification/Meetings/Index', [
             'meetings' => $meetings,
             'categories' => $categories,
             'periods' => $periods
@@ -64,12 +66,13 @@ class AdminMeetingController extends Controller
             'description' => $request->description,
             'start' => $request->start,
             'end' => $request->start,
-            'admin_id' => Auth()->user()->id,
             'period' => MeetingPeriod::from($request->period),
             'report_category_ids' => $request->report_category_ids,
+            'calendarId' => 'work',
+            'admin_id' => Auth()->user()->id,
         ]);
 
-        return redirect()->route('admin.meetings.index')->with('success', 'Meeting creat cu succes!');
+        return redirect()->route('admin-gamification.meetings.index')->with('success', 'Meeting creat cu succes!');
     }
 
     public function update(AdminMeetingUpdateRequest $request, $id)
@@ -85,7 +88,7 @@ class AdminMeetingController extends Controller
             'report_category_ids' => $request->report_category_ids,
         ]);
 
-        return redirect()->route('admin.meetings.index')->with('success', 'Meeting actualizat cu succes!');
+        return redirect()->route('admin-gamification.meetings.index')->with('success', 'Meeting actualizat cu succes!');
     }
 
     public function destroy($id)
@@ -94,7 +97,7 @@ class AdminMeetingController extends Controller
         $meeting->delete();
 
         return redirect()
-            ->route('admin.meetings.index')
+            ->route('admin-gamification.meetings.index')
             ->with('success', 'Meeting șters cu succes!');
     }
 }

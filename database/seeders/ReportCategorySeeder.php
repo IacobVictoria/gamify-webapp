@@ -17,10 +17,6 @@ class ReportCategorySeeder extends Seeder
         $categories = [
             [
                 'id' => Uuid::uuid(),
-                'name' => 'participants'
-            ],
-            [
-                'id' => Uuid::uuid(),
                 'name' => 'supplier_invoice'
             ],
             [
@@ -33,23 +29,23 @@ class ReportCategorySeeder extends Seeder
             ],
             [
                 'id' => Uuid::uuid(),
-                'name' => 'user_activity_monthly'
+                'name' => 'user_activity'
             ],
             [
                 'id' => Uuid::uuid(),
-                'name' => 'sales_stock_monthly'
+                'name' => 'sales_stock'
             ],
             [
                 'id' => Uuid::uuid(),
-                'name' => 'games_activity_monthly'
+                'name' => 'games_activity'
             ],
             [
                 'id' => Uuid::uuid(),
-                'name' => 'products_activity_monthly'
+                'name' => 'products_activity'
             ],
             [
                 'id' => Uuid::uuid(),
-                'name' => 'rewards_activity_monthly'
+                'name' => 'rewards_activity'
             ]
         ];
 

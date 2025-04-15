@@ -2,11 +2,11 @@
 
 namespace App\Services\PdfGenerators;
 
-class SalesStockMonthlyReportPdfGenerator extends AbstractPdfGeneratorService
+class SalesStockReportPdfGenerator extends AbstractPdfGeneratorService
 {
     public function generatePdf(array $data): string
     {
-        $pdfContent = $this->generatePdfContent('pdf.salesStockMonthlyReport', ['reportData' => $data]);
+        $pdfContent = $this->generatePdfContent('pdf.salesStockReport', ['reportData' => $data]);
 
         $filename = "sales_stock_reports/sales_report_" .  now()->format('Y-m-d') . ".pdf";
 

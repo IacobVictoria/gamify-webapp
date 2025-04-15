@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminBadgeController;
 use App\Http\Controllers\AdminGamesManagerController;
 use App\Http\Controllers\AdminGamificationController;
 use App\Http\Controllers\AdminGamificationMedalController;
+use App\Http\Controllers\AdminGamificationMeetingController;
 use App\Http\Controllers\AdminGamificationNotificationController;
 use App\Http\Controllers\AdminHangmanManagerController;
 use App\Http\Controllers\AdminQuizAnswerController;
@@ -82,4 +83,11 @@ Route::prefix('activities')->group(function () {
 Route::prefix('notifications')->group(function () {
     Route::get('/', [AdminGamificationNotificationController::class, 'getNotifications'])->name('notifications.getNotifications');
     Route::post('/markAsRead', [AdminGamificationNotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+});
+
+Route::prefix('meetings')->group(function () {
+    Route::get('/', [AdminGamificationMeetingController::class, 'index'])->name('meetings.index');
+    Route::post('/add', [AdminGamificationMeetingController::class, 'store'])->name('meetings.store');
+    Route::put('/update/{id}', [AdminGamificationMeetingController::class, 'update'])->name('meetings.update');
+    Route::delete('/delete/{id}', [AdminGamificationMeetingController::class, 'destroy'])->name('meetings.destroy');
 });

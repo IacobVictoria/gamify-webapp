@@ -4,15 +4,13 @@
             <h2 class="text-2xl font-semibold mb-4 mt-8">📅 Meetings & Reports Calendar</h2>
             <p class="text-gray-700">
                 Select a date to schedule or manage your meetings. You can generate reports in
-                <strong>6 different categories</strong> to be sent directly in <strong>Discord</strong> at the
+                <strong>2 different categories based on Gamification</strong> to be sent directly in <strong>Discord</strong> at the
                 start
                 date:
             </p>
             <ul class="mt-12 flex justify-center gap-3 flex-wrap">
-                <li class="bg-yellow-200 text-yellow-800 px-3 py-1 rounded">💰 Sales Stock Monthly</li>
-                <li class="bg-blue-200 text-blue-800 px-3 py-1 rounded">👤 User Activity Monthly</li>
-                <li class="bg-green-200 text-green-800 px-3 py-1 rounded">📊 Sales Stock Monthly</li>
-                <li class="bg-purple-200 text-purple-800 px-3 py-1 rounded">🖥️ NPS Report</li>
+                <li class="bg-red-200 text-red-800 px-3 py-1 rounded">📢 Rewards Activity Monthly</li>
+                <li class="bg-teal-200 text-teal-800 px-3 py-1 rounded">🎮 Games Activity Monthly</li>
             </ul>
         </div>
         <div class="flex">
@@ -45,7 +43,7 @@
         </div>
         <AddMeetingForm v-if="showModal" :selectedDate="selectedDate" :showModal="showModal" :categories="categories"
             @update:showModal="showModal = $event" @submit="handleSubmit" @closeForm="closeModal" :periods="periods"
-            :isPastDate="isPastDate" :add-route="'admin.meetings.store'" />
+            :isPastDate="isPastDate" :add-route="'admin-gamification.meetings.store'" />
 
         <ReportsExplanation></ReportsExplanation>
 
@@ -62,8 +60,9 @@ import { createEventModalPlugin } from '@schedule-x/event-modal'
 import { createCalendarControlsPlugin } from '@schedule-x/calendar-controls'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import MeetingComponent from './MeetingComponent.vue'
-import AddMeetingForm from './AddMeetingForm.vue'
+
 import ReportsExplanation from './ReportsExplanation.vue'
+import AddMeetingForm from '@/Pages/Admin/Meetings/AddMeetingForm.vue'
 
 const eventsServicePlugin = createEventsServicePlugin();
 const eventModal = createEventModalPlugin();

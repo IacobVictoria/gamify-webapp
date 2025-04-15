@@ -1,5 +1,12 @@
 <script setup>
-import { computed, isReadonly, onBeforeMount, onMounted, ref, watch } from "vue";
+import {
+    computed,
+    isReadonly,
+    onBeforeMount,
+    onMounted,
+    ref,
+    watch,
+} from "vue";
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
@@ -288,6 +295,20 @@ watch(enabled, (newValue) => {
                                         "
                                     >
                                         Activities Center
+                                    </NavLink>
+                                    <NavLink
+                                        :href="
+                                            route(
+                                                'admin-gamification.meetings.index'
+                                            )
+                                        "
+                                        :active="
+                                            route().current(
+                                                'admin-gamification.meetings.index'
+                                            )
+                                        "
+                                    >
+                                        Meetings
                                     </NavLink>
                                     <NavLink
                                         :href="

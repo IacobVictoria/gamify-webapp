@@ -130,7 +130,7 @@ class ProductsActivityReportService
             'regular_sales' => $regularSales,
             'discount_usage_rate' => $discountedSales + $regularSales > 0
                 ? round(($discountedSales / ($discountedSales + $regularSales)) * 100, 2) . '%'
-                : 'N/A'
+                : 0
         ];
     }
 

@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             // UserQuizAnswerSeeder::class,
             // UserQuizRemarkSeeder::class,
             // UserQuizResultSeeder::class,
-           // ReportCategorySeeder::class
+           ReportCategorySeeder::class
         ]);
 
     }

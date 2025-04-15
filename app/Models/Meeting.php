@@ -9,7 +9,18 @@ class Meeting extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id', 'title','description','calendarId', 'period', 'start', 'end','status','report_category_ids'];
+    protected $fillable = [
+        'id',
+        'title',
+        'description',
+        'calendarId',
+        'period',
+        'start',
+        'end',
+        'status',
+        'report_category_ids',
+        'admin_id'
+    ];
 
     protected $primaryKey = 'id';
 

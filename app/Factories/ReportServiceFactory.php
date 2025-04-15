@@ -15,11 +15,11 @@ class ReportServiceFactory
     public static function create(string $category)
     {
         $serviceClass = match ($category) {
-            'products_activity_monthly' => ProductsActivityReportService::class,
-            'user_activity_monthly' => UserActivityReportService::class,
-            'sales_stock_monthly' => SalesStockReportService::class,
-            'games_activity_monthly' => GamesActivityReportService::class,
-            'rewards_activity_monthly' => RewardsActivityReportService::class,
+            'products_activity' => ProductsActivityReportService::class,
+            'user_activity' => UserActivityReportService::class,
+            'sales_stock' => SalesStockReportService::class,
+            'games_activity' => GamesActivityReportService::class,
+            'rewards_activity' => RewardsActivityReportService::class,
             'client_invoice' => ClientInvoiceReportService::class,
             'nps_report' => NpsActivityReportService::class,
             'supplier_invoice' => SupplierInvoiceReportService::class,
