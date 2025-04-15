@@ -27,8 +27,6 @@ class User extends Authenticatable
         'password',
         'gender',
         'score',
-        'location',
-        'birthdate',
         'used_discounts'
 
     ];

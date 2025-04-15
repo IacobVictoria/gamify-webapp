@@ -52,7 +52,7 @@
           Let's play! Enter your dashboard!
         </inertia-link>
       </div>
-      <div v-if="authUserHasRole('Admin')">
+      <div v-if="authUserHasRole('Admin') || authUserHasRole('Admin-Gamification')">
         <inertia-link :href="route('admin.dashboard')" class="no-underline font-semibold text-white">
           Let's play! Enter your dashboard!
         </inertia-link>

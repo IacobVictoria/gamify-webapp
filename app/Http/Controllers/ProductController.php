@@ -25,8 +25,11 @@ class ProductController extends Controller
         $user = Auth::user();
 
         $searchQuery = $request->input('search', '');
+        $searchDropdownCategory = $request->input('category', '');
 
-        $products = Product::where('name', 'like', "%{$searchQuery}%")->where('is_published', true)->get();
+        $products = Product::where('name', 'like', "%{$searchQuery}%")->where('category', 'like', "%{$searchDropdownCategory}%")->where('is_published', true)->get();
+
+        $categories = Product::all()->pluck('category')->whereNotNull()->unique();
 
         $products = $products->map(function ($product) use ($user) {
 
@@ -61,21 +64,46 @@ class ProductController extends Controller
         return Inertia::render('Products/Index', [
             'products' => $products,
             'searchQueryProp' => $searchQuery,
+            'categories' => $categories,
+            'searchCategory' => $searchDropdownCategory,
+        ]);
+    }
+    public function show($slug, Request $request)
+    {
+        $user = auth()->user();
+        $product = $this->getProductBySlug($slug);
+        $isFavorite = $this->userService->hasLikedProduct($user, $product);
+        $comparisonChecked = $this->isInComparison($product->id);
+        $finalPriceData = $this->calculateDiscounts($product);
+
+        [$reviews, $statistics, $averageRating, $noBuyersMessage, $noStatistics] =
+            $this->prepareReviewsData($product, $user, $request);
+
+        return Inertia::render('Products/Show', [
+            'product' => $this->formatProductData($product, $finalPriceData),
+            'isFavorite' => $isFavorite,
+            'reviews' => $reviews,
+            'noBuyersMessage' => $noBuyersMessage,
+            'statistics' => $statistics,
+            'averageRating' => $averageRating,
+            'noStatistics' => $noStatistics,
+            'comparisonChecked' => $comparisonChecked,
         ]);
     }
 
-    public function show($slug, Request $request)
+    private function getProductBySlug(string $slug): Product
     {
-        $user = Auth()->user();
-        $product = Product::where('slug', $slug)->firstOrFail();
-        $id = $product->id;
-        $product = Product::find($id);
-        $isFavorite = $this->userService->hasLikedProduct($user, $product);
-        $sortOrder = $request->input('order', "");
-        $buyers = $request->input('buyers', "");
-        $comparison = session('comparison', []);
-        $comparisonChecked = in_array($product->id, $comparison);
+        return Product::where('slug', $slug)->firstOrFail();
+    }
 
+    private function isInComparison($productId): bool
+    {
+        $comparison = session('comparison', []);
+        return in_array($productId, $comparison);
+    }
+
+    private function calculateDiscounts(Product $product): array
+    {
         $discounts = Cache::get("discount_product_{$product->id}", []);
 
         // Extragem doar reducerile din array-ul asociativ
@@ -92,108 +120,108 @@ class ProductController extends Controller
         // Dacă există reduceri, aplicăm discount-ul la preț
         $finalPrice = !empty($discountValues) ? round($oldPrice * $totalDiscount, 2) : $product->price;
 
-        //Sorting and filter 
-        $orderColumn = 'updated_at';
+        return [
+            'discounts' => $discountValues,
+            'finalPrice' => $finalPrice,
+            'oldPrice' => !empty($discounts) ? $oldPrice : null
+        ];
+
+    }
+
+    private function prepareReviewsData(Product $product, $user, Request $request): array
+    {
+        $sortOrder = $request->input('order', '');
+        $buyers = $request->input('buyers', '');
+
+        $orderColumn = $sortOrder === 'populare' ? 'likes' : 'updated_at';
         $orderDirection = 'desc';
 
-        if ($sortOrder === 'populare') {
-            $orderColumn = 'likes';
-            $orderDirection = 'desc';
-        }
-
-        $reviewsQuery = $product->reviews()->with(['user:id,name,gender', 'reviewMedia']);
-
-
-        $reviews = $reviewsQuery->orderBy($orderColumn, $orderDirection)->get();
-
-        //Statistics
+        $reviews = $product->reviews()->with(['user:id,name,gender', 'reviewMedia'])
+            ->orderBy($orderColumn, $orderDirection)
+            ->get();
 
         $totalReviews = $reviews->count();
+        $statistics = $reviews->groupBy('rating')->mapWithKeys(fn($group, $rating) => [
+            $rating => ($group->count() / $totalReviews) * 100
+        ]);
+        $averageRating = $totalReviews > 0 ? $reviews->sum('rating') / $totalReviews : 0;
 
-        $statistics = $reviews->groupBy('rating')->mapWithKeys(function ($group, $rating) use ($totalReviews) {
-            $percentage = ($group->count() / $totalReviews) * 100;
-            return [$rating => $percentage];
-        });
-
-        $averageRating = 0;
-
-        if ($totalReviews > 0) {
-            $averageRating = $reviews->sum('rating') / $totalReviews;
-        }
-
-        $reviews = $reviews->map(function ($review) use ($user, $id) {
-            $userReview = $review->user;
-            $isVerfied = $this->userService->isVerified($userReview, $id,$review->updated_at);
-            $comments = $review->reviewComments()->with('user:id,name,gender')->orderBy('updated_at', 'desc')->get()->map(function ($comment) use ($user) {
-                return [
-                    'id' => $comment->id,
-                    'description' => $comment->description,
-                    'likes' => $comment->likes,
-                    'isLiked' => $this->userService->hasLikedComment($user, $comment),
-                    'updated_at' => $comment->updated_at->format('Y-m-d'), // formatul Y-m-d pentru updated_at
-                    'user' => [
-                        'id' => $comment->user->id,
-                        'name' => $comment->user->name,
-                        'gender' => $comment->user->gender,
-                        'role' => $comment->user->roles->first(),
-                    ]
-                ];
-            });
-            return [
-                'id' => $review->id,
-                'title' => $review->title,
-                'description' => $review->description,
-                'rating' => $review->rating,
-                'likes' => $review->likes,
-                'updated_at' => $review->updated_at->format('Y-m-d'),
-                'user' => $review->user,
-                'reviewMedia' => $review->reviewMedia,
-                'isLiked' => $this->userService->hasLikedReview($user, $review),
-                'isVerified' => $isVerfied,
-                'comments' => $comments,
-                'commentsCount' => $comments->count()
-            ];
-        });
+        $reviews = $reviews->map(fn($review) => $this->formatReview($review, $user, $product->id));
 
         $noBuyersMessage = '';
         $noStatistics = true;
         if ($buyers === 'true') {
             $reviews = $reviews->filter(fn($review) => $review['isVerified']);
+            if ($reviews->isEmpty()) {
+                $noBuyersMessage = 'Nu există cumpărători verificați care să fi lăsat o recenzie pentru acest produs.';
+                $noStatistics = false;
+            }
         }
 
-        if ($buyers === 'true' && $reviews->isEmpty()) {
-            $noBuyersMessage = 'Nu există cumpărători verificați care să fi lăsat o recenzie pentru acest produs.';
-            $noStatistics = false;
-        }
-
-        return Inertia::render('Products/Show', [
-            'product' => [
-                'id' => $product->id,
-                'name' => $product->name,
-                'slug' => $product->slug,
-                'price' => $finalPrice,
-                'old_price' => !empty($discounts) ? $oldPrice : null,
-                'discounts' => $discountValues,
-                'category' => $product->category,
-                'image_url' => $product->image_url,
-                'description' => $product->description,
-                'stock' => $product->stock,
-                'calories' => $product->calories,
-                'protein' => $product->protein,
-                'carbs' => $product->carbs,
-                'fats' => $product->fats,
-                'fiber' => $product->fiber,
-                'sugar' => $product->sugar,
-                'ingredients' => explode(',', $product->ingredients),
-                'allergens' => explode(',', $product->allergens),
-            ],
-            'isFavorite' => $isFavorite,
-            'reviews' => $reviews,
-            'noBuyersMessage' => $noBuyersMessage,
-            'statistics' => $statistics,
-            'averageRating' => $averageRating,
-            'noStatistics' => $noStatistics,
-            'comparisonChecked' => $comparisonChecked
-        ]);
+        return [$reviews, $statistics, $averageRating, $noBuyersMessage, $noStatistics];
     }
+
+    private function formatReview($review, $user, $productId): array
+    {
+        $userReview = $review->user;
+        $isVerified = $this->userService->isVerified($userReview, $productId, $review->updated_at);
+
+        $comments = $review->reviewComments()
+            ->with('user:id,name,gender')
+            ->orderBy('updated_at', 'desc')
+            ->get()
+            ->map(fn($comment) => [
+                'id' => $comment->id,
+                'description' => $comment->description,
+                'likes' => $comment->likes,
+                'isLiked' => $this->userService->hasLikedComment($user, $comment),
+                'updated_at' => $comment->updated_at->format('Y-m-d'),
+                'user' => [
+                    'id' => $comment->user->id,
+                    'name' => $comment->user->name,
+                    'gender' => $comment->user->gender,
+                    'role' => $comment->user->roles->first(),
+                ],
+            ]);
+
+        return [
+            'id' => $review->id,
+            'title' => $review->title,
+            'description' => $review->description,
+            'rating' => $review->rating,
+            'likes' => $review->likes,
+            'updated_at' => $review->updated_at->format('Y-m-d'),
+            'user' => $review->user,
+            'reviewMedia' => $review->reviewMedia,
+            'isLiked' => $this->userService->hasLikedReview($user, $review),
+            'isVerified' => $isVerified,
+            'comments' => $comments,
+            'commentsCount' => $comments->count(),
+        ];
+    }
+
+    private function formatProductData(Product $product, array $pricing): array
+    {
+        return [
+            'id' => $product->id,
+            'name' => $product->name,
+            'slug' => $product->slug,
+            'price' => $pricing['finalPrice'],
+            'old_price' => $pricing['oldPrice'],
+            'discounts' => $pricing['discounts'],
+            'category' => $product->category,
+            'image_url' => $product->image_url,
+            'description' => $product->description,
+            'stock' => $product->stock,
+            'calories' => $product->calories,
+            'protein' => $product->protein,
+            'carbs' => $product->carbs,
+            'fats' => $product->fats,
+            'fiber' => $product->fiber,
+            'sugar' => $product->sugar,
+            'ingredients' => explode(',', $product->ingredients),
+            'allergens' => explode(',', $product->allergens),
+        ];
+    }
+
 }
