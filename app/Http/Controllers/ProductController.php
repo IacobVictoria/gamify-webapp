@@ -75,18 +75,19 @@ class ProductController extends Controller
         $isFavorite = $this->userService->hasLikedProduct($user, $product);
         $comparisonChecked = $this->isInComparison($product->id);
         $finalPriceData = $this->calculateDiscounts($product);
+        $isVerifiedBuyer = $this->userService->isVerifiedBuyer(Auth()->user(),$product->id);
 
-        [$reviews, $statistics, $averageRating, $noBuyersMessage, $noStatistics] =
+        [$reviews, $statistics, $averageRating, $noStatistics] =
             $this->prepareReviewsData($product, $user, $request);
 
         return Inertia::render('Products/Show', [
             'product' => $this->formatProductData($product, $finalPriceData),
             'isFavorite' => $isFavorite,
             'reviews' => $reviews,
-            'noBuyersMessage' => $noBuyersMessage,
             'statistics' => $statistics,
             'averageRating' => $averageRating,
             'noStatistics' => $noStatistics,
+            'isVerifiedBuyer' => $isVerifiedBuyer,
             'comparisonChecked' => $comparisonChecked,
         ]);
     }
@@ -131,8 +132,7 @@ class ProductController extends Controller
     private function prepareReviewsData(Product $product, $user, Request $request): array
     {
         $sortOrder = $request->input('order', '');
-        $buyers = $request->input('buyers', '');
-
+      
         $orderColumn = $sortOrder === 'populare' ? 'likes' : 'updated_at';
         $orderDirection = 'desc';
 
@@ -148,23 +148,16 @@ class ProductController extends Controller
 
         $reviews = $reviews->map(fn($review) => $this->formatReview($review, $user, $product->id));
 
-        $noBuyersMessage = '';
         $noStatistics = true;
-        if ($buyers === 'true') {
-            $reviews = $reviews->filter(fn($review) => $review['isVerified']);
-            if ($reviews->isEmpty()) {
-                $noBuyersMessage = 'Nu există cumpărători verificați care să fi lăsat o recenzie pentru acest produs.';
-                $noStatistics = false;
-            }
-        }
+     
 
-        return [$reviews, $statistics, $averageRating, $noBuyersMessage, $noStatistics];
+        return [$reviews, $statistics, $averageRating, $noStatistics];
     }
 
     private function formatReview($review, $user, $productId): array
     {
         $userReview = $review->user;
-        $isVerified = $this->userService->isVerified($userReview, $productId, $review->updated_at);
+        $isVerified = $this->userService->isVerifiedBuyer($userReview, $productId);
 
         $comments = $review->reviewComments()
             ->with('user:id,name,gender')

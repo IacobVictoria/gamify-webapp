@@ -1,13 +1,19 @@
 <template>
     <div class="mb-24">
         <div v-if="isLoggedIn()" class="mt-10">
-            <div v-if="authUserHasRole('User')">
+            <div v-if="authUserHasRole('User') && isVerifiedBuyer">
                 <button
                     @click="toggleReviewForm"
                     class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                     {{ showReviewForm ? "Cancel" : "Add Review" }}
                 </button>
+            </div>
+            <div
+                v-else
+                class="mt-10 bg-gray-100 p-6 rounded-lg shadow-lg text-center"
+            >
+                You need to have purchased the product to add a review!
             </div>
 
             <!-- Form for Adding New Review -->
@@ -361,6 +367,9 @@ export default {
         },
         message: {
             type: String,
+        },
+        isVerifiedBuyer: {
+            type: Boolean,
         },
     },
 

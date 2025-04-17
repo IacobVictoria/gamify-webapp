@@ -235,24 +235,6 @@
                             :options="sortOptions"
                         >
                         </SortingComponent>
-                        <div class="flex items-start">
-                            <button
-                                v-if="isFilteredByBuyers"
-                                @click="showAllReviews"
-                                class="ml-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
-                            >
-                                🔄 Afișează toate review-urile
-                            </button>
-
-                            <button
-                                v-else
-                                @click="authorizedBuyers"
-                                class="ml-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
-                            >
-                                <VerifiedSVG class="mr-2" />
-                                Doar cumpărători
-                            </button>
-                        </div>
                     </div>
                     <ProductsReviewList
                         :reviews="reviews"
@@ -260,6 +242,7 @@
                         :message="noBuyersMessage"
                         :statistics="statistics"
                         :averageRating="averageRating"
+                        :is-verified-buyer="isVerifiedBuyer"
                     >
                     </ProductsReviewList>
                 </div>
@@ -299,12 +282,12 @@ export default {
     props: {
         product: Object,
         reviews: Array,
-        noBuyersMessage: String,
         statistics: Map,
         averageRating: Number,
         noStatistics: Boolean,
         isFavorite: Boolean,
         comparisonChecked: Boolean,
+        isVerifiedBuyer: Boolean,
     },
 
     data() {
@@ -332,28 +315,6 @@ export default {
                 product: product,
                 quantity: this.quantity,
             });
-        },
-        authorizedBuyers() {
-            this.$inertia.get(
-                route("products.show", this.product.slug),
-                {
-                    buyers: true,
-                },
-                {
-                    preserveState: true,
-                    replace: true,
-                }
-            );
-        },
-        showAllReviews() {
-            this.$inertia.get(
-                route("products.show", this.product.slug),
-                {},
-                {
-                    preserveState: true,
-                    replace: true,
-                }
-            );
         },
         async likeProduct(product) {
             await this.$inertia.post(
@@ -390,11 +351,6 @@ export default {
                 );
             }),
             deep: true,
-        },
-    },
-    computed: {
-        isFilteredByBuyers() {
-            return this.$page.url.includes("buyers=true");
         },
     },
 };
