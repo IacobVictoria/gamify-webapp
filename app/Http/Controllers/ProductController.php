@@ -27,11 +27,14 @@ class ProductController extends Controller
         $searchQuery = $request->input('search', '');
         $searchDropdownCategory = $request->input('category', '');
 
-        $products = Product::where('name', 'like', "%{$searchQuery}%")->where('category', 'like', "%{$searchDropdownCategory}%")->where('is_published', true)->get();
+        $productsQuery = Product::where('name', 'like', "%{$searchQuery}%")
+            ->where('category', 'like', "%{$searchDropdownCategory}%")
+            ->where('is_published', true);
 
-        $categories = Product::all()->pluck('category')->whereNotNull()->unique();
+        $categories = Product::whereNotNull('category')->pluck('category')->unique();
 
-        $products = $products->map(function ($product) use ($user) {
+
+        $products = $productsQuery->paginate(9)->through(function ($product) use ($user) {
 
             $discounts = Cache::get("discount_product_{$product->id}", []);
 
@@ -61,6 +64,7 @@ class ProductController extends Controller
             ];
         });
 
+
         return Inertia::render('Products/Index', [
             'products' => $products,
             'searchQueryProp' => $searchQuery,
@@ -68,6 +72,7 @@ class ProductController extends Controller
             'searchCategory' => $searchDropdownCategory,
         ]);
     }
+
     public function show($slug, Request $request)
     {
         $user = auth()->user();
@@ -75,7 +80,7 @@ class ProductController extends Controller
         $isFavorite = $this->userService->hasLikedProduct($user, $product);
         $comparisonChecked = $this->isInComparison($product->id);
         $finalPriceData = $this->calculateDiscounts($product);
-        $isVerifiedBuyer = $this->userService->isVerifiedBuyer(Auth()->user(),$product->id);
+        $isVerifiedBuyer = $this->userService->isVerifiedBuyer(Auth()->user(), $product->id);
 
         [$reviews, $statistics, $averageRating, $noStatistics] =
             $this->prepareReviewsData($product, $user, $request);
@@ -132,7 +137,7 @@ class ProductController extends Controller
     private function prepareReviewsData(Product $product, $user, Request $request): array
     {
         $sortOrder = $request->input('order', '');
-      
+
         $orderColumn = $sortOrder === 'populare' ? 'likes' : 'updated_at';
         $orderDirection = 'desc';
 
@@ -149,7 +154,7 @@ class ProductController extends Controller
         $reviews = $reviews->map(fn($review) => $this->formatReview($review, $user, $product->id));
 
         $noStatistics = true;
-     
+
 
         return [$reviews, $statistics, $averageRating, $noStatistics];
     }

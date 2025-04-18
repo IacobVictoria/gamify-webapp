@@ -20,7 +20,7 @@
                                         class="block w-full rounded-md border border-gray-300 pl-10 pr-4 py-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                         placeholder="Search for products..."
                                         type="search"
-                                        @input="fetchProducts"
+                                        @input="fetchProducts()"
                                     />
                                     <div
                                         class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
@@ -48,7 +48,7 @@
                             <div class="relative mb-4 flex-1">
                                 <select
                                     v-model="selectedCategory"
-                                    @change="fetchProducts"
+                                    @change="fetchProducts()"
                                     class="block w-full rounded-md border border-gray-300 px-4 py-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                 >
                                     <option value="">Toate categoriile</option>
@@ -64,11 +64,11 @@
                         </div>
                         <!-- Products Grid -->
                         <div
-                            v-if="products.length > 0"
+                            v-if="products.data.length > 0"
                             class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12"
                         >
                             <div
-                                v-for="product in products"
+                                v-for="product in products.data"
                                 :key="product.id"
                                 class="group relative bg-white shadow-lg rounded-lg p-4 flex flex-col items-center h-full"
                             >
@@ -165,6 +165,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div
                             v-else
                             class="flex flex-col items-center justify-center h-[50vh] text-center text-gray-500 text-lg"
@@ -190,6 +191,11 @@
                         </div>
                     </div>
                 </div>
+                <WebPagination
+                    v-if="products.data.length > 0"
+                    class="flex justify-center"
+                    :links="products.links"
+                />
             </main>
         </Layout>
     </div>
@@ -198,15 +204,17 @@
 <script>
 import AddHeartSVG from "@/Components/AddHeartSVG.vue";
 import Layout from "@/Layouts/Layout.vue";
+import WebPagination from "../../Components/WebPagination.vue";
 
 export default {
     name: "Products.Index",
     components: {
         Layout,
         AddHeartSVG,
+        WebPagination,
     },
     props: {
-        products: Array,
+        products: Object,
         searchQueryProp: String,
         categories: Array,
         searchCategory: String,
@@ -220,18 +228,15 @@ export default {
     methods: {
         fetchProducts() {
             this.$inertia.get(
-                route(
-                    "products.index",
-                    {
-                        search: this.searchQuery,
-                        category: this.selectedCategory,
-                    },
-                    {
-                        preserveState: true,
-                        preserveScroll: true,
-                        replace: true,
-                    }
-                )
+                route("products.index"),
+                {
+                    search: this.searchQuery,
+                    category: this.selectedCategory,
+                },
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                }
             );
         },
 
