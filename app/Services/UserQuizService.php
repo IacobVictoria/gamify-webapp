@@ -48,6 +48,20 @@ class UserQuizService implements UserQuizInterface
         $responses = $request->input('responses');
         $percentage = $request->input('percentage');
 
+        $quizResult = $this->updateOrCreateQuizResult($userId, $quizId, $score, $percentage, $forceLock);
+
+        $this->saveUserResponses($userId, $quizId, $responses);
+
+        $this->badgeService->checkAndAssignBadges($user);
+
+        if ($quizResult->is_locked) {
+            $user = User::find($userId);
+            $this->userScoreService->quizAttemptScore($user, $quizResult->attempt_number, $quizResult->total_score);
+        }
+    }
+
+    private function updateOrCreateQuizResult($userId, $quizId, $score, $percentage, $forceLock): UserQuizResult
+    {
         $quizResult = UserQuizResult::firstOrNew([
             'user_id' => $userId,
             'quiz_id' => $quizId,
@@ -62,6 +76,12 @@ class UserQuizService implements UserQuizInterface
         $quizResult->is_locked = $forceLock || $quizResult->attempt_number >= 3;
 
         $quizResult->save();
+
+        return $quizResult;
+    }
+
+    private function saveUserResponses($userId, $quizId, array $responses): void
+    {
 
         foreach ($responses as $response) {
             $isCorrect = UserQuizAnswer::find($response['answerId'])->is_correct;
@@ -88,13 +108,6 @@ class UserQuizService implements UserQuizInterface
                 ]);
             }
 
-        }
-
-        $this->badgeService->checkAndAssignBadges($user);
-
-        if ($quizResult->is_locked) {
-            $user = User::find($userId);
-            $this->userScoreService->quizAttemptScore($user, $quizResult->attempt_number, $quizResult->total_score);
         }
     }
 }
