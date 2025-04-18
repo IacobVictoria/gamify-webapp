@@ -42,20 +42,22 @@
                 :nr-attempts="nr_attempts"
             />
 
+            <!-- Mesaj dacă quiz-ul este blocat -->
+            <div
+                v-if="isQuizLocked && !quizStarted && !quizEnded"
+                class="bg-red-100 text-red-800 p-4 rounded-md shadow-md w-full max-w-xl text-center"
+            >
+                Acest quiz a fost închis! Vezi permanent în
+                <b>Dashboard-ul utilizatorului</b> ce cunoștințe poți
+                îmbunătăți. 📊
+            </div>
+
             <!-- componenta de vizualizare rezultate finale -->
             <FinalResult
                 v-if="isQuizLocked === true"
                 :responses="responses"
                 :quiz="quiz"
             ></FinalResult>
-            <!-- Mesaj dacă quiz-ul este blocat -->
-            <div
-                v-if="isQuizLocked && !quizStarted && !quizEnded"
-                class="bg-red-100 text-red-800 p-4 rounded-md shadow-md w-full max-w-xl text-center"
-            >
-                Acest quiz a fost închis! Vezi în
-                <b>Dashboard-ul utilizatorului</b> ce poți îmbunătăți. 📊
-            </div>
         </div>
     </AuthenticatedLayout>
 </template>
@@ -91,6 +93,19 @@ export default {
             isQuizLocked: this.is_locked,
         };
     },
+    mounted() {
+        const savedIndex = localStorage.getItem("quiz_question_index");
+        const savedScore = localStorage.getItem("quiz_score");
+
+        if (savedIndex !== null) {
+            this.currentQuestionIndex = parseInt(savedIndex);
+            this.quizStarted = true;
+        }
+
+        if (savedScore !== null) {
+            this.score = parseInt(savedScore);
+        }
+    },
     computed: {
         currentQuestion() {
             return this.quiz.questions[this.currentQuestionIndex];
@@ -106,9 +121,16 @@ export default {
         nextQuestion() {
             if (this.currentQuestionIndex < this.quiz.questions.length - 1) {
                 this.currentQuestionIndex += 1;
+                localStorage.setItem(
+                    "quiz_question_index",
+                    this.currentQuestionIndex
+                );
+                localStorage.setItem("quiz_score", this.score);
             } else {
                 // Finalizare quiz
                 this.quizStarted = true; // Rămâne activ pentru a arăta FinalScreen
+                localStorage.removeItem("quiz_question_index");
+                localStorage.removeItem("quiz_score");
             }
         },
 
@@ -120,6 +142,7 @@ export default {
 
         updateScore(newScore) {
             this.score = newScore;
+            localStorage.setItem("quiz_score", this.score);
         },
 
         quizCompleted(score, correctAnswersCount, responses) {
@@ -128,6 +151,8 @@ export default {
             this.quizStarted = false;
             this.responses = responses;
             this.quizEnded = true;
+            localStorage.removeItem("quiz_question_index");
+            localStorage.removeItem("quiz_score");
         },
 
         retryQuiz() {
@@ -135,12 +160,16 @@ export default {
             this.quizEnded = false;
             this.currentQuestionIndex = 0;
             this.score = 0;
+            localStorage.removeItem('quiz_question_index');
+            localStorage.removeItem('quiz_score');
         },
 
         lockQuiz() {
             this.quizStarted = false;
             this.quizEnded = false;
             this.isQuizLocked = true;
+            localStorage.removeItem('quiz_question_index');
+            localStorage.removeItem('quiz_score');
         },
     },
 };

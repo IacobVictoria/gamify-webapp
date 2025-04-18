@@ -92,7 +92,7 @@ class UserQuizService implements UserQuizInterface
 
         $this->badgeService->checkAndAssignBadges($user);
 
-        if ($forceLock) {
+        if ($quizResult->is_locked) {
             $user = User::find($userId);
             $this->userScoreService->quizAttemptScore($user, $quizResult->attempt_number, $quizResult->total_score);
         }

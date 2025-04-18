@@ -127,7 +127,7 @@ class AdminQuizController extends Controller
         }
 
 
-        return redirect()->route('admin-gamification.user_quiz.index')->with('success', 'Quiz created successfully!');
+        return redirect()->route('admin-gamification.user_quiz.index')->with('message', 'Quiz created successfully!');
     }
 
     public function update(Request $request, string $quizId)
