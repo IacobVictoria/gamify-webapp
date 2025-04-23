@@ -37,6 +37,7 @@ class HandleInertiaRequests extends Middleware
                 'email' => Auth::user()->email,
                 'gender' => Auth::user()->gender,
                 'roles' => Auth::user()->roles->toArray(),
+                'public_token'=>Auth::user()->public_token,
             ] : null,
             'message' => fn() => $request->session()->get('message'),
             'success' => fn() => $request->session()->get('success'),

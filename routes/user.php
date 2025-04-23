@@ -69,6 +69,7 @@ Route::prefix('wishlist')->group(function () {
     Route::get('/', [UserWishlistController::class, 'index'])->name('wishlist.index');
     Route::post('/{productId}/like', [UserWishlistController::class, 'like'])->name('wishlist.products.like');
     Route::post('/{productId}/dislike', [UserWishlistController::class, 'dislike'])->name('wishlist.products.dislike');
+    Route::get('/public_store/{public_token}', [UserWishlistController::class, 'showPublic'])->name('wishlist.public');
 });
 
 Route::prefix('quizzes')->group(function () {

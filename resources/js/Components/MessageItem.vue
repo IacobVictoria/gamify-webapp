@@ -84,9 +84,11 @@
                         {{ message.content }}
                     </a>
                 </p>
-                <p v-else class="text-sm whitespace-pre-wrap break-words">
-                    {{ message.content }}
-                </p>
+                <p
+                    v-else
+                    class="text-sm whitespace-pre-wrap break-words"
+                    v-html="formatMessageWithLinks(message.content)"
+                ></p>
             </div>
 
             <!-- Seen (pentru userul curent) -->
@@ -129,6 +131,13 @@ export default {
         },
         isUrl(text) {
             return /^http?:\/\/\S+$/.test(text);
+        },
+        formatMessageWithLinks(text) {
+            const urlRegex = /((http?:\/\/)[^\s]+)/g;
+            return text.replace(urlRegex, (url) => {
+                const cleanUrl = url.replace(/[\u200B-\u200D\uFEFF]/g, "");
+                return `<a href="${cleanUrl}" target="_blank" class="text-black underline">${cleanUrl}</a>`;
+            });
         },
     },
 };

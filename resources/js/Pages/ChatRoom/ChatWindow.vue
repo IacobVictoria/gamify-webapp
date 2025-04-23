@@ -83,6 +83,9 @@
             >
                 Stop
             </button>
+            <button @click="shareWishlist" class="p-2 rounded-full">
+                <WishlistLogoSVG />
+            </button>
         </div>
     </div>
 </template>
@@ -91,6 +94,7 @@
 import MessageItem from "@/Components/MessageItem.vue";
 import MessageSeenSVG from "@/Components/MessageSeenSVG.vue";
 import MicrofoneSVG from "@/Components/MicrofoneSVG.vue";
+import WishlistLogoSVG from "@/Components/WishlistLogoSVG.vue";
 
 import axios from "axios";
 
@@ -143,6 +147,7 @@ export default {
         MessageSeenSVG,
         MessageItem,
         MicrofoneSVG,
+        WishlistLogoSVG,
     },
     methods: {
         setReplyMessage(message) {
@@ -278,7 +283,10 @@ export default {
                 ".MessageRead",
                 (event) => {
                     this.messages = this.messages.map((message) => {
-                        if (message.sender_id === this.currentUser.id && !message.is_read) {
+                        if (
+                            message.sender_id === this.currentUser.id &&
+                            !message.is_read
+                        ) {
                             message.is_read = 1;
                         }
                         return message;
@@ -307,6 +315,16 @@ export default {
                     });
                 }
             });
+        },
+        async shareWishlist() {
+            const link = `${window.location.origin}/user/wishlist/public_store/${this.$page.props.user.public_token}`;
+            const messageInput = `Check out my wishlist! 🧡 ${link}`;
+
+            const response = await axios.post(
+                    `/user/user_chat/messages/${this.friend.id}`,
+                   {message: messageInput}
+                );
+                this.messages.push(response.data);
         },
         async loadMessages() {
             if (this.isLoading || this.noMoreItems) return;

@@ -27,8 +27,8 @@ class User extends Authenticatable
         'password',
         'gender',
         'score',
-        'used_discounts'
-
+        'used_discounts',
+        'public_token'
     ];
 
     /**
@@ -41,11 +41,13 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    protected static function booted()
+    {
+        static::creating(function ($user) {
+            $user->public_token = (string) \Str::uuid(); 
+        });
+    }
+    
     protected function casts(): array
     {
         return [
