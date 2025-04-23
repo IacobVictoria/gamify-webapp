@@ -1,11 +1,24 @@
 <template>
-    <button
-        @click="copyClipBoard(currentUrl)"
-        class="flex items-center gap-2 bg-emerald-500 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-emerald-600 active:bg-emerald-700 transition"
-    >
-        <span>📋</span>
-        <span>Copiază link-ul comparației</span>
-    </button>
+    <div class="flex gap-4 items-center mb-6">
+        <!-- Copy Link -->
+        <button
+            @click="copyClipBoard(currentUrl)"
+            class="flex items-center gap-2 bg-emerald-500 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-emerald-600 active:bg-emerald-700 transition"
+        >
+            <span>📋</span>
+            <span>Copy Comparison Link</span>
+        </button>
+
+        <!-- Send to Friend -->
+        <button
+            @click="showFriendModal = true"
+            class="flex items-center gap-2 bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-indigo-600 transition"
+        >
+            <span>📨</span>
+            <span>Send to a Friend</span>
+        </button>
+    </div>
+
     <div
         v-if="showPopup"
         class="fixed top-5 right-5 z-50 bg-green-500 text-black px-6 py-3 rounded-lg shadow-lg flex items-center gap-2"
@@ -128,78 +141,100 @@
             </ul>
         </div>
     </div>
+    <FriendSelector
+        v-if="showFriendModal"
+        :friends="friends"
+        @close="showFriendModal = false"
+        @send="sendToFriend"
+    />
 </template>
 
 <script>
+import FriendSelector from '@/Components/FriendSelector.vue';
+
 export default {
-  props: {
-    products: {
-      type: Array,
-      required: true,
+    props: {
+        products: {
+            type: Array,
+            required: true,
+        },
+        recommendations: {
+            type: Array,
+            required: true,
+        },
+        friends: {
+            type: Array,
+        },
     },
-    recommendations: {
-      type: Array,
-      required: true,
+    data() {
+        return {
+            showFriendModal: false,
+            currentUrl: window.location.href,
+            showPopup: false,
+            friends: this.friends,
+        };
     },
-  },
-  data() {
-    return {
-      currentUrl: window.location.href,
-      showPopup: false,
-    };
-  },
-  computed: {
-    attributes() {
-      return [
-        { key: "price", label: "Preț (RON)" },
-        { key: "calories", label: "Calorii (kcal)" },
-        { key: "protein", label: "Proteine (g)" },
-        { key: "carbs", label: "Carbohidrați (g)" },
-        { key: "fats", label: "Grăsimi (g)" },
-        { key: "fiber", label: "Fibre (g)" },
-        { key: "sugar", label: "Zahăr (g)" },
-        { key: "ingredients", label: "Ingrediente" },
-        { key: "allergens", label: "Alergeni" },
-      ];
+    components:{
+        FriendSelector
     },
-  },
-  methods: {
-    formatValue(key, value) {
-      if (key === "price") {
-        return `${value} RON`;
-      }
-      return value;
+    computed: {
+        attributes() {
+            return [
+                { key: "price", label: "Preț (RON)" },
+                { key: "calories", label: "Calorii (kcal)" },
+                { key: "protein", label: "Proteine (g)" },
+                { key: "carbs", label: "Carbohidrați (g)" },
+                { key: "fats", label: "Grăsimi (g)" },
+                { key: "fiber", label: "Fibre (g)" },
+                { key: "sugar", label: "Zahăr (g)" },
+                { key: "ingredients", label: "Ingrediente" },
+                { key: "allergens", label: "Alergeni" },
+            ];
+        },
     },
+    methods: {
+        formatValue(key, value) {
+            if (key === "price") {
+                return `${value} RON`;
+            }
+            return value;
+        },
 
-    getComparisonClass(attribute, value, comparison) {
-      if (!comparison) return "";
+        getComparisonClass(attribute, value, comparison) {
+            if (!comparison) return "";
 
-      if (comparison[`${attribute}Color`] === "red") {
-        return "bg-red-100";
-      }
-      if (comparison[`${attribute}Color`] === "blue") {
-        return "bg-blue-100";
-      }
-      return "";
-    },
+            if (comparison[`${attribute}Color`] === "red") {
+                return "bg-red-100";
+            }
+            if (comparison[`${attribute}Color`] === "blue") {
+                return "bg-blue-100";
+            }
+            return "";
+        },
 
-    copyClipBoard(currentUrl) {
-      navigator.clipboard
-        .writeText(currentUrl.trim())
-        .then(() => {
-          this.showPopup = true;
-          setTimeout(() => {
-            this.showPopup = false;
-          }, 2000);
-        })
-        .catch((error) => {
-          console.error("Nu s-a putut copia în clipboard: ", error);
-        });
+        copyClipBoard(currentUrl) {
+            navigator.clipboard
+                .writeText(currentUrl.trim())
+                .then(() => {
+                    this.showPopup = true;
+                    setTimeout(() => {
+                        this.showPopup = false;
+                    }, 2000);
+                })
+                .catch((error) => {
+                    console.error("Nu s-a putut copia în clipboard: ", error);
+                });
+        },
+        async sendToFriend(friendId) {
+            const message = `📊 Check out this comparison: ${this.currentUrl}`;
+            await axios.post(`/user/user_chat/messages/${friendId}`, {
+                message: message,
+            });
+            this.showFriendModal = false;
+        },
     },
-  },
 };
 </script>
-
 
 <style scoped>
 thead tr {

@@ -53,16 +53,26 @@ class ProductComparisonController extends Controller
 
         if ($products->count() !== count($slugs)) {
             return redirect()->route('home')->with(
-                'errorMessage', 'Unul sau mai multe produse nu mai sunt disponibile pentru comparație.',
+                'errorMessage',
+                'Unul sau mai multe produse nu mai sunt disponibile pentru comparație.',
             );
-            
+
         }
 
+        $user = Auth()->user();
+        $friends = $user->allFriends()->map(function ($friend) {
+            return [
+                'name' => $friend->name,
+                'id' => $friend->id,
+            ];
+        });
+        
         $comparisonData = $this->compareAttributes($products);
 
         return Inertia::render('Products/ComparisonPage', [
-            'products' => $comparisonData['products'],  
+            'products' => $comparisonData['products'],
             'recommendations' => $comparisonData['recommendations'],
+            'friends' => $friends,
 
         ]);
     }
@@ -75,15 +85,15 @@ class ProductComparisonController extends Controller
         foreach ($attributes as $attribute) {
             $maxValue = $products->max($attribute);
             $minValue = $products->min($attribute);
-      
+
             foreach ($products as $product) {
                 if ($product->$attribute == $maxValue) {
                     $comparison[$product->id][$attribute . 'Color'] = 'red';
-                  
+
                 } elseif ($product->$attribute == $minValue) {
                     $comparison[$product->id][$attribute . 'Color'] = 'blue';
                 } else {
-                    $comparison[$product->id][$attribute . 'Color'] = 'neutral'; 
+                    $comparison[$product->id][$attribute . 'Color'] = 'neutral';
                 }
             }
         }
