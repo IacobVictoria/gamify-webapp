@@ -12,7 +12,7 @@ import os
 import matplotlib.pyplot as plt
 
 base_dir = os.path.dirname(__file__)
-file_path = os.path.join(base_dir, "tmp", "Train_Dataset_Final.csv")
+file_path = os.path.join(base_dir, "tmp", "Train_Dataset_Final2.csv")
 df = pd.read_csv(file_path)
 
 
@@ -105,7 +105,7 @@ class NCF(pl.LightningModule):
         user, item, features, label = batch
         preds = self(user, item, features)
         loss = self.loss_fn(preds, label)
-        self.log("train_loss", loss)
+        self.log("train_loss", loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -118,8 +118,9 @@ class NCF(pl.LightningModule):
         preds, labels = zip(*self.validation_step_outputs)
         preds = torch.cat(preds)
         labels = torch.cat(labels)
-        self.log("val_f1", f1_score(labels, preds), prog_bar=True)
-        self.log("val_acc", accuracy_score(labels, preds), prog_bar=True)
+        self.log("val_f1", f1_score(labels, preds), prog_bar=True, on_step=False, on_epoch=True, logger=True)
+        self.log("val_acc", accuracy_score(labels, preds), prog_bar=True, on_step=False, on_epoch=True, logger=True)
+
         self.validation_step_outputs.clear()
 
     def test_step(self, batch, batch_idx):
@@ -132,8 +133,8 @@ class NCF(pl.LightningModule):
         preds, labels = zip(*self.test_step_outputs)
         preds = torch.cat(preds)
         labels = torch.cat(labels)
-        self.log("test_f1", f1_score(labels, preds), prog_bar=True)
-        self.log("test_acc", accuracy_score(labels, preds), prog_bar=True)
+        self.log("test_f1", f1_score(labels, preds), prog_bar=True, on_step=False, on_epoch=True, logger=True)
+        self.log("test_acc", accuracy_score(labels, preds), prog_bar=True, on_step=False, on_epoch=True, logger=True)
 
          # === ROC AUC ===
         try:
@@ -168,18 +169,20 @@ if __name__ == "__main__":
 
     model = NCF(num_users, num_items, num_features)
     data = RecommenderDataModule(df)
-    logger = CSVLogger("logs", name="ncf_model")
+
+    logger = CSVLogger("logs", name="ncf_model", version=None)
 
     trainer = pl.Trainer(
         max_epochs=10,
         accelerator="gpu" if torch.cuda.is_available() else "cpu",
         devices=1,
         logger=logger,
-        enable_checkpointing=False)
+        enable_checkpointing=False,
+        num_sanity_val_steps=0)
 
     trainer.fit(model, datamodule=data)
     trainer.test(model, datamodule=data)
-
+    trainer.logger.finalize("success")
 
     from save_recommendations import generate_recommendations
 

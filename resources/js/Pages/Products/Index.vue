@@ -242,7 +242,7 @@ export default {
 
         async likeProduct(product) {
             await this.$inertia.post(
-                route("wishlist.products.like", product.id),
+                route("user.wishlist.products.like", product.id),
                 {
                     preserveState: true,
                     preserveScroll: true,
@@ -253,7 +253,7 @@ export default {
 
         async dislikeProduct(product) {
             await this.$inertia.post(
-                route("wishlist.products.dislike", product.id),
+                route("user.wishlist.products.dislike", product.id),
                 {
                     preserveState: true,
                     preserveScroll: true,

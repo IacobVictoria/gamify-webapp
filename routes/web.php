@@ -28,8 +28,6 @@ Route::group(['prefix' => 'products'], function () {
     Route::post('/{productId}/reviews', [ReviewController::class, 'store'])->name('products.reviews.store');
     Route::post('/{productId}/reviews/{reviewId}', [ReviewController::class, 'update'])->name('products.reviews.update');
     Route::delete('/{productId}/reviews/{reviewId}', [ReviewController::class, 'destroy'])->name('products.reviews.destroy');
-    Route::post('/{productId}/like', [UserWishlistController::class, 'like'])->name('wishlist.products.like');
-    Route::post('/{productId}/dislike', [UserWishlistController::class, 'dislike'])->name('wishlist.products.dislike');
 });
 
 Route::group(['prefix' => 'activities'], function () {

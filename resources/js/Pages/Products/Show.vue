@@ -41,7 +41,7 @@
                                 >
                                     📌 Category: {{ product.category }}
                                 </h2>
-                                <button
+                                <button v-if="isLoggedIn()"
                                     @click="
                                         isFavorite
                                             ? dislikeProduct(product)
@@ -318,7 +318,7 @@ export default {
         },
         async likeProduct(product) {
             await this.$inertia.post(
-                route("wishlist.products.like", product.id),
+                route("user.wishlist.products.like", product.id),
                 {},
                 {
                     onSuccess: (page) => {},
@@ -328,7 +328,7 @@ export default {
 
         async dislikeProduct(product) {
             await this.$inertia.post(
-                route("wishlist.products.dislike", product.id),
+                route("user.wishlist.products.dislike", product.id),
                 {},
                 {
                     onSuccess: (page) => {},

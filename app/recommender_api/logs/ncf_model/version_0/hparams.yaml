@@ -1,4 +1,0 @@
-embedding_dim: 16
-num_features: 34
-num_items: 1000
-num_users: 1000
