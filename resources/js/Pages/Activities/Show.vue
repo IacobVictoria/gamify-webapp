@@ -57,23 +57,32 @@
                                 <button
                                     v-if="!alreadyParticipating"
                                     @click="markAsDone"
-                                    class="inline-flex items-center gap-2 px-5 py-2 bg-green-600 text-white font-semibold rounded-md shadow hover:bg-green-700 transition"
+                                    class="inline-flex mb-6 items-center gap-2 px-5 py-2 bg-green-600 text-white font-semibold rounded-md shadow hover:bg-green-700 transition"
                                 >
                                     ✅ Mark as Done
                                 </button>
-
-                                <!-- Save/Remove from Favorites -->
-                                <button
-                                    v-if="alreadyParticipating"
-                                    @click="toggleFavorite"
-                                    class="inline-flex items-center gap-2 px-5 py-2 bg-indigo-600 text-white font-semibold rounded-md shadow hover:bg-indigo-700 transition"
-                                >
-                                    {{
-                                        props.isFavorited
-                                            ? "❌ Remove from Favorites"
-                                            : "⭐ Save to Favorites"
-                                    }}
-                                </button>
+                                <div class="flex gap-4 items-center mb-6">
+                                    <!-- Save/Remove from Favorites -->
+                                    <button
+                                        v-if="alreadyParticipating"
+                                        @click="toggleFavorite"
+                                        class="inline-flex items-center gap-2 px-5 py-2 bg-indigo-600 text-white font-semibold rounded-md shadow hover:bg-indigo-700 transition"
+                                    >
+                                        {{
+                                            props.isFavorited
+                                                ? "❌ Remove from Favorites"
+                                                : "⭐ Save to Favorites"
+                                        }}
+                                    </button>
+                                    <!-- Send to Friend -->
+                                    <button
+                                        @click="showFriendModal = true"
+                                        class="flex items-center gap-2 bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-indigo-600 transition"
+                                    >
+                                        <span>📨</span>
+                                        <span>Send to a Friend</span>
+                                    </button>
+                                </div>
                             </div>
 
                             <div v-else>
@@ -88,6 +97,12 @@
                         </div>
                     </section>
                 </div>
+                <FriendSelector
+                    v-if="showFriendModal"
+                    :friends="friends"
+                    @close="showFriendModal = false"
+                    @send="sendToFriend"
+                />
             </main>
         </Layout>
     </div>
@@ -99,11 +114,14 @@ import ShowArticle from "./ShowArticle.vue";
 import ShowTip from "./ShowTip.vue";
 import ShowDiet from "./ShowDiet.vue";
 import { router } from "@inertiajs/vue3";
+import FriendSelector from "@/Components/FriendSelector.vue";
+import { ref } from "vue";
 
 const props = defineProps({
     activity: Object,
     alreadyParticipating: Boolean,
     isFavorited: Boolean,
+    friends: Array,
 });
 
 const typeEmojis = {
@@ -111,6 +129,9 @@ const typeEmojis = {
     article: "📰",
     tip: "💡",
 };
+
+const showFriendModal = ref(false);
+const friends = props.friends;
 
 const markAsDone = () => {
     router.post(
@@ -139,5 +160,13 @@ const toggleFavorite = () => {
             },
         }
     );
+};
+
+const sendToFriend = (friendId) => {
+    const message = `📊 Check out this activity: ${window.location.href}`;
+    axios.post(`/user/user_chat/messages/${friendId}`, {
+        message: message,
+    });
+    showFriendModal.value = false;
 };
 </script>

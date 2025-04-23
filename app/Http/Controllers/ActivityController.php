@@ -36,10 +36,19 @@ class ActivityController extends Controller
             $isFavorited = $participant?->is_favorite ?? false;
         }
 
+        $user = Auth()->user();
+        $friends = $user->allFriends()->map(function ($friend) {
+            return [
+                'name' => $friend->name,
+                'id' => $friend->id,
+            ];
+        });
+
         return Inertia::render('Activities/Show', [
             'activity' => $activity,
             'alreadyParticipating' => $isParticipant,
             'isFavorited' => $isFavorited,
+            'friends' => $friends
         ]);
     }
 
