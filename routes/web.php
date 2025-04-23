@@ -56,10 +56,6 @@ Route::prefix('reviews')->group(function () {
     Route::delete('/review_media/{reviewMediaId}', [ReviewMediaController::class, 'destroy'])->name('review_media.destroy');
 });
 
-
-Route::get('/recommendations/{userId}', [RecommandationPythonController::class, 'index']);
-Route::post('/export-data', [RecommandationPythonController::class, 'exportData']);
-
 Route::prefix('comparison')->group(function () {
     Route::post('/add', [ProductComparisonController::class, 'addToComparison']);
     Route::delete('/remove/{productId}', [ProductComparisonController::class, 'removeFromComparison']);

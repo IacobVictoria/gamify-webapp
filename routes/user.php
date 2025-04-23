@@ -20,6 +20,7 @@ use App\Http\Controllers\UserOrderHistoryController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\UserQuizController;
 use App\Http\Controllers\UserQuizRemarkController;
+use App\Http\Controllers\UserRecommandationController;
 use App\Http\Controllers\UserShoppingCartController;
 use App\Http\Controllers\UserWishlistController;
 use Illuminate\Support\Facades\Route;
@@ -76,6 +77,7 @@ Route::prefix('quizzes')->group(function () {
 
 Route::post('/user_quiz/retry', [UserQuizController::class, 'retryQuiz'])->name('user_quiz.retry');
 Route::post('/user_quiz/lock', [UserQuizController::class, 'lockQuiz'])->name('user_quiz.lock');
+
 
 Route::prefix('notifications')->group(function () {
     Route::get('/', [NotificationController::class, 'getNotifications'])->name('notifications.getNotifications');
@@ -134,3 +136,5 @@ Route::post('/participants/{activityId}/toggleFavorite', [ParticipantController:
     ->name('participant.toggleFavorite');
 
 
+Route::get('/recommendations', [UserRecommandationController::class, 'index'])
+    ->name('recommendations.index');

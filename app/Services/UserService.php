@@ -40,7 +40,7 @@ class UserService implements UserServiceInterface
         }
     }
 
-    public function isVerified(?User $user, string $productId, string $reviewCreatedAt)
+    public function isVerifiedBuyer(?User $user, string $productId)
     {
         if (!$user) {
             return;
@@ -48,8 +48,7 @@ class UserService implements UserServiceInterface
 
         foreach ($user->orders as $order) {
             if (
-                $order->products->contains('id', $productId) &&
-                (!$reviewCreatedAt || $order->created_at < $reviewCreatedAt)
+                $order->products->contains('id', $productId) 
             ) {
                 return true;
             }

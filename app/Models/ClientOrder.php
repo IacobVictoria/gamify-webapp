@@ -27,7 +27,6 @@ class ClientOrder extends Model
         'placed_at',
         'expedited_at',
         'delivered_at',
-        'archived_at',
         'is_archived',
         'invoice_url',
         'promo_code',

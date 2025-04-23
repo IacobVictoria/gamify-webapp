@@ -129,7 +129,7 @@ export default {
             if (this.selectedAnswer) return;
             this.selectedAnswer = answer.id;
             clearInterval(this.interval);
-            // track the question and selected answer
+ 
             this.responses.push({
                 questionId: this.question.id,
                 answerId: answer.id,

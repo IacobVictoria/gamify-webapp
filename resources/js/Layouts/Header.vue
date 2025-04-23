@@ -66,7 +66,9 @@
                             <inertia-link :href="route('user.wishlist.index')">
                                 <WishlistLogoSVG></WishlistLogoSVG>
                             </inertia-link>
+                            <inertia-link :href="route('user.recommendations.index')">
                             <RecomandationLogoSVG></RecomandationLogoSVG>
+                            </inertia-link>
                             <NotificationComponentIcon></NotificationComponentIcon>
                         </div>
                     </div>

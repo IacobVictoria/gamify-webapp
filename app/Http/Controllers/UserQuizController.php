@@ -93,5 +93,4 @@ class UserQuizController extends Controller
     {
         $this->quizService->lockQuiz($request);
     }
-
 }
