@@ -162,6 +162,21 @@
                                             "
                                         />
                                     </button>
+                                    <button
+                                        @click="
+                                            (showFriendModal = true),
+                                                (clickedProduct = product)
+                                        "
+                                    >
+                                        <img
+                                            :src="
+                                                imagePath(
+                                                    'orders/friendSend.png'
+                                                )
+                                            "
+                                            class="w-12 h-12"
+                                        />
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -196,6 +211,12 @@
                     class="flex justify-center"
                     :links="products.links"
                 />
+                <FriendSelector
+                    v-if="showFriendModal"
+                    :friends="friends"
+                    @close="showFriendModal = false"
+                    @send="sendToFriend"
+                />
             </main>
         </Layout>
     </div>
@@ -205,6 +226,7 @@
 import AddHeartSVG from "@/Components/AddHeartSVG.vue";
 import Layout from "@/Layouts/Layout.vue";
 import WebPagination from "../../Components/WebPagination.vue";
+import FriendSelector from "@/Components/FriendSelector.vue";
 
 export default {
     name: "Products.Index",
@@ -212,17 +234,21 @@ export default {
         Layout,
         AddHeartSVG,
         WebPagination,
+        FriendSelector
     },
     props: {
         products: Object,
         searchQueryProp: String,
         categories: Array,
         searchCategory: String,
+        friends: Array,
     },
     data() {
         return {
             searchQuery: this.searchQueryProp,
             selectedCategory: this.searchCategory ? this.searchCategory : "",
+            showFriendModal: false,
+            clickedProduct: null,
         };
     },
     methods: {
@@ -260,6 +286,17 @@ export default {
                     replace: true,
                 }
             );
+        },
+
+        sendToFriend(friendId) {
+            if (!this.clickedProduct) return;
+            const link = `${window.location.origin}/products/${this.clickedProduct.slug}`;
+            const message = `📦 I found this product and thought of you: ${link}`;
+
+            axios.post(`/user/user_chat/messages/${friendId}`, {
+                message: message,
+            });
+            this.showFriendModal = false;
         },
     },
 };

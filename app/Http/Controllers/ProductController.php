@@ -64,12 +64,20 @@ class ProductController extends Controller
             ];
         });
 
+        $user = Auth()->user();
+        $friends = $user->allFriends()->map(function ($friend) {
+            return [
+                'name' => $friend->name,
+                'id' => $friend->id,
+            ];
+        });
 
         return Inertia::render('Products/Index', [
             'products' => $products,
             'searchQueryProp' => $searchQuery,
             'categories' => $categories,
             'searchCategory' => $searchDropdownCategory,
+            'friends' => $friends
         ]);
     }
 

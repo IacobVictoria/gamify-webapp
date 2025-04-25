@@ -84,7 +84,13 @@
                 Stop
             </button>
             <button @click="shareWishlist" class="p-2 rounded-full">
-                <WishlistLogoSVG />
+                <img
+                    :src="imagePath('orders/wishlist.png')"
+                    class="h-10 w-10"
+                />
+            </button>
+            <button @click="shareTopProducts">
+                <img :src="imagePath('orders/store1.png')" class="h-10 w-10" />
             </button>
         </div>
     </div>
@@ -94,7 +100,6 @@
 import MessageItem from "@/Components/MessageItem.vue";
 import MessageSeenSVG from "@/Components/MessageSeenSVG.vue";
 import MicrofoneSVG from "@/Components/MicrofoneSVG.vue";
-import WishlistLogoSVG from "@/Components/WishlistLogoSVG.vue";
 
 import axios from "axios";
 
@@ -147,7 +152,6 @@ export default {
         MessageSeenSVG,
         MessageItem,
         MicrofoneSVG,
-        WishlistLogoSVG,
     },
     methods: {
         setReplyMessage(message) {
@@ -321,10 +325,41 @@ export default {
             const messageInput = `Check out my wishlist! 🧡 ${link}`;
 
             const response = await axios.post(
+                `/user/user_chat/messages/${this.friend.id}`,
+                { message: messageInput }
+            );
+            this.messages.push(response.data);
+            this.$nextTick(() => {
+                this.scrollToLastMessage();
+            });
+        },
+        async shareTopProducts() {
+            try {
+                const response = await axios.get("/user/top_products");
+                const products = response.data;
+
+                if (products.length === 0) return;
+
+                const messageLines = products.map((product) => {
+                    const url = `${window.location.origin}/products/${product.slug}`;
+                    return `🔸 ${product.name} – ${url}`;
+                });
+
+                const finalMessage =
+                    `📊 Here are my top ordered products:\n` +
+                    messageLines.join("\n");
+
+                const responseFinal = await axios.post(
                     `/user/user_chat/messages/${this.friend.id}`,
-                   {message: messageInput}
+                    {
+                        message: finalMessage,
+                    }
                 );
-                this.messages.push(response.data);
+                this.messages.push(responseFinal.data);
+                this.scrollToLastMessage();
+            } catch (error) {
+                console.error("Failed to share top products:", error);
+            }
         },
         async loadMessages() {
             if (this.isLoading || this.noMoreItems) return;
