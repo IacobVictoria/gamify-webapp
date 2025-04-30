@@ -31,7 +31,7 @@ class UserShoppingCartController extends Controller
 
     public function addToCart(Request $request)
     {
-       
+
         $product = $request->input('product'); // Get the product details
         $quantity = $request->input('quantity'); // Get the quantity
 
@@ -86,7 +86,7 @@ class UserShoppingCartController extends Controller
         //  coșul de cumpărături din sesiune
 
         $cart = session()->get('cart', []);
-        
+
         if (isset($cart[$productId])) {
             // Îndepărtează produsul din coș
             unset($cart[$productId]);
@@ -97,6 +97,25 @@ class UserShoppingCartController extends Controller
         return redirect()->route('user.shopping-cart.index')
             ->withCookie(cookie('cart_' . auth()->id(), json_encode($cart), 60 * 24 * 30)) // Salvează coșul în cookie
             ->with('success', 'Product deleted from cart successfully.');
+    }
+
+    public function topProducts()
+    {
+        $user = Auth()->user();
+
+        $products = $user->orders()->with('products')->get()
+            ->pluck('products')
+            ->flatten();
+
+        $topProducts = $products->groupBy('id')->map(function ($group) {
+            return [
+                'slug' => $group->first()->slug,
+                'name' => $group->first()->name,
+                'total_quantity' => $group->sum(fn($product) => $product->pivot->quantity),
+            ];
+        })->take(5)->sortByDesc('total_quantity')->values();
+
+        return $topProducts;
     }
 
 }

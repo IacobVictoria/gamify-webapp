@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <div v-if="calendarEvent.status != 'CLOSED' && !calendarEvent.isGhost" class="order-actions">
+    <div v-if="calendarEvent.status != 'CLOSED' && !calendarEvent.isGhost && calendarEvent.user_id === $page.props.user.id" class="order-actions">
       <button  v-if="!parsedDetails?.fromFavorites" @click="editOrder" class="edit-btn">✏️ Edit</button>
       <button @click="deleteOrder" class="delete-btn">❌ Delete</button>
     </div>
@@ -51,7 +51,7 @@
         📄 See Invoice
       </button>
        <!-- Buton "Stop Recurrence" doar pentru ultimul eveniment recurent -->
-     <div v-if="calendarEvent?.is_last_recurring" class="recurrence-actions">
+     <div v-if="calendarEvent?.is_last_recurring && calendarEvent.user_id === $page.props.user.id" class="recurrence-actions">
       <button @click="stopRecurrence" class="stop-recurrence-btn">⏹ Stop Recurrence</button>
     </div>
     </div>
@@ -177,181 +177,174 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 .order {
-  background-color: #f4f4f9;
-  color: #333;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-family: 'Arial', sans-serif;
-  margin-bottom: 20px;
-  transition: transform 0.3s ease-in-out;
-}
-.ghost-event {
-  background-color: #dcdde1;
-  opacity: 0.8;
-  border: 1px dashed #7f8c8d;
-}
-
-.ghost-banner {
-  background-color: #f1c40f;
-  color: #fff;
-  font-weight: bold;
-  padding: 8px 12px;
-  border-radius: 5px;
-  text-align: center;
-  margin-bottom: 10px;
-}
-.from-favorites {
-  color: #333;
-  font-weight: bold;
-  padding: 8px 12px;
-  border-radius: 5px;
-  text-align: center;
-  margin-top: 10px;
-  margin-bottom: 5px;
+  background-color: #ffffff;
+  color: #2c3e50;
+  padding: 20px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.06);
+  font-family: 'Segoe UI', sans-serif;
+  margin-bottom: 24px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .order:hover {
-  transform: scale(1.02);
+  transform: scale(1.01);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+}
+
+.ghost-event {
+  background-color: #f0f0f5;
+  opacity: 0.8;
+  border: 1px dashed #a0aec0;
+}
+
+.ghost-banner {
+  background-color: #fbbf24;
+  color: #fff;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.from-favorites {
+  background-color: #e0f7fa;
+  color: #006064;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 12px;
+  text-align: center;
+  margin: 12px 0;
 }
 
 .order-header {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .order-header h3 {
-  margin-left: 10px;
-  font-size: 1.5rem;
-  color: #2c3e50;
+  font-size: 1.6rem;
+  color: #1e293b;
 }
 
 .order-description {
   font-size: 1rem;
-  color: #7f8c8d;
-  margin-bottom: 10px;
+  color: #6b7280;
+  margin-bottom: 12px;
 }
 
 .order-time {
-  font-size: 1rem;
-  color: #34495e;
-  margin-bottom: 10px;
+  font-size: 0.95rem;
+  color: #475569;
+  margin-bottom: 16px;
 }
 
 .order-details {
+  background-color: #f9fafb;
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
   margin-top: 20px;
-  background-color: #ecf0f1;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .order-details h4 {
-  font-size: 1.25rem;
-  margin-bottom: 10px;
-  color: #2c3e50;
+  font-size: 1.2rem;
+  color: #1e293b;
+  margin-bottom: 8px;
 }
 
 .order-details p {
-  font-size: 1rem;
-  color: #34495e;
-  margin: 5px 0;
+  font-size: 0.95rem;
+  color: #334155;
+  margin: 6px 0;
 }
 
 .order-actions {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .edit-btn,
-.delete-btn {
-  padding: 8px 15px;
+.delete-btn,
+.favorite-btn,
+.unfavorite-btn,
+.invoice-btn,
+.stop-recurrence-btn {
+  padding: 10px 16px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .edit-btn {
-  background-color: #3498db;
-  color: white;
-}
-
-.delete-btn {
-  background-color: #e74c3c;
+  background-color: #3b82f6;
   color: white;
 }
 
 .edit-btn:hover {
-  background-color: #2980b9;
+  background-color: #2563eb;
+  transform: scale(1.02);
+}
+
+.delete-btn {
+  background-color: #ef4444;
+  color: white;
 }
 
 .delete-btn:hover {
-  background-color: #c0392b;
-}
-
-.order-header-buttons {
-  margin-top: 1em;
-  display: flex;
-  gap: 10px;
-  margin-left: auto;
+  background-color: #dc2626;
+  transform: scale(1.02);
 }
 
 .favorite-btn {
-  background-color: #f1c40f;
-  color: white;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  background-color: #facc15;
+  color: #1f2937;
 }
 
 .favorite-btn:hover {
-  background-color: #f39c12;
+  background-color: #eab308;
 }
 
 .unfavorite-btn {
-  background-color: #2ecc71;
+  background-color: #10b981;
   color: white;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
 }
 
 .unfavorite-btn:hover {
-  background-color: #27ae60;
+  background-color: #059669;
 }
 
 .invoice-btn {
-  background-color: #3498db;
+  background-color: #3b82f6;
   color: white;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
 }
 
 .invoice-btn:hover {
-  background-color: #2980b9;
+  background-color: #2563eb;
 }
+
 .stop-recurrence-btn {
-  background-color: #e74c3c;
+  background-color: #e11d48;
   color: white;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-  margin-top: 1em;
+  margin-top: 12px;
 }
 
 .stop-recurrence-btn:hover {
-  background-color: #c0392b;
+  background-color: #be123c;
+}
+
+.order-header-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
 }
 </style>

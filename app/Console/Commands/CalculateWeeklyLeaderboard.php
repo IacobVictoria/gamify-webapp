@@ -2,16 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Events\UserMadeLeaderboardQuizEvent;
 use App\Jobs\CalculateWeeklyLeaderboardJob;
-use App\Models\QuizLeaderboardHistory;
-use App\Models\User;
 use App\Services\Badges\QuizLeaderboardBadgeService;
 use App\Services\NotificationService;
 use App\Services\UserScoreService;
-use Faker\Provider\Uuid;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Cache;
 
 class CalculateWeeklyLeaderboard extends Command
 {

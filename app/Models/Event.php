@@ -32,7 +32,13 @@ class Event extends Model
         'recurring_interval',
         'next_occurrence',
         'parent_event_id',
-        'last_recurring_event_id'
+        'last_recurring_event_id',
+        'user_id'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
 }

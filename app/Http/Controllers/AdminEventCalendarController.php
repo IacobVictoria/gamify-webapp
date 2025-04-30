@@ -116,6 +116,7 @@ class AdminEventCalendarController extends Controller
             'is_recurring' => $validated['is_recurring'] ?? false,
             'recurring_interval' => $validated['is_recurring'] ? $validated['recurring_interval'] : null,
             'next_occurrence' => $nextOccurrence,
+            'user_id' => Auth()->user()->id,
         ]);
         $event->last_recurring_event_id = $validated['is_recurring'] ? $event->id : null;
 

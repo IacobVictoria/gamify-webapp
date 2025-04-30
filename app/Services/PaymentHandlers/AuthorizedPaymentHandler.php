@@ -15,7 +15,6 @@ class AuthorizedPaymentHandler extends AbstractPaymentHandler
     {
         try {
             DB::beginTransaction();
-            $order->update(['status' => OrderStatus::Authorized]);
             SendWhatsappMessageJob::dispatch('order_confirmed', ['name' => $order->user->name, 'order_id' => $order->id]);
 
             parent::handle($order, $paymentData);
@@ -23,7 +22,7 @@ class AuthorizedPaymentHandler extends AbstractPaymentHandler
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            event(new OrderFailedEvent($order->user, $order, app(NotificationService::class), 'Plata nu a fost autorizată.'));
+            event(new OrderFailedEvent($order->user, $order, app(NotificationService::class), 'Procesul comenzii nu a decurs bine.'));
             // Refacem stocul doar dacă a fost deja modificat (după autorizare)
             if ($order->status === OrderStatus::Authorized) {
                 $this->restoreStock($order);

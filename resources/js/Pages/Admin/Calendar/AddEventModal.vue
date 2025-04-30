@@ -20,10 +20,6 @@
                             <div v-if="isPastDate" class="bg-red-100 text-red-700 p-3 rounded-md text-center mt-2">
                                 ❌ You have selected a past date. You cannot add events to past dates!
                             </div>
-
-                            <div v-if="selectedType === 'event'">
-                                <EventForm :selectedDate="selectedDate" @closeForm="closeForm" />
-                            </div>
                             <div v-if="selectedType === 'order' ">
                                 <SupplierOrderForm :selectedDate="selectedDate" @closeForm="closeForm"
                                     :suppliers="props.suppliers" :products="props.products"
@@ -53,7 +49,6 @@
 <script setup>
 import { computed, ref } from 'vue'
 import StartPage from './StartPage.vue'
-import EventForm from './EventForm.vue';
 import DiscountForm from './DiscountForm.vue';
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue';
 import SupplierOrderForm from './SupplierOrderForm.vue';

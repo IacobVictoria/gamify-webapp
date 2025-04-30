@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderStatus;
 use App\Models\ClientOrder;
 use App\Services\NotificationService;
 use App\Services\PaymentHandlers\PaymentHandlerInterface;
@@ -48,7 +49,7 @@ class StripeController extends Controller
         $order = ClientOrder::findOrFail($request->order_id);
 
         if ($order) {
-
+            $order->update(['status' => OrderStatus::Authorized]);
             // Rulează Chain of Responsibility pentru confirmarea plății
             $this->paymentHandler->handle($order, []);
 

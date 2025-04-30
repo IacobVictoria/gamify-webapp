@@ -160,7 +160,7 @@ class UserChatController extends Controller
 
         broadcast(new ChatMessageSent($message));
         $this->notificationService->updateNotificationChat($currentUser, $friendId);
-        // broadcast(new MessageUnreadUpdatedEvent($unreadMessages, $friendId,$currentUser));
+
         return response()->json($message, 200);
     }
     public function checkUserStatus($userId)
