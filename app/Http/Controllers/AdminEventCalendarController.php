@@ -19,7 +19,6 @@ use Inertia\Inertia;
 
 class AdminEventCalendarController extends Controller
 {
-
     protected $eventService;
 
     public function __construct(EventService $eventService)

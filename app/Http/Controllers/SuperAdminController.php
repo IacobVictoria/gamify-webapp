@@ -19,5 +19,4 @@ class SuperAdminController extends BaseRoleController
     {
         return $this->dashboardService->getSuperAdminDashboardData();
     }
-    //
 }

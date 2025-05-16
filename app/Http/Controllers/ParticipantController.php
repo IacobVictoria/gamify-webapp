@@ -21,7 +21,7 @@ class ParticipantController extends Controller
     {
         $activity = Activity::findOrFail($activityId);
 
-        // Verifică dacă user-ul a participat deja
+        // verificare dacă user-ul a participat deja
         $existing = Participant::where('user_id', Auth::id())
             ->where('activity_id', $activity->id)
             ->first();
@@ -30,14 +30,13 @@ class ParticipantController extends Controller
             return redirect()->back()->with('message', 'You already completed this activity!');
         }
 
-        // Creează participantul
+        // creez participant
         $participant = new Participant();
         $participant->id = Uuid::uuid();
         $participant->activity_id = $activity->id;
         $participant->user_id = Auth::id();
         $participant->save();
 
-        // Acordă scor
         $this->userScoreService->addScore($participant->user, $activity->score ?? 10);
 
         return redirect()->back()->with('message', 'Activity completed!');

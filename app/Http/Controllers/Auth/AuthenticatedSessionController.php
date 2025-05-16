@@ -84,7 +84,7 @@ class AuthenticatedSessionController extends Controller
         $cart = session()->get('cart', []);
 
         return redirect('/')
-            ->withCookie(cookie('cart_' . auth()->id(), json_encode($cart), 60 * 24 * 30)) // 30 zile
+            ->withCookie(cookie('cart_' . auth()->id(), json_encode($cart), 60 * 24 * 30))
             ->with('success', 'Logged out successfully and cart saved.');
     }
 }

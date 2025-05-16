@@ -87,5 +87,4 @@ class AdminGamificationMedalController extends Controller
         return redirect()->route('admin-gamification.medals.index')
             ->with('message', 'Medal deleted successfully.');
     }
-
 }

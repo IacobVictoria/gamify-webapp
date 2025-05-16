@@ -37,13 +37,17 @@ class ActivityController extends Controller
         }
 
         $user = Auth()->user();
-        $friends = $user->allFriends()->map(function ($friend) {
-            return [
-                'name' => $friend->name,
-                'id' => $friend->id,
-            ];
-        });
+        if ($user != null) {
+            $friends = $user->allFriends()->map(function ($friend) {
+                return [
+                    'name' => $friend->name,
+                    'id' => $friend->id,
+                ];
+            });
 
+        } else {
+            $friends = null;
+        }
         return Inertia::render('Activities/Show', [
             'activity' => $activity,
             'alreadyParticipating' => $isParticipant,

@@ -30,17 +30,16 @@ class AdminInventoryTransactionController extends Controller
 
         $products = Product::select('id', 'name')->get();
 
-        // ✅ Dacă avem un produs selectat, calculăm statisticile pentru el
+        // produs selectat, calculez statisticile pentru el
         $selectedProductStats = null;
         if ($request->filled('product_id')) {
             $selectedProductStats = $this->getProductStatistics($request->product_id);
         }
 
-        // ✅ Calculăm totalurile pentru cardurile de stock IN/OUT
+        // calculez totalurile statisticile mari stock IN/OUT
         $totalInStock = InventoryTransaction::where('transaction_type', 'in')->sum('quantity');
         $totalOutStock = InventoryTransaction::where('transaction_type', 'out')->sum('quantity');
 
-        // ✅ Paginăm datele pentru performanță
         $transactions = $query->orderBy('transaction_date', 'desc')->paginate(10);
 
         return Inertia::render('Admin/InventoryTransaction/Index', [
@@ -48,7 +47,7 @@ class AdminInventoryTransactionController extends Controller
             'total_in' => $totalInStock,
             'total_out' => $totalOutStock,
             'products' => $products,
-            'selectedProductStats' => $selectedProductStats, // 🆕 Trimitem doar statisticile produsului selectat
+            'selectedProductStats' => $selectedProductStats,
             'filters' => [
                 'transaction_type' => $request->transaction_type ?? '',
                 'product_id' => $request->product_id ?? '',

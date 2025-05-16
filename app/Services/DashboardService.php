@@ -37,7 +37,6 @@ class DashboardService
     public function getAdminGamificationDashboardData()
     {
         return $this->adminGamificationDashboardService->getDashboardData();
-
     }
 
 }
