@@ -12,7 +12,7 @@ class FetchMeetingsHandler extends AbstractMeetingReportHandler
 
         $tenMinutesLater = $now->copy()->addMinutes(10);
 
-        // Găsim meeting-urile care încep în ≤ 10 minute
+        // meeting-urile care încep în ≤ 10 minute
         $meetings = Meeting::where('status', 'OPEN')
             ->where('start', '<=', $tenMinutesLater) 
             ->where('start', '>=', $now) 

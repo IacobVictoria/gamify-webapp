@@ -17,7 +17,6 @@ class NpsService
 
     public function __construct()
     {
-        // Inițializăm toate strategiile disponibile
         $this->strategies = [
             'monthly' => NpsStrategyFactory::create('monthly'),
             'general' => NpsStrategyFactory::create('general'),

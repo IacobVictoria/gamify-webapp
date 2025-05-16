@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Enums\CityRomania;
 use App\Enums\Gender;
 use Faker\Provider\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -55,7 +53,6 @@ class User extends Authenticatable
             'password' => 'hashed',
             'birthdate' => 'date',
             'gender' => Gender::class,
-            'location' => CityRomania::class
         ];
     }
 

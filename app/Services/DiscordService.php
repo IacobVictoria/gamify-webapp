@@ -10,7 +10,6 @@ class DiscordService
 
     public function __construct()
     {
-        // Adaugă URL-ul webhook-ului Discord
         $this->webhookUrl = config('services.discord.webhook_url');
     }
 
@@ -21,7 +20,7 @@ class DiscordService
         try {
             $client->post($this->webhookUrl, [
                 'json' => [
-                    'content' => $message, // Mesajul pe care îl trimiți
+                    'content' => $message, 
                 ],
             ]);
         } catch (\Exception $e) {

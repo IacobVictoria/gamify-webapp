@@ -11,7 +11,6 @@ use App\Console\Commands\RunRecommenderPipeline;
 
 Schedule::command(CalculateWeeklyLeaderboard::class)->weeklyOn(1, "00:00");
 Schedule::command(ProcessSupplierOrders::class)->everyMinute();
-Schedule::command(CheckInactiveUsers::class)->everyThirtyMinutes();
 Schedule::command(ManageDiscountsCommand::class)->everyMinute();
 Schedule::command(ProcessLowStockOrders::class)->everyMinute();
 Schedule::command(GenerateMeetingReportsCommand::class)->everyMinute();

@@ -54,7 +54,7 @@ class UserChatController extends Controller
                         'name' => $friend->name,
                     ],
                     'unreadCount' => $unreadCount,
-                    'status' => ''
+                    'status' => Cache::get('user_activity_' . $friend->id, 'Offline')
                 ];
             })->values()
             ->toArray();
@@ -162,16 +162,6 @@ class UserChatController extends Controller
         $this->notificationService->updateNotificationChat($currentUser, $friendId);
 
         return response()->json($message, 200);
-    }
-    public function checkUserStatus($userId)
-    {
-        $cacheKey = 'user_activity_' . $userId;
-
-        $status = Cache::get($cacheKey, 'Offline');
-
-        return response()->json([
-            'status' => $status
-        ]);
     }
 
     public function searchFriendConversation(Request $request)

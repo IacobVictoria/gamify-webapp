@@ -62,11 +62,10 @@ class CreateOrderHandler extends AbstractOrderHandler
         $total += 5; //taxes
         $total += 10; //shipping fee
 
-        // Aplicăm reducerea dacă există
         if ($discountAmount > 0) {
             $total -= ($total * $discountAmount) / 100;
         }
 
-        return max(0, $total); // Ne asigurăm că totalul nu devine negativ
+        return max(0, $total); 
     }
 }

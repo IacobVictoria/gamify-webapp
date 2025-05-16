@@ -8,6 +8,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -21,7 +22,6 @@ class AuthenticatedSessionController extends Controller
     {
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
-            'status' => session('status'),
         ]);
     }
 
@@ -71,6 +71,7 @@ class AuthenticatedSessionController extends Controller
     public function destroy(Request $request): RedirectResponse
     {
         $user = Auth::user();
+        Cache::forget('user_activity_' . $user->id);
         broadcast(new UserStatusChangedEvent($user, 'Offline'))->toOthers();
         
         Auth::guard('web')->logout();
@@ -79,9 +80,9 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        // keep the cart available after log out
+        //cosul din sesiune salveaza l in cookie
         $cart = session()->get('cart', []);
-        // Salvează coșul în cookie asociat cu utilizatorul curent
+
         return redirect('/')
             ->withCookie(cookie('cart_' . auth()->id(), json_encode($cart), 60 * 24 * 30)) // 30 zile
             ->with('success', 'Logged out successfully and cart saved.');

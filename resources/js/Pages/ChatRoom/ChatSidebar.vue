@@ -1,6 +1,5 @@
 <template>
     <div class="w-full md:w-1/3 bg-white shadow-md rounded-lg p-5 h-full z-50 overflow-y-auto">
-      <!-- Căutare -->
       <input
         type="text"
         v-model="searchQuery"
@@ -18,7 +17,7 @@
           @click="selectConversation(conversation.friend)"
           class="flex items-center justify-between p-3 rounded-lg cursor-pointer bg-gray-100 hover:bg-blue-100 transition"
         >
-          <!-- Stânga: avatar + nume -->
+          <!-- avatar + nume -->
           <div class="flex items-center gap-3">
             <img  class="w-8 h-8 rounded-full"
             :src="conversation.friend.gender === 'Male' ? '/images/male.png' : '/images/female.png'" alt="User Avatar" />
@@ -33,7 +32,7 @@
             </div>
           </div>
   
-          <!-- Dreapta: badge pentru mesaje necitite -->
+          <!--badge pentru mesaje necitite -->
           <div v-if="conversation.unreadCount > 0"
             class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
             {{ conversation.unreadCount }}
@@ -94,23 +93,10 @@ export default {
 
             this.$emit('selectConversation', friend);
         },
-
-        checkUserStatus(userId) {
-            axios.get(`/user/user_chat/check-status/${userId}`).then(response => {
-                const status = response.data.status;
-                const conversation = this.conversations.find(convo => convo.friend.id === userId);
-                if (conversation) {
-                    conversation.status = status;
-                }
-            });
-        }
     },
     mounted() {
         this.searchResults = this.conversations;
-        
-        this.conversations.forEach(conversation => {
-            this.checkUserStatus(conversation.friend.id);
-        });
+
         window.Echo.private(`user_message.${this.currentUser.id}`)
             .listen('.MessageUnreadUpdated', (event) => {
                 const conversation = this.conversations.find(convo => convo.friend.id === event.friendId);
@@ -132,14 +118,6 @@ export default {
             });
 
     },
-    watch: {
-        selectedConversation(newVal) {
-            console.log('Selected conversation changed to:', newVal);
-        },
-
-
-    },
-
 };
 </script>
 

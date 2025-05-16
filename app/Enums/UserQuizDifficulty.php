@@ -22,9 +22,6 @@ enum UserQuizDifficulty: string
         return array_column(self::cases(), 'value');
     }
 
-    /**
-     *  a color associated with each difficulty level.
-     */
     public function color(): string
     {
         return match ($this) {

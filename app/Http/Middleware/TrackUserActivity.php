@@ -11,20 +11,18 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TrackUserActivity
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
             $user = Auth::user();
             $cacheKey = 'user_activity_' . $user->id;
 
-            Cache::put($cacheKey, 'Online', now()->addMinutes(30)); 
-
-            broadcast(new UserStatusChangedEvent($user, 'Online'))->toOthers();
+            if (!Cache::has($cacheKey)) {
+                Cache::put($cacheKey, 'Online', now()->addMinutes(30));
+                broadcast(new UserStatusChangedEvent($user, 'Online'))->toOthers();
+            } else {
+                Cache::put($cacheKey, 'Online', now()->addMinutes(30));
+            }
         }
         return $next($request);
     }

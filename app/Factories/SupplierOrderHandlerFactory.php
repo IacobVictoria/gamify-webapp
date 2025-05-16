@@ -30,8 +30,8 @@ class SupplierOrderHandlerFactory
 
         $fetchOrders->setNext($validateEvent)
             ->setNext($finalizeEvent)
-            ->setNext($createOrder)
             ->setNext($validateStockSupplier)
+            ->setNext($createOrder)
             ->setNext($createProductsSupplierOrder)
             ->setNext($updateStock)
             ->setNext($registerInvetory)

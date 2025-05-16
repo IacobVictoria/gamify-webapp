@@ -2,16 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Enums\CityRomania;
 use App\Enums\Gender;
-use App\Events\UserRegistration;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendWhatsappMessageJob;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserRole;
-use App\Services\WhatsappService;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
