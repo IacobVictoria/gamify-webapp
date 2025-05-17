@@ -22,7 +22,7 @@
                             <div
                                 class="absolute top-4 left-4 bg-yellow-400 text-yellow-900 px-4 py-2 rounded-full shadow-md text-sm font-semibold"
                             >
-                                🍪 Yummy Pick!
+                                🍪 Gustarea preferată!
                             </div>
                         </div>
 
@@ -39,9 +39,10 @@
                                 <h2
                                     class="text-xl font-semibold text-gray-700 sm:text-2xl mt-2"
                                 >
-                                    📌 Category: {{ product.category }}
+                                    📌 Categorie: {{ product.category }}
                                 </h2>
-                                <button v-if="isLoggedIn()"
+                                <button
+                                    v-if="isLoggedIn()"
                                     @click="
                                         isFavorite
                                             ? dislikeProduct(product)
@@ -86,14 +87,16 @@
                                 <label
                                     for="quantity"
                                     class="block text-lg font-medium text-gray-800"
-                                    >🔢 Choose Quantity</label
+                                    >🔢 Alege cantitatea</label
                                 >
                                 <select
                                     id="quantity"
                                     v-model="quantity"
                                     class="mt-2 block w-24 text-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                 >
-                                    <option value="" disabled>Select</option>
+                                    <option value="" disabled>
+                                        Selectează
+                                    </option>
                                     <option
                                         v-for="num in 10"
                                         :key="num"
@@ -111,7 +114,8 @@
                                     v-if="authUserHasRole('User')"
                                     class="mt-6 flex w-86 items-center justify-center rounded-md border border-transparent bg-green-500 px-8 py-3 text-lg font-medium text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                                 >
-                                    🛒 Add to cart for {{ product.price }} RON
+                                    🛒 Adaugă în coș pentru
+                                    {{ product.price }} RON
                                 </button>
                             </template>
                         </div>
@@ -123,7 +127,7 @@
                             <h2
                                 class="text-2xl font-bold text-center text-gray-900 mb-4"
                             >
-                                🍽️ Crunchy Nutritional Breakdown
+                                🍽️ Valori nutriționale
                             </h2>
                             <div class="overflow-hidden rounded-lg">
                                 <table
@@ -134,7 +138,7 @@
                                             class="border-b px-6 py-4 flex justify-between"
                                         >
                                             <td class="flex items-center">
-                                                🚀 Super Energy (Calories)
+                                                🚀 Energie superioară (Calorii)
                                             </td>
                                             <td class="font-semibold">
                                                 {{ product.calories }} kcal
@@ -144,7 +148,7 @@
                                             class="border-b px-6 py-4 bg-gray-100 flex justify-between"
                                         >
                                             <td class="flex items-center">
-                                                💪 Muscle Booster (Protein)
+                                                💪 Creștere musculară (Proteine)
                                             </td>
                                             <td class="font-semibold">
                                                 {{ product.protein }} g
@@ -154,7 +158,8 @@
                                             class="border-b px-6 py-4 flex justify-between"
                                         >
                                             <td class="flex items-center">
-                                                🍞 Energy Fuel (Carbs)
+                                                🍞 Combustibil energetic
+                                                (Carbohidrați)
                                             </td>
                                             <td class="font-semibold">
                                                 {{ product.carbs }} g
@@ -164,7 +169,7 @@
                                             class="border-b px-6 py-4 bg-gray-100 flex justify-between"
                                         >
                                             <td class="flex items-center">
-                                                🥑 Healthy Fats
+                                                🥑 Grăsimi sănătoase
                                             </td>
                                             <td class="font-semibold">
                                                 {{ product.fats }} g
@@ -174,7 +179,7 @@
                                             class="border-b px-6 py-4 flex justify-between"
                                         >
                                             <td class="flex items-center">
-                                                🌿 Digestion Hero (Fiber)
+                                                🌿 Eroul digestiei (Fibre)
                                             </td>
                                             <td class="font-semibold">
                                                 {{ product.fiber }} g
@@ -184,7 +189,7 @@
                                             class="border-b px-6 py-4 bg-gray-100 flex justify-between"
                                         >
                                             <td class="flex items-center">
-                                                🍭 Sweetness Level (Sugar)
+                                                🍭 Nivel de dulceață (Zahăr)
                                             </td>
                                             <td class="font-semibold">
                                                 {{ product.sugar }} g
@@ -194,7 +199,7 @@
                                             class="border-b px-6 py-4 flex justify-between"
                                         >
                                             <td class="flex items-center">
-                                                🧑‍🍳 Ingredients
+                                                🧑‍🍳 Ingrediente
                                             </td>
                                             <td class="font-semibold">
                                                 {{
@@ -208,7 +213,7 @@
                                             class="px-6 py-4 bg-gray-100 flex justify-between"
                                         >
                                             <td class="flex items-center">
-                                                ⚠️ Allergens
+                                                ⚠️ Alergeni
                                             </td>
                                             <td class="font-semibold">
                                                 {{

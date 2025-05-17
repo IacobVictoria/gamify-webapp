@@ -9,8 +9,6 @@
                         <div class="flex ml-14 mr-14">
                             <!-- Search Bar -->
                             <div class="relative mb-8 flex flex-1">
-                                <label for="search" class="sr-only"
-                                    >Search</label
                                 >
                                 <div class="relative w-full max-w-lg mx-auto">
                                     <input
@@ -18,7 +16,7 @@
                                         id="search"
                                         name="search"
                                         class="block w-full rounded-md border border-gray-300 pl-10 pr-4 py-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                        placeholder="Search for products..."
+                                        placeholder="Caută produse..."
                                         type="search"
                                         @input="fetchProducts()"
                                     />

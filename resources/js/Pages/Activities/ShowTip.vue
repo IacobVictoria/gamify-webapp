@@ -3,7 +3,6 @@
         <h1 class="text-3xl font-bold text-yellow-800 mb-2">
            {{ activity.title }}
         </h1>
-        <p class="text-gray-700 italic mb-4">{{ activity.description }}</p>
         <div
             class="text-yellow-900 bg-yellow-100 border-l-4 border-yellow-400 p-4 rounded"
         >

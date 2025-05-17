@@ -1,29 +1,50 @@
 <template>
-    <div v-if="activeDiscounts"
-        class="bg-gradient-to-r from-yellow-400 to-orange-500 py-10 px-6 rounded-lg shadow-lg mb-8">
+    <div
+        v-if="activeDiscounts"
+        class="bg-gradient-to-r from-yellow-400 to-orange-500 py-10 px-6 rounded-lg shadow-lg mb-8"
+    >
         <div class="flex items-center gap-6">
             <img src="/images/gift.png" alt="Gift Icon" class="h-16 w-16" />
 
             <div class="text-white">
-                <h2 class="text-2xl font-bold">Active Discounts</h2>
+                <h2 class="text-2xl font-bold">Reduceri active</h2>
                 <ul class="mt-4 space-y-2">
-                    <li v-for="discount in activeDiscounts" :key="discount.id" class="text-lg">
-                        <span class="font-semibold">{{ discount.title }}</span>:
-                        Save {{ discount.details.discount }}% la
-                        {{ discount.details.category === null ? discount.applyTo : discount.details.category }}!
-                        <div> Valid until <span class="font-semibold">{{ formatDate(discount.end) }}</span>.
+                    <li
+                        v-for="discount in activeDiscounts"
+                        :key="discount.id"
+                        class="text-lg"
+                    >
+                        <div class="font-semibold">{{ discount.title }}</div>
+                        <div>
+                            Salvează {{ discount.details.discount }}% la
+                            {{
+                                discount.details.category === null
+                                    ? discount.applyTo
+                                    : discount.details.category
+                            }}!
+                        </div>
+                        <div>
+                            Valabil până la
+                            <span class="font-semibold">{{
+                                formatDate(discount.end)
+                            }}</span
+                            >.
                         </div>
                     </li>
                 </ul>
             </div>
-            <img src="/images/percentage.png" alt="Percentage Icon" class="h-16 w-16 ml-auto hidden sm:block" />
+            <img
+                src="/images/percentage.png"
+                alt="Percentage Icon"
+                class="h-16 w-16 ml-auto hidden sm:block"
+            />
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    name: 'EventDiscountBanner',
+    name: "EventDiscountBanner",
 
     props: {
         activeDiscounts: {
@@ -31,15 +52,12 @@ export default {
             required: true,
         },
     },
-    mounted() {
-        console.log(this.activeDiscounts);
-    },
     methods: {
         formatDate(date) {
-            return new Date(date).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
+            return new Date(date).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
             });
         },
     },

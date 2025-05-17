@@ -2,16 +2,16 @@
     <AuthenticatedLayout>
         <div class="bg-gray-50">
             <div
-                class="mx-auto max-w-2xl px-4 pb-32 pt-16 sm:px-6 lg:max-w-7xl lg:px-8 "
+                class="mx-auto max-w-2xl px-4 pb-32 pt-16 sm:px-6 lg:max-w-7xl lg:px-8"
             >
                 <div class="mx-auto max-w-4xl">
                     <h1 class="text-3xl font-bold tracking-tight text-gray-900">
-                        Shopping Cart
+                        Coș de cumpărături
                     </h1>
 
                     <form class="mt-12">
                         <div>
-                            <h2 class="sr-only">Items in your shopping cart</h2>
+                            <h2 class="sr-only">Produsele din coșul tău</h2>
 
                             <ul
                                 role="list"
@@ -125,7 +125,7 @@
                                                         )
                                                     "
                                                 >
-                                                    Remove
+                                                    Șterge
                                                 </button>
                                             </div>
                                         </div>
@@ -149,8 +149,8 @@
                                             />
                                             <span>{{
                                                 inStock[item.product.id]
-                                                    ? "In stock"
-                                                    : "Out of stock"
+                                                    ? "În stoc"
+                                                    : "Nu mai e în stock"
                                             }}</span>
                                         </p>
                                     </div>
@@ -163,8 +163,6 @@
                             <div
                                 class="rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:p-8"
                             >
-                                <h2 class="sr-only">Order summary</h2>
-
                                 <div class="flow-root">
                                     <dl
                                         class="-my-4 divide-y divide-gray-200 text-sm"
@@ -185,7 +183,7 @@
                                             class="flex items-center justify-between py-4"
                                         >
                                             <dt class="text-gray-600">
-                                                Shipping
+                                                Taxa livrare
                                             </dt>
                                             <dd
                                                 class="font-medium text-gray-900"
@@ -196,7 +194,7 @@
                                         <div
                                             class="flex items-center justify-between py-4"
                                         >
-                                            <dt class="text-gray-600">Tax</dt>
+                                            <dt class="text-gray-600">Taxă</dt>
                                             <dd
                                                 class="font-medium text-gray-900"
                                             >
@@ -209,7 +207,7 @@
                                             <dt
                                                 class="base font-medium text-gray-900"
                                             >
-                                                Order total
+                                                Total
                                             </dt>
                                             <dd
                                                 class="text-base font-medium text-gray-900"
@@ -227,7 +225,7 @@
                                     @click.prevent="handleCheckout"
                                     class="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                                 >
-                                    Checkout
+                                    Finalizează comanda
                                 </button>
                             </div>
 
@@ -238,7 +236,7 @@
                                         :href="route('products.index')"
                                         class="font-medium text-indigo-600 hover:text-indigo-500"
                                     >
-                                        Continue Shopping
+                                        Continuă cumpărăturile
                                         <span aria-hidden="true"> &rarr;</span>
                                     </a>
                                 </p>

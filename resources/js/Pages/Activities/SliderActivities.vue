@@ -5,7 +5,6 @@
         role="article"
         aria-label="Activities Slider"
     >
-        <!-- Static Image Section -->
         <div
             class="flex flex-col self-center pt-2.5 max-w-full text-center w-[284px] md:w-[400px] relative"
         >
@@ -19,7 +18,7 @@
                     <span
                         class="text-[#F45D3A] text-[27px] font-bold font-cocon leading-[34.16px] mt-6 md:ml-16"
                     >
-                        Activities</span
+                        Activități</span
                     >
                 </div>
             </div>
@@ -31,11 +30,10 @@
                 :key="currentSlide"
                 class="relative flex flex-col mt-5 lg:w-[492px] h-[560px] bg-[#b3e9f0] rounded-3xl md:shadow-lg px-8 py-10 md:p-[44px] mx-10 md:mx-0 overflow-hidden"
             >
-                <!-- Event Content -->
+                <!-- Content -->
                 <div
                     class="flex flex-col w-full h-full text-center md:text-left"
                 >
-                    <!-- Titlu + Emoji -->
                     <span
                         class="mt-3.5 text-3xl md:text-4xl font-bold drop-shadow-md flex items-center justify-center md:justify-start gap-2"
                     >
@@ -43,25 +41,22 @@
                         {{ activities[currentSlide].title }}
                     </span>
 
-                    <!-- Descriere -->
                     <span
                         class="text-lg md:text-[20px] leading-8 italic text-gray-800 mt-3"
                     >
                         {{ activities[currentSlide].description }}
                     </span>
 
-                    <!-- Tipul -->
                     <span
                         class="text-md md:text-lg text-gray-600 mt-2 font-semibold flex items-center justify-center md:justify-start"
                     >
                         📁 {{ activities[currentSlide].type }}
                     </span>
 
-                    <!-- Score -->
                     <span
                         class="text-md md:text-lg text-gray-600 mt-1 font-semibold flex items-center justify-center md:justify-start"
                     >
-                        ⭐ Score: {{ activities[currentSlide].score }}
+                        ⭐ Scor: {{ activities[currentSlide].score }}
                     </span>
                 </div>
                 <div class="flex justify-center gap-4">
@@ -77,7 +72,7 @@
                         <span
                             class="mt-4 mb-4 inline-block px-5 py-2 text-white bg-[#FA902F] rounded-lg shadow-lg cursor-pointer transition duration-300 hover:scale-105 hover:bg-[#FF5F6D]"
                         >
-                            More >>
+                            Mai mult >>
                         </span>
                     </inertia-link>
                     <!-- FIXED Navigation -->
@@ -159,17 +154,15 @@ const typeEmojis = {
     tip: "💡",
 };
 
-// Current slide index
+
 const currentSlide = ref(0);
 
-// Move to the previous slide (with wrap)
 function prevSlide() {
     currentSlide.value =
         (currentSlide.value - 1 + props.activities.length) %
         props.activities.length;
 }
 
-// Move to the next slide (with wrap)
 function nextSlide() {
     currentSlide.value = (currentSlide.value + 1) % props.activities.length;
 }

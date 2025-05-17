@@ -1,52 +1,78 @@
 <template>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 393 80" style="fill: var(--Fresh-Mint, #fff2e5)">
-        <path d="M393 80V53C347.667 55.6667 241.8 57.2 181 42C105 23 50 0 0 0V80H393Z" fill="#fff2e5" />
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 393 80"
+        style="fill: var(--Fresh-Mint, #fff2e5)"
+    >
+        <path
+            d="M393 80V53C347.667 55.6667 241.8 57.2 181 42C105 23 50 0 0 0V80H393Z"
+            fill="#fff2e5"
+        />
     </svg>
     <section class="bg-[#fff2e5] py-12 text-gray-900 -mt-12">
-        <div class="max-w-7xl mx-auto px-6 lg:flex lg:items-center lg:gap-12">
-
-            <!-- Coloană 1: Scan to Discover -->
+        <div class="max-w-7xl mx-auto px-6 lg:flex lg:items-start lg:gap-12">
+            <!-- Coloana 1: Scan to Discover -->
             <div class="flex flex-col items-center">
-                <img class="w-72 h-72 object-cover" :src="imagePath('/landing/qr_code1.png')" alt="Scan to Discover" />
+                <img
+                    class="w-72 h-72 object-cover"
+                    :src="imagePath('/landing/qr_code1.png')"
+                    alt="Scan to Discover"
+                />
 
                 <h2 class="text-2xl font-extrabold text-[#F45D3A] mt-6">
-                    🔍 Scan to Discover!
+                    🔍 Scanează și descoperă!
                 </h2>
                 <p class="mt-3 text-lg text-gray-700 text-center px-6">
-                    Scan this QR code to explore **nutritional values, reviews**, and **seasonal discounts** for your
-                    favorite snacks!
+                    Scanează acest cod QR pentru a explora valorile
+                    nutriționale, recenziile și reducerile de sezon pentru
+                    gustările tale preferate!
                 </p>
 
-                <button @click="startQrScanner"
-                    class="mt-4 px-6 py-3 text-lg font-semibold bg-[#F45D3A] hover:bg-[#e35c2b] text-white rounded-lg shadow-md transition-all duration-300">
-                    View Product 📦
+                <button
+                    @click="startQrScanner"
+                    class="mt-4 px-6 py-3 text-lg font-semibold bg-[#F45D3A] hover:bg-[#e35c2b] text-white rounded-lg shadow-md transition-all duration-300"
+                >
+                    Scanează produs 📦
                 </button>
-                <div v-if="scanning" id="qr-reader" class="mt-6 w-full max-w-md mx-auto"></div>
+                <div
+                    v-if="scanning"
+                    id="qr-reader"
+                    class="mt-6 w-full max-w-md mx-auto"
+                ></div>
             </div>
 
-            <!-- Coloană 2: Scan to Win -->
+            <!-- Coloana 2: Scan to Win -->
             <div class="flex flex-col items-center">
-                <img class="w-72 h-72 object-cover" :src="imagePath('/landing/points1.png')" alt="Scan to Win" />
+                <img
+                    class="w-72 h-72 object-cover"
+                    :src="imagePath('/landing/points1.png')"
+                    alt="Scan to Win"
+                />
                 <h2 class="text-2xl font-extrabold text-[#6ACAB1] mt-6">
-                    🎁 Scan to Win!
+                    🎁 Scanează și câștigă!
                 </h2>
-                <p class="mt-3 text-lg text-gray-700 text-center px-6">
-                    Create an account and scan QR codes to **earn points, unlock badges**, and **climb the
-                    leaderboard!**
+                <p class="mt-3 text-lg text-gray-700 text-center px-6 mb-12">
+                    Creează-ți un cont și scanează coduri QR pentru a câștiga
+                    puncte, a debloca insigne și a urca în clasament!
                 </p>
+
                 <div>
-                    <inertia-link v-if="isLoggedIn() && authUserHasRole('User')" :href="route('user.dashboard')"
-                        class="mt-4 px-6 py-3 no-underline text-lg font-semibold bg-[#6ACAB1] hover:bg-[#56b29b] text-white rounded-lg shadow-md transition-all duration-300">
-                        Enter your dashboard to win points!
+                    <inertia-link
+                        v-if="isLoggedIn() && authUserHasRole('User')"
+                        :href="route('user.dashboard')"
+                        class="mt-4 px-6 py-3 no-underline text-lg font-semibold bg-[#6ACAB1] hover:bg-[#56b29b] text-white rounded-lg shadow-md transition-all duration-300"
+                    >
+                        Intră în panoul tău pentru a câștiga puncte!
                     </inertia-link>
 
-                    <button v-else
-                        class="mt-4 px-6 py-3 text-lg font-semibold bg-[#6ACAB1] hover:bg-[#56b29b] text-white rounded-lg shadow-md transition-all duration-300">
-                        Join & Start Earning 🚀
+                    <button
+                        v-else
+                        class="mt-4 px-6 py-3 text-lg font-semibold bg-[#6ACAB1] hover:bg-[#56b29b] text-white rounded-lg shadow-md transition-all duration-300"
+                    >
+                        Alătură-te și începe să câștigi 🚀
                     </button>
                 </div>
             </div>
-
         </div>
     </section>
 </template>
@@ -85,22 +111,23 @@ export default {
             this.decodedText = decodedText;
             this.scanning = false;
 
-            this.$inertia.post(route('scan.product.find'), {
-                qrCode: decodedText,
-            }, {
-                preserveState: true,
-                preserveScroll: true
-            });
+            this.$inertia.post(
+                route("scan.product.find"),
+                {
+                    qrCode: decodedText,
+                },
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                }
+            );
 
             if (this.qrScanner) {
                 this.qrScanner.clear();
             }
         },
 
-        onScanFailure(error) {
-
-
-        },
+        onScanFailure(error) {},
     },
 };
 </script>

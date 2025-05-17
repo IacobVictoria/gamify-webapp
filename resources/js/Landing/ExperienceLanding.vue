@@ -30,24 +30,20 @@
                 Experiența <span class="text-white">Crunchy</span>
             </p>
         </div>
-        <!-- Beneficii -->
         <div
-            class="flex flex-col md:mb-24 py-24 w-full h-full bg-[#99e09c] gap-[34px] -mt-1 md:-mt-24 text-center px-10">
+            class="flex flex-col justify-center md:mb-24 py-24 w-full h-full bg-[#99e09c] gap-[34px] -mt-1 md:-mt-24 text-center px-10">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-center gap-[50px]">
                 <div v-for="(item, index) in sectionItems" :key="index"
-                    class="flex flex-col items-center rounded-xl p-8 max-w-sm">
+                    class="flex flex-col items-center rounded-xl p-8 max-w-sm gap-2">
 
-                    <!-- Container pentru imagine cu fundal colorat -->
                     <div class="w-full h-full flex items-center justify-center rounded-full">
                         <img :src="imagePath(item.image)" alt="Icon" class="w-full h-full object-contain" />
                     </div>
 
-                    <!-- Titlu cu culoare custom -->
                     <h3 class="text-2xl font-bold mt-5" :class="item.textColor">
                         {{ item.title }}
                     </h3>
 
-                    <!-- Descriere -->
                     <p class="mt-3 text-lg text-gray-700">
                         {{ item.description }}
                     </p>
@@ -64,7 +60,7 @@ const sectionItems = ref([
     {
         image: '/landing/red_1.png',
         title: "Snack-uri sănătoase",
-        description: "Exploră gustări echilibrate, perfecte pentru energie maximă și stil de viață activ.",
+        description: "Exploră gustări echilibrate, perfecte pentru energie maximă!",
         textColor: "text-[#F45D3A]",
     },
     {

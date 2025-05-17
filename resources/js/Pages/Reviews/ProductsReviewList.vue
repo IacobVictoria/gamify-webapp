@@ -13,7 +13,8 @@
                 v-else
                 class="mt-10 bg-gray-100 p-6 rounded-lg shadow-lg text-center"
             >
-                You need to have purchased the product to add a review!
+                Trebuie să fi achiziționat produsul pentru a putea lăsa o
+                recenzie!
             </div>
 
             <!-- Form for Adding New Review -->

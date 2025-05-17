@@ -6,14 +6,13 @@
                     <h1
                         class="text-4xl font-extrabold tracking-tight text-pink-600 mb-2"
                     >
-                        💖 WishList 💖
+                        💖 Lista de dorințe 💖
                     </h1>
                     <div class="flex gap-4 items-center">
                         <h2 class="text-lg text-purple-600 font-semibold">
-                            Your favourite items! ✨
+                            Produsele tale preferate! ✨
                         </h2>
                     </div>
-
                     <form class="mt-12">
                         <div>
                             <template v-if="favorites.length > 0">
@@ -122,7 +121,7 @@
                                                         <label
                                                             for="quantity"
                                                             class="block text-sm font-medium text-gray-700"
-                                                            >Quantity</label
+                                                            >Cantitate</label
                                                         >
                                                         <select
                                                             id="quantity"
@@ -133,7 +132,7 @@
                                                                 value=""
                                                                 disabled
                                                             >
-                                                                Select quantity
+                                                                Selectează cantitatea
                                                             </option>
                                                             <option
                                                                 v-for="num in 10"
@@ -162,7 +161,7 @@
                                                 @click="addToCart(item.product)"
                                                 class="w-64 flex items-center justify-center gap-2 px-6 py-3 mt-4 text-white bg-emerald-500 border border-transparent rounded-lg shadow hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-400"
                                             >
-                                                🛒 Add to shopping cart
+                                                🛒 Adaugă în coș
                                             </button>
                                         </div>
                                     </li>
@@ -180,7 +179,7 @@
                                 :href="route('products.index')"
                                 class="inline-block mt-4 no-underline bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 shadow-md"
                             >
-                                🔍 Explore Products
+                                🔍 Explorează produsele
                             </inertia-link>
                         </div>
                     </form>

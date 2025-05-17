@@ -103,9 +103,15 @@ watch(enabled, (newValue) => {
                                 </template>
                                 <template v-if="authUserHasRole('User')">
                                     <Link :href="route('user.dashboard')">
-                                        <ApplicationLogo
-                                            class="block h-9 w-auto fill-current text-gray-800"
-                                        />
+                                        <div
+                                            class="flex items-center space-x-3"
+                                        >
+                                            <img
+                                                :src="imagePath('/Crunch.png')"
+                                                alt="Company Logo"
+                                                class="h-12 w-12 rounded-full shadow-lg"
+                                            />
+                                        </div>
                                     </Link>
                                 </template>
                             </div>

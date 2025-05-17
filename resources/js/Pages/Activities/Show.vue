@@ -14,11 +14,11 @@
                                 {{ activity.description }}
                             </p>
                             <p class="text-md text-gray-600">
-                                📁 Type:
+                                📁 Tipul activității:
                                 <span class="capitalize">{{
                                     activity.type
                                 }}</span>
-                                &nbsp; | &nbsp; ⭐ Score:
+                                &nbsp; | &nbsp; ⭐ Scorul:
                                 <strong>{{ activity.score }}</strong>
                             </p>
                             <div
@@ -59,7 +59,7 @@
                                     @click="markAsDone"
                                     class="inline-flex mb-6 items-center gap-2 px-5 py-2 bg-green-600 text-white font-semibold rounded-md shadow hover:bg-green-700 transition"
                                 >
-                                    ✅ Mark as Done
+                                    ✅ Marchează ca finalizat
                                 </button>
                                 <div class="flex gap-4 items-center mb-6">
                                     <!-- Save/Remove from Favorites -->
@@ -70,8 +70,8 @@
                                     >
                                         {{
                                             props.isFavorited
-                                                ? "❌ Remove from Favorites"
-                                                : "⭐ Save to Favorites"
+                                                ? "❌ Elimină din favorite"
+                                                : "⭐ Adaugă la favorite"
                                         }}
                                     </button>
                                     <!-- Send to Friend -->
@@ -80,7 +80,7 @@
                                         class="flex items-center gap-2 bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-indigo-600 transition"
                                     >
                                         <span>📨</span>
-                                        <span>Send to a Friend</span>
+                                        <span>Trimite unui prieten!</span>
                                     </button>
                                 </div>
                             </div>
@@ -90,8 +90,8 @@
                                     href="/login"
                                     class="no-underline inline-flex items-center gap-2 px-6 py-2 bg-yellow-500 text-white font-semibold rounded-md shadow hover:bg-yellow-600 transition"
                                 >
-                                    🔐 Login to earn points and save this
-                                    activity
+                                    🔐 Autentifică-te pentru a câștiga puncte și
+                                    a salva această activitate
                                 </inertia-link>
                             </div>
                         </div>

@@ -12,9 +12,6 @@ use Inertia\Inertia;
 
 class AdminProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $filters = $request->input('filters', []);
@@ -53,17 +50,11 @@ class AdminProductController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return Inertia::render('Admin/Products/Create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(ProductRequest $request)
     {
         $validated = $request->validated();
@@ -127,9 +118,6 @@ class AdminProductController extends Controller
         return redirect()->route('admin.products.index')->with('message', 'Product updated successfully!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $productId)
     {
         $product = Product::findOrFail($productId);
