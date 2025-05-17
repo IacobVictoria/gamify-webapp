@@ -1,14 +1,14 @@
 <template>
   <div class="bg-white p-5">
     <h2 class="text-xl font-semibold text-gray-900 mb-5">
-      📊 Weekly Progress Stats
+      📊 Statistici de progres săptămânale
     </h2>
 
     <div v-if="progressBarStats">
-      <!-- Orders with Promo Codes -->
+      <!-- Comenzi cu coduri promoționale -->
       <div class="mb-4">
         <div class="flex justify-between text-sm font-medium">
-          <span>Orders with Promo Codes this week</span>
+          <span>Comenzi cu coduri promoționale (săptămâna aceasta)</span>
           <span class="text-gray-500">{{ progressBarStats.promoOrdersPercentage }}%</span>
         </div>
         <div class="w-full h-3 bg-gray-200 rounded-md mt-1">
@@ -19,10 +19,10 @@
         </div>
       </div>
 
-      <!-- Discount Usage Rate -->
+      <!-- Rata de utilizare a reducerilor -->
       <div class="mb-4">
         <div class="flex justify-between text-sm font-medium">
-          <span>Discount Usage Rate</span>
+          <span>Rata de utilizare a reducerilor</span>
           <span class="text-gray-500">{{ progressBarStats.discountUsageRate }}%</span>
         </div>
         <div class="w-full h-3 bg-gray-200 rounded-md mt-1">
@@ -33,10 +33,10 @@
         </div>
       </div>
 
-      <!-- Products Added to Wishlist -->
+      <!-- Produse adăugate la favorite -->
       <div class="mb-4">
         <div class="flex justify-between text-sm font-medium">
-          <span>Products Added to Wishlist</span>
+          <span>Produse adăugate la favorite</span>
           <span class="text-gray-500">{{ progressBarStats.wishlistedPercentage }}%</span>
         </div>
         <div class="w-full h-3 bg-gray-200 rounded-md mt-1">
@@ -47,10 +47,10 @@
         </div>
       </div>
 
-      <!-- Replenishment Rate -->
+      <!-- Rata de reaprovizionare sănătoasă -->
       <div class="mb-4">
         <div class="flex justify-between text-sm font-medium">
-          <span>Healthy Replenishment Rate</span>
+          <span>Rată de reaprovizionare sănătoasă</span>
           <span class="text-gray-500">{{ progressBarStats.replenishmentRate }}%</span>
         </div>
         <div class="w-full h-3 bg-gray-200 rounded-md mt-1">
@@ -63,7 +63,7 @@
     </div>
 
     <p v-else class="text-gray-500 text-sm text-center">
-      Loading progress data...
+      Se încarcă datele de progres...
     </p>
   </div>
 </template>

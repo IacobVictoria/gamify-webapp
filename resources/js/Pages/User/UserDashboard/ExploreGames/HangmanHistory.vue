@@ -2,7 +2,7 @@
     <AuthenticatedLayout>
         <template #header>
             <h2 class="text-3xl font-bold text-center text-indigo-800 mb-6">
-                🕹️ Hangman Game History
+                🕹️ Istoricul jocurilor Spânzurătoarea
             </h2>
         </template>
 
@@ -13,15 +13,15 @@
                 <h3
                     class="text-xl font-semibold text-center text-gray-700 mb-6"
                 >
-                    📚 Past Battles & Progress
+                    📚 Bătălii trecute și progres
                 </h3>
 
                 <div
                     v-if="userResults.length === 0"
                     class="text-center text-gray-500"
                 >
-                    No hangman games played yet. Start your first match today!
-                    🧠
+                    Nu ai jucat încă Spânzurătoarea. Începe primul tău joc chiar
+                    azi! 🧠
                 </div>
 
                 <div
@@ -41,7 +41,7 @@
                         </h4>
 
                         <p class="text-sm text-gray-600 text-center mb-1">
-                            Your Word:
+                            Cuvântul tău:
                             <span class="font-medium text-gray-900">{{
                                 result.is_creator
                                     ? result.word_for_creator
@@ -49,7 +49,7 @@
                             }}</span>
                         </p>
                         <p class="text-sm text-gray-600 text-center mb-1">
-                            Opponent’s Word:
+                            Cuvântul adversarului:
                             <span class="font-medium text-gray-900">{{
                                 result.is_creator
                                     ? result.word_for_opponent
@@ -58,7 +58,7 @@
                         </p>
 
                         <p class="text-sm text-center">
-                            🎯 Your Score:
+                            🎯 Scorul tău:
                             <span
                                 :class="
                                     getScoreColor(
@@ -76,7 +76,7 @@
                             </span>
                         </p>
                         <p class="text-sm text-center">
-                            🧠 Opponent's Score:
+                            🧠 Scorul adversarului:
                             <span
                                 :class="
                                     getScoreColor(
@@ -119,11 +119,11 @@
                 <h3
                     class="text-xl font-semibold text-center text-indigo-800 mb-4"
                 >
-                    📝 Word & Hints
+                    📝 Cuvinte și indicii
                 </h3>
 
                 <p class="text-sm text-gray-700 mb-2">
-                    🧩 Your Word:
+                    🧩 Cuvântul tău:
                     <span class="font-bold">{{
                         selectedGame.is_creator
                             ? selectedGame.word_for_creator
@@ -131,7 +131,7 @@
                     }}</span>
                 </p>
                 <p class="text-sm text-gray-700 mb-2">
-                    🧩 Opponent's Word:
+                    🧩 Cuvântul adversarului:
                     <span class="font-bold">{{
                         selectedGame.is_creator
                             ? selectedGame.word_for_opponent
@@ -140,7 +140,7 @@
                 </p>
 
                 <p class="text-sm text-gray-500 mt-4">
-                    💡 Your Hint:
+                    💡 Indiciul tău:
                     {{
                         selectedGame.is_creator
                             ? selectedGame.hint_for_creator
@@ -148,7 +148,7 @@
                     }}
                 </p>
                 <p class="text-sm text-gray-500">
-                    💡 Opponent's Hint:
+                    💡 Indiciul adversarului:
                     {{
                         selectedGame.is_creator
                             ? selectedGame.hint_for_opponent

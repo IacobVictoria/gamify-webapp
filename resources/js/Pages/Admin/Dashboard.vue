@@ -27,7 +27,7 @@ import GlobalStats from "./DashboardManager/GlobalStats.vue";
                         class="mb-10 w-full bg-[#334155] text-white p-10 text-left"
                     >
                         <span class="text-xl block text-left ml-0"
-                            >Hello, {{ $page.props.user.name }} 👋</span
+                            >Salut, {{ $page.props.user.name }} 👋</span
                         >
                     </div>
 

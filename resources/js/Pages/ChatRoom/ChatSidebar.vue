@@ -4,11 +4,11 @@
         type="text"
         v-model="searchQuery"
         @input="searchFriendConversation"
-        placeholder="🔍 Search friend..."
+        placeholder="🔍 Caută prieten..."
         class="w-full p-3 border rounded-lg mb-5 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
   
-      <h2 class="text-xl font-bold text-gray-800 mb-4">💬 Conversations</h2>
+      <h2 class="text-xl font-bold text-gray-800 mb-4">💬 Conversații</h2>
   
       <ul v-if="searchResults.length > 0" class="space-y-3">
         <li
@@ -39,8 +39,7 @@
           </div>
         </li>
       </ul>
-  
-      <p v-else class="text-sm text-gray-500 text-center mt-10">No conversations found.</p>
+     <p v-else class="text-sm text-gray-500 text-center mt-10">Nicio conversație găsită.</p>
     </div>
   </template>
 

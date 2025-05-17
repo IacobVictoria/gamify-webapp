@@ -4,7 +4,7 @@
             <h2
                 class="font-semibold text-xl text-white leading-tight text-center bg-gradient-to-r from-orange-500 to-red-500 p-4 rounded-lg shadow-lg"
             >
-                🛒 Your Orders - Ready for Delivery! 📦
+                 🛒 Comenzile tale – Gata de livrare! 📦
             </h2>
         </template>
 

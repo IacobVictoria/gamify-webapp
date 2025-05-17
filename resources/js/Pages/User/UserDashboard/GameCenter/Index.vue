@@ -2,8 +2,9 @@
     <AuthenticatedLayout>
         <template #header>
             <h2
-                class="font-semibold text-xl text-white leading-tight text-center bg-gradient-to-r from-yellow-400 to-orange-600 p-4 rounded-lg shadow-lg">
-                🏆 Your Achievements - Keep Winning! 🔥
+                class="font-semibold text-xl text-white leading-tight text-center bg-gradient-to-r from-yellow-400 to-orange-600 p-4 rounded-lg shadow-lg"
+            >
+                🏆 Realizările tale – Continuă să câștigi! 🔥
             </h2>
         </template>
 
@@ -12,21 +13,33 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="flex flex-col gap-5 px-4 m-12">
                         <div id="badges">
-                            <BadgeSection :badges="badges" :categories="categories"></BadgeSection>
+                            <BadgeSection
+                                :badges="badges"
+                                :categories="categories"
+                            ></BadgeSection>
                         </div>
                         <div id="medals">
                             <MedalsSection :medals="medals"></MedalsSection>
                         </div>
                         <div
-                            class="your-position-container bg-gradient-to-r from-blue-500 to-teal-500 text-white p-4 rounded-xl shadow-md">
+                            class="your-position-container bg-gradient-to-r from-blue-500 to-teal-500 text-white p-4 rounded-xl shadow-md"
+                        >
                             <div class="flex justify-between items-center">
-                                <span class="text-lg font-semibold">Your Position</span>
-                                <span class="text-3xl font-extrabold">{{ position }}</span>
+                                <span class="text-lg font-semibold"
+                                    >Poziția ta</span
+                                >
+                                <span class="text-3xl font-extrabold">{{
+                                    position
+                                }}</span>
                             </div>
-                            <p class="mt-2 text-sm font-light">Your rank in the top players leaderboard</p>
+                            <p class="mt-2 text-sm font-light">
+                                 Locul tău în clasamentul celor mai buni jucători
+                            </p>
                         </div>
                         <div id="leaderboard">
-                            <PlayersTopSection :top10Players="top10Players"></PlayersTopSection>
+                            <PlayersTopSection
+                                :top10Players="top10Players"
+                            ></PlayersTopSection>
                         </div>
                     </div>
                 </div>
@@ -35,39 +48,37 @@
     </AuthenticatedLayout>
 </template>
 <script>
-import BadgeSection from './BadgeSection.vue';
-import MedalsSection from './MedalsSection.vue'
-import PlayersTopSection from './PlayersTopSection.vue'
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import BadgeSection from "./BadgeSection.vue";
+import MedalsSection from "./MedalsSection.vue";
+import PlayersTopSection from "./PlayersTopSection.vue";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 export default {
     components: {
         BadgeSection,
         MedalsSection,
         PlayersTopSection,
-        AuthenticatedLayout
+        AuthenticatedLayout,
     },
     props: {
         badges: {
             type: Array,
-            default: []
+            default: [],
         },
         medals: {
             type: Array,
-            default: []
+            default: [],
         },
         top10Players: {
             type: Array,
-            default: []
+            default: [],
         },
         categories: {
             type: Array,
-            default: []
+            default: [],
         },
         yourPositionInTop: {
             type: Number,
-
         },
-
     },
     data() {
         return {
@@ -88,9 +99,9 @@ export default {
                     }
                 });
             }
-        }
-    }
-}
+        },
+    },
+};
 </script>
 <style>
 .your-position-container {

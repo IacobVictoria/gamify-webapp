@@ -5,10 +5,11 @@
             <h2
                 class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-500 font-extrabold text-3xl md:text-4xl tracking-wide"
             >
-                Hello, {{ $page.props.user.name }}! 🚀
+                Salut, {{ $page.props.user.name }}! 🚀
             </h2>
             <p class="text-gray-700 text-lg font-medium mt-2">
-                Ready to climb the leaderboard? Check your ranking below! 🏆
+                Ești pregătit să urci în clasament? Verifică-ți poziția mai jos!
+                🏆
             </p>
         </div>
         <LeaderBoardQuizzes :leaderboard="leaderboard" />
@@ -57,16 +58,16 @@
                         <inertia-link
                             :href="route('user.quiz.show', quiz.quizData.slug)"
                             class="quiz-button bg-green-500"
-                            >Let's Play</inertia-link
+                            >Hai să jucăm</inertia-link
                         >
                         <div v-if="quiz.is_locked" class="locked-overlay">
-                            LOCKED
+                           BLOCAT
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 🏆 Medium Quizzes -->
+            <!-- Medium Quizzes -->
             <div v-if="quizzes['medium']" class="space-y-6">
                 <div
                     class="category-header bg-yellow-200 shadow-md p-4 rounded-lg flex items-center justify-center gap-2"
@@ -112,16 +113,16 @@
                         <inertia-link
                             :href="route('user.quiz.show', quiz.quizData.slug)"
                             class="quiz-button bg-yellow-500"
-                            >Let's Play</inertia-link
+                            >Hai să jucăm</inertia-link
                         >
                         <div v-if="quiz.is_locked" class="locked-overlay">
-                            LOCKED
+                            BLOCAT
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 🔥 Hard Quizzes -->
+            <!-- Hard Quizzes -->
             <div v-if="quizzes['hard']" class="space-y-6">
                 <div
                     class="category-header bg-red-200 shadow-md p-4 rounded-lg flex items-center justify-center gap-2"
@@ -153,10 +154,10 @@
                         <inertia-link
                             :href="route('user.quiz.show', quiz.quizData.slug)"
                             class="quiz-button bg-red-500"
-                            >Let's Play</inertia-link
+                            >Hai să jucăm</inertia-link
                         >
                         <div v-if="quiz.is_locked" class="locked-overlay">
-                            LOCKED
+                           BLOCAT
                         </div>
                     </div>
                 </div>
@@ -191,9 +192,6 @@ export default {
         quizzes: {
             deep: true,
             immediate: true,
-            handler: (newQuizzes, oldQuizzes) => {
-                //console.log("Quizzes changed:", newQuizzes, oldQuizzes);
-            },
         },
     },
 };

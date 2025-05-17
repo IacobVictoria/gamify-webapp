@@ -2,14 +2,14 @@
     <div class="flex flex-col gap-8 px-4 my-20">
         <div class="flex flex-row items-center justify-between">
             <span class="text-lg font-medium leading-none text-[#7B7F7D]"
-                >Game Center</span
+                >Istoric activitate</span
             >
             <inertia-link>
                 <div class="flex flex-row items-center gap-2">
                     <inertia-link
                         class="text-[#999999] text-sm font-light leading-none"
                         :href="route('user.dashboard.game_center.index')"
-                        >View more</inertia-link
+                        > Vezi mai multe</inertia-link
                     >
                     <svg
                         width="8"

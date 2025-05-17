@@ -1,6 +1,6 @@
 <template>
     <div class="w-2/6 mx-auto bg-white rounded-2xl shadow-lg p-6 leaderboard-container">
-      <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Leaderboard</h2>
+      <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Clasament</h2>
   
       <div class="flex justify-around gap-4">
         <div
@@ -28,7 +28,7 @@
               class="w-16 h-16 rounded-full mb-2"
             />
             <p class="text-sm font-semibold text-gray-800">{{ user.name }}</p>
-            <p class="text-sm text-gray-500">{{ user.total_score }} points</p>
+            <p class="text-sm text-gray-500">{{ user.total_score }} puncte</p>
           </div>
 
         </div>

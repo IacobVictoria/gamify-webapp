@@ -6,7 +6,9 @@
                 class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6 flex items-center"
             >
                 <div>
-                    <p class="text-lg font-semibold mb-3">What is your sex?</p>
+                    <p class="text-lg font-semibold mb-3">
+                        Care este sexul tău?
+                    </p>
                     <div class="flex justify-center gap-6">
                         <button
                             @click="form.sex = 'male'"
@@ -21,7 +23,7 @@
                                 alt="Male"
                                 class="w-10 h-10 mb-2"
                             />
-                            <span class="font-medium">Male</span>
+                            <span class="font-medium">Bărbat</span>
                         </button>
                         <button
                             @click="form.sex = 'female'"
@@ -36,7 +38,7 @@
                                 alt="Female"
                                 class="w-10 h-10 mb-2"
                             />
-                            <span class="font-medium">Female</span>
+                            <span class="font-medium">Femeie</span>
                         </button>
                     </div>
                     <p v-if="errors.sex" class="text-red-500 text-sm mt-2">
@@ -46,17 +48,17 @@
 
                 <div>
                     <label for="age" class="block text-lg font-semibold mb-2"
-                        >How old are you?</label
+                        >Ce vârstă ai?</label
                     >
                     <div class="flex items-center">
                         <input
                             v-model="form.age"
                             id="age"
                             type="number"
-                            placeholder="Enter your age"
+                            placeholder="Introdu vârsta"
                             class="w-full border rounded-lg px-4 py-2 text-center focus:outline-none focus:border-indigo-500"
                         />
-                        <span class="ml-2 text-lg ">yrs</span>
+                        <span class="ml-2 text-lg">ani</span>
                     </div>
                     <p v-if="errors.age" class="text-red-500 text-sm mt-2">
                         {{ errors.age[0] }}
@@ -68,14 +70,14 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                 <div>
                     <label for="height" class="block text-lg font-semibold mb-3"
-                        >Your height</label
+                        >Înălțimea ta</label
                     >
                     <div class="flex items-center">
                         <input
                             v-model="form.height"
                             id="height"
                             type="number"
-                            placeholder="Height"
+                            placeholder="Înălțime"
                             class="flex-1 border rounded-l-lg px-4 py-2 text-center focus:outline-none focus:border-indigo-500"
                         />
                         <select
@@ -93,14 +95,14 @@
 
                 <div>
                     <label for="weight" class="block text-lg font-semibold mb-3"
-                        >Your weight</label
+                        >Greutatea ta</label
                     >
                     <div class="flex items-center">
                         <input
                             v-model="form.weight"
                             id="weight"
                             type="number"
-                            placeholder="Weight"
+                            placeholder="Greutate"
                             class="flex-1 border rounded-l-lg px-4 py-2 text-center focus:outline-none focus:border-indigo-500"
                         />
                         <select
@@ -119,7 +121,7 @@
 
             <!-- Activity -->
             <div class="mb-8">
-                <p class="text-lg font-semibold mb-3">How active are you?</p>
+                <p class="text-lg font-semibold mb-3">Cât de activ ești?</p>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <button
                         v-for="(activity, index) in activityLevels"
@@ -152,18 +154,19 @@
                     @click="calculateCalories"
                     class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition"
                 >
-                    Calculate Calorie Intake
+                    Calculează necesarul caloric
                 </button>
             </div>
 
             <!-- Result -->
             <div v-if="calorieResult" class="mt-6 text-center">
                 <div class="text-lg text-indigo-700 font-bold">
-                    🍽️ Your ideal intake: {{ calorieResult.min }} -
-                    {{ calorieResult.max }} kcal/day
+                    🍽️ Necesarul tău ideal: {{ calorieResult.min }} -
+                    {{ calorieResult.max }} kcal/zi
                 </div>
                 <p class="text-sm text-gray-600 mt-2">
-                    Tip: Check our AI assistant for customized tips!
+                    Sfat: Consultă asistentul AI pentru recomandări
+                    personalizate!
                 </p>
             </div>
         </div>
@@ -188,22 +191,22 @@ export default {
             activityLevels: [
                 {
                     value: "lightly_active",
-                    label: "Lightly active",
+                    label: "Ușor activ",
                     image: "/images/light_active.png",
                 },
                 {
                     value: "moderately_active",
-                    label: "Moderately active",
+                    label: "Moderat activ",
                     image: "/images/moderate_active.png",
                 },
                 {
                     value: "active",
-                    label: "Active",
+                    label: "Activ",
                     image: "/images/active.png",
                 },
                 {
                     value: "very_active",
-                    label: "Very Active",
+                    label: "Foarte activ",
                     image: "/images/very_active.png",
                 },
             ],

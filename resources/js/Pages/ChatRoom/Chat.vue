@@ -23,7 +23,7 @@
                 class="w-full md:w-80 max-h-[100vh] overflow-y-auto bg-white border border-gray-200 p-6"
             >
                 <h3 class="text-xl font-semibold text-gray-800 mb-5">
-                    👥 Add Friends
+                    👥 Adaugă Prieteni noi
                 </h3>
 
                 <!-- Search Input -->
@@ -31,7 +31,7 @@
                     v-model="searchQuery"
                     @input="searchUsers"
                     type="text"
-                    placeholder="🔍 Search by email..."
+                    placeholder="🔍 Caută după email..."
                     class="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
 
@@ -55,14 +55,14 @@
                             @click="addFriend(user.id)"
                             class="text-sm bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg whitespace-nowrap"
                         >
-                            Add
+                            Adaugă
                         </button>
                     </li>
                 </ul>
 
                 <!-- No Results -->
                 <p v-else class="text-center text-sm text-gray-400 mt-6">
-                    No users found. Try another email.
+                    Niciun utilizator găsit. Încearcă un alt email.
                 </p>
             </div>
         </div>

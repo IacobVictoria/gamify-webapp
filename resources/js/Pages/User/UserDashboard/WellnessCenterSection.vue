@@ -7,12 +7,12 @@
             <!-- Titlu și Link Simulat -->
             <div class="flex flex-row items-center justify-between">
                 <span class="text-lg font-semibold leading-none text-[#06A77D]">
-                    Wellness Center
+                    Colțul sănătății
                 </span>
                 <div
                     class="flex flex-row items-center gap-2 text-[#999999] text-sm font-light leading-none"
                 >
-                    <span>View more</span>
+                    <span>Vezi mai multe</span>
                     <svg
                         width="8"
                         height="11"

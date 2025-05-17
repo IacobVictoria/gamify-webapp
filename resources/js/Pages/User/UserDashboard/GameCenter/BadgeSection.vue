@@ -1,7 +1,6 @@
 <template>
     <div class="badge-section-container">
-        <h2 class="section-title">🏆 Your Awesome Badges</h2>
-
+       <h2 class="section-title">🏆 Insignele tale grozave</h2>
         <div
             v-for="(category, index) in categorizedBadges"
             :key="index"
@@ -135,13 +134,11 @@ export default {
 };
 </script>
 <style>
-/* 🌟 Secțiunea principală */
 .badge-section-container {
     text-align: center;
     padding: 20px;
 }
 
-/* 🌟 Titlul principal */
 .section-title {
     font-size: 2.2rem;
     font-weight: bold;
@@ -155,7 +152,6 @@ export default {
     padding-bottom: 5px;
 }
 
-/* 🌟 Titlurile categoriilor */
 .category-title {
     font-size: 1.6rem;
     font-weight: bold;
@@ -169,7 +165,6 @@ export default {
     width: 10em;
 }
 
-/* 🌟 Efect de hover pe titlurile categoriilor */
 .category-title:hover {
     opacity: 0.85;
     transform: scale(1.02);

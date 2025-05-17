@@ -3,7 +3,7 @@
         <!-- Titlu + Butoane Scroll -->
         <div class="flex justify-between items-center mb-3">
             <h2 class="text-lg font-semibold text-gray-700">
-                Top Selling Products (Last 7 Days)
+                Produse cele mai vândute (Ultimele 7 zile)
             </h2>
             <div class="flex space-x-1">
                 <button
@@ -34,7 +34,7 @@
             >
                 <img
                     :src="product.image"
-                    alt="Product Image"
+                    alt="Imagine produs"
                     class="w-32 h-32 object-cover rounded-md mb-2"
                 />
 
@@ -42,13 +42,13 @@
                     {{ product.product_name }}
                 </h3>
                 <p class="text-xs text-gray-500">
-                    {{ product.total_sold }} Pcs
+                    {{ product.total_sold }} bucăți
                 </p>
             </div>
         </div>
 
         <div v-else class="text-center text-gray-500 mt-4 italic">
-          💤  No products sales recorded this week.
+            💤 Nicio vânzare înregistrată săptămâna aceasta.
         </div>
     </div>
 </template>
@@ -62,14 +62,12 @@ const props = defineProps({
 
 const carousel = ref(null);
 
-// Funcție pentru scroll stânga
 const scrollLeft = () => {
     if (carousel.value) {
         carousel.value.scrollBy({ left: -200, behavior: "smooth" });
     }
 };
 
-// Funcție pentru scroll dreapta
 const scrollRight = () => {
     if (carousel.value) {
         carousel.value.scrollBy({ left: 200, behavior: "smooth" });

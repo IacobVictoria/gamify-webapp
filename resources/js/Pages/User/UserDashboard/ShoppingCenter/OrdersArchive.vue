@@ -1,26 +1,40 @@
 <template>
-        <div class="py-12">
-            <div class="w-full mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                   <div class="flex flex-row items-center justify-center gap-2">
-                    <div class="text-2xl font-bold text-gray-800 py-4 category-header bg-green-200 shadow-md p-4 rounded-lg">Archived orders</div>
-                    <img :src="imagePath('orders/order.png')" class="w-16"/>
-                   </div>
-                    <GenericExpandedList :title="'Orders History'" :description="'Here you can see all your Orders.'"
-                        :items="orders" :entityName="'orders'" :filters="filters" :columns="columns"
-                        :prevFilters="prevFilters" :getRoute="'user.shopping-center.index'"
-                        :descriptionDetails="'Detalii Produse:'" class="p-4" :detailsLabel="detailsLabel" :invoice="'client'"/>
+    <div class="py-12">
+        <div class="w-full mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="flex flex-row items-center justify-center gap-2">
+                    <div
+                        class="text-2xl font-bold text-gray-800 py-4 category-header bg-green-200 shadow-md p-4 rounded-lg"
+                    >
+                        Comenzi arhivate
+                    </div>
+                    <img :src="imagePath('orders/order.png')" class="w-16" />
                 </div>
+                <GenericExpandedList
+                    :title="'Orders History'"
+                    :description="'Aici poți vedea toate comenzile tale.'"
+                    :items="orders"
+                    :entityName="'orders'"
+                    :filters="filters"
+                    :columns="columns"
+                    :prevFilters="prevFilters"
+                    :getRoute="'user.shopping-center.index'"
+                    :descriptionDetails="'Detalii Produse:'"
+                    class="p-4"
+                    :detailsLabel="detailsLabel"
+                    :invoice="'client'"
+                />
             </div>
         </div>
+    </div>
 </template>
 
 <script>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import GenericExpandedList from '@/Components/GenericExpandedList.vue';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import GenericExpandedList from "@/Components/GenericExpandedList.vue";
 
 export default {
-    name: 'User/Orders/OrderHistory',
+    name: "User/Orders/OrderHistory",
 
     components: {
         AuthenticatedLayout,
@@ -33,34 +47,42 @@ export default {
         },
         prevFilters: {
             type: Object,
-            required: true
-        }
+            required: true,
+        },
     },
 
     computed: {
         columns() {
             return [
-                { name: 'date', label: 'Order Date' },
-                { name: 'total', label: 'Total Price' },
+                { name: "date", label: "Data comenzii" },
+                { name: "total", label: "Preț total" },
             ];
         },
 
         filters() {
             return [
-                { model: 'sortTotal', label: 'Sort by Total', type: 'sorting', placeholder: 'Search by total' },
-                { model: 'sortDate', label: 'Sort by Date', type: 'sorting', placeholder: 'Search by date' },
+                {
+                    model: "sortTotal",
+                    label: "Sortează după preț total",
+                    type: "sorting",
+                    placeholder: "Caută după preț",
+                },
+                {
+                    model: "sortDate",
+                    label: "Sortează după dată",
+                    type: "sorting",
+                    placeholder: "Caută după dată",
+                },
             ];
         },
 
         detailsLabel() {
             return [
-                { name: 'name', label: 'Product' },
-                { name: 'quantity', label: 'Quantity' },
-                { name: 'price', label: 'Price' },
-
-            ]
-
-        }
+                { name: "name", label: "Produs" },
+                { name: "quantity", label: "Cantitate" },
+                { name: "price", label: "Preț" },
+            ];
+        },
     },
 };
 </script>

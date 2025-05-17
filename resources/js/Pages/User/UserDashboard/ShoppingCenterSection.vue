@@ -7,12 +7,12 @@
             <!-- Titlu și Link Vizual -->
             <div class="flex flex-row items-center justify-between">
                 <span class="text-lg font-semibold leading-none text-[#F45D3A]">
-                    Shopping Center
+                    Zona de cumpărături
                 </span>
                 <div
                     class="flex flex-row items-center gap-2 text-[#999999] text-sm font-light leading-none"
                 >
-                    <span>View more</span>
+                     <span>Vezi mai multe</span>
                     <svg
                         width="8"
                         height="11"

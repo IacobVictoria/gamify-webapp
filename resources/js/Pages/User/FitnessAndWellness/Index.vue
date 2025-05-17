@@ -7,25 +7,22 @@ import AiAssistent from "./AiAssistent.vue";
 <template>
     <AuthenticatedLayout>
         <div class="bg-gray-100 min-h-screen">
-            <!-- 🚀 Tracker de Calorii + AI Assistant side by side -->
+            <!-- Tracker de Calorii + AI Assistant side by side -->
             <section class="py-20 bg-gray-50">
                 <h2 class="text-3xl font-bold text-gray-800 text-center mb-4">
-                    🧮 Calorie Tracker & 🤖 AI Assistant
+                    🧮 Calculator de Calorii & 🤖 Asistent AI
                 </h2>
                 <p class="text-lg text-gray-600 text-center mb-10">
-                    Discover your calorie needs and get real-time nutrition
-                    advice powered by AI.
+                    Află necesarul tău caloric și primește sfaturi nutriționale
+                    în timp real, oferite de AI.
                 </p>
-
-                <div
-                    class="px-24 grid grid-cols-1 lg:grid-cols-2 gap-8"
-                >
+                <div class="px-24 grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <!-- Tracker Card -->
                     <div
                         class="bg-white rounded-xl shadow-md p-6 h-full flex flex-col"
                     >
                         <h3 class="text-xl font-semibold text-indigo-700 mb-4">
-                            🔥 Calorie Calculator
+                            🔥 Calculator de Calorii
                         </h3>
                         <div class="flex-1">
                             <CalorieTracker />
@@ -37,7 +34,7 @@ import AiAssistent from "./AiAssistent.vue";
                         class="bg-white rounded-xl shadow-md p-6 h-full flex flex-col"
                     >
                         <h3 class="text-xl font-semibold text-indigo-700 mb-4">
-                            🤖 Ask the AI
+                            🤖 Consultă AI-ul pentru sfaturi
                         </h3>
                         <div class="flex-1">
                             <AiAssistent />
@@ -48,4 +45,3 @@ import AiAssistent from "./AiAssistent.vue";
         </div>
     </AuthenticatedLayout>
 </template>
-

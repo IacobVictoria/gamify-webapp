@@ -1,11 +1,11 @@
 <template>
     <div class="min-h-screen flex items-center justify-center px-4 py-10">
       <div class="w-full max-w-3xl bg-white p-6">
-        <h1 class="text-2xl font-bold text-center text-indigo-700 mb-6">🧠 AI Diet Assistant</h1>
+        <h1 class="text-2xl font-bold text-center text-indigo-700 mb-6">🧠 Asistentul AI pentru Dietă</h1>
   
         <!-- Suggested Questions -->
         <div class="mb-6">
-          <p class="text-sm text-gray-500 mb-2">Quick suggestions:</p>
+          <p class="text-sm text-gray-500 mb-2">Sugestii rapide:</p>
           <div class="flex flex-wrap gap-2">
             <button
               v-for="(q, index) in quickQuestions"
@@ -34,12 +34,12 @@
   
           <div v-if="isLoading" class="text-left text-sm text-gray-500 italic mb-2">
             <span class="inline-block px-4 py-2 rounded-lg bg-gray-100 animate-pulse">
-              AI is typing...
+              AI scrie...
             </span>
           </div>
   
           <div v-if="products.length" class="mt-4">
-            <h2 class="text-sm font-semibold text-gray-700 mb-2">Suggested Products</h2>
+            <h2 class="text-sm font-semibold text-gray-700 mb-2">Produse recomandate</h2>
             <ul class="text-sm text-gray-600 space-y-1">
               <li v-for="product in products" :key="product.id">
                 <strong>{{ product.name }}</strong>: {{ product.description }} - <em>{{ product.price }} RON</em>
@@ -61,7 +61,7 @@
             class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-semibold"
             :disabled="isLoading"
           >
-            Send
+            Trimite
           </button>
         </form>
       </div>

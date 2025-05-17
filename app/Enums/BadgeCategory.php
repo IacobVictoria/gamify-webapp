@@ -8,7 +8,6 @@ enum BadgeCategory: string
     case COMMENTER = 'commenter';
     case SHOPPING = 'shopping';
     case QUIZ = 'quiz';
-    case EVENT = 'event';
     case QUIZ_LEADERBOARD = 'quiz-leaderboard';
     case HANGMAN = 'hangman';
     case LEADERBOARD = 'leaderboard';
@@ -21,7 +20,6 @@ enum BadgeCategory: string
             self::COMMENTER => 'Commenter',
             self::SHOPPING => 'Shopping',
             self::QUIZ => 'Quiz',
-            self::EVENT => 'Event',
             self::QUIZ_LEADERBOARD => 'Quiz Leaderboard',
             self::HANGMAN => 'Hangman',
             self::LEADERBOARD => 'Leaderboard',
