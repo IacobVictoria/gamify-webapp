@@ -1,6 +1,3 @@
-vue
-Copy
-Edit
 <template>
     <Layout>
         <main>
@@ -58,12 +55,12 @@ Edit
                                         <button @click="responses[question.id] = 'Yes'"
                                             :class="{ 'bg-green-500 text-white': responses[question.id] === 'Yes', 'bg-gray-200 text-black': responses[question.id] !== 'Yes' }"
                                             class="w-32 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium focus:outline-none hover:scale-105 transition">
-                                            ✅ Yes
+                                            ✅ Da
                                         </button>
                                         <button @click="responses[question.id] = 'No'"
                                             :class="{ 'bg-red-500 text-white': responses[question.id] === 'No', 'bg-gray-200 text-black': responses[question.id] !== 'No' }"
                                             class="w-32 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium focus:outline-none hover:scale-105 transition">
-                                            ❌ No
+                                            ❌ Nu
                                         </button>
                                     </div>
 
@@ -85,7 +82,7 @@ Edit
                                 <button @click="submitFeedback"
                                     class="bg-indigo-600 hover:bg-indigo-700 w-40 text-white px-4 py-2 rounded-lg text-md font-medium shadow flex items-center justify-center gap-2"
                                     :disabled="!isValidFeedback">
-                                    🚀 Submit
+                                    🚀 Salvează
                                 </button>
                             </div>
                         </div>

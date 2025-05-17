@@ -1,28 +1,32 @@
 <template>
     <AuthenticatedLayout>
-
         <Head title="Update Suppliers" />
 
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Update Suppliers</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Actualizează Furnizorii
+            </h2>
         </template>
 
-        <GenericEditForm :updateRoute="getUpdateRoute" :fields="formFields" :initialData="supplier" :title="'Update Supplier'" />
+        <GenericEditForm
+            :updateRoute="getUpdateRoute"
+            :fields="formFields"
+            :initialData="supplier"
+            :title="'Actualizează Furnizor'"
+        />
     </AuthenticatedLayout>
-
 </template>
 
 <script>
-import GenericEditForm from '@/Components/GenericEditForm.vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import GenericEditForm from "@/Components/GenericEditForm.vue";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import { Head } from "@inertiajs/vue3";
 
 export default {
     components: {
         GenericEditForm,
         Head,
-        AuthenticatedLayout
-
+        AuthenticatedLayout,
     },
     props: {
         supplier: {
@@ -34,38 +38,40 @@ export default {
         return {
             formFields: [
                 {
-                    name: 'name',
-                    label: 'Name',
-                    type: 'input',
-                    inputType: 'text',
-                    autocomplete: 'name',
-                    placeholder: 'Enter name',
-                    colSpan: 'sm:col-span-6'
+                    name: "name",
+                    label: "Nume",
+                    type: "input",
+                    inputType: "text",
+                    autocomplete: "name",
+                    placeholder: "Introdu numele",
+                    colSpan: "sm:col-span-6",
                 },
                 {
-                    name: 'email',
-                    label: 'Email',
-                    type: 'input',
-                    inputType: 'email',
-                    autocomplete: 'email',
-                    placeholder: 'Enter email',
-                    colSpan: 'sm:col-span-6'
+                    name: "email",
+                    label: "Email",
+                    type: "input",
+                    inputType: "email",
+                    autocomplete: "email",
+                    placeholder: "Introdu adresa de email",
+                    colSpan: "sm:col-span-6",
                 },
                 {
-                    name: 'phone',
-                    label: 'Phone',
-                    type: 'input',
-                    inputType: 'tel',
-                    autocomplete: 'phone',
-                    placeholder: 'Enter phone',
-                    colSpan: 'sm:col-span-6'
-                }
+                    name: "phone",
+                    label: "Telefon",
+                    type: "input",
+                    inputType: "tel",
+                    autocomplete: "phone",
+                    placeholder: "Introdu numărul de telefon",
+                    colSpan: "sm:col-span-6",
+                },
             ],
         };
     },
     computed: {
         getUpdateRoute() {
-            return route('admin.suppliers.update', { supplierId: this.supplier.id }); 
+            return route("admin.suppliers.update", {
+                supplierId: this.supplier.id,
+            });
         },
     },
 };

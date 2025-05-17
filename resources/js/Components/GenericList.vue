@@ -8,7 +8,7 @@
             <div v-if="createRoute" class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                 <inertia-link :href="route(createRoute)"
                     class="block no-underline rounded-md bg-indigo-600 px-3 py-2 text-center text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                    Add new {{ entityName }}
+                    Adaugă {{ entityName }}
                 </inertia-link>
             </div>
         </div>
@@ -58,9 +58,9 @@
                                     <template v-if="editRoute && deleteRoute">
                                         <td class="px-6 py-4 whitespace-nowrap text-center text-md font-medium">
                                             <inertia-link :href="route(editRoute, item.id)"
-                                                class="text-indigo-600 hover:text-indigo-900">Edit</inertia-link>
+                                                class="text-indigo-600 hover:text-indigo-900">Editează</inertia-link>
                                             <button @click="openDialog(item)"
-                                                class="ml-4 text-red-600 hover:text-red-400">Delete</button>
+                                                class="ml-4 text-red-600 hover:text-red-400">Șterge</button>
                                         </td>
                                     </template>
                                 </tr>

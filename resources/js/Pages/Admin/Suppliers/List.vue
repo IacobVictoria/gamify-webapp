@@ -5,9 +5,9 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <GenericList
                         :title="'Suppliers'"
-                        :description="'Here you can see all the suppliers.'"
+                        :description="'Aici poți vedea toți furnizorii.'"
                         :items="suppliers"
-                        :entityName="'suppliers'"
+                        :entityName="'furnizor'"
                         :filters="filters"
                         :getRoute="'admin.suppliers.index'"
                         :createRoute="'admin.suppliers.create'"
@@ -51,9 +51,9 @@ export default {
     computed: {
         columns() {
             return [
-                { name: "name", label: "Name" },
+                { name: "name", label: "Nume" },
                 { name: "email", label: "Email" },
-                { name: "created_at", label: "Created" },
+                { name: "created_at", label: "Creat la" },
             ];
         },
 
@@ -61,15 +61,15 @@ export default {
             return [
                 {
                     model: "searchName",
-                    label: "Search by Name",
+                    label: "Caută după nume",
                     type: "text",
-                    placeholder: "Search by name",
+                    placeholder: "Introdu numele",
                 },
                 {
                     model: "searchEmail",
-                    label: "Search by Email",
+                    label: "Caută după email",
                     type: "text",
-                    placeholder: "Search by email",
+                    placeholder: "Introdu adresa de email",
                 },
             ];
         },

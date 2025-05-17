@@ -1,29 +1,34 @@
 <template>
     <AuthenticatedLayout>
-
         <Head title="Update Product" />
 
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Update Product</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Actualizează produsul
+            </h2>
         </template>
 
-        <GenericEditForm :updateRoute="getUpdateRoute" :fields="fields" :initialData="product" :title="'Update Product'"
-            :isFile="true" :aditionalData="imageField" />
+        <GenericEditForm
+            :updateRoute="getUpdateRoute"
+            :fields="fields"
+            :initialData="product"
+            :title="'Actualizează produsul'"
+            :isFile="true"
+            :aditionalData="imageField"
+        />
     </AuthenticatedLayout>
-
 </template>
 
 <script>
-import GenericEditForm from '@/Components/GenericEditForm.vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import GenericEditForm from "@/Components/GenericEditForm.vue";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import { Head } from "@inertiajs/vue3";
 
 export default {
     components: {
         GenericEditForm,
         Head,
-        AuthenticatedLayout
-
+        AuthenticatedLayout,
     },
     props: {
         product: {
@@ -32,67 +37,68 @@ export default {
         },
         categories: {
             type: Array,
-            required: true
-        }
+            required: true,
+        },
     },
     data() {
         return {
             fields: [
                 {
-                    name: 'category',
-                    label: 'Categories',
-                    type: 'select',
+                    name: "category",
+                    label: "Categorii",
+                    type: "select",
                     options: this.categories,
-                    autocomplete: 'categories',
-                    placeholder: 'Categories',
-                    colSpan: 'sm:col-span-6'
+                    autocomplete: "categories",
+                    placeholder: "Alege o categorie",
+                    colSpan: "sm:col-span-6",
                 },
                 {
-                    name: 'description',
-                    label: 'Description',
-                    type: 'textarea',
-                    placeholder: 'Enter description',
-                    colSpan: 'sm:col-span-6'
+                    name: "description",
+                    label: "Descriere",
+                    type: "textarea",
+                    placeholder: "Introdu descrierea",
+                    colSpan: "sm:col-span-6",
                 },
                 {
-                    name: 'score',
-                    label: 'Score',
-                    type: 'input',
-                    inputType: 'number',
-                    autocomplete: 'score',
-                    placeholder: 'Enter score',
-                    colSpan: 'sm:col-span-6'
+                    name: "score",
+                    label: "Scor",
+                    type: "input",
+                    inputType: "number",
+                    autocomplete: "score",
+                    placeholder: "Introdu scorul",
+                    colSpan: "sm:col-span-6",
                 },
                 {
-                    name: 'price',
-                    label: 'Price',
-                    type: 'input',
-                    inputType: 'number',
-                    autocomplete: 'price',
-                    placeholder: 'Enter price',
-                    colSpan: 'sm:col-span-6',
-                    step: '0.01'
+                    name: "price",
+                    label: "Preț",
+                    type: "input",
+                    inputType: "number",
+                    autocomplete: "price",
+                    placeholder: "Introdu prețul",
+                    colSpan: "sm:col-span-6",
+                    step: "0.01",
                 },
                 {
-                name: 'is_published',
-                label: 'Publish Product',
-                type: 'checkbox',
-                colSpan: 'sm:col-span-6'
-            }
-            ]
-            , imageField: {
-                name: 'image',
-                label: 'Image',
-                type: 'file',
-                inputType: 'file',
-                colSpan: 'sm:col-span-6'
+                    name: "is_published",
+                    label: "Publică produsul",
+                    type: "checkbox",
+                    colSpan: "sm:col-span-6",
+                },
+            ],
+            imageField: {
+                name: "image",
+                label: "Imagine",
+                type: "file",
+                inputType: "file",
+                colSpan: "sm:col-span-6",
             },
-
         };
     },
     computed: {
         getUpdateRoute() {
-            return route('admin.products.update', { productId: this.product.id });
+            return route("admin.products.update", {
+                productId: this.product.id,
+            });
         },
     },
 };
