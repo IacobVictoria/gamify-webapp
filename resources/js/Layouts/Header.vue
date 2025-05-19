@@ -262,10 +262,10 @@ import RecomandationLogoSVG from "@/Components/RecomandationLogoSVG.vue";
 import NotificationComponentIcon from "@/Pages/Notification_System/NotificationComponentIcon.vue";
 
 const navigation = [
-    { name: "Home", href: route("home") },
-    { name: "Products", href: route("products.index") },
-    { name: "Suppliers", href: route("suppliers.web_view") },
-    { name: "Activities", href: route("activities.index") },
+    { name: "Acasă", href: route("home") },
+    { name: "Produse", href: route("products.index") },
+    { name: "Furnizori", href: route("suppliers.web_view") },
+    { name: "Activități", href: route("activities.index") },
 ];
 
 const mobileMenuOpen = ref(false);

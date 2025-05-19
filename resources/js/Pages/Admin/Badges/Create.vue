@@ -1,79 +1,82 @@
 <template>
     <AuthenticatedLayout>
-
-        <Head title="Create Badges" />
+        <Head title="Creare Insignă" />
 
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create Badges</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Creare Insignă
+            </h2>
         </template>
 
-        <GenericCreateForm :fields="fields" :createRoute="createRoute" :title="'Create Badge'" :isFile="true">
+        <GenericCreateForm
+            :fields="fields"
+            :createRoute="createRoute"
+            :title="'Creare Insigne'"
+            :isFile="true"
+        >
         </GenericCreateForm>
     </AuthenticatedLayout>
 </template>
 
 <script>
-import GenericCreateForm from '@/Components/GenericCreateForm.vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import GenericCreateForm from "@/Components/GenericCreateForm.vue";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import { Head } from "@inertiajs/vue3";
 
 export default {
     components: {
         AuthenticatedLayout,
         GenericCreateForm,
-        Head
+        Head,
     },
-    props:
-    {
+    props: {
         categories: {
             type: Array,
-            required: true
-        }
-    }
-    ,
+            required: true,
+        },
+    },
     data() {
         return {
-            createRoute: route('admin-gamification.badges.store'),
+            createRoute: route("admin-gamification.badges.store"),
             fields: [
                 {
-                    name: 'name',
-                    label: 'Name',
-                    type: 'input',
-                    inputType: 'text',
-                    autocomplete: 'name',
-                    placeholder: 'Enter name',
-                    colSpan: 'sm:col-span-6'
+                    name: "name",
+                    label: "Nume",
+                    type: "input",
+                    inputType: "text",
+                    autocomplete: "name",
+                    placeholder: "Introduceți numele",
+                    colSpan: "sm:col-span-6",
                 },
                 {
-                    name: 'description',
-                    label: 'Description',
-                    type: 'textarea',
-                    inputType: 'textarea',
-                    autocomplete: 'description',
-                    placeholder: 'Enter description',
-                    colSpan: 'sm:col-span-6'
+                    name: "description",
+                    label: "Descriere",
+                    type: "textarea",
+                    inputType: "textarea",
+                    autocomplete: "description",
+                    placeholder: "Introduceți o descriere",
+                    colSpan: "sm:col-span-6",
                 },
                 {
-                    name: 'score',
-                    label: 'Score',
-                    type: 'input',
-                    inputType: 'number',
-                    autocomplete: 'score',
-                    placeholder: 'Enter score',
-                    colSpan: 'sm:col-span-6'
+                    name: "score",
+                    label: "Scor",
+                    type: "input",
+                    inputType: "number",
+                    autocomplete: "score",
+                    placeholder: "Introduceți scorul",
+                    colSpan: "sm:col-span-6",
                 },
                 {
-                    name: 'category',
-                    label: 'Categories',
-                    type: 'select',
+                    name: "category",
+                    label: "Categorie",
+                    type: "select",
                     options: this.categories,
-                    autocomplete: 'categories',
-                    placeholder: 'Categories',
-                    colSpan: 'sm:col-span-6'
+                    autocomplete: "categories",
+                    placeholder: "Selectați o categorie",
+                    colSpan: "sm:col-span-6",
                 },
             ],
-
-        }
-    }
-}
+        };
+    },
+};
 </script>

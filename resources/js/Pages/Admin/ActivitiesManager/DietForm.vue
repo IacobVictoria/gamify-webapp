@@ -3,33 +3,33 @@
         <!-- Recommendations -->
         <div>
             <label class="block text-sm font-medium text-gray-700"
-                >Recommendations</label
+                >Recomandări</label
             >
             <textarea
                 v-model="details.recommendations"
                 rows="3"
                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                placeholder="What to avoid, when to eat, etc"
+                placeholder="Ce să eviți, când să mănânci etc."
             />
         </div>
 
         <!-- Diet Description -->
         <div>
             <label class="block text-sm font-medium text-gray-700"
-                >Diet Content</label
+                >Conținutul dietei</label
             >
             <textarea
                 v-model="details.content"
                 rows="4"
                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                placeholder="Describe the full diet plan, its benefits, structure, etc."
+                placeholder="Descrie planul complet de dietă, beneficiile, structura etc."
             />
         </div>
 
         <!-- Product Selection -->
         <div>
-            <label class="block text-sm font-medium text-gray-700"
-                >Select Snacks</label
+            <label class="block text-sm font-medium text-gray-700">
+                Selectează gustări</label
             >
             <select
                 multiple
@@ -50,14 +50,14 @@
         <div class="space-y-2">
             <div class="flex justify-between items-center">
                 <h4 class="font-medium text-sm text-gray-700">
-                    Custom Products
+                    Produse personalizate
                 </h4>
                 <button
                     @click="addCustomProduct"
                     type="button"
                     class="text-xs px-2 py-1 bg-green-200 text-green-800 rounded hover:bg-green-300"
                 >
-                    ➕ Add Custom Product
+                    ➕ Adaugă produs personalizat
                 </button>
             </div>
 
@@ -65,15 +65,13 @@
             <div
                 class="grid grid-cols-7 gap-2 font-semibold text-gray-600 text-sm mt-4"
             >
-                <span class="col-span-2">Name</span>
+                <span class="col-span-2">Nume</span>
                 <span>Kcal</span>
-                <span>Protein (g)</span>
-                <span>Carbs (g)</span>
-                <span>Fats (g)</span>
-                <span class="text-right">Action</span>
+                <span>Proteine (g)</span>
+                <span>Carbohidrați (g)</span>
+                <span>Grăsimi (g)</span>
+                <span class="text-right">Acțiune</span>
             </div>
-
-            <!-- Produse custom -->
             <div
                 v-for="(product, index) in details.custom_products"
                 :key="index"
@@ -81,7 +79,7 @@
             >
                 <input
                     v-model="product.name"
-                    placeholder="Name"
+                    placeholder="Nume"
                     class="col-span-2 border border-gray-300 rounded-md px-2 py-1"
                 />
                 <input
@@ -93,19 +91,19 @@
                 <input
                     v-model.number="product.protein"
                     type="number"
-                    placeholder="Protein"
+                    placeholder="Proteine"
                     class="border border-gray-300 rounded-md px-2 py-1"
                 />
                 <input
                     v-model.number="product.carbs"
                     type="number"
-                    placeholder="Carbs"
+                    placeholder="Carbohidrați"
                     class="border border-gray-300 rounded-md px-2 py-1"
                 />
                 <input
                     v-model.number="product.fats"
                     type="number"
-                    placeholder="Fats"
+                    placeholder="Grăsimi"
                     class="border border-gray-300 rounded-md px-2 py-1"
                 />
                 <div class="text-right">
@@ -114,7 +112,7 @@
                         type="button"
                         class="text-red-500 text-xs hover:text-red-700"
                     >
-                        Remove
+                        Șterge
                     </button>
                 </div>
             </div>
@@ -123,16 +121,16 @@
         <!-- Nutrition Summary -->
         <div class="text-sm text-gray-600 border-t pt-4">
             <p>
-                Total Calories: <strong>{{ summary.calories }}</strong>
+                Calorii totale: <strong>{{ summary.calories }}</strong>
             </p>
             <p>
-                Proteins: <strong>{{ summary.protein }}g</strong>
+                Proteine: <strong>{{ summary.protein }}g</strong>
             </p>
             <p>
-                Carbs: <strong>{{ summary.carbs }}g</strong>
+                Carbohidrați: <strong>{{ summary.carbs }}g</strong>
             </p>
             <p>
-                Fats: <strong>{{ summary.fats }}g</strong>
+                Grăsimi: <strong>{{ summary.fats }}g</strong>
             </p>
         </div>
     </div>
@@ -164,7 +162,7 @@ const removeCustomProduct = (index) => {
 
 const summary = computed(() => {
     const selected = availableProducts.value.filter((p) =>
-        details.value.snacks.includes(p.id)
+        details.value.snacks.includes(p.link)
     );
     const all = [...selected, ...details.value.custom_products];
     return {
@@ -175,8 +173,11 @@ const summary = computed(() => {
     };
 });
 
-watch(summary, (newSummary) => {
-    details.value.total_nutrition = newSummary;
-}, { immediate: true });
-
+watch(
+    summary,
+    (newSummary) => {
+        details.value.total_nutrition = newSummary;
+    },
+    { immediate: true }
+);
 </script>

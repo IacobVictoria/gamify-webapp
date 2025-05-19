@@ -2,7 +2,7 @@
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                🏅 Admin Dashboard – Badges Manager ✨
+                🏅 Panou Admin – Gestionare Insigne ✨
             </h2>
         </template>
         <div class="py-12">
@@ -11,14 +11,14 @@
                     :href="route('admin-gamification.badges.create')"
                     class="inline-block no-underline px-4 py-2 mb-16 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75"
                 >
-                    Create badge
+                    Creare Insignă
                 </inertia-link>
 
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <GenericExpandedList
                         :items="badges"
-                        :title="'Badges for users'"
-                        :description="'Show all Badges available'"
+                        :title="'Insigne pentru utilizatori'"
+                        :description="'Afișează toate insignele disponibile'"
                         :columns="columns"
                         :getRoute="'admin-gamification.badges.index'"
                         :extraLabel="detailsLabel"
@@ -59,30 +59,30 @@ export default {
     computed: {
         columns() {
             return [
-                { name: "name", label: "Badge" },
-                { name: "score", label: "Score", sorting: true },
-                { name: "category", label: "Category" },
-                { name: "created_at", label: "created_at", sorting: true },
+                { name: "name", label: "Insignă" },
+                { name: "score", label: "Scor", sorting: true },
+                { name: "category", label: "Categorie" },
+                { name: "created_at", label: "Data Creării", sorting: true },
             ];
         },
 
         detailsLabel() {
-            return [{ name: "description", label: "Description" }];
+            return [{ name: "description", label: "Descriere" }];
         },
 
         filters() {
             return [
                 {
                     model: "searchName",
-                    label: "Search by user name",
+                    label: "Caută după nume insignă",
                     type: "text",
-                    placeholder: "Search by name",
+                    placeholder: "Introduceți nume insignă",
                 },
                 {
                     model: "searchCategory",
-                    label: "Search by category",
+                    label: "Caută după categorie",
                     type: "select",
-                    placeholder: "Select category",
+                    placeholder: "Selectați o categorie",
                     options: this.categories.map((c) => ({
                         value: c.value,
                         label: c.label,

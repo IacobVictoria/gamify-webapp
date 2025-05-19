@@ -128,7 +128,7 @@ watch(enabled, (newValue) => {
                                         "
                                         class="no-underline"
                                     >
-                                        🏠 Dashboard
+                                        🏠 Panou Principal
                                     </NavLink>
                                     <NavLink
                                         :href="route('user.user_chat.index')"
@@ -139,7 +139,7 @@ watch(enabled, (newValue) => {
                                         "
                                         class="no-underline"
                                     >
-                                        💬 Social Club
+                                        💬 Camera de Chat
                                     </NavLink>
                                     <NavLink
                                         :href="
@@ -154,7 +154,7 @@ watch(enabled, (newValue) => {
                                         "
                                         class="no-underline"
                                     >
-                                        🏆 Achievements
+                                        🏆 Realizări
                                     </NavLink>
                                     <NavLink
                                         :href="
@@ -167,7 +167,7 @@ watch(enabled, (newValue) => {
                                         "
                                         class="no-underline"
                                     >
-                                        🛒 Shopping Center
+                                        🛒 Cumpărături
                                     </NavLink>
                                     <NavLink
                                         :href="
@@ -182,7 +182,7 @@ watch(enabled, (newValue) => {
                                         "
                                         class="no-underline"
                                     >
-                                        🎮 Explore Games
+                                        🎮 Jocuri
                                     </NavLink>
                                 </template>
                                 <template
@@ -194,7 +194,7 @@ watch(enabled, (newValue) => {
                                             route().current('admin.dashboard')
                                         "
                                     >
-                                        Dashboard
+                                        Panou Principal
                                     </NavLink>
                                     <NavLink
                                         :href="
@@ -206,7 +206,7 @@ watch(enabled, (newValue) => {
                                             )
                                         "
                                     >
-                                        Control Panel
+                                        Panou de Control
                                     </NavLink>
                                     <NavLink
                                         :href="route('admin.products.index')"
@@ -216,7 +216,7 @@ watch(enabled, (newValue) => {
                                             )
                                         "
                                     >
-                                        Products
+                                        Produse
                                     </NavLink>
                                     <NavLink
                                         :href="
@@ -228,7 +228,7 @@ watch(enabled, (newValue) => {
                                             )
                                         "
                                     >
-                                        Client Orders
+                                        Comenzi Clienți
                                     </NavLink>
                                     <NavLink
                                         :href="
@@ -242,7 +242,7 @@ watch(enabled, (newValue) => {
                                             )
                                         "
                                     >
-                                        Supplier Orders
+                                        Comenzi Furnizori
                                     </NavLink>
                                     <NavLink
                                         :href="route('admin.suppliers.index')"
@@ -252,7 +252,7 @@ watch(enabled, (newValue) => {
                                             )
                                         "
                                     >
-                                        Suppliers
+                                        Furnizori
                                     </NavLink>
                                 </template>
 
@@ -272,7 +272,7 @@ watch(enabled, (newValue) => {
                                             )
                                         "
                                     >
-                                        Dashboard
+                                        Panou Principal
                                     </NavLink>
                                     <NavLink
                                         :href="
@@ -286,7 +286,7 @@ watch(enabled, (newValue) => {
                                             )
                                         "
                                     >
-                                        Game center
+                                        Centru de Jocuri
                                     </NavLink>
                                     <NavLink
                                         :href="
@@ -300,7 +300,7 @@ watch(enabled, (newValue) => {
                                             )
                                         "
                                     >
-                                        Activities Center
+                                        Centru de Activități
                                     </NavLink>
                                     <NavLink
                                         :href="
@@ -314,7 +314,7 @@ watch(enabled, (newValue) => {
                                             )
                                         "
                                     >
-                                        Meetings
+                                        Întâlniri
                                     </NavLink>
                                     <NavLink
                                         :href="
@@ -328,7 +328,7 @@ watch(enabled, (newValue) => {
                                             )
                                         "
                                     >
-                                        Badges
+                                        Insigne
                                     </NavLink>
                                     <NavLink
                                         :href="
@@ -342,7 +342,7 @@ watch(enabled, (newValue) => {
                                             )
                                         "
                                     >
-                                        Medals
+                                        Medalii
                                     </NavLink>
                                 </template>
                                 <template
@@ -357,8 +357,7 @@ watch(enabled, (newValue) => {
                                                 'super-admin.dashboard'
                                             )
                                         "
-                                    >
-                                        Dashboard
+                                        >Panou Principal
                                     </NavLink>
                                     <NavLink
                                         :href="
@@ -370,7 +369,7 @@ watch(enabled, (newValue) => {
                                             )
                                         "
                                     >
-                                        Accounts
+                                        Conturi
                                     </NavLink>
                                     <NavLink
                                         :href="route('super-admin.roles.index')"
@@ -380,7 +379,7 @@ watch(enabled, (newValue) => {
                                             )
                                         "
                                     >
-                                        Roles
+                                        Roluri
                                     </NavLink>
                                 </template>
                             </div>
@@ -491,21 +490,21 @@ watch(enabled, (newValue) => {
                                         <DropdownLink
                                             :href="route('profile.edit')"
                                         >
-                                            Profile
+                                            Profil
                                         </DropdownLink>
                                         <DropdownLink
                                             :href="route('logout')"
                                             method="post"
                                             as="button"
                                         >
-                                            Log Out
+                                            Deconectare
                                         </DropdownLink>
                                         <DropdownLink
                                             :href="route('home')"
                                             method="get"
                                             as="button"
                                         >
-                                            Home
+                                            Acasă
                                         </DropdownLink>
                                         <DropdownLink
                                             v-if="authUserHasRole('User')"
@@ -517,7 +516,7 @@ watch(enabled, (newValue) => {
                                             method="get"
                                             as="button"
                                         >
-                                            ShoppingCart
+                                            Coș de Cumpărături
                                         </DropdownLink>
                                     </template>
                                 </Dropdown>
@@ -581,7 +580,7 @@ watch(enabled, (newValue) => {
                                 :href="route('user.dashboard')"
                                 :active="route().current('user.dashboard')"
                             >
-                                Dashboard
+                                Panou Principal
                             </ResponsiveNavLink>
                         </template>
                         <template v-if="authUserHasRole('Admin')">
@@ -589,7 +588,7 @@ watch(enabled, (newValue) => {
                                 :href="route('admin.dashboard')"
                                 :active="route().current('admin.dashboard')"
                             >
-                                Dashboard
+                                Panou Principal
                             </ResponsiveNavLink>
                         </template>
                     </div>
@@ -607,14 +606,14 @@ watch(enabled, (newValue) => {
 
                         <div class="mt-3 space-y-1">
                             <ResponsiveNavLink :href="route('profile.edit')">
-                                Profile
+                                Profil
                             </ResponsiveNavLink>
                             <ResponsiveNavLink
                                 :href="route('logout')"
                                 method="post"
                                 as="button"
                             >
-                                Log Out
+                               Delogare
                             </ResponsiveNavLink>
                         </div>
                     </div>
@@ -678,7 +677,7 @@ watch(enabled, (newValue) => {
                                             @click="show = false"
                                             class="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                                         >
-                                            <span class="sr-only">Close</span>
+                                            <span class="sr-only">Închide</span>
                                             <XMarkIcon
                                                 class="h-5 w-5"
                                                 aria-hidden="true"

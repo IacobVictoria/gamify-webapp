@@ -1,7 +1,7 @@
 <template>
     <div class="space-y-4 mt-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700">Quick Tip Content</label>
+        <label class="block text-sm font-medium text-gray-700">Conținutul sfatului rapid</label>
         <textarea
           v-model="details.content"
           rows="3"
@@ -10,7 +10,7 @@
         />
       </div>
       <div>
-        <label class="block text-sm font-medium text-gray-700">Tags</label>
+        <label class="block text-sm font-medium text-gray-700">Etichete</label>
         <input
           v-model="details.tags"
           placeholder="Tags (comma separated, e.g. health,nutrition,energy)"

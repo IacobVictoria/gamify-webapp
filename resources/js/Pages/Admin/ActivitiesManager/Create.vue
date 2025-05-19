@@ -7,7 +7,7 @@
                 <h2
                     class="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2"
                 >
-                    🧩 Create Activity
+                    🧩 Creare Activitate
                 </h2>
 
                 <form @submit.prevent="submit">
@@ -16,12 +16,12 @@
                         <div>
                             <label
                                 class="block text-sm font-medium text-gray-700"
-                                >Title</label
+                                >Titlu</label
                             >
                             <input
                                 v-model="form.title"
                                 type="text"
-                                placeholder="Activity Title"
+                                placeholder="Titlu"
                                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
                             />
                         </div>
@@ -30,16 +30,18 @@
                         <div>
                             <label
                                 class="block text-sm font-medium text-gray-700"
-                                >Type</label
+                                >Tip activitate</label
                             >
                             <select
                                 v-model="form.type"
                                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
                             >
-                                <option disabled value="">Select type</option>
-                                <option value="diet">🥗 Diet</option>
-                                <option value="article">📰 Article</option>
-                                <option value="tip">💡 Quick Tip</option>
+                                <option disabled value="">
+                                    Selectează tipul
+                                </option>
+                                <option value="diet">🥗 Dietă</option>
+                                <option value="article">📰 Articol</option>
+                                <option value="tip">💡 Sfat rapid</option>
                             </select>
                         </div>
 
@@ -47,12 +49,12 @@
                         <div>
                             <label
                                 class="block text-sm font-medium text-gray-700"
-                                >Score</label
+                                >Scor</label
                             >
                             <input
                                 v-model="form.score"
                                 type="number"
-                                placeholder="Score points"
+                                placeholder="Scor"
                                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
                             />
                         </div>
@@ -65,16 +67,16 @@
                                 class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                             />
                             <label class="ml-2 block text-sm text-gray-700"
-                                >Published</label
+                                >Publicat</label
                             >
                         </div>
                     </div>
 
                     <!-- Description -->
                     <div class="mt-6">
-                        <label class="block text-sm font-medium text-gray-700"
-                            >Short Description</label
-                        >
+                        <label class="block text-sm font-medium text-gray-700">
+                            Descriere scurtă
+                        </label>
                         <textarea
                             v-model="form.description"
                             rows="3"
@@ -104,7 +106,7 @@
                             type="submit"
                             class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-indigo-500"
                         >
-                            💾 Save Activity
+                            💾 Salvează
                         </button>
                     </div>
                 </form>
@@ -179,7 +181,7 @@ watch(
         if (newType === "tip") {
             form.details = {
                 content: "",
-                tags:""
+                tags: "",
             };
         }
     }
