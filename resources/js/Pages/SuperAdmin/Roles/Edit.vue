@@ -1,10 +1,10 @@
 <template>
     <AuthenticatedLayout>
-        <Head title="Update Role" />
+        <Head title="Actualizare Rol" />
 
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Update Role
+                Actualizare Rol
             </h2>
         </template>
 
@@ -12,7 +12,7 @@
             :updateRoute="getUpdateRoute"
             :fields="fields"
             :initialData="role"
-            :title="'Update Role'"
+            :title="'Actualizare Rol'"
         />
     </AuthenticatedLayout>
 </template>
@@ -39,10 +39,10 @@ export default {
             fields: [
                 {
                     name: "name",
-                    label: "Name",
+                    label: "Nume",
                     type: "input",
                     inputType: "text",
-                    placeholder: "Enter name",
+                    placeholder: "Introduceți numele rolului",
                     colSpan: "sm:col-span-6",
                 },
             ],

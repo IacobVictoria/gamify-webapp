@@ -3,11 +3,20 @@
         <div class="py-12">
             <div class="w-full mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <GenericList :title="'Roles'" :description="'Here you can see all the roles.'"
-                        :items="roles" :entityName="'roles'" :filters="filters" :getRoute="'super-admin.roles.index'"
-                        :createRoute="'super-admin.roles.create'" :editRoute="'super-admin.roles.edit'"
-                        :deleteRoute="'super-admin.roles.destroy'" :columns="columns" :prevFilters="prevFilters"
-                        class="p-4" />
+                    <GenericList
+                        :title="'Roluri'"
+                        :description="'Aici poți vedea toate rolurile.'"
+                        :items="roles"
+                        :entityName="'rol'"
+                        :filters="filters"
+                        :getRoute="'super-admin.roles.index'"
+                        :createRoute="'super-admin.roles.create'"
+                        :editRoute="'super-admin.roles.edit'"
+                        :deleteRoute="'super-admin.roles.destroy'"
+                        :columns="columns"
+                        :prevFilters="prevFilters"
+                        class="p-4"
+                    />
                 </div>
             </div>
         </div>
@@ -15,44 +24,48 @@
 </template>
 
 <script>
-import GenericList from '@/Components/GenericList.vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { CheckIcon } from '@heroicons/vue/24/outline';
-import { Head } from '@inertiajs/vue3';
+import GenericList from "@/Components/GenericList.vue";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import { CheckIcon } from "@heroicons/vue/24/outline";
+import { Head } from "@inertiajs/vue3";
 export default {
-    name: 'SuperAdmin/Roles/List',
+    name: "SuperAdmin/Roles/List",
 
     components: {
         AuthenticatedLayout,
         GenericList,
         Head,
-      
     },
 
     props: {
         roles: {
             type: Object,
-            required: true
+            required: true,
         },
         prevFilters: {
             type: Array,
-            required: true
-        }
+            required: true,
+        },
     },
 
     computed: {
         columns() {
             return [
-                { name: 'name', label: 'Name' },
-                { name: 'created_at', label: 'Created' },
+                { name: "name", label: "Nume" },
+                { name: "created_at", label: "Creat la" },
             ];
         },
 
         filters() {
             return [
-                { model: 'searchName', label: 'Search by Name', type: 'text', placeholder: 'Search by name' },
+                {
+                    model: "searchName",
+                    label: "Caută după nume",
+                    type: "text",
+                    placeholder: "Introduceți numele rolului",
+                },
             ];
         },
     },
-}
+};
 </script>

@@ -1,10 +1,10 @@
 <template>
     <AuthenticatedLayout>
-        <Head title="Update Accounts" />
+        <Head title="Actualizare Conturi" />
 
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Update Accounts
+                Actualizare Conturi
             </h2>
         </template>
 
@@ -12,7 +12,7 @@
             :updateRoute="getUpdateRoute"
             :fields="formFields"
             :initialData="account"
-            :title="'Update Account'"
+            :title="'Actualizare Cont'"
         />
     </AuthenticatedLayout>
 </template>
@@ -44,11 +44,11 @@ export default {
             formFields: [
                 {
                     name: "name",
-                    label: "Name",
+                    label: "Nume",
                     type: "input",
                     inputType: "text",
                     autocomplete: "name",
-                    placeholder: "Enter name",
+                    placeholder: "Introduceți numele",
                     colSpan: "sm:col-span-6",
                 },
                 {
@@ -57,12 +57,12 @@ export default {
                     type: "input",
                     inputType: "email",
                     autocomplete: "email",
-                    placeholder: "Enter email",
+                    placeholder: "Introduceți adresa de email",
                     colSpan: "sm:col-span-6",
                 },
                 {
                     name: "role_ids",
-                    label: "Roles",
+                    label: "Roluri",
                     type: "checkbox-group",
                     options: this.roles.map((role) => ({
                         value: role.id,
@@ -72,21 +72,21 @@ export default {
                 },
                 {
                     name: "password",
-                    label: "Password",
+                    label: "Parolă",
                     type: "input",
                     inputType: "password",
                     autocomplete: "new-password",
                     hint: "Lăsați câmpul gol dacă nu doriți să schimbați parola.",
-                    placeholder: "Enter password",
+                    placeholder: "Introduceți parola",
                     colSpan: "sm:col-span-6",
                 },
                 {
                     name: "password_confirmation",
-                    label: "Confirm Password",
+                    label: "Confirmare Parolă",
                     type: "input",
                     inputType: "password",
                     autocomplete: "new-password",
-                    placeholder: "Confirm password",
+                    placeholder: "Confirmați parola",
                     colSpan: "sm:col-span-6",
                 },
             ],

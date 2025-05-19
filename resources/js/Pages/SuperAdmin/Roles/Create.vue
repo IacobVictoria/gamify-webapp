@@ -1,49 +1,46 @@
 <template>
     <AuthenticatedLayout>
-
-        <Head title="Create Roles" />
+        <Head title="Creare Rol" />
 
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create Roles</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Creare Rol
+            </h2>
         </template>
 
-        <GenericCreateForm 
-        :fields="fields" 
-        :createRoute="createRoute" 
-        :title="'Create Role'" 
-    />
+        <GenericCreateForm
+            :fields="fields"
+            :createRoute="createRoute"
+            :title="'Creare Rol'"
+        />
     </AuthenticatedLayout>
-
 </template>
 
 <script>
-import GenericCreateForm from '@/Components/GenericCreateForm.vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import GenericCreateForm from "@/Components/GenericCreateForm.vue";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import { Head } from "@inertiajs/vue3";
 
 export default {
     components: {
         GenericCreateForm,
         Head,
         AuthenticatedLayout,
-
     },
     data() {
         return {
-            createRoute: route('super-admin.roles.store'),
-
+            createRoute: route("super-admin.roles.store"),
             fields: [
                 {
-                    name: 'name',
-                    label: 'Name',
-                    type: 'input',
-                    inputType: 'text',
-                    autocomplete: 'name',
-                    placeholder: 'Enter name',
-                    colSpan: 'sm:col-span-6'
-                }
-            ]
-
+                    name: "name",
+                    label: "Nume",
+                    type: "input",
+                    inputType: "text",
+                    autocomplete: "name",
+                    placeholder: "Introduceți numele",
+                    colSpan: "sm:col-span-6",
+                },
+            ],
         };
     },
 };
