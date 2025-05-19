@@ -16,7 +16,9 @@
                         🛒 Comenzi medii per utilizator și valoarea medie a
                         coșului
                     </li>
-                    <li>💬 Wishlist, reviews, likes, comments</li>
+                    <li>
+                        💬 Listă de dorințe, recenzii, aprecieri, comentarii
+                    </li>
                     <li>⏳ Timp între prima vizită și prima achiziție</li>
                     <li>🎯 Promoții vs. fără promoții</li>
                 </ul>

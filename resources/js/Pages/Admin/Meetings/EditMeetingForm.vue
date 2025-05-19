@@ -41,7 +41,7 @@
                             >
                                 <div>
                                     <label class="block text-gray-700"
-                                        >Title:</label
+                                        >Titlu:</label
                                     >
                                     <input
                                         v-model="form.title"
@@ -52,7 +52,7 @@
 
                                 <div>
                                     <label class="block text-gray-700"
-                                        >Description:</label
+                                        >Descriere:</label
                                     >
                                     <textarea
                                         v-model="form.description"
@@ -63,7 +63,7 @@
 
                                 <div>
                                     <label class="block text-gray-700"
-                                        >Meeting Date:</label
+                                        >Data întâlnirii:</label
                                     >
                                     <input
                                         type="datetime-local"
@@ -76,7 +76,7 @@
 
                                 <div>
                                     <label class="block text-gray-700"
-                                        >Period:</label
+                                        >Perioada:</label
                                     >
                                     <select
                                         v-model="form.period"
@@ -94,7 +94,7 @@
 
                                 <div>
                                     <label class="block text-gray-700"
-                                        >Categories:</label
+                                        >Categorii:</label
                                     >
                                     <select
                                         v-model="form.report_category_ids"
@@ -157,7 +157,7 @@ const props = defineProps({
     categories: Array,
     periods: Array,
     selectedDate: Date,
-    editRoute: String
+    editRoute: String,
 });
 
 const emit = defineEmits(["close"]);
@@ -199,14 +199,13 @@ function formatDate(dateTime) {
 
     const date = new Date(dateTime);
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
 
     return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
-
 
 function submitForm() {
     form.start = formatDate(form.start);

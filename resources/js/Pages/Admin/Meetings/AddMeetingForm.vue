@@ -35,7 +35,7 @@
                                 <DialogTitle
                                     class="text-xl font-semibold text-gray-800 mb-2"
                                 >
-                                    🗓️ Adaugă Meeting
+                                    🗓️ Adaugă Întâlnire
                                 </DialogTitle>
 
                                 <form
@@ -44,7 +44,7 @@
                                 >
                                     <div>
                                         <label class="block text-gray-700"
-                                            >Title Meeting:</label
+                                            >Titlu:</label
                                         >
                                         <input
                                             type="text"
@@ -67,7 +67,7 @@
 
                                     <div>
                                         <label class="block text-gray-700"
-                                            >Start Time:</label
+                                            >Ora de început:</label
                                         >
                                         <input
                                             type="datetime-local"
@@ -172,7 +172,7 @@ const props = defineProps({
     categories: Array,
     periods: Array,
     isPastDate: Boolean,
-    addRoute: String
+    addRoute: String,
 });
 const now = new Date();
 const startTimeMin = `${now.getFullYear()}-${String(

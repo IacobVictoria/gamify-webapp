@@ -3,7 +3,7 @@
         <!-- Titlu + Butoane Scroll -->
         <div class="flex justify-between items-center mb-3">
             <h2 class="text-lg font-semibold text-gray-700">
-                Most Played Quizzes (Last 7 Days)
+                Quizuri Cel Mai Des Jucate (Ultimele 7 Zile)
             </h2>
             <div class="flex space-x-1">
                 <button
@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <!-- Carousel -->
+        <!-- Carusel -->
         <div
             v-if="quizzes.length > 0"
             ref="carousel"
@@ -34,7 +34,7 @@
             >
                 <img
                     :src="quiz.image"
-                    alt="Quiz Image"
+                    alt="Imagine Quiz"
                     class="w-32 h-32 object-cover rounded-md mb-2"
                 />
 
@@ -42,16 +42,16 @@
                     {{ quiz.title }}
                 </h3>
                 <p class="text-xs text-gray-500">
-                    {{ quiz.appearances }} Plays
+                    {{ quiz.appearances }} jucări
                 </p>
             </div>
         </div>
+
         <div v-else class="text-center text-gray-500 mt-4 italic">
-            💤 No quiz activity recorded this week.
+            💤 Nicio activitate de quiz înregistrată săptămâna aceasta.
         </div>
     </div>
 </template>
-
 <script setup>
 import { ref } from "vue";
 

@@ -1,13 +1,13 @@
 <template>
     <div class="bg-white p-6">
         <h2 class="text-xl font-semibold text-gray-900 mb-5">
-            📊 Weekly Gamification Insights
+            📊 Statistici Gamificare - Săptămâna Curentă
         </h2>
 
-        <!-- Top Badges Earned -->
+        <!-- Cele mai obținute badge-uri -->
         <div class="mb-6">
             <h3 class="text-lg font-bold text-gray-800 mb-3">
-                🏅 Most Earned Badges
+                🏅 Badge-uri Cele Mai Obținute
             </h3>
             <div class="flex justify-around gap-4">
                 <div
@@ -26,21 +26,21 @@
                     </p>
                     <img
                         :src="badge.image"
-                        alt="Badge Image"
+                        alt="Imagine Badge"
                         class="w-14 h-14 rounded-md mt-2 mb-1"
                     />
                     <p class="text-xs font-semibold text-center text-gray-800">
                         {{ badge.name }}
                     </p>
-                    <p class="text-xs text-gray-500">{{ badge.count }} times</p>
+                    <p class="text-xs text-gray-500">{{ badge.count }} ori</p>
                 </div>
             </div>
         </div>
 
-        <!-- Top Rated Quizzes -->
+        <!-- Cele mai apreciate quizuri -->
         <div class="mb-6">
             <h3 class="text-lg font-bold text-gray-800 mb-3">
-                🧠 Highest Rated Quizzes
+                🧠 Quizuri cu Cele Mai Mari Scoruri
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div
@@ -58,14 +58,14 @@
             </div>
         </div>
 
-        <!-- Weekly Badge + Medal Count -->
+        <!-- Număr badge-uri & medalii acordate -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="bg-green-50 p-4 rounded-md shadow">
                 <h4 class="text-lg font-bold text-green-700">
                     {{ variousStats.weeklyBadgesCount }}
                 </h4>
                 <p class="text-sm text-gray-600 font-medium">
-                    Badges Awarded This Week
+                    Badge-uri acordate săptămâna aceasta
                 </p>
             </div>
             <div class="bg-yellow-50 p-4 rounded-md shadow">
@@ -73,13 +73,12 @@
                     {{ variousStats.weeklyMedalsCount }}
                 </h4>
                 <p class="text-sm text-gray-600 font-medium">
-                    Medals Awarded This Week
+                    Medalii acordate săptămâna aceasta
                 </p>
             </div>
         </div>
     </div>
 </template>
-
 <script>
 export default {
     props: {

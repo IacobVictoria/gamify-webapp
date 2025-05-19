@@ -6,9 +6,10 @@
                 <h1
                     class="text-2xl font-bold text-blue-700 flex items-center justify-center"
                 >
-                    ✍️ Let's Create an Awesome Quiz!
+                    ✍️ Creează un Quiz Grozav!
                 </h1>
             </div>
+
             <!-- Tips & Tricks (Coloana dreaptă) -->
             <div
                 class="bg-yellow-50 p-6 rounded-md shadow-md border border-yellow-200 flex flex-col justify-center"
@@ -16,7 +17,7 @@
                 <h2
                     class="font-bold text-yellow-700 flex items-center text-lg mb-4"
                 >
-                    💡 Quick Tips for a Great Quiz!
+                    💡 Sfaturi rapide pentru un quiz reușit!
                 </h2>
                 <ul
                     class="list-disc list-inside text-base text-gray-800 space-y-3"
@@ -24,32 +25,33 @@
                     <li>
                         🧐
                         <span class="font-semibold"
-                            >Make sure your questions are clear and
+                            >Asigură-te că întrebările sunt clare și
                             concise.</span
                         >
                     </li>
                     <li>
                         🔢
                         <span class="font-semibold"
-                            >Provide at least four answer choices.</span
+                            >Oferă cel puțin patru variante de răspuns.</span
                         >
                     </li>
                     <li>
                         🎯
                         <span class="font-semibold"
-                            >Balance between easy and difficult questions.</span
+                            >Combină întrebări ușoare și dificile.</span
                         >
                     </li>
                     <li>
                         💡
                         <span class="font-semibold"
-                            >Add some fun & creative questions.</span
+                            >Adaugă întrebări creative și distractive.</span
                         >
                     </li>
                     <li>
                         🏆
                         <span class="font-semibold"
-                            >Assign logical points for each question.</span
+                            >Atribuie punctaje logice pentru fiecare
+                            întrebare.</span
                         >
                     </li>
                 </ul>
@@ -59,15 +61,15 @@
             <div
                 class="col-span-2 p-12 bg-white shadow-md rounded-lg border border-gray-200"
             >
-                <h2 class="text-lg font-semibold mb-4">📋 Quiz Details</h2>
+                <h2 class="text-lg font-semibold mb-4">📋 Detalii Quiz</h2>
 
                 <div class="mb-3">
                     <label class="block text-gray-600 font-medium text-sm mb-1"
-                        >Quiz Title</label
+                        >Titlu Quiz</label
                     >
                     <input
                         v-model="quizTitle"
-                        placeholder="Give your quiz an engaging title"
+                        placeholder="Alege un titlu atractiv"
                         class="w-full p-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-400"
                     />
                     <p v-if="errors.title" class="text-red-500 text-xs mt-1">
@@ -77,11 +79,11 @@
 
                 <div class="mb-3">
                     <label class="block text-gray-600 font-medium text-sm mb-1"
-                        >Quiz Description</label
+                        >Descriere Quiz</label
                     >
                     <textarea
                         v-model="quizDescription"
-                        placeholder="Describe what this quiz is about..."
+                        placeholder="Descreie scopul quiz-ului..."
                         class="w-full p-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-400"
                     ></textarea>
                     <p
@@ -91,9 +93,10 @@
                         ⚠️ {{ errors.description }}
                     </p>
                 </div>
+
                 <div class="mb-3">
                     <label class="block text-gray-600 font-medium text-sm mb-1"
-                        >Difficulty</label
+                        >Dificultate</label
                     >
                     <select
                         v-model="quizDifficulty"
@@ -117,6 +120,7 @@
                         ⚠️ {{ errors.difficulty }}
                     </p>
                 </div>
+
                 <div class="mb-3">
                     <label
                         class="flex items-center gap-3 text-gray-600 font-medium text-sm mb-1"
@@ -126,7 +130,7 @@
                             v-model="isPublished"
                             class="form-checkbox h-5 w-5 text-green-500"
                         />
-                        <span>✅ Mark quiz as published</span>
+                        <span>✅ Publică quiz-ul</span>
                     </label>
                 </div>
 
@@ -134,13 +138,13 @@
                     @click="openQuestionModal"
                     class="w-[16em] bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 text-sm rounded flex items-center justify-center transition"
                 >
-                    ➕ Add New Question
+                    ➕ Adaugă întrebare nouă
                 </button>
 
                 <!-- Lista întrebărilor -->
                 <div class="mt-6 max-h-[19vh] overflow-y-auto pr-2">
                     <h5 class="text-md font-semibold mb-2">
-                        📝 Your Questions
+                        📝 Întrebările tale
                     </h5>
                     <div
                         v-for="(question, index) in questions"
@@ -150,7 +154,7 @@
                         <h5 class="font-semibold text-gray-800">
                             {{ question.text }}
                             <span class="text-gray-500"
-                                >(🎯 Score: {{ question.score }})</span
+                                >(🎯 Punctaj: {{ question.score }})</span
                             >
                         </h5>
                         <ul class="ml-4 text-gray-600">
@@ -162,7 +166,7 @@
                                 <span
                                     v-if="answer.isCorrect"
                                     class="text-green-500 font-bold"
-                                    >(Correct)</span
+                                    >(Corect)</span
                                 >
                             </li>
                         </ul>
@@ -181,7 +185,7 @@
                         @click="postQuiz"
                         class="w-[16em] bg-green-500 hover:bg-green-600 text-white px-3 py-2 text-sm rounded transition"
                     >
-                        🚀 Post Quiz
+                        🚀 Publică Quiz-ul
                     </button>
                 </div>
             </div>
@@ -196,40 +200,40 @@
                 class="bg-white p-5 rounded-lg shadow-lg w-full max-w-lg mx-auto border border-gray-200"
             >
                 <h2 class="text-xl font-bold text-center mb-3 text-blue-500">
-                    ✏️ Add a New Question
+                    ✏️ Adaugă o întrebare nouă
                 </h2>
 
                 <div class="mb-3">
                     <label class="block text-gray-700 font-medium text-sm mb-1"
-                        >Question</label
+                        >Întrebare</label
                     >
                     <input
                         v-model="newQuestionText"
-                        placeholder="Enter your question here..."
+                        placeholder="Scrie întrebarea aici..."
                         class="w-full p-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-400"
                     />
                 </div>
 
                 <div class="mb-3">
                     <label class="block text-gray-700 font-medium text-sm mb-1"
-                        >Score</label
+                        >Punctaj</label
                     >
                     <input
                         v-model="newQuestionScore"
                         type="number"
-                        placeholder="Set a score"
+                        placeholder="Setează punctajul"
                         class="w-full p-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-400"
                     />
                 </div>
 
                 <h5 class="text-gray-700 font-semibold mb-2">
-                    📝 Possible Answers
+                    📝 Variante de răspuns
                 </h5>
                 <div
                     class="grid grid-cols-3 mb-2 text-sm text-gray-600 font-semibold"
                 >
-                    <div class="col-span-2 text-center">Answer</div>
-                    <div class="text-center">Correct?</div>
+                    <div class="col-span-2 text-center">Răspuns</div>
+                    <div class="text-center">Corect?</div>
                 </div>
 
                 <div
@@ -241,7 +245,7 @@
                         <span class="mr-2">{{ index + 1 }}.</span>
                         <input
                             v-model="answer.text"
-                            placeholder="Answer text"
+                            placeholder="Textul răspunsului"
                             class="flex-1 p-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-400"
                         />
                         <button
@@ -264,7 +268,7 @@
                     @click="addAnswer"
                     class="text-blue-500 mt-2 flex items-center hover:text-blue-600 transition text-sm"
                 >
-                    ➕ Add another answer
+                    ➕ Adaugă alt răspuns
                 </button>
 
                 <div class="flex justify-end mt-4 space-x-2">
@@ -272,19 +276,20 @@
                         @click="saveQuestion"
                         class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 text-sm rounded transition"
                     >
-                        Save
+                        Salvează
                     </button>
                     <button
                         @click="closeQuestionModal"
                         class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 text-sm rounded transition"
                     >
-                        Close
+                        Închide
                     </button>
                 </div>
             </div>
         </div>
     </AuthenticatedLayout>
 </template>
+
 <script>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 

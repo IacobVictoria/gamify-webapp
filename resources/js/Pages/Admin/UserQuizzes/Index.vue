@@ -2,7 +2,7 @@
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                ✍️ Quizzes Manager
+                ✍️ Manager Quizuri
             </h2>
         </template>
         <div class="py-12">
@@ -11,9 +11,8 @@
                     :href="route('admin-gamification.user_quiz.create')"
                     class="inline-block no-underline px-4 py-2 mb-16 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75"
                 >
-                    Create Quiz
+                    Creează Quiz
                 </inertia-link>
-
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <GenericQuizList
                         :items="quizzes"
@@ -53,33 +52,32 @@ export default {
     computed: {
         columns() {
             return [
-                { name: "title", label: "Quiz Title" },
-                { name: "difficulty", label: "Difficulty" },
-                { name: "max_score", label: "Total Score" },
-                { name: "created_at", label: "Created At", sorting: true },
-                { name: 'is_published', label: 'Published' },
+                { name: "title", label: "Titlu Quiz" },
+                { name: "difficulty", label: "Dificultate" },
+                { name: "max_score", label: "Scor Total" },
+                { name: "created_at", label: "Creat la", sorting: true },
+                { name: "is_published", label: "Publicat" },
             ];
         },
-
         filters() {
             return [
                 {
                     model: "searchTitle",
-                    label: "Search by title",
+                    label: "Caută după titlu",
                     type: "text",
-                    placeholder: "Search by title",
+                    placeholder: "Introduceți titlul",
                 },
                 {
                     model: "searchQuestion",
-                    label: "Search by question",
+                    label: "Caută după întrebare",
                     type: "text",
-                    placeholder: "Search by question",
+                    placeholder: "Introduceți întrebarea",
                 },
                 {
                     model: "searchDifficulty",
-                    label: "Search by difficulty",
+                    label: "Caută după dificultate",
                     type: "select",
-                    placeholder: "Select difficulty",
+                    placeholder: "Selectați dificultatea",
                     options: this.difficulties.map((d) => ({
                         value: d.value,
                         label: d.label,
@@ -87,13 +85,13 @@ export default {
                 },
                 {
                     model: "searchPublished",
-                    label: "Search by published",
+                    label: "Caută după publicare",
                     type: "select",
-                    placeholder: "Search by published",
+                    placeholder: "Selectați starea",
                     options: [
-                        { value: "", label: "All" },
-                        { value: "true", label: "Published" },
-                        { value: "false", label: "Unpublished" },
+                        { value: "", label: "Toate" },
+                        { value: "true", label: "Publicate" },
+                        { value: "false", label: "Nepublicate" },
                     ],
                 },
             ];

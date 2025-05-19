@@ -3,7 +3,7 @@
     <AuthenticatedLayout :toggleAdminGamification="toggleAdminGamification">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                🔥 Gamification Admin Dashboard
+                🔥 Panou de Administrare Gamificare
             </h2>
         </template>
 
@@ -14,7 +14,7 @@
                         class="mb-10 w-full bg-[#334155] text-white p-10 text-left"
                     >
                         <span class="text-xl block text-left ml-0"
-                            >Hello, {{ $page.props.user.name }} 👋</span
+                            >Salut, {{ $page.props.user.name }} 👋</span
                         >
                     </div>
 

@@ -6,7 +6,7 @@
         <div
             class="flex items-center justify-center gap-3 mb-6 bg-white px-5 py-3 rounded-lg shadow-sm border"
         >
-            <h2 class="text-base text-gray-600 font-medium">Meeting</h2>
+            <h2 class="text-base text-gray-600 font-medium">Întâlnire</h2>
         </div>
         <div class="flex flex-row gap-8">
             <img
@@ -40,7 +40,7 @@
 
         <div class="flex justify-center items-center gap-2 mb-4">
             <span role="img" aria-label="clock">⏰</span>
-            <span><strong>Date:</strong> {{ calendarMeeting.start }}</span>
+            <span><strong>Data:</strong> {{ calendarMeeting.start }}</span>
             <span>|</span>
             <span><strong>Perioada:</strong> {{ calendarMeeting.period }}</span>
         </div>
@@ -69,7 +69,7 @@
                 @click="editEvent"
                 class="bg-blue-500 px-4 py-2 rounded"
             >
-                ✏️ Edit
+                ✏️ Editează
             </button>
 
             <button
@@ -80,7 +80,7 @@
                 @click="deleteEvent"
                 class="bg-red-500 px-4 py-2 rounded"
             >
-                ❌ Delete
+                ❌ Șterge
             </button>
 
             <button
@@ -88,7 +88,7 @@
                 @click="viewReports"
                 class="bg-green-500 px-4 py-2 rounded"
             >
-                📄 View Reports
+                📄 Rapoarte
             </button>
         </div>
     </div>

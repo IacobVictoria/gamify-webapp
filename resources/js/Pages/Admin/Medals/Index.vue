@@ -2,17 +2,17 @@
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                🎖️ Admin Dashboard – Medals Manager 🥇
+                🎖️ Panou Admin – Gestionare Medalii 🥇
             </h2>
         </template>
         <div class="py-12">
             <div class="w-full mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <GenericList
-                        :title="'Medals'"
-                        :description="'Here you can see all the medals.'"
+                        :title="'Medalii'"
+                        :description="'Aici poți vedea toate medaliile.'"
                         :items="medals"
-                        :entityName="'medals'"
+                        :entityName="'medalie'"
                         :filters="filters"
                         :getRoute="'admin-gamification.medals.index'"
                         :editRoute="'admin-gamification.medals.edit'"
@@ -55,10 +55,10 @@ export default {
     computed: {
         columns() {
             return [
-                { name: "tier", label: "Tier" },
-                { name: "threshold", label: "Min points", sorting: true },
-                { name: "discount", label: "Discount", sorting: true },
-                { name: "created_at", label: "Created", sorting: true },
+                { name: "tier", label: "Nivel" },
+                { name: "threshold", label: "Puncte minime", sorting: true },
+                { name: "discount", label: "Reducere", sorting: true },
+                { name: "created_at", label: "Creat la", sorting: true },
             ];
         },
 
@@ -66,9 +66,9 @@ export default {
             return [
                 {
                     model: "searchTier",
-                    label: "Search by Tier",
+                    label: "Caută după nivel",
                     type: "text",
-                    placeholder: "Search by tier",
+                    placeholder: "Introduceți nivelul",
                 },
             ];
         },
