@@ -37,7 +37,7 @@ class GameEnded implements ShouldBroadcastNow
     public function broadcastWith()
     {
         return [
-            'message' => 'The game has ended!',
+            'message' => 'Jocul s-a terminat!',
             'scores' => $this->scores
         ];
     }

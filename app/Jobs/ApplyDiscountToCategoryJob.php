@@ -41,6 +41,6 @@ class ApplyDiscountToCategoryJob implements ShouldQueue
             $productIds = $products->pluck('id')->toArray();
             dispatch(new ApplyDiscountToProductsBatchJob($productIds, $this->discountPercentage, $this->discountId));
         });
-        dispatch(new BroadcastDiscountAppliedJob("A discount of {$this->discountPercentage}% at category {$this->category}."));
+        dispatch(new BroadcastDiscountAppliedJob("O reducere de {$this->discountPercentage}% la categoria {$this->category}."));
     }
 }
