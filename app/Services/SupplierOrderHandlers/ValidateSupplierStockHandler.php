@@ -18,7 +18,7 @@ class ValidateSupplierStockHandler extends AbstractSupplierOrderHandler
 
     public function handle(?Event $event = null, ?SupplierOrder $order = null)
     {
-        if (!$event || !$order) {
+        if (!$event ) {
             return;
         }
 
