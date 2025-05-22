@@ -3,7 +3,7 @@
         <h3 class="text-lg font-semibold mb-4">⭐ Favorite {{ type }}</h3>
 
         <div v-if="favorites.length === 0">
-            <p class="text-gray-500">No favorite events found.</p>
+            <p class="text-gray-500">Nu s-au găsit evenimente favorite.</p>
         </div>
 
         <ul v-else class="scrollable-list">
@@ -12,7 +12,7 @@
                     fav.title
                 }}</span>
                 <button class="btn-command" @click="editCommand(fav)">
-                    ✏️ Edit
+                    ✏️ Editează
                 </button>
             </li>
         </ul>

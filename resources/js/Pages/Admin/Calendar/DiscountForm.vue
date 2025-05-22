@@ -6,33 +6,33 @@
                 class="btn-favorites"
                 @click="toggleFavorites"
             >
-                ⭐ Favorites
+                ⭐ Favorite
             </button>
             <button
                 v-if="showFavorites"
                 class="btn-back"
                 @click="toggleFavorites"
             >
-                🔙 Back
+                🔙 Înapoi
             </button>
         </div>
         <div v-if="showFavorites">
             <FavoritesEvents
                 :favorites="favoriteDiscounts"
                 :selected-date="selectedDate"
-                :type="'Discounts'"
+                :type="'Discount-uri'"
             >
             </FavoritesEvents>
         </div>
         <div v-else>
             <h3 class="text-base font-semibold text-gray-900">
-                Create Discount
+                Creează Reducere
             </h3>
             <div>
                 <label
                     for="eventDate"
                     class="block text-sm font-medium text-gray-700"
-                    >Event Date</label
+                    >Dată Eveniment</label
                 >
                 <div>{{ props.selectedDate }}</div>
             </div>
@@ -40,20 +40,20 @@
             <input
                 v-model="formData.title"
                 type="text"
-                placeholder="Enter Discount Title"
+                placeholder="Introdu titlul reducerii"
                 class="input mt-2"
             />
             <input
                 v-model="formData.description"
                 type="text"
-                placeholder="Enter Discount Description"
+                placeholder="Introdu descrierea reducerii"
                 class="input mt-2"
             />
             <div>
                 <label
                     for="startTime"
                     class="block text-sm font-medium text-gray-700"
-                    >Start Time</label
+                    >Ora de început</label
                 >
                 <input
                     v-model="formData.start"
@@ -68,7 +68,7 @@
                 <label
                     for="endTime"
                     class="block text-sm font-medium text-gray-700"
-                    >End Time</label
+                    >Ora de final</label
                 >
                 <input
                     v-model="formData.end"
@@ -82,11 +82,11 @@
                 <label
                     for="applyTo"
                     class="block text-sm font-medium text-gray-700"
-                    >Apply To</label
+                    >Aplică pentru</label
                 >
                 <select v-model="formData.applyTo" id="applyTo" class="input">
-                    <option value="all">All Products</option>
-                    <option value="categories">Specific Category</option>
+                    <option value="all">Toate produsele</option>
+                    <option value="categories">ategorie specifică</option>
                 </select>
             </div>
 
@@ -94,7 +94,7 @@
                 <label
                     for="category"
                     class="block text-sm font-medium text-gray-700"
-                    >Select Category</label
+                    >Selectează categoria</label
                 >
                 <select v-model="formData.category" id="category" class="input">
                     <option
@@ -111,23 +111,23 @@
                 <label
                     for="discount"
                     class="block text-sm font-medium text-gray-700"
-                    >Discount Percentage</label
+                    >Procent reducere</label
                 >
                 <input
                     v-model="formData.discount"
                     type="number"
                     id="discount"
-                    placeholder="Enter Discount Percentage"
+                    placeholder="Introdu procentul de reducere"
                     class="input"
                     min="0"
                     max="100"
                 />
             </div>
-            <div>
+            <div class="flex gap-8">
                 <label
                     for="isPublished"
                     class="block text-sm font-medium text-gray-700"
-                    >Publish Event</label
+                    >Publică eveniment</label
                 >
                 <input
                     type="checkbox"
@@ -136,18 +136,16 @@
                     class="input-checkbox"
                 />
             </div>
-            <div class="mt-2">
-                <label class="flex items-center">
-                    <input type="checkbox" v-model="formData.is_recurring" />
-                    <span class="ml-2 text-sm font-medium text-gray-700"
-                        >Make it Recurring</span
-                    >
-                </label>
+            <div class="mt-2 flex gap-4">
+                <label class="text-sm font-medium text-gray-700"
+                    >Recurent</label
+                >
+                <input type="checkbox" v-model="formData.is_recurring" />
             </div>
 
             <div v-if="formData.is_recurring" class="mt-2">
                 <label class="block text-sm font-medium text-gray-700"
-                    >Recurring Interval</label
+                    >Interval recurent</label
                 >
 
                 <div class="flex gap-4 mt-2">
@@ -158,7 +156,7 @@
                             value="weekly"
                             class="mr-2"
                         />
-                        Weekly
+                        Săptămânal
                     </label>
                     <label class="flex items-center">
                         <input
@@ -167,7 +165,7 @@
                             value="monthly"
                             class="mr-2"
                         />
-                        Monthly
+                        Lunar
                     </label>
                 </div>
                 <div v-if="recurringError" class="text-red-500 text-sm mt-2">
@@ -180,7 +178,7 @@
                     class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
                     @click="submitForm"
                 >
-                    Submit
+                    Trimite
                 </button>
 
                 <button
@@ -188,7 +186,7 @@
                     class="inline-flex w-full justify-center mt-3 rounded-md bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-200"
                     @click="closeForm"
                 >
-                    Close
+                    Închide
                 </button>
             </div>
         </div>
@@ -253,7 +251,7 @@ async function validateRecurringInterval() {
 
     if (formData.recurring_interval === "weekly" && eventDuration.value > 7) {
         recurringError.value =
-            "❌ Weekly recurrence is not allowed for events longer than 7 days!";
+            "❌ Recurența săptămânală nu este permisă pentru evenimente mai lungi de 7 zile!";
         await nextTick(() => {
             formData.recurring_interval = null;
         });
@@ -262,7 +260,7 @@ async function validateRecurringInterval() {
         eventDuration.value > 28
     ) {
         recurringError.value =
-            "❌ Monthly recurrence is not allowed for events longer than 28 days!";
+            "❌ Recurența lunară nu este permisă pentru evenimente mai lungi de 28 de zile!";
         await nextTick(() => {
             formData.recurring_interval = null;
         });

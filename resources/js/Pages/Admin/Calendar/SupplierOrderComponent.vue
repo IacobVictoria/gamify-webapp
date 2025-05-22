@@ -1,10 +1,10 @@
 <template>
   <div v-if="!showModal && !orderDeleted" class="order" :class="{ 'ghost-event': calendarEvent.isGhost }">
     <div v-if="calendarEvent.isGhost" class="ghost-banner">
-      👻 This is a preview of a future recurring event. Not yet listed.
+      👻 Aceasta este o previzualizare a unui eveniment recurent viitor. Nu este încă listat.
     </div>
     <div v-if="parsedDetails?.fromFavorites" class="from-favorites">
-      ⭐ From Favorites!
+      ⭐ Din Favorite!
     </div>
 
     <div class="order-header">
@@ -19,15 +19,15 @@
 
     <p class="order-time">
       <span role="img" aria-label="clock">⏰</span>
-      <strong>Start:</strong> {{ formattedStartTime }} |
-      <strong>End:</strong> {{ formattedEndTime }}
+      <strong>Începe:</strong> {{ formattedStartTime }} |
+      <strong>Se termină:</strong> {{ formattedEndTime }}
     </p>
 
     <div v-if="parsedDetails">
       <div class="order-details">
         <h4 class="text-lg font-semibold">Order Details</h4>
-        <p><strong>Supplier:</strong> {{ parsedDetails.supplierName }}</p>
-        <p><strong>Products:</strong></p>
+        <p><strong>Furnizor:</strong> {{ parsedDetails.supplierName }}</p>
+        <p><strong>Produse:</strong></p>
         <ul>
           <li v-for="(item, index) in parsedDetails.productQuantities" :key="index">
             {{ item.productName }}: {{ item.quantity }}
@@ -38,21 +38,21 @@
 
     <div v-if="calendarEvent.status != 'CLOSED' && !calendarEvent.isGhost && calendarEvent.user_id === $page.props.user.id" class="order-actions">
       <button  v-if="!parsedDetails?.fromFavorites" @click="editOrder" class="edit-btn">✏️ Edit</button>
-      <button @click="deleteOrder" class="delete-btn">❌ Delete</button>
+      <button @click="deleteOrder" class="delete-btn">❌ Șterge</button>
     </div>
     <div class="order-header-buttons">
       <button v-if="!parsedDetails?.fromFavorites && !calendarEvent.isGhost" @click="toggleFavorite"
         :class="{ 'favorite-btn': !favourite, 'unfavorite-btn': favourite }">
-        {{ favourite ? '⭐ Favorited' : '⭐ Add to Favorites' }}
+        {{ favourite ? '⭐ Favorit' : '⭐ Adaugă la Favorite' }}
       </button>
 
       <button v-if="calendarEvent.status === 'CLOSED' && parsedDetails?.s3_path && !calendarEvent.isGhost" class="invoice-btn"
         @click="openInvoice">
-        📄 See Invoice
+        📄 Vezi Factura
       </button>
        <!-- Buton "Stop Recurrence" doar pentru ultimul eveniment recurent -->
      <div v-if="calendarEvent?.is_last_recurring && calendarEvent.user_id === $page.props.user.id" class="recurrence-actions">
-      <button @click="stopRecurrence" class="stop-recurrence-btn">⏹ Stop Recurrence</button>
+      <button @click="stopRecurrence" class="stop-recurrence-btn">⏹ Oprește Recurența</button>
     </div>
     </div>
 

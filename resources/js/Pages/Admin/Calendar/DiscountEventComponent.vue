@@ -5,10 +5,11 @@
         :class="{ 'ghost-event': calendarEvent.isGhost }"
     >
         <div v-if="calendarEvent.isGhost" class="ghost-banner">
-            👻 This is a preview of a future recurring event. Not yet listed.
+            👻 Aceasta este o previzualizare a unui eveniment recurent viitor.
+            Nu este încă listat.
         </div>
         <div v-if="parsedDetails?.fromFavorites" class="from-favorites">
-            ⭐ From Favorites!
+            ⭐ Din Favorite!
         </div>
         <div class="discount-header">
             <img src="/images/event_title.png" alt="" />
@@ -20,18 +21,18 @@
         </div>
         <p class="event-time">
             <span role="img" aria-label="clock">⏰</span>
-            <strong>Start:</strong> {{ calendarEvent.start }} |
-            <strong>End:</strong> {{ calendarEvent.end }}
+            <strong>Începe:</strong> {{ calendarEvent.start }} |
+            <strong>Se termină:</strong> {{ calendarEvent.end }}
         </p>
 
         <div v-if="parsedDetails">
             <div class="discount-details">
-                <h4 class="text-lg font-semibold">Discount Details</h4>
+                <h4 class="text-lg font-semibold">Detalii Reducere</h4>
                 <p><strong>Apply To:</strong> {{ parsedDetails.applyTo }}</p>
                 <p v-if="parsedDetails.applyTo === 'categories'">
-                    <strong>Category:</strong> {{ parsedDetails.category }}
+                    <strong>Categorie:</strong> {{ parsedDetails.category }}
                 </p>
-                <p><strong>Discount:</strong> {{ parsedDetails.discount }}%</p>
+                <p><strong>Reducere:</strong> {{ parsedDetails.discount }}%</p>
             </div>
         </div>
 
@@ -51,9 +52,9 @@
                 @click="editEvent"
                 class="edit-btn"
             >
-                ✏️ Edit
+                ✏️ Editează
             </button>
-            <button @click="deleteEvent" class="delete-btn">❌ Delete</button>
+            <button @click="deleteEvent" class="delete-btn">❌ Șterge</button>
         </div>
         <div class="order-header-buttons">
             <button
@@ -64,7 +65,7 @@
                     'unfavorite-btn': favourite,
                 }"
             >
-                {{ favourite ? "⭐ Favorited" : "⭐ Add to Favorites" }}
+                {{ favourite ? "⭐ Favorit" : "⭐ Adaugă la Favorite" }}
             </button>
         </div>
         <!-- Buton "Stop Recurrence" doar pentru ultimul eveniment recurent -->
@@ -76,7 +77,7 @@
             class="recurrence-actions"
         >
             <button @click="stopRecurrence" class="stop-recurrence-btn">
-                ⏹ Stop Recurrence
+                ⏹ Oprește Recurența
             </button>
         </div>
     </div>

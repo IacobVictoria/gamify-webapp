@@ -18,7 +18,7 @@
                             <StartPage v-if="selectedType === null  &&!isPastDate" @setSelectedType="setSelectedType"
                                 @close="closeModal" />
                             <div v-if="isPastDate" class="bg-red-100 text-red-700 p-3 rounded-md text-center mt-2">
-                                ❌ You have selected a past date. You cannot add events to past dates!
+                               ❌ Ai selectat o dată din trecut. Nu poți adăuga evenimente în date anterioare!
                             </div>
                             <div v-if="selectedType === 'order' ">
                                 <SupplierOrderForm :selectedDate="selectedDate" @closeForm="closeForm"
@@ -35,7 +35,7 @@
                                 <button type="button"
                                     class="inline-flex w-full justify-center mt-3 rounded-md bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-200"
                                     @click="closeModal">
-                                    Cancel
+                                    Anulează
                                 </button>
                             </div>
                         </DialogPanel>

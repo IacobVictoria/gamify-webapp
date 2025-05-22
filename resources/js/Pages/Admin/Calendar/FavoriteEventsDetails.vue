@@ -6,9 +6,9 @@
 
         <!-- Comenzi -->
         <template v-if="type === 'Commands'">
-            <p><strong>Title:</strong> {{ command.title }}</p>
-            <p><strong>Supplier:</strong> {{ command.details.supplierName }}</p>
-            <h4 class="font-semibold mt-3">Products:</h4>
+               <p><strong>Titlu:</strong> {{ command.title }}</p>
+            <p><strong>Furnizor:</strong> {{ command.details.supplierName }}</p>
+            <h4 class="font-semibold mt-3">Produse:</h4>
             <ul>
                 <li
                     v-for="(item, index) in command.details.productQuantities"
@@ -22,7 +22,7 @@
                 <label
                     for="startDate"
                     class="block text-sm font-medium text-gray-700"
-                    >Event Date</label
+                    >Dată Eveniment</label
                 >
                 <input
                     v-model="startDate"
@@ -37,23 +37,23 @@
         <!-- Reduceri -->
         <template v-if="type === 'Discounts'">
             <p>
-                <strong>Applies To:</strong>
+                <strong>Se aplică la:</strong>
                 {{
                     command.details.applyTo === "all"
-                        ? "All Products"
-                        : "Category"
+                        ? "Toate produsele"
+                        : "Categorie"
                 }}
             </p>
             <p v-if="command.details.applyTo === 'categories'">
-                <strong>Category:</strong> {{ command.details.category }}
+                <strong>Categorie:</strong> {{ command.details.category }}
             </p>
-            <p><strong>Discount:</strong> {{ command.details.discount }}%</p>
+            <p><strong>Reducere:</strong> {{ command.details.discount }}%</p>
 
             <div>
                 <label
                     for="startTime"
                     class="block text-sm font-medium text-gray-700"
-                    >Start Time</label
+                    >Ora de început</label
                 >
                 <input
                     v-model="startDateTime"
@@ -68,7 +68,7 @@
                 <label
                     for="endTime"
                     class="block text-sm font-medium text-gray-700"
-                    >End Time</label
+                    >Ora de final</label
                 >
                 <input
                     v-model="endDateTime"
@@ -85,7 +85,7 @@
             <label class="flex items-center">
                 <input type="checkbox" v-model="isRecurring" />
                 <span class="ml-2 text-sm font-medium text-gray-700"
-                    >Make it Recurring</span
+                    >Fă evenimentul recurent</span
                 >
             </label>
         </div>
@@ -93,7 +93,7 @@
         <!-- 🔥 Selectare interval recurență -->
         <div v-if="isRecurring" class="mt-2">
             <label class="block text-sm font-medium text-gray-700"
-                >Recurring Interval</label
+                >Interval de recurență</label
             >
             <div class="flex gap-4 mt-2">
                 <label class="flex items-center">
@@ -103,7 +103,7 @@
                         value="weekly"
                         class="mr-2"
                     />
-                    Weekly
+                     Săptămânal
                 </label>
                 <label class="flex items-center">
                     <input
@@ -112,12 +112,12 @@
                         value="monthly"
                         class="mr-2"
                     />
-                    Monthly
+                     Lunar
                 </label>
             </div>
         </div>
 
-        <button class="btn-submit mt-3" @click="updateCommand">Apply!</button>
+        <button class="btn-submit mt-3" @click="updateCommand">Aplică!</button>
     </div>
 </template>
 
