@@ -2,7 +2,7 @@
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                📊 Admin Dashboard - Control Panel 🔧
+               📊 Panou de Administrare 🔧
             </h2>
         </template>
         <div class="px-24 py-6">
@@ -12,7 +12,7 @@
                     <div
                         class="mt-8 bg-white p-8 flex flex-col md:flex-row items-center justify-between"
                     >
-                        <div class="text-left w-full md:w-2/3">
+                        <div class="text-left w-full md:w-2/3 mr-4">
                             <h3 class="text-2xl font-bold text-gray-900">
                                 📅 Planifică din timp cu calendarul afacerii
                                 tale
@@ -53,7 +53,7 @@
                                 📦 Gestionează stocurile
                             </inertia-link>
                         </div>
-                        <div class="text-left w-full md:w-2/3">
+                        <div class="text-left w-full md:w-2/3 ml-4">
                             <h3 class="text-2xl font-bold text-gray-900">
                                 📦 Urmărește stocurile intrate și ieșite
                             </h3>
@@ -116,9 +116,9 @@
                             </p>
                             <inertia-link
                                 :href="route('admin.nps.survey.index')"
-                                class="mt-8 bg-orange-600 text-white no-underline font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-orange-700 transition duration-300 inline-block"
+                                class="mt-10 bg-orange-600 text-white no-underline font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-orange-700 transition duration-300 inline-block"
                             >
-                                📝 Creează sondaj NPS
+                                📝 Creează sondaj
                             </inertia-link>
                         </div>
                     </div>
