@@ -137,6 +137,7 @@
 <script>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { router } from "@inertiajs/vue3";
+import Swal from "sweetalert2";
 
 export default {
     components: {
@@ -202,16 +203,31 @@ export default {
             );
         },
         deleteWord(word) {
-            if (!confirm(`Ești sigur că vrei să ștergi ${word}?`)) return;
-            this.$inertia.delete(
-                this.route("admin-gamification.hangman_manager.destroy", word),
-                {
-                    preserveScroll: true,
-                    onSuccess: (page) => {
-                        this.words = page.props.words;
-                    },
+            Swal.fire({
+                title: `Ești sigur că vrei să ștergi cuvântul "${word}"?`,
+                text: "Această acțiune nu poate fi anulată!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#e3342f",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Da, șterge-l",
+                cancelButtonText: "Anulează",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.$inertia.delete(
+                        this.route(
+                            "admin-gamification.hangman_manager.destroy",
+                            word
+                        ),
+                        {
+                            preserveScroll: true,
+                            onSuccess: (page) => {
+                                this.words = page.props.words;
+                            },
+                        }
+                    );
                 }
-            );
+            });
         },
         saveEdit() {
             if (!this.editWord.word || !this.editWord.hint) return;

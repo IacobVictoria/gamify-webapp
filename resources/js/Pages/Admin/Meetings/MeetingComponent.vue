@@ -4,28 +4,24 @@
         class="max-w-xl mx-auto bg-white rounded-2xl shadow-2xl p-6"
     >
         <div
-            class="flex items-center justify-center gap-3 mb-6 bg-white px-5 py-3 rounded-lg shadow-sm border"
+            class="flex items-center justify-center gap-3 mb-6 bg-gray-50 px-6 py-4 rounded-xl shadow border border-gray-200"
         >
-            <h2 class="text-base text-gray-600 font-medium">Întâlnire</h2>
-        </div>
-        <div class="flex flex-row gap-8">
-            <img
-                class="h-6 w-6"
-                src="/images/event_title.png"
-                alt="Meeting Icon"
-            />
-            <h3 class="text-xl text-gray-800 font-semibold truncate">
-                {{ calendarMeeting.title }}
-            </h3>
+            <h2 class="text-lg text-gray-700 font-semibold">
+                📅 Întâlnire Programată
+            </h2>
         </div>
 
-        <div class="flex items-start justify-center gap-2 mb-4">
-            <img class="h-6 w-6" src="/images/event_description.png" alt="" />
-            <p class="text-gray-600">{{ calendarMeeting.description }}</p>
+        <div class="order-header flex items-center gap-2 mb-2">
+            <span class="text-xl">🏷️</span>
+            <h3 class="text-xl font-semibold">{{ calendarMeeting.title }}</h3>
         </div>
 
+        <div class="flex items-start gap-2 mb-2">
+            <span class="text-xl">📝</span>
+            <p class="text-gray-700">{{ calendarMeeting.description }}</p>
+        </div>
         <div class="text-center mb-4">
-            <span class="font-medium">Status:</span>
+            <span class="font-medium mr-4">Status:</span>
             <span
                 class="font-semibold"
                 :class="

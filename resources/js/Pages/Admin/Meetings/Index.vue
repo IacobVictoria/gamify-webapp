@@ -46,7 +46,7 @@
             <!-- Sidebar Reports -->
             <div class="flex-1 bg-gray-100 p-4 ml-6">
                 <h3 class="text-lg font-semibold mb-3">
-                    Apasă pe ÎNTÂLNIRI ÎNCHISE pentru a vedea 📂 Rapoartele
+                    Apasă pe ÎNTÂLNIRI ÎNCHISE pentru a vedea 📂 
                 </h3>
                 <div v-if="reportList.length">
                     <ul class="space-y-2">

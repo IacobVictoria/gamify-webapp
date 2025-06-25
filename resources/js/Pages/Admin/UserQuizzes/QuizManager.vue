@@ -6,7 +6,7 @@
                 <h1
                     class="text-3xl font-bold text-blue-700 flex items-center justify-center"
                 >
-                    ✍️ Let's Update this Awesome Quiz!
+                    ✍️ Hai să actualizăm acest quiz!
                 </h1>
             </div>
             <!-- Card pentru Editare Quiz -->
@@ -14,7 +14,7 @@
                 class="col-span-3 p-6 bg-white shadow-md rounded-lg border border-gray-200"
             >
                 <h2 class="text-lg font-semibold mb-4 text-blue-600">
-                    📋 Edit Quiz Details
+                    📋 Editează detalii
                 </h2>
 
                 <div class="grid grid-cols-2 gap-6">
@@ -22,11 +22,11 @@
                     <div>
                         <label
                             class="block text-gray-600 font-medium text-sm mb-1"
-                            >🏷️ Title</label
+                            >🏷️ Titlu</label
                         >
                         <input
                             v-model="quiz.title"
-                            placeholder="Enter quiz title"
+                            placeholder="Titlu"
                             class="w-full p-3 text-sm border rounded focus:ring-2 focus:ring-blue-400"
                         />
                     </div>
@@ -35,11 +35,11 @@
                     <div>
                         <label
                             class="block text-gray-600 font-medium text-sm mb-1"
-                            >📖 Description</label
+                            >📖 Descriere</label
                         >
                         <input
                             v-model="quiz.description"
-                            placeholder="Enter quiz description"
+                            placeholder="Descriere"
                             class="w-full p-3 text-sm border rounded focus:ring-2 focus:ring-blue-400"
                         />
                     </div>
@@ -47,7 +47,7 @@
                     <div>
                         <label
                             class="block text-gray-600 font-medium text-sm mb-1"
-                            >📖 Difficulty</label
+                            >📖 Dificultate</label
                         >
                         <select
                             v-model="quiz.difficulty"
@@ -76,7 +76,7 @@
                                 v-model="quiz.is_published"
                                 class="form-checkbox h-5 w-5 text-green-500"
                             />
-                            <span>✅ Mark this quiz as published</span>
+                            <span>✅ Marchează quiz-ul ca publicat</span>
                         </label>
                     </div>
                 </div>
@@ -87,13 +87,13 @@
                         @click="updateQuiz"
                         class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center transition"
                     >
-                        💾 Update Quiz
+                        💾 Editează Quiz
                     </button>
                     <button
                         @click="deleteQuiz"
                         class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded flex items-center transition"
                     >
-                        🗑️ Delete Quiz
+                        🗑️ Șterge Quiz
                     </button>
                 </div>
             </div>
@@ -102,14 +102,14 @@
                 class="col-span-3 p-6 bg-white shadow-md rounded-lg border border-gray-200"
             >
                 <h2 class="text-lg font-semibold mb-4 text-blue-500">
-                    📝 Quiz Questions
+                    📝 Întrebările
                 </h2>
 
                 <button
                     @click="addNewQuestion"
                     class="w-[16em] bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mb-4 flex items-center justify-center transition"
                 >
-                    ➕ Add New Question
+                    ➕ Adaugă întrebare nouă
                 </button>
 
                 <div class="overflow-hidden rounded-lg shadow-md">
@@ -119,17 +119,17 @@
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                 >
-                                    Question
+                                    Întrebare
                                 </th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                 >
-                                    Score
+                                    Scor
                                 </th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                 >
-                                    Actions
+                                    Acțiuni
                                 </th>
                             </tr>
                         </thead>
@@ -158,13 +158,13 @@
                                             @click="editQuestion(question)"
                                             class="text-blue-500 hover:text-blue-700 flex items-center"
                                         >
-                                            ✏️ Edit
+                                            ✏️ Editează
                                         </button>
                                         <button
                                             @click="deleteQuestion(question)"
                                             class="text-red-500 hover:text-red-700 flex items-center"
                                         >
-                                            🗑️ Delete
+                                            🗑️ Șterge
                                         </button>
                                         <button
                                             @click="toggleAnswers(index)"
@@ -175,7 +175,7 @@
                                                     ? "🔽 Hide"
                                                     : "🔼 Show"
                                             }}
-                                            Answers
+                                            Răspunsuri
                                         </button>
                                     </td>
                                 </tr>
@@ -213,7 +213,7 @@
                                                         deleteAnswer(answer)
                                                     "
                                                 >
-                                                    🗑️ Delete
+                                                    🗑️ Șterge
                                                 </button>
                                             </li>
                                         </ul>

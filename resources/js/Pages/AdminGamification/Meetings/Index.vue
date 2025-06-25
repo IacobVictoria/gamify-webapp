@@ -1,39 +1,61 @@
 <template>
     <AuthenticatedLayout>
-        <div class="text-center rounded-lg p-4 mb-6 ">
-            <h2 class="text-2xl font-semibold mb-4 mt-8">📅 Meetings & Reports Calendar</h2>
+        <div class="text-center rounded-lg p-4 mb-6">
+            <h2 class="text-2xl font-semibold mb-4 mt-8">
+                📅 Calendarul Ședințelor & Rapoartelor
+            </h2>
             <p class="text-gray-700">
-                Select a date to schedule or manage your meetings. You can generate reports in
-                <strong>2 different categories based on Gamification</strong> to be sent directly in <strong>Discord</strong> at the
-                start
-                date:
+                Selectează o dată pentru a programa sau gestiona ședințele tale.
+                Poți genera rapoarte în
+                <strong>2 categorii diferite bazate pe Gamificare</strong> care
+                vor fi trimise direct pe <strong>Discord</strong>
+                la data de început:
             </p>
             <ul class="mt-12 flex justify-center gap-3 flex-wrap">
-                <li class="bg-red-200 text-red-800 px-3 py-1 rounded">📢 Rewards Activity Monthly</li>
-                <li class="bg-teal-200 text-teal-800 px-3 py-1 rounded">🎮 Games Activity Monthly</li>
+                <li class="bg-red-200 text-red-800 px-3 py-1 rounded">
+                    📢 Statistici Recompense Lunar
+                </li>
+                <li class="bg-teal-200 text-teal-800 px-3 py-1 rounded">
+                    🎮 Statistici Jocuri Lunar
+                </li>
             </ul>
         </div>
+
         <div class="flex">
             <!-- Calendar -->
             <div class="flex-1">
                 <ScheduleXCalendar :calendar-app="calendarApp">
                     <template #eventModal="{ calendarEvent }">
                         <div :style="eventModalStyles">
-                            <MeetingComponent :calendarMeeting="calendarEvent" :categories="categories"
-                                :periods="periods" :selectedDate="selectedDate" @showReports="updateReportList">
+                            <MeetingComponent
+                                :calendarMeeting="calendarEvent"
+                                :categories="categories"
+                                :periods="periods"
+                                :selectedDate="selectedDate"
+                                @showReports="updateReportList"
+                            >
                             </MeetingComponent>
                         </div>
                     </template>
                 </ScheduleXCalendar>
             </div>
             <!-- Sidebar Reports -->
-            <div class="flex-1 bg-gray-100 p-4 ml-6">
-                <h3 class="text-lg font-semibold mb-3">Click CLOSED MEETINGS TO CHECK 📂 Reports</h3>
+            <div class="flex-1 p-4 ml-6">
+                <h3 class="text-lg font-semibold mb-3">
+                    Apasă pe ÎNTÂLNIRI ÎNCHISE pentru a verifica 📂
+                </h3>
                 <div v-if="reportList.length">
                     <ul class="space-y-2">
-                        <li v-for="report in reportList" :key="report.id"
-                            class="p-2 bg-white rounded shadow-md cursor-pointer hover:bg-gray-200 transition">
-                            <a :href="report.url" target="_blank" class="flex items-center gap-2 no-underline">
+                        <li
+                            v-for="report in reportList"
+                            :key="report.id"
+                            class="p-2 bg-white rounded shadow-md cursor-pointer hover:bg-gray-200 transition"
+                        >
+                            <a
+                                :href="report.url"
+                                target="_blank"
+                                class="flex items-center gap-2 no-underline"
+                            >
                                 📄 <span>{{ report.name }}</span>
                             </a>
                         </li>
@@ -41,118 +63,122 @@
                 </div>
             </div>
         </div>
-        <AddMeetingForm v-if="showModal" :selectedDate="selectedDate" :showModal="showModal" :categories="categories"
-            @update:showModal="showModal = $event" @submit="handleSubmit" @closeForm="closeModal" :periods="periods"
-            :isPastDate="isPastDate" :add-route="'admin-gamification.meetings.store'" />
+        <AddMeetingForm
+            v-if="showModal"
+            :selectedDate="selectedDate"
+            :showModal="showModal"
+            :categories="categories"
+            @update:showModal="showModal = $event"
+            @submit="handleSubmit"
+            @closeForm="closeModal"
+            :periods="periods"
+            :isPastDate="isPastDate"
+            :add-route="'admin-gamification.meetings.store'"
+        />
 
         <ReportsExplanation></ReportsExplanation>
-
     </AuthenticatedLayout>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
-import { ScheduleXCalendar } from '@schedule-x/vue'
-import { createCalendar, createViewDay, createViewWeek, createViewMonthGrid } from '@schedule-x/calendar'
-import '@schedule-x/theme-default/dist/index.css'
-import { createEventsServicePlugin } from '@schedule-x/events-service'
-import { createEventModalPlugin } from '@schedule-x/event-modal'
-import { createCalendarControlsPlugin } from '@schedule-x/calendar-controls'
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
-import MeetingComponent from './MeetingComponent.vue'
+import { computed, onMounted, ref } from "vue";
+import { ScheduleXCalendar } from "@schedule-x/vue";
+import {
+    createCalendar,
+    createViewDay,
+    createViewWeek,
+    createViewMonthGrid,
+} from "@schedule-x/calendar";
+import "@schedule-x/theme-default/dist/index.css";
+import { createEventsServicePlugin } from "@schedule-x/events-service";
+import { createEventModalPlugin } from "@schedule-x/event-modal";
+import { createCalendarControlsPlugin } from "@schedule-x/calendar-controls";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import MeetingComponent from "./MeetingComponent.vue";
 
-import ReportsExplanation from './ReportsExplanation.vue'
-import AddMeetingForm from '@/Pages/Admin/Meetings/AddMeetingForm.vue'
+import ReportsExplanation from "./ReportsExplanation.vue";
+import AddMeetingForm from "@/Pages/Admin/Meetings/AddMeetingForm.vue";
 
 const eventsServicePlugin = createEventsServicePlugin();
 const eventModal = createEventModalPlugin();
 
-const calendarControls = createCalendarControlsPlugin()
+const calendarControls = createCalendarControlsPlugin();
 
 const props = defineProps({
     meetings: {
         type: Array,
-        required: true
+        required: true,
     },
     categories: {
         type: Array,
-        required: true
+        required: true,
     },
     periods: {
         type: Array,
-        required: true
+        required: true,
     },
-
-})
+});
 
 const reportList = ref([]);
 
 const calendarApp = createCalendar({
-    views: [
-        createViewDay(),
-        createViewWeek(),
-        createViewMonthGrid(),
-    ],
+    views: [createViewDay(), createViewWeek(), createViewMonthGrid()],
     events: props.meetings,
     calendars: {
         personal: {
-            colorName: 'personal',
+            colorName: "personal",
             lightColors: {
-                main: '#f9d71c',
-                container: '#fff5aa',
-                onContainer: '#594800',
+                main: "#f9d71c",
+                container: "#fff5aa",
+                onContainer: "#594800",
             },
             darkColors: {
-                main: '#fff5c0',
-                onContainer: '#fff5de',
-                container: '#a29742',
+                main: "#fff5c0",
+                onContainer: "#fff5de",
+                container: "#a29742",
             },
         },
         work: {
-            colorName: 'work',
+            colorName: "work",
             lightColors: {
-                main: '#f91c45',
-                container: '#ffd2dc',
-                onContainer: '#59000d',
+                main: "#f91c45",
+                container: "#ffd2dc",
+                onContainer: "#59000d",
             },
             darkColors: {
-                main: '#ffc0cc',
-                onContainer: '#ffdee6',
-                container: '#a24258',
+                main: "#ffc0cc",
+                onContainer: "#ffdee6",
+                container: "#a24258",
             },
         },
         leisure: {
-            colorName: 'leisure',
+            colorName: "leisure",
             lightColors: {
-                main: '#1cf9b0',
-                container: '#dafff0',
-                onContainer: '#004d3d',
+                main: "#1cf9b0",
+                container: "#dafff0",
+                onContainer: "#004d3d",
             },
             darkColors: {
-                main: '#c0fff5',
-                onContainer: '#e6fff5',
-                container: '#42a297',
+                main: "#c0fff5",
+                onContainer: "#e6fff5",
+                container: "#42a297",
             },
         },
         school: {
-            colorName: 'school',
+            colorName: "school",
             lightColors: {
-                main: '#1c7df9',
-                container: '#d2e7ff',
-                onContainer: '#002859',
+                main: "#1c7df9",
+                container: "#d2e7ff",
+                onContainer: "#002859",
             },
             darkColors: {
-                main: '#c0dfff',
-                onContainer: '#dee6ff',
-                container: '#426aa2',
+                main: "#c0dfff",
+                onContainer: "#dee6ff",
+                container: "#426aa2",
             },
         },
     },
-    plugins: [
-        eventModal,
-        eventsServicePlugin,
-        calendarControls,
-    ],
+    plugins: [eventModal, eventsServicePlugin, calendarControls],
     callbacks: {
         onClickDate(date) {
             selectedDate.value = date;
@@ -165,23 +191,22 @@ function updateReportList(reports) {
     reportList.value = reports || [];
 }
 
-calendarControls.setView('month-grid');
+calendarControls.setView("month-grid");
 onMounted(() => {
-    console.log(props.events)
+    console.log(props.events);
 });
-const selectedDate = ref(null)
-const showModal = ref(false)
-
+const selectedDate = ref(null);
+const showModal = ref(false);
 
 const eventModalStyles = {
-    boxShadow: '0 0 2em #123'
-}
+    boxShadow: "0 0 2em #123",
+};
 function closeModal() {
-    showModal.value = false
+    showModal.value = false;
 }
 
 function handleSubmit(formData) {
-    closeModal()
+    closeModal();
 }
 
 const today = computed(() => {
