@@ -5,8 +5,8 @@
         </h3>
 
         <!-- Comenzi -->
-        <template v-if="type === 'Commands'">
-               <p><strong>Titlu:</strong> {{ command.title }}</p>
+        <template v-if="type === 'Comenzi'">
+            <p><strong>Titlu:</strong> {{ command.title }}</p>
             <p><strong>Furnizor:</strong> {{ command.details.supplierName }}</p>
             <h4 class="font-semibold mt-3">Produse:</h4>
             <ul>
@@ -35,7 +35,7 @@
         </template>
 
         <!-- Reduceri -->
-        <template v-if="type === 'Discounts'">
+        <template v-if="type === 'Discount-uri'">
             <p>
                 <strong>Se aplică la:</strong>
                 {{
@@ -103,7 +103,7 @@
                         value="weekly"
                         class="mr-2"
                     />
-                     Săptămânal
+                    Săptămânal
                 </label>
                 <label class="flex items-center">
                     <input
@@ -112,7 +112,7 @@
                         value="monthly"
                         class="mr-2"
                     />
-                     Lunar
+                    Lunar
                 </label>
             </div>
         </div>
@@ -134,7 +134,6 @@ const props = defineProps({
     type: String,
 });
 
-// ✅ Variabile pentru recurență
 const isRecurring = ref(false);
 const recurringInterval = ref(null);
 
@@ -177,15 +176,15 @@ const updateCommand = () => {
         title: props.command.title,
         description: props.command.description || "",
         start:
-            props.type === "Commands"
+            props.type === "Comenzi"
                 ? startDate.value
                 : formatDate(startDateTime.value),
         end:
-            props.type === "Commands"
+            props.type === "Comenzi"
                 ? startDate.value
                 : formatDate(endDateTime.value),
         details: JSON.stringify(updatedDetails),
-        ...(props.type === "Commands"
+        ...(props.type === "Comenzi"
             ? {
                   type: "supplier_order",
                   supplierId: props.command.details.supplierId,
@@ -200,19 +199,17 @@ const updateCommand = () => {
                   discount: props.command.details.discount,
                   calendarId: "leisure",
               }),
-        // 🔥 Adăugăm recurența în payload
+
         is_recurring: isRecurring.value,
         recurring_interval: isRecurring.value ? recurringInterval.value : null,
     };
 
     useForm(payload).post(route("admin.calendar.event.store"), {
         onSuccess: () => {
-            console.log("New entry created successfully!");
+            window.location.reload();
             emit("close");
         },
-        onError: (errors) => {
-            console.error("Failed to create new entry:", errors);
-        },
+        onError: (errors) => {},
     });
 };
 </script>

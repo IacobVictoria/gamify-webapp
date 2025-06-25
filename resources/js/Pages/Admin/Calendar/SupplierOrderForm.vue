@@ -53,6 +53,9 @@
                 placeholder="Introdu titlul comenzii"
                 class="input mt-2"
             />
+            <p v-if="formErrors.title" class="text-red-500 text-sm">
+                {{ formErrors.title }}
+            </p>
 
             <!-- Input pentru detalii comanda -->
             <input
@@ -61,6 +64,9 @@
                 placeholder="Introdu detalii comandă"
                 class="input mt-2"
             />
+            <p v-if="formErrors.description" class="text-red-500 text-sm">
+                {{ formErrors.description }}
+            </p>
 
             <!-- Dropdown pentru furnizori -->
             <div class="mt-2">
@@ -82,6 +88,9 @@
                         {{ supplier.name }}
                     </option>
                 </select>
+                <p v-if="formErrors.supplierId" class="text-red-500 text-sm">
+                    {{ formErrors.supplierId }}
+                </p>
             </div>
 
             <!-- Dropdown pentru produse -->
@@ -106,6 +115,9 @@
                         {{ product.name }}
                     </option>
                 </select>
+                <p v-if="formErrors.products" class="text-red-500 text-sm">
+                    {{ formErrors.products }}
+                </p>
             </div>
 
             <!-- Input pentru cantitatea fiecărui produs selectat -->
@@ -139,12 +151,13 @@
                             @blur="validateQuantity(productId)"
                         />
                     </div>
+                    <p
+                        v-if="formErrors[`quantity_${productId}`]"
+                        class="text-red-500 text-sm"
+                    >
+                        {{ formErrors[`quantity_${productId}`] }}
+                    </p>
                 </div>
-            </div>
-
-            <!-- Eroare de cantitate -->
-            <div v-if="quantityError" class="text-red-500 text-sm mt-2">
-                {{ quantityError }}
             </div>
 
             <div class="mt-2">
@@ -220,7 +233,7 @@ const props = defineProps({
 });
 
 const showFavorites = ref(false);
-
+const formErrors = ref({});
 const formData = useForm({
     title: "",
     start: props.selectedDate,
@@ -233,8 +246,8 @@ const formData = useForm({
     productIds: [],
     productQuantities: {},
     details: "",
-    is_recurring: false, // Inițial, evenimentul NU este recurent
-    recurring_interval: null, // Stocăm dacă e "weekly" sau "monthly"
+    is_recurring: false, 
+    recurring_interval: null, //  "weekly" sau "monthly"
 });
 
 const selectedProducts = ref([]);
@@ -266,17 +279,48 @@ function getMaxQuantity(productId) {
     return product ? product.stock : 1;
 }
 
-function validateQuantity(productId) {
-    const product = selectedProducts.value.find(
-        (product) => product.id === productId
-    );
-    const enteredQuantity = formData.productQuantities[productId];
+function validateForm() {
+    let valid = true;
+    formErrors.value = {};
+    quantityError.value = "";
 
-    if (enteredQuantity > product.stock) {
-        quantityError.value = `Cannot order more than ${product.stock} units of ${product.name}`;
-    } else {
-        quantityError.value = "";
+    if (!formData.title) {
+        formErrors.value.title = "Titlul este obligatoriu.";
+        valid = false;
     }
+
+    if (!formData.description) {
+        formErrors.value.description = "Detaliile sunt obligatorii.";
+        valid = false;
+    }
+
+    if (!formData.supplierId) {
+        formErrors.value.supplierId = "Selectează un furnizor.";
+        valid = false;
+    }
+
+    if (selectedProductIds.value.length === 0) {
+        formErrors.value.products = "Selectează cel puțin un produs.";
+        valid = false;
+    }
+
+    selectedProductIds.value.forEach((productId) => {
+        const product = selectedProducts.value.find((p) => p.id === productId);
+        const quantity = formData.productQuantities[productId];
+
+        if (!quantity || quantity < 1) {
+            formErrors.value[`quantity_${productId}`] =
+                "Introduceți o cantitate validă.";
+            valid = false;
+        } else if (quantity > product.stock) {
+            formErrors.value[
+                `quantity_${productId}`
+            ] = `Maxim ${product.stock} disponibile.`;
+            valid = false;
+        }
+    });
+
+    return valid;
 }
 
 const emits = defineEmits(["closeForm"]);
@@ -286,50 +330,33 @@ function closeForm() {
 }
 
 function submitForm() {
-    let valid = true;
-    quantityError.value = "";
+    if (!validateForm()) return;
 
-    // Check for quantity validity
-    selectedProductIds.value.forEach((productId) => {
-        const product = selectedProducts.value.find(
-            (product) => product.id === productId
-        );
-        const enteredQuantity = formData.productQuantities[productId];
-
-        if (enteredQuantity > product.stock) {
-            valid = false;
-            quantityError.value = `Cannot order more than ${product.stock} units of ${product.name}`;
-        }
-    });
-
-    if (!valid) {
-        return;
-    }
-
-    // Map the selected product IDs to include productName along with the quantity
+    // mapeaza product id cu quantity
     const productsWithQuantities = selectedProductIds.value.map((productId) => {
         const product = selectedProducts.value.find(
             (product) => product.id === productId
         );
         return {
             productId,
-            productName: product ? product.name : "", // Add the product name
+            productName: product ? product.name : "", 
             quantity: formData.productQuantities[productId] || 1,
         };
     });
 
-    formData.productQuantities = productsWithQuantities; // Update formData with product names included
+    formData.productQuantities = productsWithQuantities; 
     const details = {
         supplier: formData.supplierId,
-        supplierName: formData.supplierName, // Add supplier name
-        productQuantities: formData.productQuantities, // Updated with product names
+        supplierName: formData.supplierName,
+        productQuantities: formData.productQuantities, 
     };
 
-    formData.details = JSON.stringify(details); // Store details as a JSON string
+    formData.details = JSON.stringify(details); 
 
-    // Send data to the backend
+   
     formData.post(route("admin.calendar.event.store"), {
         onSuccess: () => {
+            window.location.reload();
             closeForm();
         },
         onError: (errors) => {

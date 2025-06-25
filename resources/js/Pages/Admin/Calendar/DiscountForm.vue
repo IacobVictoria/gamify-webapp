@@ -86,7 +86,7 @@
                 >
                 <select v-model="formData.applyTo" id="applyTo" class="input">
                     <option value="all">Toate produsele</option>
-                    <option value="categories">ategorie specifică</option>
+                    <option value="categories">Categorie specifică</option>
                 </select>
             </div>
 

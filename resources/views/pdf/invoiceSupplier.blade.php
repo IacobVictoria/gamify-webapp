@@ -68,7 +68,7 @@
                         </tr>
                     @else
                         <tr>
-                            <td colspan="4">Produs invalid sau lipsă</td>
+                            <td colspan="4">Produs invalid sau lipsa</td>
                         </tr>
                     @endif
                 @endforeach
@@ -79,7 +79,7 @@
         <h3>Total: {{ number_format($invoiceData['order']->total_price, 2) }} RON</h3>
     </div>
     <div class="footer">
-        <p>&copy; {{ date('Y') }} Compania Mea. Toate drepturile rezervate.</p>
+        <p>&copy; {{ date('Y') }} CrunchyFuel. Toate drepturile rezervate.</p>
     </div>
 </body>
 

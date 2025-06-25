@@ -1,6 +1,6 @@
 <template>
     <div
-        v-if="!showModal && !eventDeleted"
+        v-if="!showModal"
         class="discount"
         :class="{ 'ghost-event': calendarEvent.isGhost }"
     >
@@ -11,24 +11,33 @@
         <div v-if="parsedDetails?.fromFavorites" class="from-favorites">
             ⭐ Din Favorite!
         </div>
-        <div class="discount-header">
-            <img src="/images/event_title.png" alt="" />
-            <h3>{{ calendarEvent.title }}</h3>
+        <div class="discount-header flex items-center gap-2 mb-2">
+            <span class="text-xl">🏷️</span>
+            <h3 class="text-xl font-semibold">{{ calendarEvent.title }}</h3>
         </div>
-        <div class="flex gap-2">
-            <img src="/images/event_description.png" alt="" />
-            <p>{{ calendarEvent.description }}</p>
+
+        <div class="flex items-start gap-2 mb-2">
+            <span class="text-xl">📝</span>
+            <p class="text-gray-700">{{ calendarEvent.description }}</p>
         </div>
+
         <p class="event-time">
             <span role="img" aria-label="clock">⏰</span>
-            <strong>Începe:</strong> {{ calendarEvent.start }} |
-            <strong>Se termină:</strong> {{ calendarEvent.end }}
+            {{ calendarEvent.start }} |
+            {{ calendarEvent.end }}
         </p>
 
         <div v-if="parsedDetails">
             <div class="discount-details">
                 <h4 class="text-lg font-semibold">Detalii Reducere</h4>
-                <p><strong>Apply To:</strong> {{ parsedDetails.applyTo }}</p>
+                <p>
+                    <strong>Aplicat la:</strong>
+                    {{
+                        parsedDetails.applyTo === "categories"
+                            ? "o categorie"
+                            : "toate produsele"
+                    }}
+                </p>
                 <p v-if="parsedDetails.applyTo === 'categories'">
                     <strong>Categorie:</strong> {{ parsedDetails.category }}
                 </p>
@@ -106,7 +115,6 @@ export default {
             showModal: false,
             selectedType: this.calendarEvent.type,
             parsedDetails: this.parseDetails(this.calendarEvent.details),
-            eventDeleted: false, // Flag pentru a urmări dacă evenimentul a fost șters
             favourite: this.calendarEvent.is_favorite,
             is_reccuring: this.calendarEvent?.is_last_recurring ?? false,
         };
@@ -114,9 +122,7 @@ export default {
     components: {
         EditEventModal,
     },
-    mounted() {
-        console.log(this.parsedDetails?.fromFavorites);
-    },
+
     methods: {
         parseDetails(details) {
             try {
@@ -143,7 +149,7 @@ export default {
                 }),
                 {
                     onSuccess: () => {
-                        this.eventDeleted = true;
+                        window.location.reload();
                         this.closeModal();
                     },
                     onError: (error) => {},
@@ -202,17 +208,15 @@ export default {
 
 <style scoped>
 .discount {
-    background-color: #f4f4f9;
     color: #333;
     padding: 15px;
-    border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     font-family: "Arial", sans-serif;
     margin-bottom: 20px;
-    transition: transform 0.3s ease-in-out;
 }
 
 .from-favorites {
+    background-color: #fef3c7;
     color: #333;
     font-weight: bold;
     padding: 8px 12px;
@@ -236,9 +240,6 @@ export default {
     border-radius: 5px;
     text-align: center;
     margin-bottom: 10px;
-}
-.discount:hover {
-    transform: scale(1.02);
 }
 
 .discount-header {
@@ -306,42 +307,70 @@ export default {
 
 .discount-details {
     margin-top: 20px;
-    background-color: #ecf0f1;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 16px 20px;
+    border-radius: 12px;
+    transition: transform 0.2s ease-in-out;
 }
 
 .discount-details h4 {
-    font-size: 1.25rem;
-    margin-bottom: 10px;
+    font-size: 1.35rem;
+    margin-bottom: 12px;
     color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.discount-details h4::before {
+    content: "💸";
+    font-size: 1.4rem;
 }
 
 .discount-details p {
     font-size: 1rem;
-    color: #34495e;
-    margin: 5px 0;
+    color: #2c3e50;
+    margin: 6px 0;
+    padding-left: 12px;
+    position: relative;
+}
+
+.discount-details p::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #3498db;
+    font-weight: bold;
 }
 
 .order-header-buttons {
     margin-top: 1em;
     display: flex;
-    margin-left: auto;
+    justify-content: flex-end;
+    gap: 0.75em;
+    align-items: center;
 }
 
 .favorite-btn {
     background-color: #f1c40f;
     color: white;
-    padding: 8px 12px;
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 0.95rem;
     border: none;
-    margin-bottom: 1em;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .favorite-btn:hover {
     background-color: #f39c12;
+    transform: translateY(-1px);
+}
+
+.favorite-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .unfavorite-btn {

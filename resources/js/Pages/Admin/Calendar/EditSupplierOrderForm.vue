@@ -24,6 +24,9 @@
             placeholder="Introdu titlul comenzii"
             class="input mt-2"
         />
+        <div v-if="formErrors.title" class="text-red-500 text-sm">
+            {{ formErrors.title }}
+        </div>
 
         <!-- Input pentru detalii comanda -->
         <input
@@ -32,6 +35,9 @@
             placeholder="Introdu detalii comandă"
             class="input mt-2"
         />
+        <div v-if="formErrors.description" class="text-red-500 text-sm">
+            {{ formErrors.description }}
+        </div>
 
         <!-- Dropdown pentru furnizori -->
         <div class="mt-2">
@@ -54,6 +60,9 @@
                 </option>
             </select>
         </div>
+        <div v-if="formErrors.supplierId" class="text-red-500 text-sm">
+            {{ formErrors.supplierId }}
+        </div>
 
         <!-- Dropdown pentru produse -->
         <div v-if="selectedProducts.length > 0" class="mt-2">
@@ -75,6 +84,9 @@
                     {{ product.name }}
                 </option>
             </select>
+        </div>
+        <div v-if="formErrors.products" class="text-red-500 text-sm">
+            {{ formErrors.products }}
         </div>
 
         <!-- Input pentru cantitatea fiecărui produs selectat -->
@@ -104,16 +116,16 @@
                         "
                         class="input w-1/3"
                         min="1"
-                        :max="getMaxQuantity(productId)"
                         @blur="validateQuantity(productId)"
                     />
                 </div>
+                <div
+                    v-if="formErrors[`quantity_${productId}`]"
+                    class="text-red-500 text-sm mt-1"
+                >
+                    {{ formErrors[`quantity_${productId}`] }}
+                </div>
             </div>
-        </div>
-
-        <!-- Eroare de cantitate -->
-        <div v-if="quantityError" class="text-red-500 text-sm mt-2">
-            {{ quantityError }}
         </div>
 
         <!-- Opțiuni de recurență -->
@@ -202,6 +214,7 @@ export default {
                 ? details.productQuantities.map((item) => item.productId)
                 : [],
             quantityError: "",
+            formErrors: {},
         };
     },
     watch: {
@@ -232,26 +245,59 @@ export default {
         },
     },
     methods: {
-        getMaxQuantity(productId) {
-            const product = this.selectedProducts.find(
-                (product) => product.id === productId
-            );
-            return product ? product.stock : 1;
-        },
-        validateQuantity(productId) {
-            const product = this.selectedProducts.find(
-                (product) => product.id === productId
-            );
-            const enteredQuantity = this.formData.productQuantities[productId];
+        validateForm() {
+            let valid = true;
+            this.formErrors = {};
 
-            if (enteredQuantity > product.stock) {
-                this.quantityError = `Cannot order more than ${product.stock} units of ${product.name}`;
-            } else {
-                this.quantityError = "";
+            if (!this.formData.title) {
+                this.formErrors.title = "Titlul este obligatoriu.";
+                valid = false;
             }
+
+            if (!this.formData.description) {
+                this.formErrors.description = "Descrierea este obligatorie.";
+                valid = false;
+            }
+
+            if (!this.formData.start) {
+                this.formErrors.start = "Data este obligatorie.";
+                valid = false;
+            }
+
+            if (!this.formData.supplierId) {
+                this.formErrors.supplierId = "Selectează un furnizor.";
+                valid = false;
+            }
+
+            if (this.selectedProductIds.length === 0) {
+                this.formErrors.products = "Selectează cel puțin un produs.";
+                valid = false;
+            }
+
+            for (const productId of this.selectedProductIds) {
+                const quantity = this.formData.productQuantities[productId];
+                const product = this.selectedProducts.find(
+                    (p) => p.id === productId
+                );
+
+                if (!quantity || quantity < 1) {
+                    this.formErrors[
+                        `quantity_${productId}`
+                    ] = `Introduceți o cantitate validă pentru ${product?.name}`;
+                    valid = false;
+                } else if (quantity > product.stock) {
+                    this.formErrors[
+                        `quantity_${productId}`
+                    ] = `Maxim ${product.stock} disponibile din ${product.name}`;
+                    valid = false;
+                }
+            }
+
+            return valid;
         },
         submitForm() {
-            // 🔥 Transformăm `productQuantities` într-un array corect structurat
+            if (!this.validateForm()) return;
+
             const formattedProductQuantities = this.selectedProductIds.map(
                 (productId) => {
                     const product = this.selectedProducts.find(
@@ -275,14 +321,12 @@ export default {
                 productQuantities: formattedProductQuantities,
             });
 
-            console.log("Submitting formData:", this.formData);
-
             this.$inertia.put(
                 route("admin.calendar.event.update", { id: this.formData.id }),
                 {
                     payload: this.formData,
                     preserveScroll: true,
-                    onSuccess: () => this.$emit("closeForm"),
+                    onSuccess: () => window.location.reload(),
                     onError: (errors) => console.error("Errors:", errors),
                 }
             );
