@@ -210,7 +210,9 @@ function formatDate(dateTime) {
 function submitForm() {
     form.start = formatDate(form.start);
     form.put(route(props.editRoute, form.id), {
-        onSuccess: () => emit("close"),
+        onSuccess: () =>  {
+             window.location.reload(); 
+        },
         onError: (error) => console.error(error),
     });
 }

@@ -204,7 +204,7 @@ function submitForm() {
     form.end = formatDate(form.end);
     form.post(route(props.addRoute), {
         onSuccess: () => {
-            closeForm();
+             window.location.reload(); 
         },
         onError: (errors) => {
             console.error("Errors:", errors);

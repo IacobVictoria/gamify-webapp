@@ -1,7 +1,7 @@
 <template>
     <div
         v-if="!showModal && !eventDeleted"
-        class="max-w-xl mx-auto bg-white rounded-2xl shadow-2xl  p-6"
+        class="max-w-xl mx-auto bg-white rounded-2xl shadow-2xl p-6"
     >
         <div
             class="flex items-center justify-center gap-3 mb-6 bg-white px-5 py-3 rounded-lg shadow-sm border"
@@ -155,6 +155,7 @@ export default {
                 {
                     onSuccess: () => {
                         this.eventDeleted = true;
+                        window.location.reload();
                         this.closeModal();
                     },
                     onError: (error) => {

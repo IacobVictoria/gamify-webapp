@@ -48,9 +48,9 @@
                             <select
                                 id="transaction_type"
                                 v-model="filters.transaction_type"
-                                class="border border-gray-300 p-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white"
+                                class="border border-gray-300rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white"
                             >
-                                <option value="">📋 Toate tranzacțiile</option>
+                                <option value="">📋 Toate tranzacțiile </option>
                                 <option value="in">📥 Stock IN</option>
                                 <option value="out">📤 Stock OUT</option>
                             </select>
@@ -64,7 +64,7 @@
                             <select
                                 id="product_id"
                                 v-model="filters.product_id"
-                                class="border border-gray-300 p-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white"
+                                class="border border-gray-300 p-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white overflow-y-auto"
                             >
                                 <option value="">📦 Toate produsele</option>
                                 <option
