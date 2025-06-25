@@ -31,7 +31,6 @@ class UserSurveyController extends Controller
     //Rezultate
     public function storeResults(Request $request)
     {
-        // Validarea datelor primite
         $validated = $request->validate([
             'survey_id' => 'required|uuid',
             'responses' => 'required|array',
@@ -39,18 +38,17 @@ class UserSurveyController extends Controller
 
         $responses = $validated['responses'];
 
-        // Structura răspunsurilor JSON
+
         $formattedResponses = [];
 
         foreach ($responses as $questionId => $response) {
             $formattedResponses[$questionId] = $response;
         }
 
-        // Creează un singur survey_result cu toate răspunsurile
         $surveyResult = SurveyResult::create([
             'id' => Uuid::uuid(),
             'survey_id' => $validated['survey_id'],
-            'responses' => json_encode($formattedResponses), // Salvează răspunsurile ca JSON
+            'responses' => json_encode($formattedResponses), 
             'created_at' => now(),
             'updated_at' => now(),
         ]);

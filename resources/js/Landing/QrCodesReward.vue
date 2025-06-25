@@ -30,7 +30,7 @@
 
                 <button
                     @click="startQrScanner"
-                    class="mt-4 px-6 py-3 text-lg font-semibold bg-[#F45D3A] hover:bg-[#e35c2b] text-white rounded-lg shadow-md transition-all duration-300"
+                    class="mt-14 px-6 py-3 text-lg font-semibold bg-[#F45D3A] hover:bg-[#e35c2b] text-white rounded-lg shadow-md transition-all duration-300"
                 >
                     Scanează produs 📦
                 </button>

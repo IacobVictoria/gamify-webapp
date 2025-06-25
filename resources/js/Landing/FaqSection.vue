@@ -77,14 +77,8 @@ const faqs = ref([
         color: "border-blue-400",
     },
     {
-        question: "Oferiți abonamente?",
-        answer: "Da, oferim planuri flexibile de abonament pentru livrări recurente de gustări.",
-        emoji: "📦",
-        color: "border-yellow-400",
-    },
-    {
         question: "Ce metode de plată acceptați?",
-        answer: "Acceptăm carduri de credit, PayPal și alte metode de plată sigure.",
+        answer: "Acceptăm carduri de credit, plata  fiind una sigură.",
         emoji: "💳",
         color: "border-red-400",
     },
