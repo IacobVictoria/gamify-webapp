@@ -64,8 +64,8 @@
 </head>
 <body>
     <h1>Raport Activitate Utilizatori - {{ $reportData['period'] }}</h1>
-    <h1>Start - {{ $reportData['startDate'] }}  End - {{ $reportData['endDate'] }}</h1>
-
+    <h1>Inceput - {{ $reportData['startDate'] }}</h1>
+     <h1>Sfarsit - {{ $reportData['endDate'] }}</h1>
     <h2>Utilizatori</h2>
     <table>
         <tr><th>Metrica</th><th>Valoare</th></tr>
@@ -73,7 +73,7 @@
         <tr><td>Timp mediu între înregistrare si prima achizitie</td><td>{{ $reportData['avg_days_to_first_order'] }} zile</td></tr>
     </table>
 
-    <h2>Comenzi și Vanzari</h2>
+    <h2>Comenzi si Vanzari</h2>
     <table>
         <tr><th>Metrica</th><th>Valoare</th></tr>
         <tr><td>Media comenzilor per utilizator</td><td>{{ $reportData['avg_orders_per_user'] }}</td></tr>
@@ -101,7 +101,7 @@
             @endforeach
         </table>
     @else
-        <p class="small-text center">📌 Nu exista produse adaugate în wishlist în această luna.</p>
+        <p class="small-text center"> Nu exista produse adaugate în wishlist în aceasta luna.</p>
     @endif
 
 </body>
