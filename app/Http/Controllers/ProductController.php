@@ -65,12 +65,15 @@ class ProductController extends Controller
         });
 
         $user = Auth()->user();
-        $friends = $user->allFriends()->map(function ($friend) {
-            return [
-                'name' => $friend->name,
-                'id' => $friend->id,
-            ];
-        });
+        $friends = collect();
+        if ($user) {
+            $friends = $user->allFriends()->map(function ($friend) {
+                return [
+                    'name' => $friend->name,
+                    'id' => $friend->id,
+                ];
+            });
+        }
 
         return Inertia::render('Products/Index', [
             'products' => $products,
