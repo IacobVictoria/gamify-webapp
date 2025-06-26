@@ -105,7 +105,7 @@
             <div class="flex items-center justify-between mt-6">
                 <Link
                     :href="route('login')"
-                    class="text-sm text-gray-700 hover:text-blue-600"
+                    class="text-sm text-gray-700 hover:text-blue-600 no-underline"
                 >
                     🔄 Ai deja un cont?
                 </Link>

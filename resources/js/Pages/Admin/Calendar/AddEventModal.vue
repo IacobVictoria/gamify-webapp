@@ -70,12 +70,15 @@ function setSelectedType(type) {
 }
 
 function closeModal() {
+    window.location.reload();
     emit('update:showModal', false)
     selectedType.value = null
 }
+
 function closeForm() {
     selectedType.value = null
 }
+
 const today = computed(() => {
     const now = new Date();
     now.setHours(0, 0, 0, 0);
@@ -87,9 +90,9 @@ const isPastDate = computed(() => {
     if (!props.selectedDate) return false;
 
     const selected = new Date(props.selectedDate);
-    selected.setHours(0, 0, 0, 0); // Ignorăm orele, verificăm doar ziua
+    selected.setHours(0, 0, 0, 0); 
 
-    return selected < today.value; // Comparăm fără ore
+    return selected < today.value; 
 });
 
 </script>

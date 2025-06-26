@@ -66,8 +66,10 @@
                             <inertia-link :href="route('user.wishlist.index')">
                                 <WishlistLogoSVG></WishlistLogoSVG>
                             </inertia-link>
-                            <inertia-link :href="route('user.recommendations.index')">
-                            <RecomandationLogoSVG></RecomandationLogoSVG>
+                            <inertia-link
+                                :href="route('user.recommendations.index')"
+                            >
+                                <RecomandationLogoSVG></RecomandationLogoSVG>
                             </inertia-link>
                             <NotificationComponentIcon></NotificationComponentIcon>
                         </div>
@@ -100,6 +102,13 @@
                             >
                                 User Dashboard
                             </inertia-link>
+                            <inertia-link
+                                :href="route('user.shopping-cart.index')"
+                                method="get"
+                                class="block no-underline px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            >
+                                Coș de Cumpărături
+                            </inertia-link>
                         </template>
                         <template v-if="authUserHasRole('Super-Admin')">
                             <inertia-link
@@ -110,18 +119,11 @@
                             </inertia-link>
                         </template>
                         <inertia-link
-                            :href="route('user.shopping-cart.index')"
-                            method="get"
-                            class="block no-underline px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        >
-                            Shopping Cart
-                        </inertia-link>
-                        <inertia-link
                             :href="route('logout')"
                             method="post"
                             class="block no-underline px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         >
-                            Log out
+                            Deconectare
                         </inertia-link>
                     </div>
                 </div>
@@ -132,13 +134,13 @@
                         :href="route('login')"
                         class="text-[#075985] no-underline font-semibold py-2 px-4 rounded-lg shadow-md bg-transparent transition-colors duration-300 px-4 py-2 rounded-md cursor: pointer"
                     >
-                        Log in
+                        Autentificare
                     </inertia-link>
                     <inertia-link
                         :href="route('register')"
                         class="bg-[#075985] no-underline text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-colors cursor: pointer"
                     >
-                        Sign up
+                        Înregistrare
                     </inertia-link>
                 </template>
             </div>
@@ -156,7 +158,6 @@
             >
                 <div class="flex items-center justify-between">
                     <a href="#" class="-m-1.5 p-1.5">
-                        <span class="sr-only">Your Company</span>
                         <img
                             class="h-8 w-auto"
                             src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
@@ -188,13 +189,13 @@
                                 :href="route('login')"
                                 class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 cursor: pointer"
                             >
-                                Log in
+                                Autentificare
                             </inertia-link>
                             <inertia-link
                                 :href="route('register')"
                                 class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 cursor: pointer"
                             >
-                                Sign up
+                                Înregistrare
                             </inertia-link>
                         </div>
                     </div>

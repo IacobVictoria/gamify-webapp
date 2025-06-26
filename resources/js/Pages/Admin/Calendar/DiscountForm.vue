@@ -28,14 +28,6 @@
             <h3 class="text-base font-semibold text-gray-900">
                 Creează Reducere
             </h3>
-            <div>
-                <label
-                    for="eventDate"
-                    class="block text-sm font-medium text-gray-700"
-                    >Dată Eveniment</label
-                >
-                <div>{{ props.selectedDate }}</div>
-            </div>
 
             <input
                 v-model="formData.title"
@@ -60,7 +52,7 @@
                     type="datetime-local"
                     id="startTime"
                     class="input"
-                    :min="`${props.selectedDate}T00:00`"
+                    :min="`${props.selectedDate}`"
                 />
             </div>
 
@@ -272,13 +264,7 @@ function closeForm() {
 function formatDate(dateTime) {
     if (!dateTime) return null;
 
-    const date = new Date(dateTime);
-
-    if (dateTime.includes("T")) {
-        return date.toISOString().slice(0, 16).replace("T", " ");
-    } else {
-        return date.toISOString().slice(0, 10);
-    }
+    return dateTime.replace("T", " ");
 }
 
 function submitForm() {

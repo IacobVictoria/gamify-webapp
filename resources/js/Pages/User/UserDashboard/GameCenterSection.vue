@@ -30,7 +30,7 @@
             <inertia-link
                 v-for="option in gameCenter"
                 :key="option.name"
-                :href="route(option.route)"
+                :href="route(option.route) + option.pagePosition"
                 class="flex flex-row justify-between w-full shadow-lg rounded-xl h-60 no-underline"
                 :class="option.bgColor"
             >
@@ -68,7 +68,7 @@ export default {
                     image: "/user_dashboard/badges.png",
                     bgColor: "bg-[#FEE9D5]",
                     textColor: "text-[#F45D3A]",
-
+                    pagePosition: "#badges",
                     route: "user.dashboard.game_center.index",
                 },
                 {
@@ -76,6 +76,7 @@ export default {
                     image: "/user_dashboard/top_players.png",
                     bgColor: "bg-[#CDEDE5]",
                     textColor: "text-[#06A77D]",
+                    pagePosition: "#leaderboard",
                     route: "user.dashboard.game_center.index",
                 },
                 {
@@ -83,7 +84,7 @@ export default {
                     image: "/user_dashboard/medals_banner.png",
                     bgColor: "bg-[#FAD0D2]",
                     textColor: "text-[#F28D8C]",
-
+                    pagePosition: "#medals",
                     route: "user.dashboard.game_center.index",
                 },
                 {
@@ -91,6 +92,7 @@ export default {
                     image: "/user_dashboard/events_banner.png",
                     bgColor: "bg-[#D1D3D4]",
                     textColor: "text-[#7B7F7D]",
+                    pagePosition: "",
                     route: "user.dashboard.favorite_activities.index",
                 },
             ],

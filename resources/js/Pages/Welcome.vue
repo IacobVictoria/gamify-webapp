@@ -31,7 +31,7 @@
 
                                     <div class="mt-24 flex items-center gap-x-6">
                                         <inertia-link :href="route('products.index')"
-                                            class="bg-[#075985] no-underline text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-white hover:text-[#075985] transition-colors">
+                                            class="bg-[#075985] no-underline text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-red-400 hover:text-[#075985]">
                                             🍫 Vreau Snack-uri!
                                         </inertia-link>
                                     </div>

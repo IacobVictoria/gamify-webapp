@@ -46,7 +46,7 @@
             <!-- Sidebar Reports -->
             <div class="flex-1 bg-gray-100 p-4 ml-6">
                 <h3 class="text-lg font-semibold mb-3">
-                    Apasă pe ÎNTÂLNIRI ÎNCHISE pentru a vedea 📂 
+                    Apasă pe ÎNTÂLNIRI ÎNCHISE pentru a vedea 📂
                 </h3>
                 <div v-if="reportList.length">
                     <ul class="space-y-2">
@@ -101,10 +101,11 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import MeetingComponent from "./MeetingComponent.vue";
 import AddMeetingForm from "./AddMeetingForm.vue";
 import ReportsExplanation from "./ReportsExplanation.vue";
+import { useRomanianDatetimeFormat } from "@/Composables/useDateUtils";
 
 const eventsServicePlugin = createEventsServicePlugin();
 const eventModal = createEventModalPlugin();
-
+const { formatToDatetimeLocal } = useRomanianDatetimeFormat();
 const calendarControls = createCalendarControlsPlugin();
 
 const props = defineProps({
@@ -184,7 +185,7 @@ const calendarApp = createCalendar({
     plugins: [eventModal, eventsServicePlugin, calendarControls],
     callbacks: {
         onClickDate(date) {
-            selectedDate.value = date;
+            selectedDate.value = formatToDatetimeLocal(date);
             showModal.value = true;
         },
     },
@@ -195,9 +196,7 @@ function updateReportList(reports) {
 }
 
 calendarControls.setView("month-grid");
-onMounted(() => {
-    console.log(props.events);
-});
+
 const selectedDate = ref(null);
 const showModal = ref(false);
 
