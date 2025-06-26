@@ -3,7 +3,6 @@
       <h1 class="text-3xl font-bold text-blue-900 mb-2">
         🔖 {{ activity.title }}
       </h1>
-      <p class="text-gray-700 italic mb-4">{{ activity.description }}</p>
       <div v-html="htmlContent" class="prose max-w-none prose-blue"></div>
       <div v-if="activity.details.tags" class="mt-4">
         <span class="text-sm text-gray-600">Tags:</span>

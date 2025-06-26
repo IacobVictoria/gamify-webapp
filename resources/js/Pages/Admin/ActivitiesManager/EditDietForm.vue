@@ -39,7 +39,7 @@
                 <option
                     v-for="product in availableProducts"
                     :key="product.id"
-                    :value="product.link"
+                    :value="product"
                 >
                     {{ product.name }} ({{ product.calories }} kcal)
                 </option>
@@ -137,11 +137,19 @@
 </template>
 
 <script setup>
-import { computed, toRefs } from "vue";
+import { computed, onMounted, toRefs, watch } from "vue";
 
 const props = defineProps({
     details: Object,
     availableProducts: Array,
+});
+
+onMounted(() => {
+    if (details.value?.snacks?.length && availableProducts.value?.length) {
+        details.value.snacks = details.value.snacks.map(snack => {
+            return availableProducts.value.find(p => p.id === snack.id) || snack;
+        });
+    }
 });
 
 const { details, availableProducts } = toRefs(props);
@@ -162,7 +170,7 @@ const removeCustomProduct = (index) => {
 
 const summary = computed(() => {
     const selected = availableProducts.value.filter((p) =>
-        details.value.snacks.includes(p.id)
+     details.value.snacks.some((snack) => snack.id === p.id)
     );
     const all = [...selected, ...details.value.custom_products];
     return {
@@ -172,4 +180,12 @@ const summary = computed(() => {
         fats: all.reduce((s, p) => s + Number(p.fats || 0), 0),
     };
 });
+
+watch(
+    summary,
+    (newSummary) => {
+        details.value.total_nutrition = newSummary;
+    },
+    { immediate: true }
+);
 </script>
