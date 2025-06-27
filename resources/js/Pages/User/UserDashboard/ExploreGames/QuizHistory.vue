@@ -4,7 +4,7 @@
             <h2
                 class="font-semibold text-2xl text-gray-800 leading-tight text-center mb-6"
             >
-                🧠 Quiz History
+                🧠 Istoric Quiz 
             </h2>
         </template>
 

@@ -9,9 +9,9 @@
                 />
             </div>
 
-            <h2 class="game-title">Welcome to Hangman</h2>
+            <h2 class="game-title">Bine ai venit la Spânzurătoarea</h2>
             <button @click="startNewGame" class="start-button">
-                Start New Game
+                Începe jocul
             </button>
         </div>
     </AuthenticatedLayout>

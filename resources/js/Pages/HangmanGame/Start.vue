@@ -2,31 +2,31 @@
     <AuthenticatedLayout>
         <div class="game-session-container">
             <div v-if="!gameEnd" class="game-session">
-                <h2>Hangman Game Session</h2>
+                <h2>Sesiune Joc Spânzurătoarea</h2>
                 <div v-if="bothConnected" class="game-info">
                     <p><strong>Creator:</strong> {{ creatorName }}</p>
-                    <p><strong>Opponent:</strong> {{ opponentName }}</p>
+                    <p><strong>Oponent:</strong> {{ opponentName }}</p>
                     <p>
-                        <strong>Current Turn:</strong>
+                        <strong>Rândul curent:</strong>
                         <span v-if="$page.props.user.id === turnData"
-                            >Your turn</span
+                            >Rândul tău</span
                         >
-                        <span v-else>Opponent's turn</span>
+                        <span v-else>Rândul oponentului</span>
                     </p>
                     <button
                         v-if="$page.props.user.id === creatorId && !gameStart"
                         @click="startGame"
                         class="btn btn-primary mt-3"
                     >
-                        Start Game
+                        Începe jocul
                     </button>
                 </div>
                 <div v-else class="waiting-for-opponent">
-                    <h3>Waiting for Opponent...</h3>
+                    <h3>Așteaptă să se conecteze oponentul..</h3>
                 </div>
                 <!-- Alegerea cuvântului -->
                 <div v-if="!wordSelected && gameStart" class="word-selection">
-                    <h3>Select a Word for Your Opponent</h3>
+                    <h3>Selectează un cuvânt pentru oponent</h3>
                     <div class="word-options">
                         <button
                             v-for="(option, index) in wordOptions"
@@ -58,12 +58,12 @@
                     v-if="!bothConnected && !waitingForFriend"
                     class="friend-search mt-5"
                 >
-                    <h3>Invite a Friend</h3>
+                    <h3>Invită un prieten</h3>
                     <input
                         type="text"
                         v-model="search"
                         @input="searchFriends"
-                        placeholder="Search friends by email..."
+                        placeholder="Caută prieteni după email.."
                         class="form-control"
                     />
                     <ul
@@ -84,19 +84,21 @@
                             </button>
                         </li>
                     </ul>
-                    <p v-else class="text-muted mt-3">No friends found.</p>
+                    <p v-else class="text-muted mt-3">
+                        Nu s-au găsit prieteni.
+                    </p>
                 </div>
                 <div
                     v-if="waitingForFriend && !bothConnected"
                     class="waiting-for-opponent mt-5"
                 >
                     <h3>
-                        Waiting for {{ waitingForFriend }} to join the game...
-                        ⏳
+                        Așteptăm ca {{ waitingForFriend }} să se alăture
+                        jocului... ⏳
                     </h3>
                     <p>
-                        They received your invite and can join using the shared
-                        game link.
+                        A primit invitația ta și se poate alătura folosind
+                        linkul de joc distribuit.
                     </p>
                 </div>
             </div>

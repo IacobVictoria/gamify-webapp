@@ -91,7 +91,6 @@ class DiscountService
             }
         }
 
-        // Salvează noul JSON în baza de date
         $user->update([
             'used_discounts' => json_encode($usedDiscounts),
         ]);

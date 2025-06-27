@@ -106,7 +106,7 @@
           newMessage.value = '';
         } catch (error) {
           console.error('Error sending message:', error);
-          messages.value.push({ content: '⚠️ Eroare. Încearcă din nou mai târziu.', is_user: false });
+          messages.value.push({ content: 'Eroare. Încearcă din nou mai târziu.', is_user: false });
         } finally {
           isLoading.value = false;
         }
