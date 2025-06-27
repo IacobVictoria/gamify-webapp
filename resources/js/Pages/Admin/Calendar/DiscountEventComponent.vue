@@ -44,6 +44,16 @@
                 <p><strong>Reducere:</strong> {{ parsedDetails.discount }}%</p>
             </div>
         </div>
+        <div
+            v-if="calendarEvent.is_published !== undefined"
+            class="event-status font-medium text-sm px-3 py-1 rounded-full inline-block mb-2"
+            :class="{
+                'bg-green-100 text-green-800': calendarEvent.is_published,
+                'bg-red-100 text-red-800': !calendarEvent.is_published,
+            }"
+        >
+            {{ calendarEvent.is_published ? "✅ Publicat" : "🚫 Nepublicat" }}
+        </div>
 
         <div
             v-if="

@@ -19,6 +19,7 @@
                         id="title"
                         placeholder="Introdu titlul reducerii"
                         class="input"
+                        required
                     />
                 </div>
 
@@ -106,43 +107,54 @@
                         </option>
                     </select>
                 </div>
-                <div v-if="!is_recurring" class="mt-2">
+                <!-- Checkbox pentru recurență -->
+                <div class="mt-2">
                     <label class="flex items-center">
                         <input
                             type="checkbox"
                             v-model="formData.is_recurring"
                         />
-                        <span class="ml-2 text-sm font-medium text-gray-700"
-                            >Fă evenimentul recurent</span
-                        >
+                        <span class="ml-2 text-sm font-medium text-gray-700">
+                            Eveniment recurent
+                        </span>
                     </label>
                 </div>
 
-                <div v-if="!is_recurring" class="mt-2">
-                    <label class="block text-sm font-medium text-gray-700"
-                        >Interval de recurență</label
-                    >
+                <!-- Radio buttons vizibile DOAR dacă e bifat -->
+                <div v-if="formData.is_recurring" class="mt-2">
+                    <label class="block text-sm font-medium text-gray-700">
+                        Interval de recurență
+                    </label>
                     <div class="flex gap-4 mt-2">
-                        <label class="flex items-center">
+                        <label
+                            class="flex items-center"
+                            :class="{ 'opacity-50': eventDuration > 7 }"
+                        >
                             <input
                                 type="radio"
                                 v-model="formData.recurring_interval"
                                 value="weekly"
                                 class="mr-2"
+                                :disabled="eventDuration > 7"
                             />
                             Săptămânal
                         </label>
-                        <label class="flex items-center">
+                        <label
+                            class="flex items-center"
+                            :class="{ 'opacity-50': eventDuration > 28 }"
+                        >
                             <input
                                 type="radio"
                                 v-model="formData.recurring_interval"
                                 value="monthly"
                                 class="mr-2"
+                                :disabled="eventDuration > 28"
                             />
                             Lunar
                         </label>
                     </div>
                 </div>
+
                 <div class="mt-2">
                     <label
                         for="discount"
@@ -157,6 +169,8 @@
                         class="input"
                         min="0"
                         max="100"
+                        step="1"
+                        required
                     />
                 </div>
                 <label for="isPublished">
@@ -203,7 +217,7 @@ export default {
                     ? JSON.parse(this.calendarEvent.details).discount
                     : 0,
                 is_published: this.calendarEvent.is_published || false,
-                is_recurring: this.calendarEvent?.is_recurring ?? false,
+                is_recurring: !!this.calendarEvent.is_recurring,
                 recurring_interval:
                     this.calendarEvent?.recurring_interval ?? null,
             },
@@ -212,29 +226,20 @@ export default {
     },
     methods: {
         formatDate(dateTime) {
-            if (!dateTime) return "";
-            return dateTime.replace(" ", "T");
-        },
-        formatDatePayload(dateTime) {
             if (!dateTime) return null;
 
-            const date = new Date(dateTime);
-
             if (dateTime.includes("T")) {
-                return date.toISOString().slice(0, 16).replace("T", " ");
-            } else {
-                return date.toISOString().slice(0, 10);
+                return dateTime.replace("T", " ");
             }
+
+            return dateTime;
         },
+
         closeForm() {
             this.$emit("closeForm");
         },
-        submitForm() {
-            if (new Date(this.formData.end) <= new Date(this.formData.start)) {
-                alert("End time must be greater than start time.");
-                return;
-            }
 
+        submitForm() {
             const details = {
                 applyTo: this.formData.applyTo,
                 category: this.formData.category,
@@ -242,8 +247,8 @@ export default {
             };
 
             this.formData.details = JSON.stringify(details);
-            this.formData.start = this.formatDatePayload(this.formData.start);
-            this.formData.end = this.formatDatePayload(this.formData.end);
+            this.formData.start = this.formatDate(this.formData.start);
+            this.formData.end = this.formatDate(this.formData.end);
 
             this.$inertia.put(
                 route("admin.calendar.event.update", {
@@ -254,6 +259,15 @@ export default {
                 }
             );
             this.$emit("formSubmitted");
+        },
+    },
+    computed: {
+        eventDuration() {
+            if (!this.formData.start || !this.formData.end) return 0;
+            const start = new Date(this.formData.start);
+            const end = new Date(this.formData.end);
+            const diff = Math.abs(end - start);
+            return Math.ceil(diff / (1000 * 60 * 60 * 24)); // zile
         },
     },
 };

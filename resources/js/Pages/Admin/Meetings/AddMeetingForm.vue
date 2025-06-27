@@ -50,8 +50,13 @@
                                             type="text"
                                             v-model="form.title"
                                             class="w-full border rounded-md px-3 py-2"
-                                            required
                                         />
+                                        <p
+                                            v-if="validationErrors.title"
+                                            class="text-red-600 text-sm mt-1"
+                                        >
+                                            {{ validationErrors.title }}
+                                        </p>
                                     </div>
 
                                     <div>
@@ -95,6 +100,12 @@
                                                 {{ period.replace("_", " ") }}
                                             </option>
                                         </select>
+                                        <p
+                                            v-if="validationErrors.period"
+                                            class="text-red-600 text-sm mt-1"
+                                        >
+                                            {{ validationErrors.period }}
+                                        </p>
                                     </div>
 
                                     <div>
@@ -114,6 +125,16 @@
                                                 {{ category.name }}
                                             </option>
                                         </select>
+                                        <p
+                                            v-if="
+                                                validationErrors.report_category_ids
+                                            "
+                                            class="text-red-600 text-sm mt-1"
+                                        >
+                                            {{
+                                                validationErrors.report_category_ids
+                                            }}
+                                        </p>
                                     </div>
 
                                     <div class="flex justify-end gap-2">
@@ -156,8 +177,8 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
-import { router, useForm } from "@inertiajs/vue3";
+import { defineProps, defineEmits, ref } from "vue";
+import { useForm } from "@inertiajs/vue3";
 import {
     Dialog,
     DialogPanel,
@@ -182,6 +203,7 @@ const startTimeMin = `${now.getFullYear()}-${String(
 ).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
 
 const emit = defineEmits(["closeForm"]);
+const validationErrors = ref({});
 
 const form = useForm({
     title: "",
@@ -199,12 +221,35 @@ function closeForm() {
     emit("closeForm");
 }
 
+//validare formular
+function validateForm() {
+    validationErrors.value = {};
+
+    if (!form.title.trim()) {
+        validationErrors.value.title = "Titlul este obligatoriu.";
+    }
+
+    if (!form.period) {
+        validationErrors.value.period = "Perioada este obligatorie.";
+    }
+
+    if (!form.report_category_ids || form.report_category_ids.length === 0) {
+        validationErrors.value.report_category_ids =
+            "Selectează cel puțin o categorie.";
+    }
+
+    return Object.keys(validationErrors.value).length === 0;
+}
+
+//trimitere formular
 function submitForm() {
+    if (!validateForm()) return;
+
     form.start = formatDate(form.start);
     form.end = formatDate(form.end);
     form.post(route(props.addRoute), {
         onSuccess: () => {
-             window.location.reload(); 
+            window.location.reload();
         },
         onError: (errors) => {
             console.error("Errors:", errors);

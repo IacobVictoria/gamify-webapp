@@ -1,178 +1,172 @@
 <template>
     <div>
         <h3 class="text-base font-semibold text-gray-900">Editează Comanda</h3>
+        <form @submit.prevent="submitForm">
+            <!-- Selectare data -->
+            <div>
+                <label
+                    for="eventDate"
+                    class="block text-sm font-medium text-gray-700"
+                    >Data Evenimentului</label
+                >
+                <input
+                    v-model="formData.start"
+                    type="date"
+                    id="eventDate"
+                    class="input mt-2"
+                />
+            </div>
 
-        <!-- Selectare data -->
-        <div>
-            <label
-                for="eventDate"
-                class="block text-sm font-medium text-gray-700"
-                >Data Evenimentului</label
-            >
+            <!-- Input pentru titlul comenzii -->
             <input
-                v-model="formData.start"
-                type="date"
-                id="eventDate"
+                v-model="formData.title"
+                type="text"
+                placeholder="Introdu titlul comenzii"
                 class="input mt-2"
+                required
             />
-        </div>
 
-        <!-- Input pentru titlul comenzii -->
-        <input
-            v-model="formData.title"
-            type="text"
-            placeholder="Introdu titlul comenzii"
-            class="input mt-2"
-        />
-        <div v-if="formErrors.title" class="text-red-500 text-sm">
-            {{ formErrors.title }}
-        </div>
-
-        <!-- Input pentru detalii comanda -->
-        <input
-            v-model="formData.description"
-            type="text"
-            placeholder="Introdu detalii comandă"
-            class="input mt-2"
-        />
-        <div v-if="formErrors.description" class="text-red-500 text-sm">
-            {{ formErrors.description }}
-        </div>
-
-        <!-- Dropdown pentru furnizori -->
-        <div class="mt-2">
-            <label
-                for="supplier"
-                class="block text-sm font-medium text-gray-700"
-                >Selectează Furnizor</label
-            >
-            <select
-                v-model="formData.supplierId"
-                id="supplier"
+            <!-- Input pentru detalii comanda -->
+            <input
+                v-model="formData.description"
+                type="text"
+                placeholder="Introdu detalii comandă"
                 class="input mt-2"
-            >
-                <option
-                    v-for="supplier in suppliers"
-                    :key="supplier.id"
-                    :value="supplier.id"
-                >
-                    {{ supplier.name }}
-                </option>
-            </select>
-        </div>
-        <div v-if="formErrors.supplierId" class="text-red-500 text-sm">
-            {{ formErrors.supplierId }}
-        </div>
+                required
+            />
 
-        <!-- Dropdown pentru produse -->
-        <div v-if="selectedProducts.length > 0" class="mt-2">
-            <label for="product" class="block text-sm font-medium text-gray-700"
-                >Selectează Produse</label
-            >
-            <select
-                v-model="selectedProductIds"
-                multiple
-                size="5"
-                id="product"
-                class="input mt-2"
-            >
-                <option
-                    v-for="product in selectedProducts"
-                    :key="product.id"
-                    :value="product.id"
+            <!-- Dropdown pentru furnizori -->
+            <div class="mt-2">
+                <label
+                    for="supplier"
+                    class="block text-sm font-medium text-gray-700"
+                    >Selectează Furnizor</label
                 >
-                    {{ product.name }}
-                </option>
-            </select>
-        </div>
-        <div v-if="formErrors.products" class="text-red-500 text-sm">
-            {{ formErrors.products }}
-        </div>
+                <select
+                    v-model="formData.supplierId"
+                    id="supplier"
+                    class="input mt-2"
+                    required
+                >
+                    <option
+                        v-for="supplier in suppliers"
+                        :key="supplier.id"
+                        :value="supplier.id"
+                    >
+                        {{ supplier.name }}
+                    </option>
+                </select>
+            </div>
 
-        <!-- Input pentru cantitatea fiecărui produs selectat -->
-        <div v-if="selectedProductIds.length > 0" class="mt-2">
-            <label class="block text-sm font-medium text-gray-700"
-                >Selectează Produse</label
-            >
-            <div
-                v-for="(productId, index) in selectedProductIds"
-                :key="index"
-                class="mt-2"
-            >
-                <div class="flex items-center justify-between">
-                    <span>{{
-                        selectedProducts.find(
-                            (product) => product.id === productId
-                        )?.name
-                    }}</span>
-                    <input
-                        type="number"
-                        v-model="formData.productQuantities[productId]"
-                        :placeholder="
-                            'Quantity for ' +
+            <!-- Dropdown pentru produse -->
+            <div v-if="selectedProducts.length > 0" class="mt-2">
+                <label
+                    for="product"
+                    class="block text-sm font-medium text-gray-700"
+                    >Selectează Produse</label
+                >
+                <select
+                    v-model="selectedProductIds"
+                    multiple
+                    size="5"
+                    id="product"
+                    class="input mt-2"
+                    required
+                >
+                    <option
+                        v-for="product in selectedProducts"
+                        :key="product.id"
+                        :value="product.id"
+                    >
+                        {{ product.name }}
+                    </option>
+                </select>
+            </div>
+
+            <!-- Input pentru cantitatea fiecărui produs selectat -->
+            <div v-if="selectedProductIds.length > 0" class="mt-2">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Selectează Produse</label
+                >
+                <div
+                    v-for="(productId, index) in selectedProductIds"
+                    :key="index"
+                    class="mt-2"
+                >
+                    <div class="flex items-center justify-between">
+                        <span>{{
                             selectedProducts.find(
                                 (product) => product.id === productId
                             )?.name
-                        "
-                        class="input w-1/3"
-                        min="1"
-                        @blur="validateQuantity(productId)"
-                    />
-                </div>
-                <div
-                    v-if="formErrors[`quantity_${productId}`]"
-                    class="text-red-500 text-sm mt-1"
-                >
-                    {{ formErrors[`quantity_${productId}`] }}
+                        }}</span>
+                        <input
+                            type="number"
+                            v-model="formData.productQuantities[productId]"
+                            :placeholder="
+                                'Quantity for ' +
+                                selectedProducts.find(
+                                    (product) => product.id === productId
+                                )?.name
+                            "
+                            class="input w-1/3"
+                            min="1"
+                            @blur="validateQuantity(productId)"
+                        />
+                    </div>
+                    <div
+                        v-if="formErrors[`quantity_${productId}`]"
+                        class="text-red-500 text-sm mt-1"
+                    >
+                        {{ formErrors[`quantity_${productId}`] }}
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Opțiuni de recurență -->
-        <div v-if="!is_recurring" class="mt-2">
-            <label class="flex items-center">
-                <input type="checkbox" v-model="formData.is_recurring" />
-                <span class="ml-2 text-sm font-medium text-gray-700"
-                    >Fă evenimentul recurent</span
-                >
-            </label>
-        </div>
-
-        <div v-if="!is_recurring" class="mt-2">
-            <label class="block text-sm font-medium text-gray-700"
-                >Interval de recurență</label
-            >
-            <div class="flex gap-4 mt-2">
+            <!-- Opțiuni de recurență -->
+            <div v-if="!is_recurring" class="mt-2">
                 <label class="flex items-center">
-                    <input
-                        type="radio"
-                        v-model="formData.recurring_interval"
-                        value="weekly"
-                        class="mr-2"
-                    />
-                    Săptămânal
-                </label>
-                <label class="flex items-center">
-                    <input
-                        type="radio"
-                        v-model="formData.recurring_interval"
-                        value="monthly"
-                        class="mr-2"
-                    />
-                    Lunar
+                    <input type="checkbox" v-model="formData.is_recurring" />
+                    <span class="ml-2 text-sm font-medium text-gray-700"
+                        >Eveniment recurent</span
+                    >
                 </label>
             </div>
-        </div>
 
-        <div class="mt-5 sm:mt-6">
-            <button
-                type="button"
-                class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-                @click="submitForm"
-            >
-                Actualizează
-            </button>
-        </div>
+            <div v-if="!is_recurring" class="mt-2">
+                <label class="block text-sm font-medium text-gray-700"
+                    >Interval de recurență</label
+                >
+                <div class="flex gap-4 mt-2">
+                    <label class="flex items-center">
+                        <input
+                            type="radio"
+                            v-model="formData.recurring_interval"
+                            value="weekly"
+                            class="mr-2"
+                        />
+                        Săptămânal
+                    </label>
+                    <label class="flex items-center">
+                        <input
+                            type="radio"
+                            v-model="formData.recurring_interval"
+                            value="monthly"
+                            class="mr-2"
+                        />
+                        Lunar
+                    </label>
+                </div>
+            </div>
+
+            <div class="mt-5 sm:mt-6">
+                <button
+                    type="submit"
+                    class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+                >
+                    Actualizează
+                </button>
+            </div>
+        </form>
     </div>
 </template>
 
@@ -249,31 +243,6 @@ export default {
             let valid = true;
             this.formErrors = {};
 
-            if (!this.formData.title) {
-                this.formErrors.title = "Titlul este obligatoriu.";
-                valid = false;
-            }
-
-            if (!this.formData.description) {
-                this.formErrors.description = "Descrierea este obligatorie.";
-                valid = false;
-            }
-
-            if (!this.formData.start) {
-                this.formErrors.start = "Data este obligatorie.";
-                valid = false;
-            }
-
-            if (!this.formData.supplierId) {
-                this.formErrors.supplierId = "Selectează un furnizor.";
-                valid = false;
-            }
-
-            if (this.selectedProductIds.length === 0) {
-                this.formErrors.products = "Selectează cel puțin un produs.";
-                valid = false;
-            }
-
             for (const productId of this.selectedProductIds) {
                 const quantity = this.formData.productQuantities[productId];
                 const product = this.selectedProducts.find(
@@ -283,12 +252,12 @@ export default {
                 if (!quantity || quantity < 1) {
                     this.formErrors[
                         `quantity_${productId}`
-                    ] = `Introduceți o cantitate validă pentru ${product?.name}`;
+                    ] = `Introduceți o cantitate validă`;
                     valid = false;
                 } else if (quantity > product.stock) {
                     this.formErrors[
                         `quantity_${productId}`
-                    ] = `Maxim ${product.stock} disponibile din ${product.name}`;
+                    ] = `Maxim ${product.stock} disponibile`;
                     valid = false;
                 }
             }

@@ -1,7 +1,7 @@
 <template>
     <div v-if="command" class="favorite-details">
         <h3 class="text-lg font-semibold">
-            {{ type === "Commands" ? "Command Details" : "Discount Details" }}
+            {{ type === "Comenzi" ? "Detalii Comandă" : "Detalii reducere" }}
         </h3>
 
         <!-- Comenzi -->
@@ -80,17 +80,17 @@
             </div>
         </template>
 
-        <!-- 🔥 Checkbox pentru recurență -->
+        <!-- recurență -->
         <div class="mt-2">
             <label class="flex items-center">
                 <input type="checkbox" v-model="isRecurring" />
                 <span class="ml-2 text-sm font-medium text-gray-700"
-                    >Fă evenimentul recurent</span
+                    >Eveniment recurent</span
                 >
             </label>
         </div>
 
-        <!-- 🔥 Selectare interval recurență -->
+        <!-- interval recurență -->
         <div v-if="isRecurring" class="mt-2">
             <label class="block text-sm font-medium text-gray-700"
                 >Interval de recurență</label
@@ -157,13 +157,11 @@ const emit = defineEmits(["close"]);
 function formatDate(dateTime) {
     if (!dateTime) return null;
 
-    const date = new Date(dateTime);
-
     if (dateTime.includes("T")) {
-        return date.toISOString().slice(0, 16).replace("T", " ");
-    } else {
-        return date.toISOString().slice(0, 10);
+        return dateTime.replace("T", " ");
     }
+
+    return dateTime;
 }
 
 const updateCommand = () => {
@@ -199,7 +197,7 @@ const updateCommand = () => {
                   discount: props.command.details.discount,
                   calendarId: "leisure",
               }),
-
+        is_published: true,
         is_recurring: isRecurring.value,
         recurring_interval: isRecurring.value ? recurringInterval.value : null,
     };

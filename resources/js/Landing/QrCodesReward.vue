@@ -68,7 +68,7 @@
                     <inertia-link
                         v-else
                          :href="route('register')"
-                        class="mt-8 px-6 py-3 no-underline text-lg font-semibold bg-[#6ACAB1] hover:bg-[#56b29b] text-white rounded-lg shadow-md transition-all duration-300"
+                        class="block mt-4 px-6 py-3 no-underline text-lg font-semibold bg-[#6ACAB1] hover:bg-[#56b29b] text-white rounded-lg shadow-md transition-all duration-300"
                     >
                         Alătură-te și începe să câștigi 🚀
                     </inertia-link>

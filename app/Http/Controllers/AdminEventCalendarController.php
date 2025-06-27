@@ -206,6 +206,14 @@ class AdminEventCalendarController extends Controller
             ProcessRecurringEventJob::dispatch($event)->delay($event->next_occurrence);
         }
 
+        // Dacă era recurent și devine nerecurent, resetăm câmpurile
+        else if ($event->is_recurring && !$payload['is_recurring']) {
+            $event->is_recurring = false;
+            $event->recurring_interval = null;
+            $event->next_occurrence = null;
+            $event->last_recurring_event_id = null; 
+        }
+
         $event->save();
 
         return redirect()->back();

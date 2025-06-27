@@ -22,7 +22,7 @@
                                 <EditDiscountForm :calendarEvent="calendarEvent" @formSubmitted="closeModal" :categories="props.categories"/>
                             </div>
 
-                            <div class="mt-5 sm:mt-6">
+                            <div class="sm:mt-6">
                                 <button type="button"
                                     class="inline-flex w-full justify-center mt-3 rounded-md bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-200"
                                     @click="closeModal">
@@ -54,6 +54,7 @@ const props = defineProps({
 const emit = defineEmits(['close']);
 
 function closeModal() {
+    window.location.reload();
     emit('close');
 }
 </script>

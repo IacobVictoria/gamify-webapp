@@ -47,8 +47,8 @@ class EventService
 
                 $ghosts[] = [
                     'id' => 'ghost-' . $event->id . "-$i",
-                    'title' => '[Upcoming] ' . $event->title,
-                    'description' => '(Planned Recurring Event)',
+                    'title' => '[În curând] ' . $event->title,
+                    'description' => '(Eveniment recurent)',
                     'start' => $ghostStart->format('Y-m-d H:i'),
                     'end' => $ghostEnd->format('Y-m-d H:i'),
                     'type' => $event->type,
