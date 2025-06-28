@@ -10,7 +10,7 @@ use Inertia\Inertia;
 
 class UserCheckoutController extends Controller
 {
-   
+
     protected $orderHandler;
 
     public function __construct(OrderHandlerInterface $orderHandler)
@@ -32,8 +32,23 @@ class UserCheckoutController extends Controller
 
         $cartItems = array_values($cartItems);
 
+        //coduri promotionale nefolosite
+
+        $user = auth()->user();
+        $usedDiscounts = collect(json_decode($user->used_discounts, true) ?? [])
+            ->filter(fn($d) => isset($d['used']) && $d['used'] === false)
+            ->map(function ($d, $level) {
+                return [
+                    'label' => ucfirst($level) . ' - ' . $d['discount'] . '%',
+                    'code' => $d['code'],
+                    'discount' => $d['discount'],
+                ];
+            })
+            ->values();
+
         return Inertia::render('User/Checkout', [
             "cartItems" => $cartItems,
+            'availablePromoCodes' => $usedDiscounts,
         ]);
     }
 
