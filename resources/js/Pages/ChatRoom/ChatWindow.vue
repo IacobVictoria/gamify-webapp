@@ -268,7 +268,7 @@ export default {
                         },
                     }
                 );
-                console.log(response.data);
+       
                 this.messages.push(response.data);
                 this.$nextTick(() => {
                     this.scrollToLastMessage();
@@ -283,7 +283,7 @@ export default {
             window.Echo.private(`chat.${this.currentUser.id}`).listen(
                 ".ChatMessageSent",
                 (event) => {
-                    console.log(event.message);
+      
                     this.messages.push(event.message);
                     this.newMessage = "";
                     // dacă suntem în conversația cu expeditorul, marcăm mesajul ca citit imediat
@@ -345,7 +345,7 @@ export default {
             const container = this.$refs.scrollContainer;
 
             try {
-                // Salvează înălțimea curentă a containerului înainte de a adăuga noi mesaje
+                // înălțimea curentă a containerului înainte de a adăuga noi mesaje
                 const previousScrollHeight = container.scrollHeight;
 
                 const response = await axios.get(

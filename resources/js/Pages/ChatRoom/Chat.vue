@@ -58,7 +58,7 @@
                 <!-- Search Input -->
                 <input
                     v-model="searchQuery"
-                    @input="searchUsers"
+                    @input="searchFriends"
                     type="text"
                     placeholder="🔍 Caută după email..."
                     class="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -142,7 +142,7 @@ export default {
             });
         },
 
-        async searchUsers() {
+        async searchFriends() {
             if (this.searchQuery.trim() === "") {
                 this.searchResults = [];
                 return;

@@ -80,6 +80,7 @@ class UserChatController extends Controller
         return response()->json(['status' => 'success']);
     }
 
+    //returneaza conversatia cu un anumit prieten
     public function getConversation(Request $request, $friendId)
     {
         $currentUser = Auth::user();
@@ -167,15 +168,15 @@ class UserChatController extends Controller
     {
         $currentUser = Auth::user();
         $email = $request->input('emailFriend');
-    
+
         $friendsQuery = User::query();
-    
+
         if (!empty($email)) {
             $friendsQuery->where('email', 'like', "%{$email}%");
         }
-    
+
         $friends = $friendsQuery->get(['id', 'name', 'email']);
-    
+
         if ($friends->isEmpty()) {
             return response()->json([]);
         }

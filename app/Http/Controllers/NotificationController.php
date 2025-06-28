@@ -74,7 +74,7 @@ class NotificationController extends Controller
                     'id' => Uuid::uuid(),
                     'sender_id' => $data['sender_id'],
                     'receiver_id' => auth()->id(),
-                    'content' => "Hey, let's chat!",
+                    'content' => "Bună! Hai să vorbim!",
                     'is_read' => false,
                     'sent_at' => now(),
                     'message_type' => 'text',
