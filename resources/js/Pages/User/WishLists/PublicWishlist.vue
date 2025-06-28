@@ -6,7 +6,7 @@
                     <h1
                         class="text-3xl font-bold text-center text-blue-800 mb-10"
                     >
-                        🧾 {{ friend.name }}’s Wishlist
+                        🧾 Lista de dorințe a lui {{ friend.name }}
                     </h1>
 
                     <ul v-if="wishlist.length" class="space-y-6">
@@ -49,22 +49,22 @@
                                     v-if="item.product.category"
                                     class="text-sm text-gray-400 mt-1"
                                 >
-                                    📦 Category: {{ item.product.category }}
+                                    📦 Categorie: {{ item.product.category }}
                                 </div>
                             </div>
                             <div
                                 v-if="item.alreadyInMyWishlist"
                                 class="mt-2 text-green-600 font-medium text-sm"
                             >
-                                ✅ Already in your wishlist
+                                ✅ Deja în lista ta de dorințe
                             </div>
                             <button
                                 v-else
                                 @click="addToMyWishlist(item.product)"
                                 class="ml-4 flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-full shadow hover:bg-red-600 transition duration-200 text-sm"
-                                title="Add to my wishlist"
+                                title="Adaugă la lista mea"
                             >
-                                ❤️ Add to My Wishlist
+                                ❤️ Adaugă în lista mea
                             </button>
                         </li>
                     </ul>
@@ -73,7 +73,7 @@
                         v-else
                         class="bg-yellow-100 border border-yellow-300 text-yellow-700 text-center py-4 px-6 rounded-lg"
                     >
-                        🚫 This wishlist is currently empty!
+                        🚫 Această listă de dorințe este momentan goală!
                     </div>
                 </div>
             </div>

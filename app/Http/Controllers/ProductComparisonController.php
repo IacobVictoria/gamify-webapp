@@ -12,9 +12,11 @@ class ProductComparisonController extends Controller
     {
         $product = Product::find($request->input('product_id'));
         $comparison = session('comparison', []);
+        
         if (in_array($product->id, $comparison)) {
             return response()->json(['message' => 'Produsul este deja în lista de comparare.'], 400);
         }
+
         if (!empty($comparison)) {
             $firstProduct = Product::find($comparison[0]);
             if ($product->category !== $firstProduct->category) {
@@ -22,6 +24,7 @@ class ProductComparisonController extends Controller
                 $comparison = [];
             }
         }
+
         $comparison[] = $product->id;
         session(['comparison' => $comparison]);
 

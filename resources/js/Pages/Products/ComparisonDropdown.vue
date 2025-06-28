@@ -1,14 +1,14 @@
 <template>
-    <div class="relative mt-6">
-        <label class="block text-sm font-medium text-gray-700"
-            >Add to comparison</label
-        >
+    <div class="relative mt-6 flex gap-2">
         <input
             type="checkbox"
             v-model="is_checked"
             @change="handleComparisonChange"
             class="mt-1 block"
         />
+        <label class="block text-sm font-medium text-gray-700"
+            >Adaugă la comparat</label
+        >
 
         <div
             v-if="showComparisonDropdown"
@@ -51,7 +51,7 @@
                     v-if="comparisonProducts.length === 0"
                     class="text-gray-500 text-sm text-center mt-2"
                 >
-                    No products in comparison
+                    Nu există produse de comparat
                 </p>
 
                 <button
@@ -66,7 +66,7 @@
                             comparisonProducts.length < 2,
                     }"
                 >
-                    Compare
+                    Compară
                 </button>
             </div>
         </div>
@@ -82,6 +82,7 @@ export default {
         },
         isChecked: Boolean,
     },
+
     data() {
         return {
             is_checked: this.isChecked,
@@ -89,9 +90,11 @@ export default {
             comparisonProducts: [],
         };
     },
+
     mounted() {
         this.fetchComparisonProducts();
     },
+
     methods: {
         fetchComparisonProducts() {
             axios
@@ -104,6 +107,7 @@ export default {
                     console.error("Error fetching comparison products:", error);
                 });
         },
+
         handleComparisonChange() {
             if (this.is_checked) {
                 this.addToComparison(this.product);
@@ -111,6 +115,7 @@ export default {
                 this.removeFromComparison(this.product.id);
             }
         },
+
         addToComparison(product) {
             const isDifferentCategory = this.comparisonProducts.some(
                 (existingProduct) =>
@@ -120,9 +125,6 @@ export default {
             if (isDifferentCategory) {
                 this.comparisonProducts = [];
                 this.is_checked = true;
-                alert(
-                    "Category changed. Existing products were removed from comparison."
-                );
             }
 
             axios
@@ -152,9 +154,11 @@ export default {
                 this.fetchComparisonProducts();
             });
         },
+
         toggleDropdownVisibility() {
             this.showComparisonDropdown = this.comparisonProducts.length > 0;
         },
+
         goToComparison() {
             const productSlugs = this.comparisonProducts
                 .map((product) => product.slug)

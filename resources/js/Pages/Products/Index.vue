@@ -18,7 +18,7 @@
                                         class="block w-full rounded-md border border-gray-300 pl-10 pr-4 py-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                         placeholder="Caută produse..."
                                         type="search"
-                                        @input="fetchProducts()"
+                                        @input="debouncedFetch"
                                     />
                                     <div
                                         class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
@@ -225,6 +225,7 @@ import AddHeartSVG from "@/Components/AddHeartSVG.vue";
 import Layout from "@/Layouts/Layout.vue";
 import WebPagination from "../../Components/WebPagination.vue";
 import FriendSelector from "@/Components/FriendSelector.vue";
+import debounce from "lodash/debounce";
 
 export default {
     name: "Products.Index",
@@ -232,7 +233,7 @@ export default {
         Layout,
         AddHeartSVG,
         WebPagination,
-        FriendSelector
+        FriendSelector,
     },
     props: {
         products: Object,
@@ -247,7 +248,11 @@ export default {
             selectedCategory: this.searchCategory ? this.searchCategory : "",
             showFriendModal: false,
             clickedProduct: null,
+            debouncedFetch: null,
         };
+    },
+    created() {
+        this.debouncedFetch = debounce(this.fetchProducts, 400);
     },
     methods: {
         fetchProducts() {

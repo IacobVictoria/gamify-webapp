@@ -3,7 +3,7 @@
         <div class="bg-white">
             <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
                 <div class="relative mb-8">
-                    <label for="search" class="sr-only">Search</label>
+                    <label for="search" class="sr-only">Caută</label>
                     <div class="relative w-full max-w-lg mx-auto">
                         <input v-model="searchQuery" id="search" name="search"
                             class="block w-full rounded-md border border-gray-300 pl-10 pr-4 py-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -21,14 +21,14 @@
 
                 <div class="mb-4">
                     <button @click="back()" class="text-blue-500 hover:underline">
-                        Back
+                        Înapoi
                     </button>
                 </div>
 
                 <div
                     class="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-16 gap-y-16">
                     <div v-for="product in products" :key="product.id" class="max-w-xs mb-16">
-                        <h2 class="text-xl font-bold text-gray-900">Supplier : {{ product.supplier.name }} </h2>
+                        <h2 class="text-xl font-bold text-gray-900">Furnizor : {{ product.supplier.name }} </h2>
                         <div class="relative h-full">
                             <div class="relative h-48 w-full overflow-hidden rounded-lg">
                                 <img src="/images/pic4.jpg" class="h-full w-full object-cover object-center" />
@@ -40,11 +40,11 @@
                             </div>
 
                             <div class="mt-6">
-                                <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
+                                <label for="quantity" class="block text-sm font-medium text-gray-700">Cantitate</label>
                                 <select id="quantity" v-model="quantity[product.id]"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                     style="max-height: 150px; overflow-y: auto;">
-                                    <option value="" disabled>Select quantity</option>
+                                    <option value="" disabled>Selectează cantitatea</option>
                                     <option v-for="num in 10" :key="num" :value="num">{{ num }}</option>
                                 </select>
                             </div>
@@ -57,14 +57,11 @@
                         <div class="mt-6">
                             <a @click="addToBag(product)"
                                 class="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200">
-                                Add to bag
+                                Adaugă în coș
                             </a>
                         </div>
                     </div>
                 </div>
-
-
-
             </div>
         </div>
     </AuthenticatedLayout>

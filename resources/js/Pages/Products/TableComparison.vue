@@ -6,7 +6,7 @@
             class="flex items-center gap-2 bg-emerald-500 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-emerald-600 active:bg-emerald-700 transition"
         >
             <span>📋</span>
-            <span>Copy Comparison Link</span>
+            <span>Copiază link</span>
         </button>
 
         <!-- Send to Friend -->
@@ -15,7 +15,7 @@
             class="flex items-center gap-2 bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-indigo-600 transition"
         >
             <span>📨</span>
-            <span>Send to a Friend</span>
+            <span>Trimite unui prieten</span>
         </button>
     </div>
 
@@ -225,6 +225,7 @@ export default {
                     console.error("Nu s-a putut copia în clipboard: ", error);
                 });
         },
+        
         async sendToFriend(friendId) {
             const message = `📊 Check out this comparison: ${this.currentUrl}`;
             await axios.post(`/user/user_chat/messages/${friendId}`, {
