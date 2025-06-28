@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Events\ChatMessageSent;
 use App\Events\MessageRead;
 use App\Events\MessageUnreadUpdatedEvent;
-use App\Events\UserStatusChangedEvent;
 use App\Models\ChatMessage;
 use App\Models\User;
 use App\Services\NotificationService;

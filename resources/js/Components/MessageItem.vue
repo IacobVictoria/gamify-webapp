@@ -28,7 +28,7 @@
                 class="text-xs bg-white/30 dark:bg-black/20 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-md mb-2 cursor-pointer border border-gray-200"
                 @click="$emit('scrollMessage', repliedMessage.id)"
             >
-                <p class="font-semibold text-gray-500">↩️ Replied to:</p>
+                <p class="font-semibold text-gray-500">↩️ Răspunde:</p>
                 <p class="truncate">{{ repliedMessage.content }}</p>
             </div>
 

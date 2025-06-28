@@ -1,15 +1,27 @@
 <template>
     <AuthenticatedLayout>
         <div class="flex h-screen">
+            <div class="mt-14 h-14 m-4">
+                <button
+                    v-if="!showChatSidebar"
+                    @click="showChatSidebar = true"
+                    class="bg-gray-200 px-3 py-1 rounded text-sm hover:bg-gray-300"
+                >
+                    📚 Deschide Chat
+                </button>
+            </div>
+
             <!-- Sidebar-ul cu lista de conversații -->
             <ChatSidebar
+                v-if="showChatSidebar"
                 :conversations="conversations"
                 :current-user="currentUser"
                 @selectConversation="openConversation"
+                @close="showChatSidebar = false"
             />
 
             <!-- Fereastra pentru conversația selectată -->
-            <div class="flex-1">
+            <div class="flex-1 m-4">
                 <ChatWindow
                     v-if="selectedFriend"
                     :friend="selectedFriend"
@@ -19,9 +31,26 @@
                     <p>Selectează o conversație pentru a începe chatul</p>
                 </div>
             </div>
+
+            <div class="mt-14 h-14 m-4">
+                <button
+                    v-if="!showFriendsSidebar"
+                    @click="showFriendsSidebar = true"
+                    class="bg-gray-200 px-3 py-1 rounded text-sm hover:bg-gray-300"
+                >
+                    👥 Adaugă Prieteni
+                </button>
+            </div>
             <div
+                v-if="showFriendsSidebar"
                 class="w-full md:w-80 max-h-[100vh] overflow-y-auto bg-white border border-gray-200 p-6"
             >
+                <button
+                    @click="showFriendsSidebar = false"
+                    class="text-sm text-gray-500 hover:text-red-500 float-right"
+                >
+                    ✖
+                </button>
                 <h3 class="text-xl font-semibold text-gray-800 mb-5">
                     👥 Adaugă Prieteni noi
                 </h3>
@@ -95,6 +124,8 @@ export default {
             selectedFriend: null,
             searchQuery: "",
             searchResults: [],
+            showChatSidebar: true,
+            showFriendsSidebar: true,
         };
     },
 
@@ -106,8 +137,11 @@ export default {
             this.selectedFriend = null;
             this.$nextTick(() => {
                 this.selectedFriend = friend;
+                this.showChatSidebar = false;
+                this.showFriendsSidebar = false;
             });
         },
+
         async searchUsers() {
             if (this.searchQuery.trim() === "") {
                 this.searchResults = [];
@@ -123,16 +157,27 @@ export default {
                 console.error("Error searching users:", error);
             }
         },
-        async addFriend(userId) {
+
+        addFriend(userId) {
             try {
-                await axios.post(`/user/user_friends/request`, {
-                    receiver_id: userId,
-                });
-                this.searchResults = this.searchResults.filter(
-                    (user) => user.id !== userId
+                this.$inertia.post(
+                    route("user.user_friends.request"),
+                    { receiver_id: userId },
+                    {
+                        replace: true,
+                        preserveScroll: true,
+                        preserveState: false,
+                    },
+                    {
+                        onSuccess: () => {
+                            this.searchResults = this.searchResults.filter(
+                                (user) => user.id !== userId
+                            );
+                        },
+                    }
                 );
             } catch (error) {
-                console.error("Error sending friend request:", error);
+                console.error("Eroare generală:", error);
             }
         },
     },

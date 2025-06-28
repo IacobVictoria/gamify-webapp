@@ -8,11 +8,8 @@
                     <h1 class="text-3xl font-bold tracking-tight text-gray-900">
                         Coș de cumpărături
                     </h1>
-
-                    <form class="mt-12">
-                        <div>
-                            <h2 class="sr-only">Produsele din coșul tău</h2>
-
+                    <div v-if="cartItems.length > 0">
+                        <form class="mt-12">
                             <ul
                                 role="list"
                                 class="divide-y divide-gray-200 border-b border-t border-gray-200"
@@ -156,93 +153,124 @@
                                     </div>
                                 </li>
                             </ul>
-                        </div>
 
-                        <!-- Order summary -->
-                        <div class="mt-10 sm:ml-32 sm:pl-6">
-                            <div
-                                class="rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:p-8"
-                            >
-                                <div class="flow-root">
-                                    <dl
-                                        class="-my-4 divide-y divide-gray-200 text-sm"
+                            <!-- Order summary -->
+                            <div class="mt-10 sm:ml-32 sm:pl-6">
+                                <div
+                                    class="rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:p-8"
+                                >
+                                    <div class="flow-root">
+                                        <dl
+                                            class="-my-4 divide-y divide-gray-200 text-sm"
+                                        >
+                                            <div
+                                                class="flex items-center justify-between py-4"
+                                            >
+                                                <dt class="text-gray-600">
+                                                    Subtotal
+                                                </dt>
+                                                <dd
+                                                    class="font-medium text-gray-900"
+                                                >
+                                                    {{ calculateSubtotal() }}
+                                                </dd>
+                                            </div>
+                                            <div
+                                                class="flex items-center justify-between py-4"
+                                            >
+                                                <dt class="text-gray-600">
+                                                    Taxa livrare
+                                                </dt>
+                                                <dd
+                                                    class="font-medium text-gray-900"
+                                                >
+                                                    $10.00
+                                                </dd>
+                                            </div>
+                                            <div
+                                                class="flex items-center justify-between py-4"
+                                            >
+                                                <dt class="text-gray-600">
+                                                    Taxă
+                                                </dt>
+                                                <dd
+                                                    class="font-medium text-gray-900"
+                                                >
+                                                    $5.00
+                                                </dd>
+                                            </div>
+                                            <div
+                                                class="flex items-center justify-between py-4"
+                                            >
+                                                <dt
+                                                    class="base font-medium text-gray-900"
+                                                >
+                                                    Total
+                                                </dt>
+                                                <dd
+                                                    class="text-base font-medium text-gray-900"
+                                                >
+                                                    {{
+                                                        calculateTotal().toFixed(
+                                                            2
+                                                        )
+                                                    }}
+                                                </dd>
+                                            </div>
+                                        </dl>
+                                    </div>
+                                </div>
+                                <div class="mt-10">
+                                    <button
+                                        @click.prevent="handleCheckout"
+                                        class="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                                     >
-                                        <div
-                                            class="flex items-center justify-between py-4"
+                                        Finalizează comanda
+                                    </button>
+                                </div>
+
+                                <div
+                                    class="mt-6 text-center text-sm text-gray-500"
+                                >
+                                    <p>
+                                        or{{ " " }}
+                                        <a
+                                            :href="route('products.index')"
+                                            class="font-medium text-indigo-600 hover:text-indigo-500"
                                         >
-                                            <dt class="text-gray-600">
-                                                Subtotal
-                                            </dt>
-                                            <dd
-                                                class="font-medium text-gray-900"
+                                            Continuă cumpărăturile
+                                            <span aria-hidden="true">
+                                                &rarr;</span
                                             >
-                                                {{ calculateSubtotal() }}
-                                            </dd>
-                                        </div>
-                                        <div
-                                            class="flex items-center justify-between py-4"
-                                        >
-                                            <dt class="text-gray-600">
-                                                Taxa livrare
-                                            </dt>
-                                            <dd
-                                                class="font-medium text-gray-900"
-                                            >
-                                                $10.00
-                                            </dd>
-                                        </div>
-                                        <div
-                                            class="flex items-center justify-between py-4"
-                                        >
-                                            <dt class="text-gray-600">Taxă</dt>
-                                            <dd
-                                                class="font-medium text-gray-900"
-                                            >
-                                                $5.00
-                                            </dd>
-                                        </div>
-                                        <div
-                                            class="flex items-center justify-between py-4"
-                                        >
-                                            <dt
-                                                class="base font-medium text-gray-900"
-                                            >
-                                                Total
-                                            </dt>
-                                            <dd
-                                                class="text-base font-medium text-gray-900"
-                                            >
-                                                {{
-                                                    calculateTotal().toFixed(2)
-                                                }}
-                                            </dd>
-                                        </div>
-                                    </dl>
+                                        </a>
+                                    </p>
                                 </div>
                             </div>
-                            <div class="mt-10">
-                                <button
-                                    @click.prevent="handleCheckout"
-                                    class="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
-                                >
-                                    Finalizează comanda
-                                </button>
-                            </div>
-
-                            <div class="mt-6 text-center text-sm text-gray-500">
-                                <p>
-                                    or{{ " " }}
-                                    <a
-                                        :href="route('products.index')"
-                                        class="font-medium text-indigo-600 hover:text-indigo-500"
-                                    >
-                                        Continuă cumpărăturile
-                                        <span aria-hidden="true"> &rarr;</span>
-                                    </a>
-                                </p>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
+                    <div
+                        v-else
+                        class="mt-16 text-center text-gray-500 flex flex-col items-center justify-center"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-12 w-12 mb-4 text-gray-400"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.35 5.4a1 1 0 00.98 1.2h10.74a1 1 0 00.98-1.2L17 13M9 21h6"
+                            />
+                        </svg>
+                        <p class="text-lg font-medium">Coșul tău este gol.</p>
+                        <p class="text-sm mt-1">
+                            Adaugă produse pentru a le comanda.
+                        </p>
+                    </div>
 
                     <GenericDeleteNotification
                         :open="isDeleteDialogOpen"

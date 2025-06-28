@@ -22,21 +22,10 @@ class FriendController extends Controller
         $receiver_id = $request->input('receiver_id');
         $sender = Auth::user();
         broadcast(new FriendRequestSent($sender, $receiver_id, $this->notificationService));
-        return response()->json(['message' => 'Friend request sent!']);
-    }
+          return redirect()
+            ->route('user.user_chat.index')
+            ->with('message', 'Cerere trimisă cu succes!');
 
-
-    public function removeFriend(Request $request)
-    {
-        $userId1 = auth()->id();
-        $userId2 = $request->input('friend_id');
-
-        $user1 = min($userId1, $userId2);
-        $user2 = max($userId1, $userId2);
-
-        Friend::where('user_id', $user1)->where('friend_id', $user2)->delete();
-
-        return response()->json(['message' => 'Friend removed!']);
     }
 
     public function searchUsers(Request $request)

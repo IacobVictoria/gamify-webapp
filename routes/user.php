@@ -96,7 +96,7 @@ Route::prefix('user_chat')->group(function () {
 });
 
 Route::prefix('user_friends')->group(function () {
-    Route::post('/request', [FriendController::class, 'sendFriendRequest']);
+    Route::post('/request', [FriendController::class, 'sendFriendRequest'])->name('user_friends.request');
     Route::post('/accept', [FriendController::class, 'acceptFriendRequest']);
     Route::get('/search', [FriendController::class, 'searchUsers']);
     Route::post('/{notifId}/respond', [NotificationController::class, 'handleRequestNotification']);
@@ -126,7 +126,7 @@ Route::prefix('hangmanGame')->group(function () {
 
 //Shopping Center
 Route::get('shopping-center', [ShoppingCenterController::class, 'index'])->name('shopping-center.index');
-Route::get('top_products',[UserShoppingCartController::class,'topProducts'])->name('top_products');
+Route::get('top_products', [UserShoppingCartController::class, 'topProducts'])->name('top_products');
 //Discount Center
 Route::get('/discounts', [DiscountController::class, 'getUserDiscounts']);
 Route::post('/validate-discount', [DiscountController::class, 'validatePromo']);

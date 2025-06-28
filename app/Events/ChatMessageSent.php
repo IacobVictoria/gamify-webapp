@@ -46,6 +46,8 @@ class ChatMessageSent implements ShouldBroadcastNow
         return [
             'message' => [
                 'content' => $this->message->content,
+                'message_type' => $this->message->message_type,
+                'attachment_url' => $this->message->attachment_url,
                 'sender_id' => $this->message->sender_id,
                 'reply_to_message_id' => $this->message->reply_to_message_id,
                 'created_at' => $this->message->created_at,

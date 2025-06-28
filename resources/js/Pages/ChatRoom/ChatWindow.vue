@@ -7,7 +7,7 @@
             class="px-6 py-4 border-b bg-gray-100 flex items-center justify-between"
         >
             <h2 class="text-lg font-semibold text-gray-800">
-                💬 Chat with {{ friend.name }}
+                💬 Discuție cu {{ friend.name }}
             </h2>
             <span class="text-sm text-gray-500">{{ friend.email }}</span>
         </div>
@@ -39,7 +39,7 @@
         <div v-if="replyMessage" class="bg-gray-100 border-t px-4 py-3">
             <div class="flex justify-between items-center">
                 <div>
-                    <span class="text-xs text-gray-500">Replying to:</span>
+                    <span class="text-xs text-gray-500">Răspunde:</span>
                     <p class="text-sm font-medium text-gray-700">
                         {{ replyMessage.content }}
                     </p>
@@ -48,7 +48,7 @@
                     @click="clearReply"
                     class="text-sm text-red-500 hover:underline"
                 >
-                    Cancel
+                    Anulează
                 </button>
             </div>
         </div>
@@ -61,14 +61,14 @@
             <input
                 v-model="newMessage"
                 @keyup.enter="sendMessage"
-                placeholder="Write a message..."
+                placeholder="Scrie un mesaj..."
                 class="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
                 @click="sendMessage"
                 class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
             >
-                Send
+                Trimite
             </button>
             <button
                 @click="startRecording"
@@ -114,6 +114,13 @@ export default {
             required: true,
         },
     },
+
+    components: {
+        MessageSeenSVG,
+        MessageItem,
+        MicrofoneSVG,
+    },
+
     data() {
         return {
             messages: [],
@@ -130,6 +137,7 @@ export default {
             limit: 10,
         };
     },
+
     beforeUnmount() {
         this.isActive = false;
         this.$refs.scrollContainer.removeEventListener(
@@ -137,6 +145,7 @@ export default {
             this.handleScroll
         );
     },
+
     mounted() {
         this.isActive = true;
         this.loadMessages().then(() => {
@@ -148,11 +157,7 @@ export default {
         container.addEventListener("scroll", this.handleScroll);
         this.listenMessages();
     },
-    components: {
-        MessageSeenSVG,
-        MessageItem,
-        MicrofoneSVG,
-    },
+
     methods: {
         setReplyMessage(message) {
             this.replyMessage = message;
@@ -166,9 +171,11 @@ export default {
                 }
             });
         },
+
         clearReply() {
             this.replyMessage = null;
         },
+
         async markMessagesAsRead() {
             try {
                 await axios.put(`/user/user_chat/mark-read/${this.friend.id}`);
@@ -183,9 +190,11 @@ export default {
                 console.error("Error marking messages as read:", error);
             }
         },
+
         findMessageById(id) {
             return this.messages.find((message) => message.id === id);
         },
+
         async sendMessage() {
             if (this.newMessage.trim()) {
                 const payload = {
@@ -200,6 +209,7 @@ export default {
                     `/user/user_chat/messages/${this.friend.id}`,
                     payload
                 );
+
                 this.messages.push(response.data);
                 this.$nextTick(() => {
                     this.scrollToLastMessage();
@@ -208,6 +218,8 @@ export default {
                 this.clearReply(); // Clear reply after sending
             }
         },
+
+        //AUDIO METHODS
         async startRecording() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({
@@ -256,6 +268,7 @@ export default {
                         },
                     }
                 );
+                console.log(response.data);
                 this.messages.push(response.data);
                 this.$nextTick(() => {
                     this.scrollToLastMessage();
@@ -264,10 +277,13 @@ export default {
                 console.error("Error uploading file:", error);
             }
         },
+
+        // Real time chat
         listenMessages() {
             window.Echo.private(`chat.${this.currentUser.id}`).listen(
                 ".ChatMessageSent",
                 (event) => {
+                    console.log(event.message);
                     this.messages.push(event.message);
                     this.newMessage = "";
                     // dacă suntem în conversația cu expeditorul, marcăm mesajul ca citit imediat
@@ -298,6 +314,7 @@ export default {
                 }
             );
         },
+
         scrollToLastMessage() {
             this.$nextTick(() => {
                 const container = this.$refs.scrollContainer; //  containerul cu mesaje
@@ -306,6 +323,7 @@ export default {
                 }
             });
         },
+
         findScrollMessage(messageId) {
             // for replied message
             this.$nextTick(() => {
@@ -319,47 +337,6 @@ export default {
                     });
                 }
             });
-        },
-        async shareWishlist() {
-            const link = `${window.location.origin}/user/wishlist/public_store/${this.$page.props.user.public_token}`;
-            const messageInput = `Check out my wishlist! 🧡 ${link}`;
-
-            const response = await axios.post(
-                `/user/user_chat/messages/${this.friend.id}`,
-                { message: messageInput }
-            );
-            this.messages.push(response.data);
-            this.$nextTick(() => {
-                this.scrollToLastMessage();
-            });
-        },
-        async shareTopProducts() {
-            try {
-                const response = await axios.get("/user/top_products");
-                const products = response.data;
-
-                if (products.length === 0) return;
-
-                const messageLines = products.map((product) => {
-                    const url = `${window.location.origin}/products/${product.slug}`;
-                    return `🔸 ${product.name} – ${url}`;
-                });
-
-                const finalMessage =
-                    `📊 Here are my top ordered products:\n` +
-                    messageLines.join("\n");
-
-                const responseFinal = await axios.post(
-                    `/user/user_chat/messages/${this.friend.id}`,
-                    {
-                        message: finalMessage,
-                    }
-                );
-                this.messages.push(responseFinal.data);
-                this.scrollToLastMessage();
-            } catch (error) {
-                console.error("Failed to share top products:", error);
-            }
         },
         async loadMessages() {
             if (this.isLoading || this.noMoreItems) return;
@@ -402,6 +379,7 @@ export default {
                 this.isLoading = false;
             }
         },
+
         handleScroll() {
             const container = this.$refs.scrollContainer;
             //  scroll-ul este aproape de partea de sus
@@ -411,6 +389,50 @@ export default {
                 !this.noMoreItems
             ) {
                 this.loadMessages();
+            }
+        },
+
+        //Buttons chat
+        async shareWishlist() {
+            const link = `${window.location.origin}/user/wishlist/public_store/${this.$page.props.user.public_token}`;
+            const messageInput = `Uite lista mea de favorite! 🧡 ${link}`;
+
+            const response = await axios.post(
+                `/user/user_chat/messages/${this.friend.id}`,
+                { message: messageInput }
+            );
+            this.messages.push(response.data);
+            this.$nextTick(() => {
+                this.scrollToLastMessage();
+            });
+        },
+
+        async shareTopProducts() {
+            try {
+                const response = await axios.get("/user/top_products");
+                const products = response.data;
+
+                if (products.length === 0) return;
+
+                const messageLines = products.map((product) => {
+                    const url = `${window.location.origin}/products/${product.slug}`;
+                    return `🔸 ${product.name} – ${url}`;
+                });
+
+                const finalMessage =
+                    `📊 Acestea sunt cele mai comandate produse:\n` +
+                    messageLines.join("\n");
+
+                const responseFinal = await axios.post(
+                    `/user/user_chat/messages/${this.friend.id}`,
+                    {
+                        message: finalMessage,
+                    }
+                );
+                this.messages.push(responseFinal.data);
+                this.scrollToLastMessage();
+            } catch (error) {
+                console.error("Failed to share top products:", error);
             }
         },
     },
