@@ -172,7 +172,6 @@ export default {
                 this.friends = response.data;
             } catch (error) {
                 console.error("Error searching friends:", error);
-                alert("Failed to search friends.");
             }
         }, 300),
 
@@ -196,11 +195,11 @@ export default {
 
                         this.friends = [];
                         this.search = "";
-                        alert("Invitatie trimisa cu succes!");
+
+                      
                     })
                     .catch((error) => {
                         console.error("Error sending invitation:", error);
-                        alert("A apărut o eroare la trimiterea invitației.");
                     });
             }
         },
@@ -217,14 +216,15 @@ export default {
                 console.error("Error joining session:", error);
             }
         },
+
         async startGame() {
             try {
                 await axios.post(`/user/hangmanGame/${this.sessionId}/start`);
             } catch (error) {
                 console.error("Error starting game:", error);
-                alert("Failed to start the game.");
             }
         },
+
         async loadWordOptions() {
             try {
                 const response = await axios.get(
@@ -241,6 +241,7 @@ export default {
                 console.error("Error loading words:", error);
             }
         },
+
         async submitWord(word) {
             try {
                 await axios.post(
@@ -252,9 +253,9 @@ export default {
                 this.wordSelected = true;
             } catch (error) {
                 console.error("Error submitting word and hint:", error);
-                alert("Failed to submit the word and hint.");
             }
         },
+
         async handleGuess(letter) {
             try {
                 const response = await axios.post(
@@ -284,6 +285,7 @@ export default {
                 console.error("Error handling guess:", error);
             }
         },
+
         showEnterWordPopup() {
             Swal.fire({
                 title: "Choose a Word",
@@ -311,6 +313,7 @@ export default {
                 },
             });
         },
+
         updateCurrentWordAndHint() {
             if (this.turnData === this.creatorId) {
                 this.currentWord = this.creatorWord;
@@ -321,6 +324,7 @@ export default {
             }
         },
     },
+
     mounted() {
         this.joinSession();
         const cachedName = localStorage.getItem(
@@ -330,6 +334,7 @@ export default {
             this.waitingForFriend = cachedName;
         }
     },
+
     beforeMount() {
         window.Echo.private(`hangman-session.${this.sessionId}`).listen(
             ".OpponentJoined",
@@ -338,6 +343,7 @@ export default {
                 this.bothConnected = true;
             }
         );
+
         window.Echo.private(`hangman-session.${this.sessionId}`).listen(
             ".GameStarted",
             async () => {
@@ -345,6 +351,7 @@ export default {
                 this.showEnterWordPopup();
             }
         );
+        //au fost alese cuvintele
         window.Echo.private(`hangman-session.${this.sessionId}`).listen(
             ".GameReady",
             (event) => {
@@ -388,6 +395,7 @@ export default {
                 this.updateCurrentWordAndHint();
             }
         );
+
         window.Echo.private(`hangman-session.${this.sessionId}`).listen(
             ".GameEnded",
             (event) => {

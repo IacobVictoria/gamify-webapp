@@ -50,7 +50,7 @@ class HangmanGameController extends Controller
         if ($session->completed) {
             return redirect()->route('user.dashboard')->with('errorMessage', 'Această sesiune de joc a fost deja finalizată.');
         }
-        
+
         return Inertia::render('HangmanGame/Start', [
             'sessionId' => $session->id,
             'creatorId' => $session->creator_id,
@@ -66,7 +66,7 @@ class HangmanGameController extends Controller
         if ($session->creator_id === $user->id) {
             return response()->json([
                 'creator_name' => $session->creator->name,
-                'opponent_name' => $session->opponent ? $session->opponent->name : 'Waiting...',
+                'opponent_name' => $session->opponent ? $session->opponent->name : 'Așteptăm...',
                 'opponent_connected' => $session->opponent_id !== null,
             ]);
         }
@@ -148,7 +148,7 @@ class HangmanGameController extends Controller
         $letter = strtoupper($request->input('letter'));
         $isCorrect = false;
 
-        // Determinăm dacă jucătorul curent este creator sau oponent
+        // determin dacă jucatorul curent este creator sau oponent
         $isCreator = $user->id === $session->creator_id;
         $currentWord = strtoupper($isCreator ? $session->word_for_creator : $session->word_for_opponent);
 
@@ -158,24 +158,24 @@ class HangmanGameController extends Controller
         $guessedLetters = json_decode($session->$guessedLettersKey, true) ?? [];
         $mistakes = $session->$mistakesKey;
 
-        if (strpos($currentWord, $letter) !== false) {
-            $isCorrect = true;
-            if (!in_array($letter, $guessedLetters)) {
-                $guessedLetters[] = $letter; // Adăugăm  literele corecte
+        //Verifică dacă litera e în cuvânt
+        if (!in_array($letter, $guessedLetters)) {
+            $guessedLetters[] = $letter;
+            if (strpos($currentWord, $letter) === false) {
+                $mistakes++;
+            } else {
+                $isCorrect = true;
             }
-        } else {
-            if (!in_array($letter, $guessedLetters)) {
-                $guessedLetters[] = $letter; // Adăugăm literele greșite
-            }
-            $mistakes++;
         }
 
         $guessedLetters = array_unique($guessedLetters);
 
+        // Salvează modificările
         $session->$guessedLettersKey = json_encode($guessedLetters);
         $session->$mistakesKey = $mistakes;
         $session->save();
 
+        //Termin jocul daca sunt toate ghicite sau nr de greseli e mare
         $allLettersGuessed = $this->areAllLettersGuessed($currentWord, $guessedLetters);
 
         $finished = $allLettersGuessed || $mistakes >= ceil(strlen($currentWord) / 2);
@@ -183,7 +183,7 @@ class HangmanGameController extends Controller
         if ($finished) {
             $this->handleRoundCompletion($session, $isCreator, $allLettersGuessed);
 
-            // Transmitem evenimentul către clienți cu valori goale pentru a se actualiza keyboard ul oponentului
+            // noua runda resetam keyboard
             broadcast(new GameUpdated(
                 $session->id,
                 $session->turn,
@@ -251,9 +251,8 @@ class HangmanGameController extends Controller
     //finalizeaza sf rundei
     private function handleRoundCompletion($session, bool $isCreator, bool $allLettersGuessed): void
     {
-        // Verificăm dacă runda curentă s-a terminat
+
         if ($allLettersGuessed || $session->mistakes_creator >= ceil(strlen($session->word_for_creator) / 2) || $session->mistakes_opponent >= ceil(strlen($session->word_for_opponent) / 2)) {
-            // Dacă este rândul creatorului și ghicește corect sau face prea multe greșeli
             if ($isCreator) {
                 // Schimbăm turul la oponent
                 $session->turn = $session->opponent_id;
@@ -262,17 +261,18 @@ class HangmanGameController extends Controller
                 $session->completed = true;
             }
             if ($session->completed) {
-                // Calculate scores
-                $maxMistakes = max(
-                    ceil(strlen($session->word_for_creator) / 2),
-                    ceil(strlen($session->word_for_opponent) / 2)
-                );
+                // Calcul scoruri vs greseli
+                $maxMistakesCreator = ceil(strlen($session->word_for_creator) / 2);
+                $maxMistakesOpponent = ceil(strlen($session->word_for_opponent) / 2);
 
                 $scores = $this->calculateScores(
                     $session->mistakes_creator,
+                    $maxMistakesCreator,
                     $session->mistakes_opponent,
-                    $maxMistakes
+                    $maxMistakesOpponent
                 );
+
+                // Salveaza scoruri in bd
                 $creator = User::find($session->creator_id);
                 $opponent = User::find($session->opponent_id);
                 // Save scores in the session
@@ -296,26 +296,21 @@ class HangmanGameController extends Controller
             $session->save();
         }
     }
-    /**
-     * Calculate the scores for both players based on their mistakes.
-     *
-     * @param int $mistakesCreator Number of mistakes made by the creator.
-     * @param int $mistakesOpponent Number of mistakes made by the opponent.
-     * @param int $maxMistakes Maximum mistakes allowed based on word length.
-     * @return array Returns an associative array with the scores for both players.
-     */
-    private function calculateScores(int $mistakesCreator, int $mistakesOpponent, int $maxMistakes): array
-    {
-        $pointsPerMistake = 100 / $maxMistakes;
 
-        $creatorScore = 100 - ($mistakesCreator * $pointsPerMistake);
-        $opponentScore = 100 - ($mistakesOpponent * $pointsPerMistake);
+    private function calculateScores(int $mistakesCreator, int $maxMistakesCreator, int $mistakesOpponent, int $maxMistakesOpponent): array
+    {
+        $creatorPointsPerMistake = 100 / $maxMistakesCreator;
+        $opponentPointsPerMistake = 100 / $maxMistakesOpponent;
+
+        $creatorScore = 100 - ($mistakesCreator * $creatorPointsPerMistake);
+        $opponentScore = 100 - ($mistakesOpponent * $opponentPointsPerMistake);
 
         return [
-            'creator' => max(0, round($creatorScore)), // Ensure the score is not below 0
-            'opponent' => max(0, round($opponentScore)) // Ensure the score is not below 0
+            'creator' => max(0, round($creatorScore)),
+            'opponent' => max(0, round($opponentScore)),
         ];
     }
+
 
     public function getWordOptions()
     {

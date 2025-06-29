@@ -30,7 +30,6 @@ export default {
                 this.$inertia.post(route("user.generateGameSession"));
             } catch (error) {
                 console.error("Error starting new game:", error);
-                alert("Failed to start the game.");
             }
         },
     },

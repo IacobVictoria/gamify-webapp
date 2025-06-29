@@ -183,6 +183,13 @@
                             >
                                 {{ item.name }}
                             </inertia-link>
+                            <inertia-link
+                                v-if="role"
+                                :href="route(`${role}.dashboard`)"
+                                class="sm:hidden -mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 cursor: pointer"
+                            >
+                                Dashboard
+                            </inertia-link>
                         </div>
                         <div v-if="!isLoggedIn()" class="py-6">
                             <inertia-link
@@ -261,7 +268,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/vue/24/outline";
 import WishlistLogoSVG from "@/Components/WishlistLogoSVG.vue";
 import RecomandationLogoSVG from "@/Components/RecomandationLogoSVG.vue";
 import NotificationComponentIcon from "@/Pages/Notification_System/NotificationComponentIcon.vue";
-import { usePage } from '@inertiajs/vue3';
+import { usePage } from "@inertiajs/vue3";
 
 const page = usePage();
 const user = page.props.user;
@@ -271,7 +278,6 @@ const navigation = [
     { name: "Produse", href: route("products.index") },
     { name: "Furnizori", href: route("suppliers.web_view") },
     { name: "Activități", href: route("activities.index") },
-     ...(role ? [{ name: "Dashboard", href: route(`${role}.dashboard`) }] : []),
 ];
 
 const mobileMenuOpen = ref(false);

@@ -27,12 +27,12 @@
       },
       maxMistakes: {
         type: Number,
-        required: true, // Trebuie să treci numărul maxim de greșeli din backend
+        required: true, // nr maxim de greșeli
       },
     },
     methods: {
       getThreshold(partIndex) {
-        // Calculează pragul pentru fiecare parte a Hangman-ului
+        //  pragul pentru fiecare parte a Hangman-ului
         return Math.ceil((this.maxMistakes / 6) * partIndex);
       },
     },

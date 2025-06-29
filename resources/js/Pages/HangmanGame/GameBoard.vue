@@ -1,7 +1,7 @@
 <template>
     <div class="game-board">
-        <h3>{{ isMyTurn ? "Your Turn" : "Opponent's Turn" }}</h3>
-        <p><strong>Hint:</strong> {{ hint }}</p>
+        <h3>{{ isMyTurn ? "Rândul tău" : "Rândul oponentului" }}</h3>
+        <p><strong>Sugestie:</strong> {{ hint }}</p>
 
 
         <div class="word-container">
@@ -19,19 +19,19 @@
             </button>
         </div>
 
-        <p>Errors: {{ errors }}/{{ Math.ceil(word.length / 2) }}</p>
+        <p>Erori: {{ errors }}/{{ Math.ceil(word.length / 2) }}</p>
     </div>
 </template>
 
 <script>
 export default {
     props: {
-        isMyTurn: Boolean, // Determină dacă e rândul utilizatorului curent
-        hint: String, // Hint-ul pentru cuvântul de ghicit
-        word: String, // Cuvântul complet
-        usedLetters: Array, // Literele deja utilizate
-        correctLetters: Array, // Literele corecte
-        wrongLetters: Array, // Literele greșite
+        isMyTurn: Boolean, // dacă e rândul utilizatorului curent
+        hint: String,
+        word: String, 
+        usedLetters: Array,
+        correctLetters: Array, 
+        wrongLetters: Array, 
         errors: Number, // Numărul de greșeli
     },
     computed: {

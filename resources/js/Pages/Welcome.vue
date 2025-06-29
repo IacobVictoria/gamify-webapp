@@ -84,7 +84,6 @@
 
 <script>
 import Layout from '../Layouts/Layout.vue'
-import QrScannerProduct from './QrCodes/QrScannerProduct.vue';
 import EventDiscountBanner from '@/Components/EventDiscountBanner.vue';
 import NpsPopUp from './NPS/NpsPopUp.vue';
 import ExperienceLanding from '@/Landing/ExperienceLanding.vue';
@@ -100,7 +99,6 @@ export default {
     components: {
         Layout,
         EventDiscountBanner,
-        QrScannerProduct,
         NpsPopUp,
         ExperienceLanding,
         FaqSection,
