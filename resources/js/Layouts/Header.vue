@@ -261,12 +261,17 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/vue/24/outline";
 import WishlistLogoSVG from "@/Components/WishlistLogoSVG.vue";
 import RecomandationLogoSVG from "@/Components/RecomandationLogoSVG.vue";
 import NotificationComponentIcon from "@/Pages/Notification_System/NotificationComponentIcon.vue";
+import { usePage } from '@inertiajs/vue3';
 
+const page = usePage();
+const user = page.props.user;
+const role = user?.roles?.[0]?.name?.toLowerCase() ?? null;
 const navigation = [
     { name: "Acasă", href: route("home") },
     { name: "Produse", href: route("products.index") },
     { name: "Furnizori", href: route("suppliers.web_view") },
     { name: "Activități", href: route("activities.index") },
+     ...(role ? [{ name: "Dashboard", href: route(`${role}.dashboard`) }] : []),
 ];
 
 const mobileMenuOpen = ref(false);

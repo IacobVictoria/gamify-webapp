@@ -1,6 +1,6 @@
 <template>
     <AuthenticatedLayout>
-        <!-- 🔥 Leaderboard Section -->
+        <!-- Leaderboard Section -->
         <div class="leaderboard-header animate-fade-in">
             <h2
                 class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-500 font-extrabold text-3xl md:text-4xl tracking-wide"
@@ -15,7 +15,7 @@
         <LeaderBoardQuizzes :leaderboard="leaderboard" />
 
         <div class="container mx-auto mt-6 space-y-12 px-4 pb-32">
-            <!-- 🎯 Easy Quizzes -->
+            <!-- Easy Quizzes -->
             <div v-if="quizzes['easy']" class="space-y-6">
                 <div
                     class="flex flex-row category-header bg-green-200 shadow-md p-4 rounded-lg flex items-center justify-center gap-2"

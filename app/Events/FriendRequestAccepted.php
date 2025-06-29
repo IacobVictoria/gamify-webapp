@@ -40,7 +40,7 @@ class FriendRequestAccepted implements ShouldBroadcastNow
             'user_id' => $this->senderFriendRequest->id,
             'message' => $message,
             'is_read' => false,
-            'type' => 'FriendRequest'
+            'type' => 'FriendRequestAccepted'
         ]);
 
         $notification->save();

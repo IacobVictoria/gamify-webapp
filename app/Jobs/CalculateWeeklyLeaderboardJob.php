@@ -40,7 +40,7 @@ class CalculateWeeklyLeaderboardJob implements ShouldQueue
         }
     }
     /**
-     * Calculează leaderboard-ul săptămânal.
+     * Calculează leaderboard-ul săptămânal, primii 3 useri.
      */
     private function calculateLeaderboard(): array
     {

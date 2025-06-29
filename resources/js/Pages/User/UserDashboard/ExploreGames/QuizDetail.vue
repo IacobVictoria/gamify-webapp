@@ -2,7 +2,7 @@
     <AuthenticatedLayout>
         <template #header>
             <h2 class="text-2xl font-bold text-center text-indigo-700 mb-4">
-                📘 Quiz Recap & Progress
+                📘 Quiz Recapitulare & Progres
             </h2>
         </template>
 
@@ -23,13 +23,13 @@
                     class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6"
                 >
                     <p class="text-center text-gray-800">
-                        📊 Final Score:
+                        📊 Scor Final:
                         <span class="font-bold text-indigo-600">{{
                             quizResult.total_score
                         }}</span>
                     </p>
                     <p class="text-center text-gray-600">
-                        Attempt #{{ quizResult.attempt_number }} | 📅
+                     Încercarea #{{ quizResult.attempt_number }} | 📅
                         {{ formatDate(quizResult.date) }}
                     </p>
                 </div>
@@ -43,7 +43,7 @@
                             ❓ Q{{ qIndex + 1 }}: {{ question.question }}
                         </p>
                         <p class="text-sm text-gray-500 mb-4">
-                            🎯 Points: {{ question.score }}
+                            🎯 Puncte: {{ question.score }}
                         </p>
 
                         <div

@@ -11,8 +11,7 @@
         <p class="mb-4 text-gray-700">
             Acest quiz conține
             <strong class="text-indigo-600">{{ quiz.questions.length }}</strong>
-            întrebări. Fiecare întrebare are un timp limitat de
-            <strong>30 de secunde</strong>.
+            întrebări.
         </p>
 
         <p class="mb-3 text-gray-700">La final vei vedea:</p>

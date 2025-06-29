@@ -8,16 +8,16 @@
         >
             <div>
                 <p class="text-white text-sm">
-                    Round {{ $page.props.nr_attempts + 1 }}
+                    Runda {{ $page.props.nr_attempts + 1 }}
                 </p>
                 <h2 class="text-white text-xl font-semibold">
-                    🧠 Quiz Challenge
+                    🧠 Provocare quiz
                 </h2>
             </div>
             <div
                 class="bg-white rounded-full px-4 py-2 text-indigo-700 font-bold shadow"
             >
-                Score: {{ score }}
+                Scor: {{ score }}
             </div>
         </div>
 
@@ -61,7 +61,7 @@
 
             <!-- Progress -->
             <div class="text-center text-gray-500 text-sm mt-6">
-                Question {{ questionIndex + 1 }} of {{ totalQuestions }}
+                Întrebarea {{ questionIndex + 1 }} din {{ totalQuestions }}
             </div>
 
             <!-- Finalizare -->
@@ -71,7 +71,7 @@
                     @click="finishQuiz"
                     class="bg-indigo-600 text-white font-semibold px-6 py-2 rounded-xl hover:bg-indigo-700 transition"
                 >
-                    Finish Quiz
+                    Termină Quiz
                 </button>
             </div>
         </div>
@@ -102,7 +102,6 @@ export default {
     methods: {
         finishQuiz() {
             this.isQuizFinished = true;
-            clearInterval(this.interval);
 
             this.$emit(
                 "quiz-completed",
@@ -111,6 +110,7 @@ export default {
                 this.responses
             );
         },
+        
         customAnswerClass(answer) {
             if (this.selectedAnswer === answer.id) {
                 return answer.is_correct
@@ -119,16 +119,18 @@ export default {
             }
             return "bg-white hover:bg-indigo-50 border-gray-300";
         },
+
         indexLetterClass(answer) {
             if (this.selectedAnswer === answer.id) {
                 return answer.is_correct ? "bg-green-200" : "bg-red-200";
             }
             return "bg-gray-200";
         },
+
         selectAnswer(answer) {
             if (this.selectedAnswer) return;
             this.selectedAnswer = answer.id;
-            clearInterval(this.interval);
+
  
             this.responses.push({
                 questionId: this.question.id,
@@ -155,9 +157,6 @@ export default {
         },
     },
 
-    beforeDestroy() {
-        clearInterval(this.interval);
-    },
     watch: {
         question: {
             immediate: true,

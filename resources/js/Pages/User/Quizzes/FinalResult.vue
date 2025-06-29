@@ -1,7 +1,5 @@
 <template>
-    <div
-        class="min-h-screen  py-12 px-4 flex justify-center items-start"
-    >
+    <div class="min-h-screen py-12 px-4 flex justify-center items-start">
         <div
             class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-3 gap-6 bg-white rounded-2xl overflow-hidden"
         >
@@ -10,11 +8,12 @@
                 class="col-span-1 bg-yellow-100 p-6 border-r border-yellow-300 h-full flex flex-col justify-center"
             >
                 <h2 class="text-2xl font-bold text-yellow-800 mb-2">
-                    We value your feedback! 📝
+                    Apreciem feedback-ul tău! 📝
                 </h2>
                 <p class="text-sm text-yellow-700 mb-4">
-                    Tell us how the quiz went or what you'd improve:
+                    Spune-ne cum ți s-a părut quizul sau ce ai îmbunătăți:
                 </p>
+
                 <textarea
                     v-model="feedback"
                     rows="6"
@@ -25,7 +24,7 @@
                         @click="submitFeedback"
                         class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-6 py-2 rounded-lg transition"
                     >
-                        Submit ✨
+                        Trimite ✨
                     </button>
                 </div>
             </div>
@@ -48,11 +47,11 @@
                     class="bg-blue-50 rounded-xl p-6 shadow-md"
                 >
                     <div class="font-semibold text-xl text-blue-900 mb-3">
-                        Question {{ questionIndex + 1 }}:
+                        Întrebare {{ questionIndex + 1 }}:
                         {{ question.question }}
                     </div>
                     <div class="text-sm text-blue-700 mb-5">
-                        Score: {{ question.score }}
+                        Scor: {{ question.score }}
                     </div>
 
                     <div
