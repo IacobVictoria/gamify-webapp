@@ -12,7 +12,7 @@ import os
 import matplotlib.pyplot as plt
 
 base_dir = os.path.dirname(__file__)
-file_path = os.path.join(base_dir, "tmp", "Train_Dataset_Final2.csv")
+file_path = os.path.join(base_dir, "tmp", "Train_Dataset_Final.csv")
 df = pd.read_csv(file_path)
 
 
@@ -101,14 +101,14 @@ class NCF(pl.LightningModule):
         x = torch.relu(self.fc2(x))
         return torch.sigmoid(self.output(x)).squeeze()
 
-    def training_step(self, batch, batch_idx):
+    def training_step(self, batch, batch_idx): #Este folosită pentru antrenarea efectivă a modelului. Se execută la fiecare batch în timpul epocii de antrenare (trainer.fit()).
         user, item, features, label = batch
         preds = self(user, item, features)
         loss = self.loss_fn(preds, label)
         self.log("train_loss", loss, on_step=False, on_epoch=True, prog_bar=True, logger=True)
         return loss
 
-    def validation_step(self, batch, batch_idx):
+    def validation_step(self, batch, batch_idx): #Este folosită doar pentru evaluare. Se execută în timpul validării, după fiecare epocă (sau la final).
         user, item, features, label = batch
         preds = self(user, item, features).detach().cpu()
         preds_bin = (preds > 0.5).int()
@@ -184,13 +184,10 @@ if __name__ == "__main__":
     trainer.test(model, datamodule=data)
     trainer.logger.finalize("success")
 
-    from save_recommendations import generate_recommendations
-
-    generate_recommendations(model, df)
-
-    from save_recommandations_to_db import generate_recommendations_to_db
-
-    generate_recommendations_to_db()
+    os.makedirs("models", exist_ok=True)
+    checkpoint_path = "models/ncf_model.ckpt"
+    trainer.save_checkpoint(checkpoint_path)
+    print(f"Modelul a fost salvat în: {checkpoint_path}")
 
     print("Antrenament finalizat.")
 

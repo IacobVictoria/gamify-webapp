@@ -16,4 +16,4 @@ Schedule::command(ProcessLowStockOrders::class)->everyMinute();
 Schedule::command(GenerateMeetingReportsCommand::class)->everyMinute();
 Schedule::command('backup:run')->monthlyOn(1, '00:00');
 Schedule::command('backup:clean')->monthlyOn(1, '00:10');
-Schedule::command(RunRecommenderPipeline::class)->weekly();
+Schedule::command(RunRecommenderPipeline::class)->cron('0 0 1 */3 *'); // fiecare 3 luni

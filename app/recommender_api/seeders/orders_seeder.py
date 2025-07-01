@@ -12,21 +12,20 @@ import numpy as np
 from datetime import datetime, timedelta
 import random
 
-# === Setări ===
 np.random.seed(42)
 random.seed(42)
 
-# === Încarcă utilizatorii ===
+# Încarcă utilizatorii
 users_df = pd.read_csv("../dataset/Generated_Users.csv") 
 user_ids = users_df["id"].tolist()
 
-# === Împarte userii în activi și inactivi ===
+# Împarte userii în activi și inactivi
 num_users = len(user_ids)
 num_active = int(0.85 * num_users)
 active_users = np.random.choice(user_ids, size=num_active, replace=False)
 active_users_set = set(active_users)
 
-# === Generează comenzi pentru userii activi ===
+# Generează comenzi pentru userii activi
 orders = []
 order_id = 1
 today = datetime.today()
@@ -42,7 +41,7 @@ for user_id in active_users:
         })
         order_id += 1
 
-# === Salvare CSV ===
+# CSV
 orders_df = pd.DataFrame(orders)
 orders_df.to_csv("../dataset/Generated_Client_Orders.csv", index=False)
 

@@ -1,55 +1,44 @@
-import pymysql
-import json
-import os
-from datetime import datetime
+import pandas as pd
+from sqlalchemy import create_engine, text
+from datetime import datetime, timedelta
 
-# === Config DB ===
-connection = pymysql.connect(
-    host="localhost",
-    user="root",
-    password="",
-    database="gamify_recommender",
-    cursorclass=pymysql.cursors.DictCursor
-)
+engine = create_engine("mysql+pymysql://root:@localhost/gamify_recommender")
+three_months_ago = datetime.now() - timedelta(days=90)
 
-# === Tabele de urmărit ===
-tables_to_check = ["wishlists", "reviews", "client_orders", "users", "products"]
+def check_table_for_updates(table_name, date_columns):
+    
+    conditions = " OR ".join([f"{col} >= :date" for col in date_columns])
+    query = text(f"SELECT COUNT(*) AS cnt FROM {table_name} WHERE {conditions}")
+    with engine.connect() as conn:
+        result = conn.execute(query, {"date": three_months_ago}).fetchone()
+    return result["cnt"] > 0
 
-# === Fișier cache pentru ultimele modificări ===
-STATE_FILE = "app/recommender_api/tmp/last_updates.json"
+def main():
+    # Listează tabelele și coloanele relevante pentru data update/creare
+    tables_to_check = {
+        "users": ["created_at", "updated_at"],
+        "products": ["created_at", "updated_at"],
+        "client_orders": ["created_at", "updated_at"],
+        "order_products": ["created_at", "updated_at"],
+        "wishlists": ["created_at", "updated_at"],
+        "reviews": ["created_at", "updated_at"]
+    }
 
-def fetch_latest_updates():
-    latest = {}
-    with connection.cursor() as cursor:
-        for table in tables_to_check:
-            cursor.execute(f"SELECT MAX(updated_at) as last FROM {table}")
-            result = cursor.fetchone()
-            latest[table] = result["last"].isoformat() if result["last"] else None
-    return latest
+    updates_found = {}
 
-def load_cached_updates():
-    if not os.path.exists(STATE_FILE):
-        return {}
-    with open(STATE_FILE, "r") as f:
-        return json.load(f)
+    for table, date_cols in tables_to_check.items():
+        try:
+            has_updates = check_table_for_updates(table, date_cols)
+            updates_found[table] = has_updates
+        except Exception as e:
+            print(f"Nu am putut verifica tabelul {table}: {e}")
+            updates_found[table] = False
 
-def save_current_updates(updates):
-    os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
-    with open(STATE_FILE, "w") as f:
-        json.dump(updates, f)
+    print("Rezultat verificare date noi/actualizate în ultimele 3 luni:")
+    for table, updated in updates_found.items():
+        print(f" - {table}: {'Da' if updated else 'Nu'}")
 
-def has_changed(new, old):
-    for table in tables_to_check:
-        if new.get(table) != old.get(table):
-            return True
-    return False
+    return updates_found
 
 if __name__ == "__main__":
-    new_updates = fetch_latest_updates()
-    old_updates = load_cached_updates()
-
-    if has_changed(new_updates, old_updates):
-        print("1")  # Semnal că trebuie să rulezi pipeline-ul
-        save_current_updates(new_updates)
-    else:
-        print("0")  # Nimic de făcut
+    updates = main()
