@@ -1,8 +1,8 @@
 # Produsele populare primesc mai multe review-uri.
-# ✅ Review-urile pozitive au descrieri și like-uri mai bune.
-# ✅ Cold users & cold items NU apar în reviews.
-# ✅ Rating-ul este distribuit, cu bias pozitiv.
-# ✅ Se evită overfitting: review-urile nu sunt perfect corelate cu scorul.
+# Review-urile pozitive au descrieri și like-uri mai bune.
+# Cold users & cold items NU apar în reviews.
+# Rating-ul este distribuit, cu bias pozitiv.
+# Se evită overfitting: review-urile nu sunt perfect corelate cu scorul.
 import pandas as pd
 import numpy as np
 import random
@@ -102,4 +102,4 @@ for (user_id, product_id) in interacted_pairs:
 reviews_df = pd.DataFrame(reviews)
 reviews_df.to_csv("../dataset/Generated_Reviews.csv", index=False)
 
-print(f"✅ Reviews generate: {len(reviews_df)} salvate în 'dataset/Generated_Reviews.csv'")
+print(f"Reviews generate: {len(reviews_df)} salvate în 'dataset/Generated_Reviews.csv'")

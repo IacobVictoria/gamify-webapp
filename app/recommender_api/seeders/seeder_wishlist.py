@@ -17,10 +17,8 @@ orders_df["user_id"] = orders_df["user_id"].astype(str)
 order_products_df["order_id"] = order_products_df["order_id"].astype(str)
 order_products_df["product_id"] = order_products_df["product_id"].astype(str)
 
-# Alocă user_id în order_products
 order_products_df = order_products_df.merge(orders_df[["order_id", "user_id"]], on="order_id")
 
-# Set de interacțiuni existente
 interacted_pairs = set(zip(order_products_df["user_id"], order_products_df["product_id"]))
 
 # === Preferințe pe categorii ===
@@ -47,7 +45,7 @@ for _, user in users_df.iterrows():
     preferred_cats = np.random.choice(category_cols, size=2, replace=False)
     preferred = products_df[products_df[preferred_cats].sum(axis=1) > 0]["id"].tolist()
 
-    # Sănătos? => produse cu zahăr & grăsimi scăzute
+    # Sănătos => produse cu zahăr & grăsimi scăzute
     healthy = []
     if score > 1500:
         healthy = products_df[(products_df["sugar"] < 5) &
@@ -80,4 +78,4 @@ for _, user in users_df.iterrows():
 # === Salvare ===
 wishlist_df = pd.DataFrame(wishlist)
 wishlist_df.to_csv("../dataset/Generated_Wishlists.csv", index=False)
-print(f"✅ Wishlist generat cu {len(wishlist_df)} înregistrări.")
+print(f"Wishlist generat cu {len(wishlist_df)} înregistrări.")

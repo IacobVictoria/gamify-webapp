@@ -27,4 +27,4 @@ for user_id in range(1, NUM_USERS + 1):
 
 users_df = pd.DataFrame(users)
 users_df.to_csv("../dataset/Generated_Users.csv", index=False)
-print(f"✅ {NUM_USERS} useri salvați în 'Generated_Users.csv'")
+print(f"{NUM_USERS} useri salvați în 'Generated_Users.csv'")

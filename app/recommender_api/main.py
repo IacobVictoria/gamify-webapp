@@ -194,7 +194,7 @@ if __name__ == "__main__":
     # === Chart cu evoluția pe epoci ===
 try:
     log_dir = os.path.join("logs", "ncf_model")
-    version = sorted(os.listdir(log_dir))[-1]  # cea mai recentă versiune
+    version = sorted(os.listdir(log_dir))[-1]  
     metrics_path = os.path.join(log_dir, version, "metrics.csv")
     metrics_df = pd.read_csv(metrics_path)
 
