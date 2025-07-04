@@ -34,6 +34,7 @@ class UserWishlistController extends Controller
 
         $product = Product::find($productId);
         $this->userService->likeProduct($user, $product);
+
     }
 
     public function dislike(string $productId)

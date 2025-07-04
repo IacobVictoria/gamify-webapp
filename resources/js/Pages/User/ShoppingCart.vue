@@ -57,7 +57,6 @@
                                                         }}
                                                     </p>
                                                 </div>
-
                                                 <div
                                                     v-if="
                                                         item.product.old_price
@@ -75,6 +74,14 @@
                                                     </p>
                                                     <p
                                                         class="text-lg font-bold text-green-600"
+                                                    >
+                                                        {{ item.product.price }}
+                                                        Lei
+                                                    </p>
+                                                </div>
+                                                <div v-else>
+                                                    <p
+                                                        class="text-lg font-bold"
                                                     >
                                                         {{ item.product.price }}
                                                         Lei
@@ -99,7 +106,7 @@
                                                         "
                                                     >
                                                         <option
-                                                            v-for="i in 10"
+                                                            v-for="i in 15"
                                                             :key="i"
                                                             :value="i"
                                                         >
@@ -275,8 +282,8 @@
                     <GenericDeleteNotification
                         :open="isDeleteDialogOpen"
                         @update:open="isDeleteDialogOpen = $event"
-                        title="Delete Item"
-                        message="Are you sure you want to delete this item from your cart?"
+                        title="Șterge produs"
+                        message="Sigur vrei să ștergi acest produs din coș?"
                         :deleteRoute="'user.shopping-cart.destroy'"
                         :objectId="itemToDelete"
                     />
@@ -284,8 +291,8 @@
                     <GenericDeleteNotification
                         :open="isDeleteCheckoutDialogOpen"
                         @update:open="isDeleteCheckoutDialogOpen = $event"
-                        title="Out of Stock Items"
-                        message="There are items out of stock in your cart! Do you want to remove all out-of-stock items?"
+                        title="Produse care nu mai sunt in stoc"
+                        message="🛒 Unele produse din coș nu mai sunt în stoc! Vrei să le ștergi pe toate automat?"
                         :items="outOfStockItems"
                         :deleteRoute="'user.shopping-cart.destroy'"
                     />
@@ -321,7 +328,6 @@ export default {
         return {
             isDeleteDialogOpen: false,
             itemToDelete: String | Number,
-            numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
             inStock: {},
             isDeleteCheckoutDialogOpen: false,
             itemCheckoutToDelete: String | Number,
@@ -357,27 +363,33 @@ export default {
         },
 
         updateQuantity(productId, newQuantity) {
-            this.$inertia.post(route("user.shopping-cart.update", productId), {
-                quantity: newQuantity,
-            });
+            this.$inertia.post(
+                route("user.shopping-cart.update", productId),
+                {
+                    quantity: newQuantity,
+                },
+                {
+                    preserveScroll: true,
+                    preserveState: true,
+                }
+            );
         },
 
         checkAvailability() {
             this.outOfStockItems = this.cartItems.filter(
                 (item) => item.product.stock < item.quantity
             );
-            return this.outOfStockItems.length === 0; // Return true if all items are in stock
+            return this.outOfStockItems.length === 0; 
         },
 
         handleCheckout(event) {
             const allItemsInStock = this.checkAvailability();
 
-            // not all items are in stock
             if (!allItemsInStock) {
                 this.isDeleteCheckoutDialogOpen = true;
 
                 if (event) {
-                    event.preventDefault(); // Stop the page from reloading
+                    event.preventDefault(); 
                 }
             } else {
                 // all items are in stock

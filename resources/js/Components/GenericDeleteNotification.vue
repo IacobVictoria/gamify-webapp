@@ -29,10 +29,10 @@
                             <div class="flex flex-row gap-5 mt-5 sm:mt-6">
                                 <button
                                     class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                    @click="confirmDelete">Yes</button>
+                                    @click="confirmDelete">Da</button>
                                 <button
                                     class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-                                    @click="handleClose">No</button>
+                                    @click="handleClose">Nu</button>
                             </div>
                         </DialogPanel>
                     </TransitionChild>

@@ -321,22 +321,25 @@ export default {
                 quantity: this.quantity,
             });
         },
-        async likeProduct(product) {
-            await this.$inertia.post(
+
+        likeProduct(product) {
+            this.$inertia.post(
                 route("user.wishlist.products.like", product.id),
                 {},
                 {
-                    onSuccess: (page) => {},
+                    preserveScroll: true,
+                    preserveState: true,
                 }
             );
         },
 
-        async dislikeProduct(product) {
-            await this.$inertia.post(
+        dislikeProduct(product) {
+            this.$inertia.post(
                 route("user.wishlist.products.dislike", product.id),
                 {},
                 {
-                    onSuccess: (page) => {},
+                    preserveScroll: true,
+                    preserveState: true,
                 }
             );
         },

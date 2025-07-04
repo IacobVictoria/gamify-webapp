@@ -280,7 +280,7 @@
                         <GenericDeleteNotification
                             :open="isDeleteDialogOpen"
                             @update:open="isDeleteDialogOpen = $event"
-                            title="Delete Item"
+                            title="Șterge quiz"
                             :message="messageToDelete"
                             :deleteRoute="routeToDelete"
                             :objectId="itemToDelete"
@@ -433,20 +433,20 @@ export default {
             this.itemToDelete = answer.id;
             this.routeToDelete = "admin-gamification.answers.destroy";
             this.messageToDelete =
-                "Are you sure you want to delete this answer?";
+                "Sigur vrei să ștergi acest răspuns?";
         },
         deleteQuestion(question) {
             this.isDeleteDialogOpen = !this.isDeleteDialogOpen;
             this.itemToDelete = question.id;
             this.routeToDelete = "admin-gamification.questions.destroy";
             this.messageToDelete =
-                "Are you sure you want to delete this question?";
+                "Sigur vrei sa ștergi această întrebare?";
         },
         deleteQuiz(quiz) {
             this.isDeleteDialogOpen = !this.isDeleteDialogOpen;
             this.itemToDelete = quiz.id;
             this.routeToDelete = "admin-gamification.user_quizzes.destroy";
-            this.messageToDelete = "Are you sure you want to delete this quiz?";
+            this.messageToDelete = "Sigur vrei să ștergi acest quiz?";
         },
     },
 };

@@ -30,18 +30,17 @@
             class="mt-10 bg-gray-100 p-6 rounded-lg shadow-lg text-center"
         >
             <div class="text-gray-700 text-lg font-semibold mb-4">
-                You need to be logged in to make a review.
+                Trebuie să fii logat ca să dai review!
             </div>
             <inertia-link
                 :href="route('login')"
                 class="no-underline inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-                Log In
+                Loghează-te
             </inertia-link>
         </div>
 
         <div class="-mb-10">
-            <h3 class="sr-only">Customer Reviews</h3>
             <div
                 v-if="message"
                 class="bg-yellow-100 mt-16 border border-yellow-300 text-yellow-700 text-center py-4 px-6 rounded-lg mb-6"
@@ -382,12 +381,7 @@ export default {
             reviewStates: [],
         };
     },
-    mounted() {
-        //     console.log('sdbv');
-        //     window.Echo.private(`comments.${this.userId}`).listen('.CommentEvent', (event) => {
-        //     console.log(event);
-        // });
-    },
+
     watch: {
         reviews: {
             handler() {
@@ -441,7 +435,8 @@ export default {
                 route("reviews.like", review.id),
                 {},
                 {
-                    onSuccess: (page) => {},
+                    preserveScroll: true,
+                    preserveState: true,
                 }
             );
         },
@@ -451,7 +446,8 @@ export default {
                 route("reviews.unlike", review.id),
                 {},
                 {
-                    onSuccess: (page) => {},
+                    preserveScroll: true,
+                    preserveState: true,
                 }
             );
         },

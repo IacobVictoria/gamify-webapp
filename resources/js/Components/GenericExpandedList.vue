@@ -124,8 +124,8 @@
 </tbody>
 </table>
 
-<GenericDeleteNotification :open="isDeleteDialogOpen" @update:open="isDeleteDialogOpen = $event" title="Delete Item"
-    message="Are you sure you want to delete this badge from your the list?" :deleteRoute="'admin-gamification.badges.destroy'"
+<GenericDeleteNotification :open="isDeleteDialogOpen" @update:open="isDeleteDialogOpen = $event" title="Șterge insignă"
+    message="Sigur vrei să ștergi această insignă?" :deleteRoute="'admin-gamification.badges.destroy'"
     :objectId="itemToDelete" />
 
 </div>

@@ -20,11 +20,6 @@ class ReviewLikeController extends Controller
         $this->notificationService = $notificationService;
     }
 
-    public function index()
-    {
-
-    }
-
     public function like(string $reviewId)
     {
         $user = Auth()->user();
@@ -33,7 +28,8 @@ class ReviewLikeController extends Controller
         $this->userService->likeReview($user, $review);
 
         // sa fac un update pe noul nr de like uri 
-        $review->likes = $review->reviewLikes()->count();
+        // $review->likes = $review->reviewLikes()->count();
+        $review->likes += 1;
         $review->save();
 
         broadcast(new ReviewLikedEvent($user, $review, $this->notificationService));
@@ -47,57 +43,11 @@ class ReviewLikeController extends Controller
         $review = Review::find($reviewId);
 
         $this->userService->unlikeReview($user, $review);
-        $review->likes = $review->reviewLikes()->count();
+        $review->likes -= 1;
         $review->save();
 
         //delete the notification of liked review
         $this->notificationService->removeLikeNotification($review);
     }
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

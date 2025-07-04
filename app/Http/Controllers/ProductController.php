@@ -149,7 +149,7 @@ class ProductController extends Controller
     {
         $sortOrder = $request->input('order', '');
 
-        $orderColumn = $sortOrder === 'populare' ? 'likes' : 'updated_at';
+        $orderColumn = $sortOrder === 'populare' ? 'likes' : 'created_at';
         $orderDirection = 'desc';
 
         $reviews = $product->reviews()->with(['user:id,name,gender', 'reviewMedia'])

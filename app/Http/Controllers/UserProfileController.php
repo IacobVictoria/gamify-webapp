@@ -60,7 +60,14 @@ class UserProfileController extends Controller
         })->toArray();
 
         return Inertia::render('User/UserProfile', [
-            'account' => $account,
+            'account' => [
+                'id' => $account->id,
+                'name' => $account->name,
+                'email' => $account->email,
+                'roles' => $account->roles,
+                'gender' => $account->gender,
+                'created_at' => $account->created_at->format('Y-m-d'),
+            ],
             'medals' => $medals,
             'badges' => $badges
         ]);

@@ -48,12 +48,6 @@
                     </span>
 
                     <span
-                        class="text-md md:text-lg text-gray-600 mt-2 font-semibold flex items-center justify-center md:justify-start"
-                    >
-                        📁 {{ activities[currentSlide].type }}
-                    </span>
-
-                    <span
                         class="text-md md:text-lg text-gray-600 mt-1 font-semibold flex items-center justify-center md:justify-start"
                     >
                         ⭐ Scor: {{ activities[currentSlide].score }}
