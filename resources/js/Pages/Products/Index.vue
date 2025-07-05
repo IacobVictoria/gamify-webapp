@@ -294,7 +294,7 @@ export default {
         sendToFriend(friendId) {
             if (!this.clickedProduct) return;
             const link = `${window.location.origin}/products/${this.clickedProduct.slug}`;
-            const message = `📦 I found this product and thought of you: ${link}`;
+            const message = `📦 Am găsit acest produs și m-am gândit la tine: ${link}`;
 
             axios.post(`/user/user_chat/messages/${friendId}`, {
                 message: message,

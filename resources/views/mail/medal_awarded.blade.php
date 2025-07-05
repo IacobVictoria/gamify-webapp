@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏅 Congratulations, {{ $user->name }}!</title>
+    <title>🏅 Felicitări, {{ $user->name }}!</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -57,9 +57,9 @@
 <body>
 
 <div class="email-container">
-    <h2>🏅 Congratulations, {{ $user->name }}!</h2>
+    <h2>🏅 Felicitări, {{ $user->name }}!</h2>
 
-    <p>You have just earned a <strong>{{ $tier }} Medal</strong> for your amazing performance! 🎉</p>
+    <p>Tocmai ai câștigat o <strong>Medalie {{ $tier }}</strong> pentru performanța ta excepțională! 🎉</p>
 
     <div class="medal {{ strtolower($tier) }}">
         @if($tier == 'Gold')
@@ -71,11 +71,11 @@
         @endif
     </div>
 
-    <p>Keep up the great work and aim for the next milestone!</p>
+    <p>Continuă să faci treabă bună și țintește următoarea medalie!</p>
 
-    <div>🔥 View Your Medals in App!</div>
+    <div>🔥 Vezi Medaliile Tale în Aplicație!</div>
 
-    <p class="footer">Thank you for being part of our community! 🚀</p>
+    <p class="footer">Îți mulțumim că faci parte din comunitatea noastră! 🚀</p>
 </div>
 
 </body>

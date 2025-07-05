@@ -17,12 +17,9 @@
                         <div class="font-semibold">{{ discount.title }}</div>
                         <div>
                             Salvează {{ discount.details.discount }}% la
-                            {{
-                                discount.details.category === null
-                                    ? discount.applyTo
-                                    : discount.details.category
-                            }}!
+                            {{ getDiscountTarget(discount) }}!
                         </div>
+
                         <div>
                             Valabil până la
                             <span class="font-semibold">{{
@@ -59,6 +56,14 @@ export default {
                 month: "long",
                 day: "numeric",
             });
+        },
+        getDiscountTarget(discount) {
+            if (discount.details.category !== "") {
+                return discount.details.category;
+            }
+
+                return "toate produsele";
+        
         },
     },
 };

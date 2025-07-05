@@ -106,7 +106,7 @@ class HangmanGameController extends Controller
         $word = $request->input('word');
 
         // Citim JSON-ul pentru a găsi hint-ul asociat
-        $wordData = Storage::disk('s3')->get('hangman/word_options.json');
+        $wordData = Storage::disk('s3')->get('hangman/word_options_aws.json');
         $words = json_decode($wordData, true);
 
         // Căutăm hint-ul pentru cuvântul selectat
@@ -315,7 +315,7 @@ class HangmanGameController extends Controller
     public function getWordOptions()
     {
         // În AWS S3 ai un JSON cu cuvinte și hint-uri
-        $wordData = Storage::disk('s3')->get('hangman/word_options.json');
+        $wordData = Storage::disk('s3')->get('hangman/word_options_aws.json');
         $words = json_decode($wordData, true);
 
         // Amestecă lista de cuvinte

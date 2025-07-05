@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promo Code Granted</title>
+    <title>Cod Promoțional Oferit</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -39,14 +39,14 @@
 </head>
 <body>
     <div class="container">
-        <h2>🎉 Hello, {{ $user->name }}!</h2>
-        <p>Congratulations! You have reached <strong>{{ $tier }} medal</strong> and unlocked a <strong>{{ $discount }}%</strong> discount.</p>
-        <p>Your exclusive promo code is:</p>
+        <h2>🎉 Salut, {{ $user->name }}!</h2>
+        <p>Felicitări! Ai obținut medalia de <strong>{{ $tier }}</strong> și ai deblocat o reducere de <strong>{{ $discount }}%</strong>.</p>
+        <p>Codul tău promoțional exclusiv este:</p>
         <p class="promo-code">{{ $promoCode }}</p>
-        <p>Use this code at checkout to redeem your discount.</p>
-        <p>Keep shopping and earning more rewards! 🚀</p>
+        <p>Folosește acest cod la finalizarea comenzii pentru a beneficia de reducere.</p>
+        <p>Continuă să comanzi și să câștigi mai multe recompense! 🚀</p>
         <div class="footer">
-            <p>Thank you for being a valued customer.</p>
+            <p>Îți mulțumim că faci parte din comunitatea noastră!</p>
         </div>
     </div>
 </body>

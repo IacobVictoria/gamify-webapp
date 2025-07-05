@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📄 Your Invoice is Ready!</title>
+    <title>📄 Factura ta este disponibilă!</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -67,22 +67,22 @@
 <body>
 
 <div class="email-container">
-    <h2>📄 Your Invoice is Ready!</h2>
+    <h2>📄 Factura ta este disponibilă!</h2>
 
-    <p>Hello, <strong>{{ $user->name }}</strong>!</p>
+    <p>Salut, <strong>{{ $user->name }}</strong>!</p>
     
-    <p>We have generated your invoice for your recent order <strong>#{{ $order->id }}</strong>. Below are your order details:</p>
+    <p>Am generat factura pentru comanda ta recentă <strong>#{{ $order->id }}</strong>. Mai jos găsești detaliile comenzii:</p>
 
     <div class="order-info">
-        <p><strong>🛍️ Order Total:</strong> ${{ number_format($order->total_price, 2) }}</p>
-        <p><strong>📅 Order Date:</strong> {{ $order->created_at->format('Y-m-d H:i') }}</p>
+        <p><strong>🛍️ Total comandă:</strong> ${{ number_format($order->total_price, 2) }}</p>
+        <p><strong>📅 Data comenzii:</strong> {{ $order->created_at->format('Y-m-d H:i') }}</p>
     </div>
 
-    <p>You can download your invoice by clicking the button below:</p>
+    <p>Poți descărca factura apăsând butonul de mai jos:</p>
 
-    <a href="{{ $invoiceUrl }}" class="cta-button">📥 Download Invoice</a>
+    <a href="{{ $invoiceUrl }}" class="cta-button">📥 Descarcă factura</a>
 
-    <p class="footer">Thank you for shopping with us! 🚀</p>
+    <p class="footer">Îți mulțumim că ai cumpărat de la noi! 🚀</p>
 </div>
 
 </body>

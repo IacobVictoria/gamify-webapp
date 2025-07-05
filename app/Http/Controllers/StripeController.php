@@ -37,7 +37,7 @@ class StripeController extends Controller
 
         $paymentIntent = PaymentIntent::create([
             'amount' => $order->total_price * 100, // Stripe folosește cenți (ex: $100.50 → 10050)
-            'currency' => 'usd', //only usd
+            'currency' => 'usd', 
         ]);
 
         return response()->json([

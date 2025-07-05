@@ -8,7 +8,7 @@ use Inertia\Inertia;
 
 class AdminHangmanManagerController extends Controller
 {
-    private $s3FilePath = 'hangman/word_options.json';
+    private $s3FilePath = 'hangman/word_options_aws.json';
     public function index()
     {
         if (!Storage::disk('s3')->exists($this->s3FilePath)) {

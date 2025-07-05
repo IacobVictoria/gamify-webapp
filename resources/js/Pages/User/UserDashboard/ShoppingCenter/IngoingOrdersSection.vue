@@ -134,14 +134,16 @@ export default {
     methods: {
         getStatusMessage(order) {
             switch (order.status) {
+                case "Canceled":
+                    return "❌ Comandă anulată";
                 case "Waiting":
-                    return "⏳ Waiting for it to be expedited...";
+                    return "⏳ În așteptare pentru a fi expediată...";
                 case "Expedited":
-                    return "🚚 Expedited - Waiting 3 days for delivery...";
+                    return "🚚 Expediată – Așteaptă 3 zile pentru livrare...";
                 case "Delivered":
-                    return "✅ Order Delivered!";
+                    return "✅ Comandă livrată!";
                 default:
-                    return "⏳ Processing...";
+                    return "⏳ Se procesează...";
             }
         },
         statusClasses(status) {

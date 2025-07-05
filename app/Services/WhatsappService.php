@@ -16,7 +16,7 @@ class WhatsappService
     {
         $this->client = $client;
         $this->apiUrl = 'https://graph.facebook.com/v22.0/605095459346670/messages';
-        $this->accessToken = 'EAAJL0c3hggsBO23cYqPxr0E2I8dzPeZA1A0Exj01RXKGS3Y51WjREZA8eREOfuk1kh8pb94ZBOXMlyeWcUYrVXCnIi23xHEFCfsZCBnZAmoZAt9AZAd9VSb1QfsBRWuS6sY5cSiL59AMP2cB9ususXZAPaYZBVRspS043nutpIGqpGfbfnQjZBAQZCXe5FIL33gQ5ZAi9UU588R3QYHEG9fEtHOVZB9A0CiYZD';
+        $this->accessToken = 'EAAJL0c3hggsBPJZAZA2coyxc7u6HaoIzd3VFKcr2rNqRiuKkvZBHWFZBGUOJFZAZBMhAGsFuvhUHqN1O0RUVYXraJBPBmNy1YADKZBTuqZBwDC1ka4rfejucHqrJ91J8PCUOOCnPoKKxwuT2sqxQBDEVLnsj5usXsMxnxvhrY8prQf06nrpEEdsaily2NaHBXJXHVHrwbc8ZBBXyZBnBUqIkBq9d5mlbDYPFMK2EkPyZBOMpcHnwAZDZD';
     }
     public function sendMessage(string $phoneNumber, string $messageType, array $data = [])
     {

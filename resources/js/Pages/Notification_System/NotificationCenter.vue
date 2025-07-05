@@ -37,7 +37,7 @@ export default {
             window.Echo.private(`comments.${user.id}`).listen(
                 ".CommentEvent",
                 (event) => {
-                    this.addNotification("Comment nou!", event.message);
+                    this.addNotification("Comentariu nou!", event.message);
                 }
             );
 
@@ -51,7 +51,7 @@ export default {
                 window.Echo.private("admin-gamification-channel").listen(
                     ".UserRemarkedOnQuiz",
                     (event) => {
-                        this.addNotification("New Remark!", event.message);
+                        this.addNotification("Nouă evaluare quiz!", event.message);
                     }
                 );
             }
@@ -59,7 +59,7 @@ export default {
             window.Echo.private(`obtain_badge.${user.id}`).listen(
                 ".ObtainBadge",
                 (event) => {
-                    this.addNotification("Badge nou!", event.message);
+                    this.addNotification("Insignă nouă!", event.message);
                 }
             );
 
@@ -75,18 +75,18 @@ export default {
                     this.addNotification("Felicitări!", event.message);
                 })
                 .listen(".FriendRequestAccepted", (event) => {
-                    this.addNotification("New friend!", event.message);
+                    this.addNotification("Prieten nou!", event.message);
                 });
             window.Echo.private(`user.${user.id}`).listen(
                 ".UserMedalAwarded",
                 (event) => {
-                    this.addNotification("New medal!", event.message);
+                    this.addNotification("Nouă medalie!", event.message);
                 }
             );
             window.Echo.private(`user.${user.id}`).listen(
                 ".OrderDelivered",
                 (event) => {
-                    this.addNotification("Order Delivered!", event.message);
+                    this.addNotification("Comandă trimisă!", event.message);
                 }
             );
             window.Echo.private(`user.${user.id}`).listen(
@@ -98,34 +98,34 @@ export default {
             window.Echo.private(`user.${user.id}`).listen(
                 ".OrderExpedited",
                 (event) => {
-                    this.addNotification("Order Expedited!", event.message);
+                    this.addNotification("Comandă expediată!", event.message);
                 }
             );
 
             window.Echo.private(`user.${user.id}`).listen(
                 ".UserEligibleForDiscount",
                 (event) => {
-                    this.addNotification("Ready for bonus!", event.message);
+                    this.addNotification("Ai primit bonus!", event.message);
                 }
             );
             if (user.roles[0].name === "User") {
                 window.Echo.private(`user_newDiscount.${user.id}`).listen(
                     ".DiscountApplied",
                     (event) => {
-                        this.addNotification("New discount", event.message);
+                        this.addNotification("Nou discount", event.message);
                     }
                 );
             }
             window.Echo.private(`user_newEvent.${user.id}`).listen(
                 ".NewEventNotification",
                 (event) => {
-                    this.addNotification("New Event", event.message);
+                    this.addNotification("Nou event", event.message);
                 }
             );
             window.Echo.private(`friend-requests.${user.id}`).listen(
                 ".FriendRequestSent",
                 (event) => {
-                    this.addNotification("New friend request", event.message);
+                    this.addNotification("Nouă cerere de prietenie", event.message);
                 }
             );
             window.Echo.private(`admin-channel.${user.id}`).listen(
@@ -150,13 +150,13 @@ export default {
             window.Echo.private(`user_newProduct.${user.id}`).listen(
                 ".NewProductNotification",
                 (event) => {
-                    this.addNotification("New Product", event.message);
+                    this.addNotification("Nou produs", event.message);
                 }
             );
             window.Echo.private(`user_restockProduct.${user.id}`).listen(
                 ".ProductRestockedNotification",
                 (event) => {
-                    this.addNotification("Restock Product", event.message);
+                    this.addNotification("Produs iar in stoc", event.message);
                 }
             );
         }

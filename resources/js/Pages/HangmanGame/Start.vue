@@ -80,7 +80,7 @@
                                 @click="sendGameInvite(friend.id)"
                                 class="btn btn-sm btn-success"
                             >
-                                Invite
+                                Invită
                             </button>
                         </li>
                     </ul>
