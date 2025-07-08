@@ -192,17 +192,15 @@ export default {
             );
         },
         stopRecurrence() {
-            if (!confirm("Are you sure you want to stop this recurrence?"))
-                return;
-
+  
             this.$inertia.put(
                 route("admin.calendar.event.stopRecurrence", {
                     id: this.calendarEvent.id,
                 }),
                 {},
                 {
-                    preserveScroll: true,
                     onSuccess: () => {
+                        window.location.reload();
                         this.calendarEvent.is_recurring = false;
                         is_reccuring = false;
                     },

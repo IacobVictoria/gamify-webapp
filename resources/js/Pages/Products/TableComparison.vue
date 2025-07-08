@@ -227,7 +227,7 @@ export default {
         },
         
         async sendToFriend(friendId) {
-            const message = `📊 Check out this comparison: ${this.currentUrl}`;
+            const message = `📊 Vezi această comparatie:${this.currentUrl}`;
             await axios.post(`/user/user_chat/messages/${friendId}`, {
                 message: message,
             });

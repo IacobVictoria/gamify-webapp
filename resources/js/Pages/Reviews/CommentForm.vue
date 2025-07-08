@@ -37,11 +37,11 @@ export default {
             fields: [
                 {
                     name: 'description',
-                    label: 'Description',
+                    label: 'Descriere',
                     type: 'textarea',
                     inputType: 'textarea',
                     autocomplete: 'description',
-                    placeholder: 'Enter description',
+                    placeholder: 'Introdu descrierea',
                     colSpan: 'sm:col-span-6'
                 },
             ],

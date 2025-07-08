@@ -32,7 +32,7 @@ class InvoiceIssuedMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('🎉 Your invoice is ready to be downloaded!')
+        return $this->subject('🎉Factura ta este gata pentru descărcare!')
                     ->view('mail.invoice_issued_user')
                     ->with([
                         'user' => $this->user,

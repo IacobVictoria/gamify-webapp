@@ -163,7 +163,7 @@ const toggleFavorite = () => {
 };
 
 const sendToFriend = (friendId) => {
-    const message = `📊 Check out this activity: ${window.location.href}`;
+    const message = `📊 Vezi această activitate: ${window.location.href}`;
     axios.post(`/user/user_chat/messages/${friendId}`, {
         message: message,
     });

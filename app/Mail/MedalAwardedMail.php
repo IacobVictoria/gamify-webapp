@@ -31,7 +31,7 @@ class MedalAwardedMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('🏅 You have earned a new medal!')
+        return $this->subject('🏅 Ai câștigat o medalie nouă!')
             ->view('mail.medal_awarded')
             ->with([
                 'user' => $this->user,

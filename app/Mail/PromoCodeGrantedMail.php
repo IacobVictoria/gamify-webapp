@@ -35,7 +35,7 @@ class PromoCodeGrantedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '🎉 You’ve earned a promo code for reaching ' . $this->tier . ' medal!',
+            subject: '🎉 Ai câștigat un cod promoțional pe baza medaliei de ' . $this->tier . '!',
         );
     }
 
