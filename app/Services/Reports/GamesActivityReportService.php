@@ -19,8 +19,8 @@ class GamesActivityReportService
 
         return [
             'period' => $period,
-            'startDate' => $startDate,
-            'endDate' => $endDate,
+            'startDate' => Carbon::parse($dateRange['start_date'])->format('d.m.Y'),
+            'endDate' => Carbon::parse($dateRange['end_date'])->format('d.m.Y'),
             'most_popular_difficulties' => $this->getMostPopularDifficulties($startDate, $endDate),
             'most_attempted_quizzes' => $this->getMostAttemptedQuizzes($startDate, $endDate),
             'average_quizzes_completed' => round($this->getAverageQuizzesCompleted($startDate, $endDate), 2),

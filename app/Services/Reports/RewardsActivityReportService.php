@@ -17,8 +17,8 @@ class RewardsActivityReportService
 
         return [
             'period' => $period,
-            'startDate' => $startDate,
-            'endDate' => $endDate,
+            'startDate' => Carbon::parse($dateRange['start_date'])->format('d.m.Y'),
+            'endDate' => Carbon::parse($dateRange['end_date'])->format('d.m.Y'),
             'average_time_to_first_medal' => $this->getAverageTimeToFirstMedal($startDate, $endDate),
             'easiest_and_hardest_badges' => $this->getEasiestAndHardestBadges($startDate, $endDate),
             'average_badges_per_category' => $this->getAverageBadgesPerCategory($startDate, $endDate),

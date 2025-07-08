@@ -18,8 +18,8 @@ class ProductsActivityReportService
 
         return [
             'period' => $period,
-            'startDate' => $dateRange['start_date'],
-            'endDate' => $dateRange['end_date'],
+            'startDate' => Carbon::parse($dateRange['start_date'])->format('d.m.Y'),
+            'endDate' => Carbon::parse($dateRange['end_date'])->format('d.m.Y'),
             'best_selling_category' => $this->getBestSellingCategory($startDate, $endDate),
             'top_selling_products' => $this->getTopSellingProducts($startDate, $endDate),
             'new_vs_old_products_sales' => $this->getNewVsOldProductsSales($startDate, $endDate),
@@ -102,7 +102,7 @@ class ProductsActivityReportService
         return [
             'new_products_sales' => $newProductsSales,
             'old_products_sales' => $oldProductsSales,
-            'comparison' => $newProductsSales > $oldProductsSales ? 'New products sell better' : 'Old products sell better'
+            'comparison' => $newProductsSales > $oldProductsSales ? 'Produsele noi se vând mai bine' : 'Produsele vechi se vând mai bine'
         ];
     }
 

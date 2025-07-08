@@ -7,7 +7,7 @@
             <p class="text-gray-700">
                 Selectează o dată pentru a programa sau gestiona întâlnirile.
                 Poți genera rapoarte în
-                <strong>6 categorii diferite</strong> care vor fi trimise direct
+                <strong>4 categorii diferite</strong> care vor fi trimise direct
                 pe <strong>Discord</strong> la data de început:
             </p>
             <ul class="mt-12 flex justify-center gap-3 flex-wrap">

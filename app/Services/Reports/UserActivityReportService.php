@@ -20,8 +20,8 @@ class UserActivityReportService
 
         return [
             'period' => $period,
-            'startDate' => $startDate,
-            'endDate' => $endDate,
+            'startDate' => Carbon::parse($dateRange['start_date'])->format('d.m.Y'),
+            'endDate' => Carbon::parse($dateRange['end_date'])->format('d.m.Y'),
             'new_users_count' => $this->getNewUsersCount($startDate, $endDate),
             'avg_orders_per_user' => round($this->getAvgOrdersPerUser($startDate, $endDate), 2),
             'avg_order_value' => round($this->getAvgOrderValue($startDate, $endDate), 2),

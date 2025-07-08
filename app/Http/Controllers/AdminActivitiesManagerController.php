@@ -120,7 +120,7 @@ class AdminActivitiesManagerController extends Controller
         ]);
 
         return redirect()->route('admin-gamification.activities.index')
-            ->with('message', 'Activity updated successfully.');
+            ->with('message', 'Activitate editata cu succes!');
     }
 
     public function destroy(string $activityId)

@@ -209,7 +209,7 @@ const form = useForm({
     title: "",
     description: "",
     start: props.selectedDate
-        ? formatDate(props.selectedDate)
+        ? formatDate(props.selectedDate + ' 00:00:00')
         : formatDate(new Date()),
     end: "",
     period: "ultima_luna",

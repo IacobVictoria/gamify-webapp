@@ -18,8 +18,8 @@ class NpsActivityReportService
 
         return [
             'period' => $period,
-            'startDate' => $startDate,
-            'endDate' => $endDate,
+            'startDate' => Carbon::parse($dateRange['start_date'])->format('d.m.Y'),
+            'endDate' => Carbon::parse($dateRange['end_date'])->format('d.m.Y'),
             'npsData' => $this->calculateNpsByPeriod($startDate, $endDate),
             'binaryQuestions' => $this->getBinaryQuestionsStats($startDate, $endDate),
             'scaleQuestions' => $this->getScaleQuestionsStats($startDate, $endDate),

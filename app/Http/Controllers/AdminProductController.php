@@ -115,7 +115,7 @@ class AdminProductController extends Controller
 
         $product->save();
 
-        return redirect()->route('admin.products.index')->with('message', 'Product updated successfully!');
+        return redirect()->route('admin.products.index')->with('message', 'Produs editat cu succes!');
     }
 
     public function destroy(string $productId)

@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white p-6 mb-10">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-6">🌐 Global Insights</h2>
+   <h2 class="text-2xl font-semibold text-gray-800 mb-6">🌐 Perspective Globale</h2>
 
     <ul class="space-y-5">
       <li class="flex items-center gap-4">

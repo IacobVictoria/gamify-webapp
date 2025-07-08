@@ -85,29 +85,30 @@ class AdminDashboardService
 
     public function getStatsAdminProgressBar()
     {
-        $startOfWeek = Carbon::now()->startOfWeek();
-        $endOfWeek = Carbon::now()->endOfWeek();
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
 
         // Numărul total de comenzi plasate cu promo codes săptămâna aceasta
-        $totalOrdersWithPromo = ClientOrder::whereBetween('created_at', [$startOfWeek, $endOfWeek])
+        $totalOrdersWithPromo = ClientOrder::whereBetween('created_at', [$startOfMonth, $endOfMonth])
             ->whereNotNull('promo_code')
             ->count();
 
-        $totalOrders = ClientOrder::whereBetween('created_at', [$startOfWeek, $endOfWeek])->count();
+        $totalOrders = ClientOrder::whereBetween('created_at', [$startOfMonth, $endOfMonth])->count();
 
         $promoOrdersPercentage = $totalOrders > 0 ? ($totalOrdersWithPromo / $totalOrders) * 100 : 0;
 
         // Procentul produselor vândute cu reducere față de cele vândute fără reducere (din totalul comenzilor)
-        $discountStats = app(ProductsActivityReportService::class)->getDiscountVsRegularSales($startOfWeek, $endOfWeek);
+        $discountStats = app(ProductsActivityReportService::class)->getDiscountVsRegularSales($startOfMonth, $endOfMonth);
         $discountUsageRate = str_replace('%', '', $discountStats['discount_usage_rate']);
 
         // Procentul produselor care au fost adăugate în wishlist de către utilizatori săptămâna aceasta
-        $wishlistedCount = Wishlist::whereBetween('created_at', [$startOfWeek, $endOfWeek])->distinct('product_id')->count();
+        $wishlistedCount = Wishlist::whereBetween('created_at', [$startOfMonth, $endOfMonth])->distinct('product_id')->count();
         $totalProducts = Product::count();
         $wishlistedPercentage = $totalProducts > 0 ? ($wishlistedCount / $totalProducts) * 100 : 0;
 
         // Procentul produselor care au avut mai multe intrări (reaprovizionare) decât ieșiri (vânzări), indicând restocare sănătoasă
-        $stockFluctuations = app(SalesStockReportService::class)->getStockFluctuations($startOfWeek, $endOfWeek);
+        $stockFluctuations = app(SalesStockReportService::class)->getStockFluctuations($startOfMonth, $endOfMonth);
         $replenished = collect($stockFluctuations)->filter(fn($item) => $item['stock_in'] > $item['stock_out'])->count();
         $replenishmentRate = count($stockFluctuations) > 0 ? ($replenished / count($stockFluctuations)) * 100 : 0;
 

@@ -19,8 +19,8 @@ class SalesStockReportService
 
         return [
             'period' => $period,
-            'startDate' => $startDate,
-            'endDate' => $endDate,
+            'startDate' => Carbon::parse($dateRange['start_date'])->format('d.m.Y'),
+            'endDate' => Carbon::parse($dateRange['end_date'])->format('d.m.Y'),
             'top_10_sold_products' => $this->getTopSoldProducts($startDate, $endDate),
             'least_sold_products' => $this->getLeastSoldProducts($startDate, $endDate),
             'stock_fluctuations' => $this->getStockFluctuations($startDate, $endDate),

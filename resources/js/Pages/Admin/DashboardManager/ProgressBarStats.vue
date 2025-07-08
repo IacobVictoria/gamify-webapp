@@ -1,14 +1,14 @@
 <template>
   <div class="bg-white p-5">
     <h2 class="text-xl font-semibold text-gray-900 mb-5">
-      📊 Statistici de progres săptămânale
+      📊 Statistici de progres lunare
     </h2>
 
     <div v-if="progressBarStats">
       <!-- Comenzi cu coduri promoționale -->
       <div class="mb-4">
         <div class="flex justify-between text-sm font-medium">
-          <span>Comenzi cu coduri promoționale (săptămâna aceasta)</span>
+          <span>Comenzi cu coduri promoționale</span>
           <span class="text-gray-500">{{ progressBarStats.promoOrdersPercentage }}%</span>
         </div>
         <div class="w-full h-3 bg-gray-200 rounded-md mt-1">

@@ -63,7 +63,7 @@ import GlobalStats from "./DashboardManager/GlobalStats.vue";
                                     {{ nps !== null ? nps : "N/A" }}
                                 </h1>
                                 <p class="text-gray-500">
-                                    Net Promoter Score (NPS)
+                                    (NPS)
                                 </p>
                             </div>
 

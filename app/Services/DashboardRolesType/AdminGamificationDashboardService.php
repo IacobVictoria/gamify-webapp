@@ -26,11 +26,12 @@ class AdminGamificationDashboardService
 
     public function getDashboardData()
     {
-        $startOfWeek = Carbon::now()->startOfWeek();
-        $endOfWeek = Carbon::now()->endOfWeek();
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
 
         $popularQuizzes = UserQuizResult::with('quiz:id,title')
-            ->whereBetween('date', [$startOfWeek, $endOfWeek])
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
             ->groupBy('quiz_id')
             ->select('quiz_id', DB::raw('COUNT(*) as appearances'))
             ->orderByDesc('appearances')
@@ -50,9 +51,9 @@ class AdminGamificationDashboardService
 
         return [
             'toggleAdminGamification' => true,
-            'weeklyBadges' => UserBadge::whereBetween('awarded_at', [$startOfWeek, $endOfWeek])->count(),
-            'weeklyMedals' => UserMedal::whereBetween('created_at', [$startOfWeek, $endOfWeek])->count(),
-            'avgQuizScore' => UserQuizResult::whereBetween('date', [$startOfWeek, $endOfWeek])->avg('percentage_score') ?? 0,
+            'weeklyBadges' => UserBadge::whereBetween('awarded_at', [$startOfMonth, $endOfMonth])->count(),
+            'weeklyMedals' => UserMedal::whereBetween('created_at', [$startOfMonth, $endOfMonth])->count(),
+            'avgQuizScore' => UserQuizResult::whereBetween('date', [$startOfMonth, $endOfMonth])->avg('percentage_score') ?? 0,
             'topQuizzes' => $popularQuizzes,
             'progressBarStats' => $progressBarStats,
             'variousStats' => $variousStats,
@@ -113,11 +114,12 @@ class AdminGamificationDashboardService
 
     public function getVariousGamificationStats()
     {
-        $startOfWeek = Carbon::now()->startOfWeek();
-        $endOfWeek = Carbon::now()->endOfWeek();
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
 
         // Cele mai frecvente insigne acordate în săptămâna curentă
-        $topBadges = UserBadge::whereBetween('awarded_at', [$startOfWeek, $endOfWeek])
+        $topBadges = UserBadge::whereBetween('awarded_at', [$startOfMonth, $endOfMonth])
             ->with('badge:id,name,image_path')
             ->select('badge_id', DB::raw('COUNT(*) as awarded_count'))
             ->groupBy('badge_id')
@@ -132,7 +134,7 @@ class AdminGamificationDashboardService
 
         // Quiz-uri cu cel mai mare scor mediu
         $topRatedQuizzes = UserQuizResult::with('quiz:id,title')
-            ->whereBetween('date', [$startOfWeek, $endOfWeek])
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
             ->groupBy('quiz_id')
             ->select('quiz_id', DB::raw('AVG(percentage_score) as avg_score'))
             ->orderByDesc('avg_score')
@@ -144,8 +146,8 @@ class AdminGamificationDashboardService
             ]);
 
         // Numărul total de insigne și medalii acordate săptămâna aceasta
-        $weeklyBadges = UserBadge::whereBetween('awarded_at', [$startOfWeek, $endOfWeek])->count();
-        $weeklyMedals = UserMedal::whereBetween('created_at', [$startOfWeek, $endOfWeek])->count();
+        $weeklyBadges = UserBadge::whereBetween('awarded_at', [$startOfMonth, $endOfMonth])->count();
+        $weeklyMedals = UserMedal::whereBetween('created_at', [$startOfMonth, $endOfMonth])->count();
 
         return [
             'topBadges' => $topBadges,
