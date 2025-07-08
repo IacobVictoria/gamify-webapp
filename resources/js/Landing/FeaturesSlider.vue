@@ -2,7 +2,7 @@
     <article
         class="flex flex-col lg:flex-row lg:items-center lg:justify-center md:gap-12 my-12"
     >
-        <div class="flex flex-col items-center max-w-[300px] md:max-w-[400px]">
+        <div class=" ml-8 flex flex-col items-center max-w-[300px] md:max-w-[400px]">
             <img
                 loading="lazy"
                 :src="imagePath('/landing/fuel_1.png')"
