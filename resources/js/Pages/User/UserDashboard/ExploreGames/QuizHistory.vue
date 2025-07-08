@@ -49,7 +49,7 @@
                                 </span>
                             </p>
                             <p class="quiz-attempt">
-                                Attempt #{{ result.attempt_number }}
+                                Încercarea #{{ result.attempt_number }}
                             </p>
                             <p class="quiz-date">
                                 📅 {{ formatDate(result.date) }}

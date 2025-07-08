@@ -51,7 +51,7 @@ class ShoppingCenterController extends Controller
                 }),
             ];
         });
-        $activeOrders = $activeOrders->where('is_archived', 0)->get()->map(function ($order) {
+        $activeOrders = $activeOrders->where('is_archived', 0)->orderBy('created_at','desc')->get()->map(function ($order) {
             return [
                 'id' => $order->id,
                 'total' => $order->total_price,
