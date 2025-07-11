@@ -69,7 +69,7 @@ class ReviewController extends Controller
 
             $file = $request->file('media');
 
-            $fileType = in_array($file->extension(), ['jpg', 'jpeg', 'png']) ? 'image' : (in_array($file->extension(), ['mp4', 'mov', 'avi', 'mkv', 'wmv']) ? 'video' : 'unknown');
+            $fileType = in_array($file->extension(), ['jpg', 'jpeg', 'png','webp']) ? 'image' : (in_array($file->extension(), ['mp4', 'mov', 'avi', 'mkv', 'wmv']) ? 'video' : 'unknown');
             $filePath = $file->store('public/media', 's3');
 
             Storage::disk('s3')->setVisibility($filePath, 'public');
@@ -133,7 +133,7 @@ class ReviewController extends Controller
 
             $file = $request->file('media');
 
-            $fileType = in_array($file->extension(), ['jpg', 'jpeg', 'png']) ? 'image' : (in_array($file->extension(), ['mp4', 'mov', 'avi', 'mkv', 'wmv']) ? 'video' : 'unknown');
+            $fileType = in_array($file->extension(), ['jpg', 'jpeg', 'png','webp']) ? 'image' : (in_array($file->extension(), ['mp4', 'mov', 'avi', 'mkv', 'wmv']) ? 'video' : 'unknown');
             $filePath = $file->store('public/media', 's3');
 
             Storage::disk('s3')->setVisibility($filePath, 'public');

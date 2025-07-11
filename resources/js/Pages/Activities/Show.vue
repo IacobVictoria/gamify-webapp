@@ -116,6 +116,7 @@ import ShowDiet from "./ShowDiet.vue";
 import { router } from "@inertiajs/vue3";
 import FriendSelector from "@/Components/FriendSelector.vue";
 import { ref } from "vue";
+import Swal from "sweetalert2";
 
 const props = defineProps({
     activity: Object,
@@ -162,11 +163,33 @@ const toggleFavorite = () => {
     );
 };
 
-const sendToFriend = (friendId) => {
+const sendToFriend = async (friendId) => {
     const message = `📊 Vezi această activitate: ${window.location.href}`;
-    axios.post(`/user/user_chat/messages/${friendId}`, {
-        message: message,
-    });
-    showFriendModal.value = false;
+
+    try {
+        await axios.post(`/user/user_chat/messages/${friendId}`, {
+            message: message,
+        });
+
+        showFriendModal.value = false;
+
+        Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: "Invitația a fost trimisă!",
+            text: "Prietenul tău a primit linkul cu activitatea.",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
+    } catch (error) {
+        Swal.fire({
+            icon: "error",
+            title: "Eroare!",
+            text: "Invitația nu a putut fi trimisă.",
+            confirmButtonText: "Închide",
+        });
+    }
 };
 </script>

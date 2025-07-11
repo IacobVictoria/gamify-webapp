@@ -1,6 +1,6 @@
 <template>
     <div class="mt-10">
-        <div class="text-2xl font-bold mb-4">Comments</div>
+        <div class="text-2xl font-bold mb-4">Comentarii</div>
         <div
             v-if="comments.length > 0"
             class="max-h-screen overflow-y-auto border border-gray-200 rounded-lg p-4"
@@ -69,7 +69,8 @@
                                     @click="
                                         !(
                                             isLoggedIn() &&
-                                            comment.user.id !== $page.props.user?.id
+                                            comment.user.id !==
+                                                $page.props.user?.id
                                         )
                                             ? null
                                             : comment.isLiked
@@ -195,18 +196,20 @@ export default {
         async dislikeComment(comment) {
             await this.$inertia.post(
                 route("review_comment.unlike", comment.id),
-                {},
+                   {},
                 {
-                    onSuccess: (page) => {},
+                    preserveScroll: true,
+                    preserveState: true,
                 }
             );
         },
         async likeComment(comment) {
             await this.$inertia.post(
                 route("review_comment.like", comment.id),
-                {},
+                   {},
                 {
-                    onSuccess: (page) => {},
+                    preserveScroll: true,
+                    preserveState: true,
                 }
             );
         },

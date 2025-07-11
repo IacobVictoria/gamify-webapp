@@ -5,21 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\QrCode;
 use App\Models\QrCodeScan;
-use App\Services\Badges\EventBadgeService;
 use App\Services\Badges\QrScanProductsBadgeService;
 use App\Services\QrCodes\QrCodeService;
 use App\Services\UserScoreService;
 use Illuminate\Http\Request;
 use Faker\Provider\Uuid;
+use Inertia\Inertia;
 
 class QrScannerController extends Controller
 {
     protected $userScoreService, $badgeService, $qrCodeService, $qrScanProductsBadgeService;
 
-    public function __construct(UserScoreService $userScoreService, EventBadgeService $badgeService, QrCodeService $qrCodeService, QrScanProductsBadgeService $qrScanProductsBadgeService)
+    public function __construct(UserScoreService $userScoreService, QrCodeService $qrCodeService, QrScanProductsBadgeService $qrScanProductsBadgeService)
     {
         $this->userScoreService = $userScoreService;
-        $this->badgeService = $badgeService;
         $this->qrCodeService = $qrCodeService;
         $this->qrScanProductsBadgeService = $qrScanProductsBadgeService;
     }
@@ -40,7 +39,7 @@ class QrScannerController extends Controller
             return back()->with('errorMessage', 'Product not found');
         }
 
-        return redirect()->route('products.show', $product->slug);
+       return Inertia::location(route('products.show', $product->slug));
     }
 
     public function scanProductEarnPoints(Request $request)

@@ -226,6 +226,7 @@ import Layout from "@/Layouts/Layout.vue";
 import WebPagination from "../../Components/WebPagination.vue";
 import FriendSelector from "@/Components/FriendSelector.vue";
 import debounce from "lodash/debounce";
+import Swal from "sweetalert2";
 
 export default {
     name: "Products.Index",
@@ -300,6 +301,16 @@ export default {
                 message: message,
             });
             this.showFriendModal = false;
+            Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "success",
+                title: "Link-ul produsului a fost trimis!",
+                text: "Prietenul tău a primit linkul cu produsul.",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
         },
     },
 };
