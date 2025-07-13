@@ -1,6 +1,6 @@
 <template>
     <div class="bg-white p-6 mb-10">
-      <h2 class="text-2xl font-semibold text-gray-800 mb-6">🎯 Gamification Insights</h2>
+     <h2 class="text-2xl font-semibold text-gray-800 mb-6">🎯 Statistici gamificare</h2>
   
       <ul class="space-y-5">
         <!-- Average Quizzes Completed -->

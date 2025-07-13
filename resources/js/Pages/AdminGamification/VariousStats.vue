@@ -1,7 +1,7 @@
 <template>
     <div class="bg-white p-6">
         <h2 class="text-xl font-semibold text-gray-900 mb-5">
-            📊 Statistici Gamificare - Săptămâna Curentă
+            📊 Statistici Gamificare - luna curentă
         </h2>
 
         <!-- Cele mai obținute badge-uri -->
@@ -65,7 +65,7 @@
                     {{ variousStats.weeklyBadgesCount }}
                 </h4>
                 <p class="text-sm text-gray-600 font-medium">
-                    Badge-uri acordate săptămâna aceasta
+                    Badge-uri acordate luna aceasta
                 </p>
             </div>
             <div class="bg-yellow-50 p-4 rounded-md shadow">
@@ -73,7 +73,7 @@
                     {{ variousStats.weeklyMedalsCount }}
                 </h4>
                 <p class="text-sm text-gray-600 font-medium">
-                    Medalii acordate săptămâna aceasta
+                    Medalii acordate luna aceasta
                 </p>
             </div>
         </div>

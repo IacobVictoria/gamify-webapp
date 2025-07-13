@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import torch
 from sklearn.metrics.pairwise import cosine_similarity
-from main import NCF  # Înlocuiește cu modelul tău real
+from main import NCF 
 from pytorch_lightning import seed_everything
 
 seed_everything(42)

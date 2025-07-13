@@ -64,7 +64,7 @@ class GenerateSupplierInvoiceHandler extends AbstractSupplierOrderHandler
             $order->report_id = $report->id;
             $order->save();
 
-            // 🔹 Salvăm referința către factură în event details
+            // Salvăm referința către factură în event details
             $details = json_decode($event->details, true) ?? [];
             $details['s3_path'] = $filePath;
             $event->details = json_encode($details);

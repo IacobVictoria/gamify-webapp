@@ -122,21 +122,22 @@ class AdminDashboardService
 
     public function getVariousAdminStats()
     {
-        $startOfWeek = Carbon::now()->startOfWeek();
-        $endOfWeek = Carbon::now()->endOfWeek();
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
 
         $topUsers = User::orderByDesc('score')->take(5)->get(['name', 'score']);
 
-        $newUsers = User::whereBetween('created_at', [$startOfWeek, $endOfWeek])->count();
-        $newUsersWithOrders = User::whereHas('orders', function ($query) use ($startOfWeek, $endOfWeek) {
-            $query->whereBetween('created_at', [$startOfWeek, $endOfWeek]);
+        $newUsers = User::whereBetween('created_at', [$startOfMonth, $endOfMonth])->count();
+        $newUsersWithOrders = User::whereHas('orders', function ($query) use ($startOfMonth, $endOfMonth) {
+            $query->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
         })->count();
 
         $conversionRate = $newUsers > 0 ? ($newUsersWithOrders / $newUsers) * 100 : 0;
 
         $topWishlistProducts = Product::withCount('wishlists')->where('is_published', true)->orderByDesc('wishlists_count')->take(5)->get(['name', 'wishlists_count']);
 
-        $qrScans = QrCodeScan::whereBetween('created_at', [$startOfWeek, $endOfWeek])->count();
+        $qrScans = QrCodeScan::whereBetween('created_at', [$startOfMonth, $endOfMonth])->count();
 
         return [
             'topUsers' => $topUsers,

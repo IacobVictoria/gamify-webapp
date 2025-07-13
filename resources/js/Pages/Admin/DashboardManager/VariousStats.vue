@@ -1,7 +1,7 @@
 <template>
     <div class="bg-white p-6">
         <h2 class="text-xl font-semibold text-gray-900 mb-5">
-            📊 Statistici săptămânale
+            📊 Statistici lunare
         </h2>
 
         <!-- Clasament -->
@@ -51,7 +51,7 @@
                     {{ variousStats.weeklyQrScans }}
                 </p>
                 <p class="text-sm text-gray-500">
-                    Scanări QR în această săptămână
+                    Scanări QR în această lună
                 </p>
             </div>
         </div>
@@ -91,7 +91,7 @@
                 Rată de conversie a utilizatorilor
             </p>
             <p class="text-xs text-gray-600 mt-1">
-                Din 100 de utilizatori care și-au creat cont săptămâna aceasta,
+                Din 100 de utilizatori care și-au creat cont luna aceasta,
                 {{ variousStats.conversionRate }}% au plasat o comandă.
             </p>
         </div>
