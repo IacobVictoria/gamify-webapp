@@ -35,7 +35,7 @@ class UserScoreUpdatedEvent implements ShouldBroadcastNow
     public function makeNotification()
     {
         $message = '';
-        $message = "$this->message Felicitări! Ai câștigat $this->score puncte!";
+        $message = "Felicitări! Ai câștigat $this->score puncte!";
 
         $notification = Notification::create([
             'id' => Uuid::uuid(),

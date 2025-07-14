@@ -39,7 +39,7 @@ class QrScannerController extends Controller
             return back()->with('errorMessage', 'Product not found');
         }
 
-       return Inertia::location(route('products.show', $product->slug));
+        return Inertia::location(route('products.show', $product->slug));
     }
 
     public function scanProductEarnPoints(Request $request)
@@ -59,15 +59,16 @@ class QrScannerController extends Controller
             return redirect()->route('user.dashboard')->with('errorMessage', 'Product not found');
         }
 
-        $this->userScoreService->addScore($user, $product->score);
-        $this->qrScanProductsBadgeService->checkAndAssignBadges($user);
-
-        QrCodeScan::create([
+         QrCodeScan::create([
             'id' => Uuid::uuid(),
             'user_id' => $user->id,
             'product_id' => $product->id,
             'scanned_at' => now(),
         ]);
+
+        $this->userScoreService->addScore($user, $product->score);
+
+        $this->qrScanProductsBadgeService->checkAndAssignBadges($user);
         $this->qrCodeService->invalidateQr($qrCode);
     }
 }

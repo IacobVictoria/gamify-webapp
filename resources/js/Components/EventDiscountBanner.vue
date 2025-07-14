@@ -51,7 +51,7 @@ export default {
     },
     methods: {
         formatDate(date) {
-            return new Date(date).toLocaleDateString("en-US", {
+            return new Date(date).toLocaleDateString("ro-RO", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",

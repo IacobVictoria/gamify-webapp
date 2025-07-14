@@ -21,7 +21,7 @@ class QrCodeService
         ->backgroundColor(255, 255, 255) // Alb
         ->margin(1)->generate($code);
 
-        $filePath = "qrcodes_products/{$productId}/{$code}.png";
+        $filePath = "testing/qrcodes_products/{$productId}/{$code}.png";
         Storage::disk('s3')->put($filePath, $qrImage);
 
         QrCode::create([
@@ -38,7 +38,7 @@ class QrCodeService
     public function invalidateQr(QrCode $qrCode): void
     {
         $productId = $qrCode->product_id;
-        Storage::disk('s3')->delete("qrcodes_products/{$productId}/{$qrCode->code}.png");
+        Storage::disk('s3')->delete("testing/qrcodes_products/{$productId}/{$qrCode->code}.png");
         $qrCode->delete();
     }
 }

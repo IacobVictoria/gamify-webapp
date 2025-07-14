@@ -16,7 +16,7 @@
                         <DialogPanel
                             class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
                             <div v-if="selectedType === 'supplier_order'">
-                                <EditSupplierOrderForm :event="calendarEvent" @closeForm="closeForm" :suppliers="props.suppliers" :products="props.products" />
+                                <EditSupplierOrderForm :event="calendarEvent" @formSubmitted="closeModal" :suppliers="props.suppliers" :products="props.products" />
                             </div>
                             <div v-if="selectedType === 'discount'">
                                 <EditDiscountForm :calendarEvent="calendarEvent" @formSubmitted="closeModal" :categories="props.categories"/>

@@ -1,14 +1,32 @@
 <template>
     <div class="relative mt-6 flex gap-2">
-        <input
-            type="checkbox"
-            v-model="is_checked"
-            @change="handleComparisonChange"
-            class="mt-1 block"
-        />
-        <label class="block text-sm font-medium text-gray-700"
-            >Adaugă la comparat</label
-        >
+        <div class="flex items-center gap-2 mt-2">
+            <input
+                id="compareCheckbox"
+                type="checkbox"
+                v-model="is_checked"
+                @change="handleComparisonChange"
+                class="hidden peer"
+            />
+            <label
+                for="compareCheckbox"
+                class="flex items-center gap-2 cursor-pointer select-none px-3 py-1.5 rounded-full border border-gray-300 peer-checked:border-green-500 peer-checked:bg-green-100 transition-all"
+            >
+                <span class="text-lg">
+                    {{ is_checked ? "✅" : "🔲" }}
+                </span>
+                <span
+                    :class="
+                        is_checked
+                            ? 'text-green-700 font-semibold'
+                            : 'text-gray-700'
+                    "
+                    class="text-sm"
+                >
+                    Adaugă la comparat
+                </span>
+            </label>
+        </div>
 
         <div
             v-if="showComparisonDropdown"

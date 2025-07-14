@@ -188,7 +188,7 @@ export default {
                 id: this.event?.id ?? "",
                 title: this.event?.title ?? "",
                 start: this.event?.start ? this.event.start.split(" ")[0] : "",
-                end: this.event?.end ? this.event.end.split(" ")[0] : "",
+                end: this.event?.start ? this.event.start.split(" ")[0] : "",
                 type: this.event?.type ?? "",
                 description: this.event?.description ?? "",
                 supplierId: details.supplier ?? null,
@@ -236,6 +236,10 @@ export default {
                 this.formData.productQuantities = newQuantities;
             },
             deep: true,
+        },
+
+        "formData.start"(newStart) {
+            this.formData.end = newStart;
         },
     },
     methods: {
@@ -294,11 +298,10 @@ export default {
                 route("admin.calendar.event.update", { id: this.formData.id }),
                 {
                     payload: this.formData,
-                    preserveScroll: true,
-                    onSuccess: () => window.location.reload(),
                     onError: (errors) => console.error("Errors:", errors),
                 }
             );
+            this.$emit("formSubmitted");
         },
     },
 };
