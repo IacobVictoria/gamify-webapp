@@ -65,7 +65,7 @@
             </div>
 
             <div class="w-2/3 bg-gray-200 p-4 rounded-md">
-                <h2 class="text-lg font-semibold mb-4">Create Survey</h2>
+                <h2 class="text-lg font-semibold mb-4">Creare Sondaj</h2>
                 <input
                     v-model="survey.title"
                     type="text"

@@ -103,7 +103,7 @@
                             type="number"
                             v-model="formData.productQuantities[productId]"
                             :placeholder="
-                                'Quantity for ' +
+                                'Cantitate ' +
                                 selectedProducts.find(
                                     (product) => product.id === productId
                                 )?.name

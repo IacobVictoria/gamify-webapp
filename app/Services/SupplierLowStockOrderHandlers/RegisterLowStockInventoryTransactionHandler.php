@@ -34,7 +34,7 @@ class RegisterLowStockInventoryTransactionHandler extends AbstractSupplierLowSto
 
             $this->nextHandler?->handle($quantity, $supplierProduct, $order);
         } catch (\Exception $e) {
-            Log::error("⚠️ Eroare la înregistrarea tranzacției de aprovizionare: {$e->getMessage()}");
+            Log::error("Eroare la înregistrarea tranzacției de aprovizionare: {$e->getMessage()}");
         }
     }
 }
