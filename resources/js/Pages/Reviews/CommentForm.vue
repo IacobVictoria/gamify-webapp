@@ -1,10 +1,10 @@
 <template>
     <template v-if="editForm">
-            <GenericEditForm :title="'Update the comment'" :fields="fields"
+            <GenericEditForm :title="'Editează comentariul'" :fields="fields"
                 :update-route="updateRoute" :initial-data="comment" ></GenericEditForm>
     </template>
     <template v-else>
-        <GenericCreateForm :title="'Adauga un comment'" :fields="fields" :create-route="createRoute"
+        <GenericCreateForm :title="'Adauga un comentariu'" :fields="fields" :create-route="createRoute"
             :objectId="reviewId">
         </GenericCreateForm>
     </template>

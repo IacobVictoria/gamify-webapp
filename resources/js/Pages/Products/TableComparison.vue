@@ -150,7 +150,8 @@
 </template>
 
 <script>
-import FriendSelector from '@/Components/FriendSelector.vue';
+import FriendSelector from "@/Components/FriendSelector.vue";
+import Swal from "sweetalert2";
 
 export default {
     props: {
@@ -174,8 +175,8 @@ export default {
             friends: this.friends,
         };
     },
-    components:{
-        FriendSelector
+    components: {
+        FriendSelector,
     },
     computed: {
         attributes() {
@@ -225,13 +226,23 @@ export default {
                     console.error("Nu s-a putut copia în clipboard: ", error);
                 });
         },
-        
+
         async sendToFriend(friendId) {
             const message = `📊 Vezi această comparatie:${this.currentUrl}`;
             await axios.post(`/user/user_chat/messages/${friendId}`, {
                 message: message,
             });
             this.showFriendModal = false;
+            Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "success",
+                title: "Link-ul comparației a fost trimis!",
+                text: "Prietenul tău a primit linkul cu comparația.",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
         },
     },
 };

@@ -48,10 +48,11 @@ class UserRecommandationController extends Controller
                     'id' => $rec->product->id,
                     'name' => $rec->product->name,
                     'price' => $rec->product->price,
+                    'old_price'=>$rec->product->old_price,
                     'image_url' => $rec->product->image_url,
                     'slug' => $rec->product->slug,
                 ];
-            });
+            })->take(6);
         }
 
         return Inertia::render('User/Recommendations', [

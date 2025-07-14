@@ -32,7 +32,7 @@ class ReviewLikedEvent implements ShouldBroadcastNow
     public function makeNotification()
     {
         $message = '';
-        $message = 'Userul ' . $this->user->name . 'ti-a dat like la review-ul: ' . $this->review->description;
+        $message = 'Userul ' . $this->user->name . ' ti-a dat like la review-ul: ' . $this->review->description;
 
         $notification = Notification::create([
             'id' => Uuid::uuid(),
@@ -71,7 +71,7 @@ class ReviewLikedEvent implements ShouldBroadcastNow
     public function broadcastWith()
     {
         return [
-            'message' => 'Userul ' . $this->user->name . 'ti-a dat like la review-ul: ' . $this->review->description,
+            'message' => 'Userul ' . $this->user->name . ' ti-a dat like la review-ul: ' . $this->review->description,
         ];
     }
 

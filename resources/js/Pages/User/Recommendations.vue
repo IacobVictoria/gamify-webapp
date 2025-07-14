@@ -1,13 +1,19 @@
 <template>
     <Layout>
-        <main class="mt-32 mb-24 bg-gradient-to-b from-white via-gray-50 to-white min-h-screen pb-12">
+        <main
+            class="mt-32 mb-24 bg-gradient-to-b from-white via-gray-50 to-white min-h-screen pb-12"
+        >
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h1 class="text-4xl font-bold text-emerald-600 mb-10 text-center">
+                <h1
+                    class="text-4xl font-bold text-emerald-600 mb-10 text-center"
+                >
                     🌟 Recomandările tale personalizate
                 </h1>
 
                 <template v-if="recommendations.length">
-                    <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <ul
+                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+                    >
                         <li
                             v-for="item in recommendations"
                             :key="item.id"
@@ -17,26 +23,49 @@
                                 :href="route('products.show', item.slug)"
                                 class="block no-underline"
                             >
-                            <div
-                                        class="relative w-full h-64 flex items-center justify-center overflow-hidden rounded-lg"
-                                    >
+                                <div
+                                    class="relative w-full h-64 flex items-center justify-center overflow-hidden rounded-lg"
+                                >
                                     <img
-                                        :src="item.image_url || '/placeholder.png'"
+                                        :src="
+                                            item.image_url || '/placeholder.png'
+                                        "
                                         :alt="item.name"
                                         class="max-h-full max-w-full object-cover"
                                     />
                                 </div>
 
                                 <div class="p-5 space-y-2 text-center">
-                                    <h3 class="text-lg font-semibold text-gray-800">
+                                    <h3
+                                        class="text-lg font-semibold text-gray-800"
+                                    >
                                         {{ item.name }}
                                     </h3>
-                                    <p v-if="item.category" class="text-sm text-gray-500 italic">
+                                    <p
+                                        v-if="item.category"
+                                        class="text-sm text-gray-500 italic"
+                                    >
                                         Categoria: {{ item.category }}
                                     </p>
-                                    <p class="text-lg font-bold text-sky-700">
-                                        {{ item.price }} RON
-                                    </p>
+                                    <div class="flex items-center gap-2">
+                                        <p
+                                            v-if="item.old_price"
+                                            class="text-sm text-gray-500 line-through"
+                                        >
+                                            {{ item.old_price }} RON
+                                        </p>
+
+                                        <p
+                                            :class="
+                                                item.old_price
+                                                    ? 'text-green-600 font-bold'
+                                                    : 'text-gray-900 font-bold'
+                                            "
+                                            class="text-lg"
+                                        >
+                                            {{ item.price }} RON
+                                        </p>
+                                    </div>
                                 </div>
                             </inertia-link>
                         </li>
@@ -47,14 +76,14 @@
                     <div
                         class="bg-yellow-50 border border-yellow-300 text-yellow-800 text-center py-6 px-8 rounded-xl mt-12"
                     >
-                        💤 Nu ai recomandări încă. Explorează catalogul pentru a primi sugestii personalizate!
+                        💤 Nu ai recomandări încă. Explorează catalogul pentru a
+                        primi sugestii personalizate!
                     </div>
                 </template>
             </div>
         </main>
     </Layout>
 </template>
-
 
 <script setup>
 import Layout from "@/Layouts/Layout.vue";

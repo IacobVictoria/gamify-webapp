@@ -35,7 +35,7 @@ class GenerateInvoiceHandler extends AbstractPaymentHandler
         $order->save();
 
         $user = User::findOrFail($order->user_id);
-        dispatch(new SendMailInvoiceJob($user, $order, $pdfUrl));
+        dispatch(new SendMailInvoiceJob($user, $order, $pdfUrl))->delay(now()->addSeconds(5));
 
         parent::handle($order, $paymentData);
     }
