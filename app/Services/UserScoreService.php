@@ -88,10 +88,10 @@ class UserScoreService implements UserScoreInterface
     {
         $points = match (true) {
             $finalScore >= 90 => 50,
-            $finalScore >= 80 => 40,
-            $finalScore >= 70 => 30,
-            $finalScore >= 60 => 20,
-            $finalScore >= 50 => 10,
+            $finalScore >= 50 => 40,
+            $finalScore >= 40 => 30,
+            $finalScore >= 30 => 20,
+            $finalScore >= 10 => 10,
             default => 5,
         };
 

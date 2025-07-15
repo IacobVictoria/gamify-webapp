@@ -288,9 +288,9 @@ export default {
 
         showEnterWordPopup() {
             Swal.fire({
-                title: "Choose a Word",
+                title: "Alege un cuvânt",
                 html: `
-                <p>Select a word for your opponent:</p>
+                <p>Alege un cuvânt pentru oponent:</p>
                 <div id="swal-word-options"></div>
             `,
                 showCancelButton: false,
